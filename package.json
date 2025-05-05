@@ -1,0 +1,13 @@
+{
+  "name": "Sadamata-FullStack",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "concurrently \"cd backend && yarn dev\" \"cd frontend && yarn dev\""
+
+  },
+  "dependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

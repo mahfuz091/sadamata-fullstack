@@ -5,9 +5,9 @@
   "license": "MIT",
   "scripts": {
     "dev": "concurrently \"cd backend && yarn dev\" \"cd frontend && yarn dev\""
-
   },
   "dependencies": {
-    "concurrently": "^9.1.2"
+    "concurrently": "^9.1.2",
+    "react-select": "^5.10.1"
   }
 }

@@ -9,10 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@fontsource/instrument-sans": "^5.2.5",
+    "@fontsource/inter": "^5.2.5",
     "bootstrap": "^5.3.5",
     "next": "15.3.1",
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.9",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-icons": "^5.5.0",
+    "react-select": "^5.10.1",
+    "react-slick": "^0.30.3",
+    "slick-carousel": "^1.8.1"
   }
 }

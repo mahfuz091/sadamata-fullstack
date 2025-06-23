@@ -23,21 +23,15 @@ const CartPage = () => {
         });
     }, [cartItems]);
 
-    const handleQuantityChange = (index, type) => {
-        console.log(index, type);
-        
-        setCartItems(prevItems => {
-            const newItems = [...prevItems];
-            console.log(newItems);
-            
-            if (type === 'add') {
-                newItems[index].quantity += 1;
-            } else if (type === 'sub' && newItems[index].quantity > 1) {
-                newItems[index].quantity -= 1;
-            }
-            return newItems;
-        });
-    };
+    const handleQuantityChange = (id, delta) => {
+        setCartItems(prevItems =>
+          prevItems.map(item =>
+            item.id === id
+              ? { ...item, quantity: Math.max(1, item.quantity + delta) }
+              : item
+          )
+        );
+      };
 
     const handleRemove = (index) => {
         setCartItems(prevItems => prevItems.filter((_, i) => i !== index));
@@ -69,9 +63,9 @@ const CartPage = () => {
                                             </div>
                                             <div className="cart-one__list__right">
                                                 <div className="quantity-box">
-                                                    <button  className="sub" onClick={() => handleQuantityChange(index, 'sub')}><i className="fa fa-minus"></i></button>
+                                                    <button  className="sub" onClick={() => handleQuantityChange(item.id, -1)}><i className="fa fa-minus"></i></button>
                                                     <input type="text" readOnly value={item.quantity} />
-                                                    <button  className="add" onClick={() => handleQuantityChange(index, 'add')}><i className="fa fa-plus"></i></button>
+                                                    <button  className="add" onClick={() => handleQuantityChange(item.id, 1)}><i className="fa fa-plus"></i></button>
                                                 </div>
                                                 <div className="cart-one__list__close">
                                                     <a  onClick={() => handleRemove(index)}><GoTrash color='#0B0F0E' /></a>

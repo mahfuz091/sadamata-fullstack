@@ -1,8 +1,8 @@
 import "@fontsource/inter";
 import "@fontsource/instrument-sans";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import "@/assets/vendors/fontawesome/css/all.min.css";
 import "@/assets/vendors/commerce-icons/style.css";
 import "@/assets/css/sadamata.css";

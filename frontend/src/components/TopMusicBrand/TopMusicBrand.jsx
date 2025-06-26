@@ -65,7 +65,7 @@ const TopMusicBrand = () => {
             </button>
           </div>
         </div>
-        <div className='top-brand__carousel commerce-slick__carousel slick-initialized slick-slider'>
+        <div className='top-brand__carousel commerce-slick__carousel'>
           <Slider {...settings} ref={sliderRef}>
             {brands.map((src, idx) => (
               <div key={idx} className='item'>

@@ -327,15 +327,15 @@ const FeatureProduct = () => {
           ))}
         </Row>
 
-        <div class='feature-product__pagination'>
-          <div class='post-pagination'>
-            <a href='#' class='previous'>
-              <i class='icon-left-arrow'></i> Previous
+        <div className='feature-product__pagination'>
+          <div className='post-pagination'>
+            <a href='#' className='previous'>
+              <i className='icon-left-arrow'></i> Previous
             </a>
-            <ul class='post-pagination-list justify-content-center'>
+            <ul className='post-pagination-list justify-content-center'>
               <li>
                 {" "}
-                <a href='#' class='active'>
+                <a href='#' className='active'>
                   1
                 </a>
               </li>
@@ -352,8 +352,8 @@ const FeatureProduct = () => {
                 <a href='#'>...</a>
               </li>
             </ul>
-            <a href='#' class='next'>
-              Next <i class='icon-right-arrow'></i>
+            <a href='#' className='next'>
+              Next <i className='icon-right-arrow'></i>
             </a>
           </div>
         </div>

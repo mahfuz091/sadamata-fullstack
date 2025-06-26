@@ -21,45 +21,45 @@ const BrandProfile = () => {
 
   return (
     <>
-      <div class='brand-profile-top'>
+      <div className='brand-profile-top'>
         <div
-          class='brand-profile-top__bg'
+          className='brand-profile-top__bg'
           style={{ backgroundImage: `url(${bg.src})` }}
         ></div>
-        <div class='container'>
-          <div class='brand-profile-top__inner'>
-            <div class='brand-profile-top__profile'>
-              <div class='brand-profile-top__left'>
-                <div class='brand-profile-top__image'>
+        <div className='container'>
+          <div className='brand-profile-top__inner'>
+            <div className='brand-profile-top__profile'>
+              <div className='brand-profile-top__left'>
+                <div className='brand-profile-top__image'>
                   <Image src={user} alt='user image' />
                 </div>
-                <div class='brand-profile-top__content'>
-                  <h4 class='brand-profile-top__name'>Disney</h4>
-                  <span class='brand-profile-top__followers'>
+                <div className='brand-profile-top__content'>
+                  <h4 className='brand-profile-top__name'>Disney</h4>
+                  <span className='brand-profile-top__followers'>
                     5.8K Followers
                   </span>
                 </div>
               </div>
-              <div class='brand-profile-top__right'>
-                <div class='brand-profile-top__form'>
-                  <div class='brand-profile-top__form__group__form'>
+              <div className='brand-profile-top__right'>
+                <div className='brand-profile-top__form'>
+                  <div className='brand-profile-top__form__group__form'>
                     <input
                       type='text'
                       name='text'
                       placeholder='Search products'
                     />
-                    <button type='submit' class='commerce-btn'>
-                      <i class='fas fa-search'></i>
+                    <button type='submit' className='commerce-btn'>
+                      <i className='fas fa-search'></i>
                     </button>
                   </div>
                 </div>
-                <div class='brand-profile-top__btn'>
+                <div className='brand-profile-top__btn'>
                   <a href='#'>Follow Me</a>
                 </div>
               </div>
             </div>
-            <ul class='brand-profile-top__list list-unstyled'>
-              <li class='active'>
+            <ul className='brand-profile-top__list list-unstyled'>
+              <li className='active'>
                 <a href='#'>Brand Name</a>
               </li>
               <li>

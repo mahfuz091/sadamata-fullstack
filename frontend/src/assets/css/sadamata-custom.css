@@ -216,3 +216,11 @@ h2.terms-section-title {
 .login-page .login-page__checked-inner {
   margin-bottom: 5px;
 }
+.history-product__carousel .slick-slide {
+  padding: 0 16px;
+  margin: 0;
+}
+.top-brand__carousel .slick-slide .item {
+  padding: 0 15px;
+  margin: 0;
+}

@@ -1,10 +1,10 @@
 {
-  "name": "Sadamata-FullStack",
+  "name": "sadamata-fullstack",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "concurrently \"cd backend && yarn dev\" \"cd frontend && yarn dev\""
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\" \"cd merchant && npm run dev\""
   },
   "dependencies": {
    

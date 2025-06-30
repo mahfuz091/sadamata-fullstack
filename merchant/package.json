@@ -1,0 +1,23 @@
+{
+  "name": "merchant",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@fontsource/instrument-sans": "^5.2.6",
+    "@fontsource/inter": "^5.2.6",
+    "bootstrap": "^5.3.7",
+    "next": "15.3.4",
+    "react": "^19.0.0",
+    "react-bootstrap": "^2.10.10",
+    "react-dom": "^19.0.0",
+    "react-slick": "^0.30.3",
+    "slick-carousel": "^1.8.1",
+    "sonner": "^2.0.5"
+  }
+}

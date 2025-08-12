@@ -10,12 +10,12 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(uuid()) // Changed to UUID
   email     String?  @unique
   phone     String?  @unique
   firstName String
@@ -24,10 +24,31 @@ model User {
   role      Role     @default(USER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Brand     Brand[]
+}
+
+model Brand {
+  id        String     @id @default(uuid()) // Changed to UUID
+  name      String
+  userId    String     @db.Uuid // Ensure this is UUID type
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  subBrands SubBrand[]
+  user      User       @relation(fields: [userId], references: [id])
+}
+
+model SubBrand {
+  id        String   @id @default(uuid()) // Changed to UUID
+  name      String
+  brandId   String   @db.Uuid
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  brand     Brand    @relation(fields: [brandId], references: [id])
 }
 
 enum Role {
   USER
   ADMIN
   BRAND
+  MERCH
 }

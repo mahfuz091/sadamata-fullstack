@@ -17,10 +17,10 @@ export default function HeaderTwo() {
             </div>
             <div className='main-header__right'>
               <div className='mobile-nav__info'>
-                <Link href='/login' className='commerce-btn login'>
+                <Link href='/vendor-login' className='commerce-btn login'>
                   Login
                 </Link>
-                <Link href='/sign-up' className='commerce-btn'>
+                <Link href='/vendor-signup' className='commerce-btn'>
                   Register <i className='icon-right-arrow' />
                 </Link>
               </div>

@@ -20,10 +20,21 @@ const VendorLogin = () => {
     }
   };
 
+  // const handleInputChange = (e) => {
+  //   setFormData((prevFormData) => {
+  //     const newFormData = new FormData(prevFormData);
+  //     newFormData.set(e.target.name, e.target.value);
+  //     return newFormData;
+  //   });
+  // };
   const handleInputChange = (e) => {
     setFormData((prevFormData) => {
-      const newFormData = new FormData(prevFormData);
-      newFormData.set(e.target.name, e.target.value);
+      const newFormData = new FormData(); // Create a new instance of FormData
+      // Copy the existing data from the previous FormData
+      prevFormData.forEach((value, key) => {
+        newFormData.append(key, value);
+      });
+      newFormData.set(e.target.name, e.target.value); // Update with the new input value
       return newFormData;
     });
   };

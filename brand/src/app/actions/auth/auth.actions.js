@@ -133,19 +133,8 @@ export async function registerUser(formData) {
         name,
         password: hashedPassword, // Store hashed password
         role,
-        isActive: isActive, // Set isActive based on the role
       },
     });
-
-    // If the user role is BRAND, automatically create a Brand
-    if (role === "BRAND") {
-      await prisma.brand.create({
-        data: {
-          name: `${name}`, // You can customize the brand name
-          userId: user.id, // Link the Brand to the User
-        },
-      });
-    }
 
     return {
       success: true,
@@ -243,12 +232,12 @@ export async function loginUser(formData) {
     }
 
     // Check if the user is active (if not, deny login)
-    if (!user.isActive) {
-      return {
-        success: false,
-        message: "Your account is inactive. Please contact support.",
-      };
-    }
+    // if (!user.isActive) {
+    //   return {
+    //     success: false,
+    //     message: "Your account is inactive. Please contact support.",
+    //   };
+    // }
 
     // Compare the provided password with the stored hashed password
     const isPasswordValid = await bcrypt.compare(password, user.password);

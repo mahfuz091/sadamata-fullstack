@@ -15,41 +15,56 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement()) // Changed to Int and auto-increment
+  id        String   @id @default(uuid()) // Changed to UUID
   email     String?  @unique
   phone     String?  @unique
   name      String
   password  String
   role      Role     @default(USER)
-  isActive  Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Brand Brand[]
+  // A user can create many brands (if their role is 'BRAND')
+  brands Brand[] @relation("UserBrands") // Add this to complete the relation
 }
 
 model Brand {
-  id        Int        @id @default(autoincrement()) // Changed to Int and auto-increment
-  name      String
-  user      User       @relation(fields: [userId], references: [id])
-  userId    Int // Changed to Int
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id              String        @id @default(uuid()) // Changed to UUID
+  name            String
+  isActive        Boolean       @default(false) // Default is false for new brands
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  brandCategory   BrandCategory @relation(fields: [brandCategoryId], references: [id])
+  brandCategoryId String
+
   subBrands SubBrand[]
+
+  user   User   @relation("UserBrands", fields: [userId], references: [id])
+  userId String
+}
+
+model BrandCategory {
+  id        String   @id @default(uuid()) // Changed to UUID
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Brand Brand[] // One-to-many relation with Brand
 }
 
 model SubBrand {
-  id        Int      @id @default(autoincrement()) // Changed to Int and auto-increment
+  id        String   @id @default(uuid()) // Changed to UUID
   name      String
-  brand     Brand    @relation(fields: [brandId], references: [id])
-  brandId   Int // Changed to Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // SubBrand belongs to a Brand
+  brandId String
+  brand   Brand  @relation(fields: [brandId], references: [id])
 }
 
 enum Role {
   USER
   ADMIN
-  BRAND
-  MERCH
+  BRAND // Added the BRAND role
 }

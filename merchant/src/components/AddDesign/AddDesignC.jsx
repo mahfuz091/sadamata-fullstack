@@ -54,7 +54,9 @@ var settings = {
 
 export default function AddDesignC() {
   const [fileName, setFileName] = useState("");
+  const [backFileName, setBackFileName] = useState("");
   const [designImage, setDesignImage] = useState(null); // Store the uploaded design
+  const [designBack, setDesignBack] = useState(false);
   const [selectedColor, setSelectedColor] = useState("black"); // Default color
   const [hoveredColor, setHoveredColor] = useState(null);
   const [canvas, setCanvas] = useState(null); // Store the Fabric canvas instance
@@ -64,8 +66,9 @@ export default function AddDesignC() {
   const [designPosition, setDesignPosition] = useState({ x: 100, y: 100 });
   const [designSize, setDesignSize] = useState({ width: 200, height: 200 });
   const [isLoading, setIsLoading] = useState(false); // Loading state
+  const [isBackLoading, setIsBackLoading] = useState(false); // Loading state
   const [isBackView, setIsBackView] = useState(false);
-
+  const inputFileRef = useRef(null);
   const mockupImage = "/mockup.png"; // Track start position for resize
   const mockupBackImage = "/mockup-2.png"; // Back mockup
   const canvasRef = useRef(null); // Reference to the canvas element
@@ -133,53 +136,32 @@ export default function AddDesignC() {
           // Set the uploaded image as the design after the delay
           setDesignImage(reader.result);
           setIsLoading(false); // End loading state after the delay
-        }, 8000); // 5 seconds delay
+        }, 3000); // 5 seconds delay
       };
       reader.readAsDataURL(file); // Read the file as a data URL (base64)
     }
   };
-  // Initialize Fabric.js Canvas
-  // const initializeCanvas = () => {
-  //   if (canvas) {
-  //     canvas.dispose(); // Dispose of the previous canvas before initializing a new one
-  //   }
+  const handleBackFileChange = (e) => {
+    if (e.target.files[0]) {
+      const file = e.target.files[0];
+      setBackFileName(file.name);
 
-  //   const fabricCanvas = new Canvas(canvasRef.current, {
-  //     width: 400,
-  //     height: 400,
-  //     selection: false,
-  //   });
+      // Start loading state
+      setIsBackLoading(true);
 
-  //   const colorToUse = hoveredColor || selectedColor;
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        // Simulate a 5-second delay before displaying the image
+        setTimeout(() => {
+          // Set the uploaded image as the design after the delay
+          setDesignBack(reader.result);
+          setIsBackLoading(false); // End loading state after the delay
+        }, 3000); // 5 seconds delay
+      };
+      reader.readAsDataURL(file); // Read the file as a data URL (base64)
+    }
+  };
 
-  //   const mockupImg = new Image();
-  //   mockupImg.src = colorMockups[colorToUse]; // Use the selected or hovered color to set the mockup image
-
-  //   // Wait until the mockup image is fully loaded before adding it to the canvas
-  //   mockupImg.onload = () => {
-  //     // Remove any existing objects (like the old mockup) from the canvas
-  //     fabricCanvas.clear();
-
-  //     // Add the new mockup image to the canvas
-  //     const fabricImg = new FabricImage(mockupImg);
-  //     fabricImg.set({
-  //       left: 0,
-  //       top: 0,
-  //       scaleX: fabricCanvas.width / mockupImg.width, // Scale to fit the canvas width
-  //       scaleY: fabricCanvas.height / mockupImg.height, // Scale to fit the canvas height
-  //       selectable: false, // Lock the image so it can't be resized or moved
-  //       evented: false, // Disable events for this image
-  //     });
-
-  //     fabricCanvas.add(fabricImg); // Add mockup image as the base
-  //     fabricCanvas.renderAll(); // Ensure the image is rendered immediately
-
-  //     // After adding the mockup, add the design image on top of it
-  //     addDesignToCanvas(fabricCanvas); // Re-add the design image
-  //   };
-
-  //   setCanvas(fabricCanvas); // Set the canvas state
-  // };
   const initializeCanvas = () => {
     if (canvas) {
       canvas.dispose(); // Dispose of the previous canvas before initializing a new one
@@ -238,6 +220,9 @@ export default function AddDesignC() {
     if (canvas) {
       canvas.dispose(); // Dispose of the previous canvas before initializing a new one
     }
+    if (canvasTwo) {
+      canvasTwo.dispose(); // Dispose of the previous canvas before initializing a new one
+    }
 
     const fabricBackCanvas = new Canvas(canvasBackRef.current, {
       width: 400,
@@ -264,8 +249,8 @@ export default function AddDesignC() {
       fabricBackCanvas.add(fabricImg);
       fabricBackCanvas.renderAll();
 
-      if (designImage) {
-        addDesignToCanvas(fabricBackCanvas);
+      if (designBack) {
+        addDesignToBackCanvas(fabricBackCanvas);
       }
     };
 
@@ -283,6 +268,13 @@ export default function AddDesignC() {
   const initializeCanvasTwo = () => {
     if (canvasTwo) {
       canvasTwo.dispose(); // Dispose the previous canvas before initializing a new one
+    }
+
+    if (backCanvas) {
+      backCanvas.dispose(); // Dispose of the previous canvas before initializing a new one
+    }
+    if (canvas) {
+      canvas.dispose(); // Dispose of the previous canvas before initializing a new one
     }
 
     // Initialize the Fabric.js canvas
@@ -321,7 +313,7 @@ export default function AddDesignC() {
       fabricTwoCanvas.renderAll(); // Ensure the image is rendered immediately
 
       // After adding the mockup, add the design image on top of it
-      addDesignToCanvas(fabricTwoCanvas); // Re-add the design image with the saved size and position
+      addDesignToCanvasTwo(fabricTwoCanvas); // Re-add the design image with the saved size and position
     };
 
     setCanvasTwo(fabricTwoCanvas); // Set the canvas state
@@ -347,6 +339,72 @@ export default function AddDesignC() {
           top: designPosition.y, // Use the saved position
           scaleX: designSize.width / designImg.width, // Use the saved size
           scaleY: designSize.height / designImg.height, // Use the saved size
+          hasControls: true, // Allow resizing and rotating
+          lockUniScaling: true, // Keep the aspect ratio while resizing
+          layer: 1, // Ensure this is on top of the mockup
+        });
+
+        fabricCanvas.add(fabricImg); // Add design image to the canvas
+        fabricCanvas.renderAll(); // Ensure the image is rendered immediately
+      };
+    }
+  };
+  const addDesignToBackCanvas = (fabricCanvas) => {
+    if (fabricCanvas && designBack) {
+      const designImg = new Image(); // Create an image element
+      designImg.src = designBack;
+
+      designImg.onload = () => {
+        // Calculate the scale factor to fit the design image within the canvas, while maintaining aspect ratio
+        const scaleX = fabricCanvas.width / designImg.width;
+        const scaleY = fabricCanvas.height / designImg.height;
+
+        // Use the smaller scale to fit the image into the canvas
+        const scale = Math.min(scaleX, scaleY);
+
+        // Re-apply the saved size and position of the design
+        const fabricImg = new FabricImage(designImg); // Create a Fabric image from the loaded img element
+        fabricImg.set({
+          left: designPosition.x, // Use the saved position
+          top: designPosition.y, // Use the saved position
+          scaleX: designSize.width / designImg.width, // Use the saved size
+          scaleY: designSize.height / designImg.height, // Use the saved size
+          hasControls: true, // Allow resizing and rotating
+          lockUniScaling: true, // Keep the aspect ratio while resizing
+          layer: 1, // Ensure this is on top of the mockup
+        });
+
+        fabricCanvas.add(fabricImg); // Add design image to the canvas
+        fabricCanvas.renderAll(); // Ensure the image is rendered immediately
+      };
+    }
+  };
+
+  const addDesignToCanvasTwo = (fabricCanvas) => {
+    if (fabricCanvas && designImage) {
+      const designImg = new Image(); // Create an image element
+      designImg.src = designImage;
+
+      designImg.onload = () => {
+        // Set the desired size for the design image
+        const targetWidth = 80; // Set the width you want (in pixels)
+        const targetHeight = 80; // Set the height you want (in pixels)
+
+        // Calculate the scale factor to fit the design image size
+        const scaleX = targetWidth / designImg.width;
+        const scaleY = targetHeight / designImg.height;
+
+        // Calculate the centered position
+        const centerX = (fabricCanvas.width - targetWidth) / 2;
+        const centerY = (fabricCanvas.height - targetHeight) / 2;
+
+        // Re-apply the saved size and position of the design, adjusted to center it
+        const fabricImg = new FabricImage(designImg); // Create a Fabric image from the loaded img element
+        fabricImg.set({
+          left: centerX, // Center the image horizontally
+          top: centerY, // Center the image vertically
+          scaleX: scaleX, // Scale the image to the target width
+          scaleY: scaleY, // Scale the image to the target height
           hasControls: true, // Allow resizing and rotating
           lockUniScaling: true, // Keep the aspect ratio while resizing
           layer: 1, // Ensure this is on top of the mockup
@@ -436,16 +494,30 @@ export default function AddDesignC() {
     } else {
       removeSpinnerFromCanvas(canvas);
       removeSpinnerFromCanvas(canvasTwo);
-      addDesignToCanvas(canvas);
+      // addDesignToCanvas(canvas);
     }
   }, [isLoading, designImage, canvas, canvasTwo]);
+  useEffect(() => {
+    if (!backCanvas) return;
+
+    if (isBackLoading) {
+      addSpinnerToCanvas(backCanvas);
+    } else {
+      removeSpinnerFromCanvas(backCanvas);
+
+      // addDesignToBackCanvas(canvas);
+    }
+  }, [isBackLoading, designBack, backCanvas]);
+  useEffect(() => {
+    initializeBackCanvas();
+  }, [selectedColor, hoveredColor, designBack, isBackView]);
 
   // Handle resizing and dragging (Fabric.js automatically handles this)
   useEffect(() => {
     initializeCanvas(); // Initialize Fabric.js canvas when component mounts
     initializeCanvasTwo();
-    initializeBackCanvas();
-  }, [selectedColor, hoveredColor, designImage, isBackView]);
+    // initializeBackCanvas();
+  }, [selectedColor, hoveredColor, designImage, designBack, isBackView]);
 
   const handleColorChange = (color) => {
     setSelectedColor(color); // Update selected color
@@ -461,21 +533,12 @@ export default function AddDesignC() {
       addDesignToCanvas(); // Add the uploaded design to the canvas
     }
   }, [designImage]);
-
-  // Add some text to the canvas (Optional)
-  const addText = () => {
-    if (canvas) {
-      const text = new FabricText("Sample Text", {
-        left: 50,
-        top: 50,
-        fontSize: 30,
-        fill: "#000000", // Black text
-        fontFamily: "Arial",
-      });
-      canvas.add(text);
-      canvas.renderAll();
+  useEffect(() => {
+    if (designBack) {
+      addDesignToBackCanvas(); // Add the uploaded design to the canvas
     }
-  };
+  }, [designBack]);
+
   const handleMouseLeave = () => {
     setHoveredColor(null);
   };
@@ -646,46 +709,6 @@ export default function AddDesignC() {
                   </div>
                 ))}
               </div>
-              {/* Product Slider Placeholder (use react-slick or similar if dynamic) */}
-              <div className='product-category-list d-none'>
-                <div className=''>
-                  <Slider
-                    {...settings}
-                    className='product-slider__carousel commerce-slick__carousel'
-                  >
-                    {products.map((item, index) => (
-                      <div className='item' key={index}>
-                        <div className='product__item-two'>
-                          <div className='product__item-two__img'>
-                            <a
-                              href='#'
-                              className='product__item-two__img__item'
-                            >
-                              <canvas
-                                ref={canvasRef}
-                                style={{ border: "1px solid #ddd" }}
-                              ></canvas>
-                            </a>
-                          </div>
-                          <div className='product__item-two__content'>
-                            <h4 className='product__item-two__title'>
-                              <a href='product-details'>{item.title}</a>
-                            </h4>
-
-                            <a
-                              href='cart'
-                              className='commerce-btn product__item-two__link'
-                            >
-                              Edit Details <i className='icon-right-arrow'></i>
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </Slider>
-                  {/* <Responsive /> */}
-                </div>
-              </div>
 
               {/* Product Preview Section */}
               <div className='product-preview-panel'>
@@ -706,49 +729,37 @@ export default function AddDesignC() {
                         Back
                       </button>
                     </div>
-                    {/* <div className='product-preview-panel__product-image'>
-                      <Image
-                        src={image}
-                        alt='T-shirt Preview'
-                        width={400}
-                        height={400}
-                      />
-                    </div> */}
-                    {/* {isBackView ? (
-                      <canvas
-                        ref={canvasBackRef}
-                        style={{
-                          border: "1px solid #ddd",
-                          position: "relative",
-                        }}
-                      ></canvas>
-                    ) : (
-                      <canvas
-                        ref={canvasRef}
-                        style={{
-                          border: "1px solid #ddd",
-                          position: "relative",
-                        }}
-                      ></canvas>
-                    )} */}
+
                     {isBackView ? (
-                      <canvas
-                        ref={canvasBackRef}
-                        className={`front ${isBackView ? "" : "d-none"}`}
-                        style={{
-                          border: "1px solid #ddd",
-                          position: "relative",
-                        }}
-                      ></canvas>
+                      <label htmlFor='backimage-upload'>
+                        <canvas
+                          ref={canvasBackRef}
+                          className={`front ${isBackView ? "" : "d-none"}`}
+                          style={{
+                            border: "1px solid #ddd",
+                            position: "relative",
+                          }}
+                        ></canvas>
+                        <input
+                          type='file'
+                          id='backimage-upload'
+                          className='file-upload__input'
+                          hidden
+                          onChange={handleBackFileChange}
+                          disabled={designBack} // Disable input if design is added
+                        />
+                      </label>
                     ) : (
-                      <canvas
-                        ref={canvasRef}
-                        className={`front ${isBackView ? "d-none" : ""}`}
-                        style={{
-                          border: "1px solid #ddd",
-                          position: "relative",
-                        }}
-                      ></canvas>
+                      <div>
+                        <canvas
+                          ref={canvasRef}
+                          className={`front ${isBackView ? "d-none" : ""}`}
+                          style={{
+                            border: "1px solid #ddd",
+                            position: "relative",
+                          }}
+                        ></canvas>
+                      </div>
                     )}
                   </div>
                   <div className='col-lg-6'>

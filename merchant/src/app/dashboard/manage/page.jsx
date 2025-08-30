@@ -1,13 +1,9 @@
-import Analyze from "@/components/Analyze/Analyze";
+import DashboardManage from "@/components/DashboardManage/DashboardManage";
 import Layout from "@/components/Layout/Layout";
 import React from "react";
 
 const page = () => {
-  return (
-    <Layout>
-      <Analyze />
-    </Layout>
-  );
+  return <DashboardManage />;
 };
 
 export default page;

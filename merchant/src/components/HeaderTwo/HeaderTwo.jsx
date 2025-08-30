@@ -4,7 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import logo from "@/assets/images/logo-light.png";
 
-export default function HeaderTwo() {
+import { logOut } from "@/app/actions/auth/auth.actions";
+
+const HeaderTwo = ({ session }) => {
+  // const session = await auth();
+  console.log(session, "session in header");
+
   return (
     <header className='main-header main-header--two sticky-header sticky-header--normal'>
       <div className='main-header__top'>
@@ -17,12 +22,20 @@ export default function HeaderTwo() {
             </div>
             <div className='main-header__right'>
               <div className='mobile-nav__info'>
-                <Link href='/login' className='commerce-btn login'>
-                  Login
-                </Link>
-                <Link href='/sign-up' className='commerce-btn'>
-                  Register <i className='icon-right-arrow' />
-                </Link>
+                {session?.user ? (
+                  <button onClick={logOut} className='commerce-btn'>
+                    Logout
+                  </button>
+                ) : (
+                  <>
+                    <Link href='/login' className='commerce-btn login'>
+                      Login
+                    </Link>
+                    <Link href='/sign-up' className='commerce-btn'>
+                      Register <i className='icon-right-arrow' />
+                    </Link>
+                  </>
+                )}
               </div>
               <div className='mobile-nav__btn mobile-nav__toggler'>
                 <span></span>
@@ -35,4 +48,6 @@ export default function HeaderTwo() {
       </div>
     </header>
   );
-}
+};
+
+export default HeaderTwo;

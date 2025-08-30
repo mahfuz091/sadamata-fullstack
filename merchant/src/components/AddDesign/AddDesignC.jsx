@@ -818,9 +818,13 @@ export default function AddDesignC() {
 
                       <div className='product-preview-panel__price-input-field'>
                         <label className='product-preview-panel__label'>
-                          Price
+                          Price (Minimum BDT 500):
                         </label>
-                        <input type='text' placeholder='BDT 0.00' />
+                        <input
+                          type='text'
+                          placeholder='BDT 0.00'
+                          defaultValue={500}
+                        />
                       </div>
                     </div>
                   </div>

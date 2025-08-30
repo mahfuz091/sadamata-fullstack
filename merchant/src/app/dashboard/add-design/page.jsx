@@ -5,12 +5,7 @@ import Layout from "@/components/Layout/Layout";
 import React from "react";
 
 const page = () => {
-  return (
-    <Layout>
-      <AddDesignC />
-      {/* <AddDesign3 /> */}
-    </Layout>
-  );
+  return <AddDesignC />;
 };
 
 export default page;

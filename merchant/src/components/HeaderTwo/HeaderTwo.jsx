@@ -24,7 +24,7 @@ const HeaderTwo = ({ session }) => {
               <div className='mobile-nav__info'>
                 {session?.user ? (
                   <button onClick={logOut} className='commerce-btn'>
-                    Logout
+                    Logout {session.user.name}
                   </button>
                 ) : (
                   <>

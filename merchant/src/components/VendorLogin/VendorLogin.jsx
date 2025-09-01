@@ -4,6 +4,7 @@ import React, { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
 import { loginUser } from "@/app/actions/auth/auth.actions";
 import { isValidEmail, isValidBDPhone } from "@/utils/validation"; // 👈 re-use our validators
+import { toast } from "sonner";
 
 const VendorLogin = () => {
   const initialState = {
@@ -18,8 +19,8 @@ const VendorLogin = () => {
 
   console.log(state);
   useEffect(() => {
-    if (state?.msg) {
-      alert(state.msg);
+    if (!state?.success) {
+      toast.warning(state?.message);
     }
   }, [state]);
 

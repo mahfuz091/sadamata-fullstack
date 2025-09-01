@@ -2,9 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Canvas, FabricImage, FabricText } from "fabric"; // Correct import for Fabric.js v6
-// import Image from "next/image";
-import Link from "next/link";
-import image from "@/assets/images/products/product-d-4-1.png";
 
 import item1 from "@/assets/images/products/product-4-1.png";
 
@@ -12,7 +9,16 @@ import DashSidebar from "../DashSidebar/DashSidebar";
 import Tag from "./Tag";
 import { toast } from "sonner";
 
-export default function AddDesignC() {
+const SPINNER_SVG_DATAURI =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(`
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 50 50">
+  <circle cx="25" cy="25" r="20" stroke="#3b82f6" stroke-width="5" fill="none" opacity="0.2"/>
+  <path fill="none" stroke="#3b82f6" stroke-width="5"
+        d="M25 5 a20 20 0 0 1 0 40"/>
+</svg>`);
+
+export default function AddDesignNew() {
   const [fileName, setFileName] = useState("");
   const [backFileName, setBackFileName] = useState("");
   const [designImage, setDesignImage] = useState(null); // Store the uploaded design
@@ -37,8 +43,7 @@ export default function AddDesignC() {
   const [isBackLoading, setIsBackLoading] = useState(false); // Loading state
   const [isBackView, setIsBackView] = useState(false);
   const inputFileRef = useRef(null);
-  const mockupImage = "/mockup.png"; // Track start position for resize
-  const mockupBackImage = "/mockup-2.png"; // Back mockup
+
   const canvasRef = useRef(null); // Reference to the canvas element
   const canvasTwoRef = useRef(null); // Reference to the canvas element
   const canvasBackRef = useRef(null); // Reference to the canvas element
@@ -83,21 +88,15 @@ export default function AddDesignC() {
     green: "/mockup-2.png",
     teal: "/mockup.png",
     red: "/mockup-2.png",
-    blue: "/mockup.png",
-    lightBlue: "/mockup-2.png",
-    lightGray: "/mockup.png",
   };
   const colorBackMockups = {
     black: "/mockup-2.png",
     green: "/mockup.png",
     teal: "/mockup-2.png",
     red: "/mockup.png",
-    blue: "/mockup-2.png",
-    lightBlue: "/mockup.png",
-    lightGray: "/mockup-2.png",
   };
   // Handle file upload
-  // Handle file upload
+
   const handleFileChange = (e) => {
     if (e.target.files[0]) {
       const file = e.target.files[0];
@@ -178,98 +177,6 @@ export default function AddDesignC() {
     }
   }, []);
 
-  // const initializeCanvas = () => {
-  //   if (canvas) {
-  //     canvas.dispose(); // Dispose of the previous canvas before initializing a new one
-  //   }
-  //   if (backCanvas) {
-  //     backCanvas.dispose(); // Dispose of the previous canvas before initializing a new one
-  //   }
-  //   if (canvasTwo) {
-  //     canvasTwo.dispose(); // Dispose of the previous canvas before initializing a new one
-  //   }
-
-  //   // Initialize the Fabric.js canvas
-  //   const fabricCanvas = new Canvas(canvasRef.current, {
-  //     width: 400,
-  //     height: 400,
-  //     selection: false,
-  //   });
-
-  //   // Proceed with initialization and image setup
-  //   const colorToUse = hoveredColor || selectedColor;
-  //   const mockupImg = new Image();
-  //   mockupImg.src = colorMockups[colorToUse];
-
-  //   mockupImg.onload = () => {
-  //     if (!fabricCanvas) return;
-
-  //     fabricCanvas.clear(); // Clear previous contents
-
-  //     const fabricImg = new FabricImage(mockupImg);
-  //     fabricImg.set({
-  //       left: 0,
-  //       top: 0,
-  //       scaleX: fabricCanvas.width / mockupImg.width,
-  //       scaleY: fabricCanvas.height / mockupImg.height,
-  //       selectable: false,
-  //       evented: false,
-  //     });
-
-  //     fabricCanvas.add(fabricImg);
-  //     fabricCanvas.renderAll();
-
-  //     addDesignToCanvas(fabricCanvas); // Re-add the design image on top
-  //   };
-
-  //   setCanvas(fabricCanvas); // Set the canvas state
-  // };
-
-  // const initializeBackCanvas = () => {
-  //   // Check if the back canvas is already initialized and dispose of it
-  //   if (backCanvas) {
-  //     backCanvas.dispose(); // Dispose of the previous canvas before initializing a new one
-  //   }
-  //   if (canvas) {
-  //     canvas.dispose(); // Dispose of the previous canvas before initializing a new one
-  //   }
-  //   if (canvasTwo) {
-  //     canvasTwo.dispose(); // Dispose of the previous canvas before initializing a new one
-  //   }
-
-  //   const fabricBackCanvas = new Canvas(canvasBackRef.current, {
-  //     width: 400,
-  //     height: 400,
-  //     selection: false,
-  //   });
-
-  //   const mockupImg = new Image();
-  //   mockupImg.src = mockupBackImage;
-
-  //   mockupImg.onload = () => {
-  //     fabricBackCanvas.clear(); // Clear the previous canvas contents, if any
-
-  //     const fabricImg = new FabricImage(mockupImg);
-  //     fabricImg.set({
-  //       left: 0,
-  //       top: 0,
-  //       scaleX: fabricBackCanvas.width / mockupImg.width,
-  //       scaleY: fabricBackCanvas.height / mockupImg.height,
-  //       selectable: false,
-  //       evented: false,
-  //     });
-
-  //     fabricBackCanvas.add(fabricImg);
-  //     fabricBackCanvas.renderAll();
-
-  //     if (designBack) {
-  //       addDesignToBackCanvas(fabricBackCanvas);
-  //     }
-  //   };
-
-  //   setBackCanvas(fabricBackCanvas);
-  // };
-
   const handleBackButtonClick = () => {
     setIsBackView(true); // Switch to back view
   };
@@ -277,60 +184,6 @@ export default function AddDesignC() {
   const handleFrontButtonClick = () => {
     setIsBackView(false); // Switch to front view
   };
-
-  // const initializeCanvasTwo = () => {
-  //   if (canvasTwo) {
-  //     canvasTwo.dispose(); // Dispose the previous canvas before initializing a new one
-  //   }
-
-  //   if (backCanvas) {
-  //     backCanvas.dispose(); // Dispose of the previous canvas before initializing a new one
-  //   }
-  //   if (canvas) {
-  //     canvas.dispose(); // Dispose of the previous canvas before initializing a new one
-  //   }
-
-  //   // Initialize the Fabric.js canvas
-  //   const fabricTwoCanvas = new Canvas(canvasTwoRef.current, {
-  //     width: 200,
-  //     height: 200,
-  //     selection: false,
-  //   });
-
-  //   // Ensure the canvas is initialized before proceeding
-  //   if (!fabricTwoCanvas) return;
-
-  //   const colorToUse = hoveredColor || selectedColor;
-  //   const mockupImg = new Image();
-  //   mockupImg.src = colorMockups[colorToUse]; // Use the selected or hovered color to set the mockup image
-
-  //   // Wait until the mockup image is fully loaded before adding it to the canvas
-  //   mockupImg.onload = () => {
-  //     if (!fabricTwoCanvas) return; // Check again to ensure the canvas exists
-
-  //     // Clear the previous canvas contents, if any
-  //     fabricTwoCanvas.clear();
-
-  //     // Add the new mockup image to the canvas
-  //     const fabricImg = new FabricImage(mockupImg);
-  //     fabricImg.set({
-  //       left: 0,
-  //       top: 0,
-  //       scaleX: fabricTwoCanvas.width / mockupImg.width, // Scale to fit the canvas width
-  //       scaleY: fabricTwoCanvas.height / mockupImg.height, // Scale to fit the canvas height
-  //       selectable: false, // Lock the image so it can't be resized or moved
-  //       evented: false, // Disable events for this image
-  //     });
-
-  //     fabricTwoCanvas.add(fabricImg); // Add mockup image as the base
-  //     fabricTwoCanvas.renderAll(); // Ensure the image is rendered immediately
-
-  //     // After adding the mockup, add the design image on top of it
-  //     addDesignToCanvasTwo(fabricTwoCanvas); // Re-add the design image with the saved size and position
-  //   };
-
-  //   setCanvasTwo(fabricTwoCanvas); // Set the canvas state
-  // };
 
   const addDesignToCanvas = (fabricCanvas) => {
     if (fabricCanvas && designImage) {
@@ -516,14 +369,6 @@ export default function AddDesignC() {
     }
   }, [canvas, selectedColor, hoveredColor, designImage]);
 
-  const SPINNER_SVG_DATAURI =
-    "data:image/svg+xml;utf8," +
-    encodeURIComponent(`
-<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 50 50">
-  <circle cx="25" cy="25" r="20" stroke="#3b82f6" stroke-width="5" fill="none" opacity="0.2"/>
-  <path fill="none" stroke="#3b82f6" stroke-width="5"
-        d="M25 5 a20 20 0 0 1 0 40"/>
-</svg>`);
   // Add a spinner to the canvas during loading
   const addSpinnerToCanvas = (fabricCanvas) => {
     // Ensure spinner doesn't already exist
@@ -600,6 +445,7 @@ export default function AddDesignC() {
       });
     }
   }, [backCanvas]);
+
   useEffect(() => {
     if (!canvas) return;
 
@@ -612,6 +458,7 @@ export default function AddDesignC() {
       // addDesignToCanvas(canvas);
     }
   }, [isLoading, designImage, canvas, canvasTwo]);
+
   useEffect(() => {
     if (!backCanvas) return;
 
@@ -631,17 +478,6 @@ export default function AddDesignC() {
   const handleHoverColor = (color) => {
     setHoveredColor(color); // Set hovered color
   };
-
-  useEffect(() => {
-    if (designImage) {
-      addDesignToCanvas(); // Add the uploaded design to the canvas
-    }
-  }, [designImage]);
-  useEffect(() => {
-    if (designBack) {
-      addDesignToBackCanvas(); // Add the uploaded design to the canvas
-    }
-  }, [designBack]);
 
   const handleMouseLeave = () => {
     setHoveredColor(null);
@@ -940,11 +776,18 @@ export default function AddDesignC() {
                             onMouseEnter={() => handleHoverColor("green")} // Hover effect
                             onMouseLeave={() => handleHoverColor(null)}
                           ></span>
-                          <span className='color teal'></span>
-                          <span className='color red'></span>
-                          <span className='color blue'></span>
-                          <span className='color light-blue'></span>
-                          <span className='color light-gray'></span>
+                          <span
+                            className='color teal'
+                            onClick={() => handleColorChange("teal")}
+                            onMouseEnter={() => handleHoverColor("teal")} // Hover effect
+                            onMouseLeave={() => handleHoverColor(null)}
+                          ></span>
+                          <span
+                            className='color red'
+                            onClick={() => handleColorChange("red")}
+                            onMouseEnter={() => handleHoverColor("red")} // Hover effect
+                            onMouseLeave={() => handleHoverColor(null)}
+                          ></span>
                         </div>
                       </div>
 

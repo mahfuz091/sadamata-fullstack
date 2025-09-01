@@ -237,3 +237,29 @@ h2.terms-section-title {
   max-width: 190px;
   min-width: 80px;
 }
+
+.tag-container {
+  display: flex;
+  padding: 2px 8px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border-radius: 100px;
+  background: var(--secondary-colors-03-for-bg, #f7f8fa);
+}
+.tag-container p {
+  color: var(--Neutral-Colors-02, #585d64);
+  text-align: center;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: -0.08px;
+  margin: 0;
+}
+.tag-container .tag-icon {
+  cursor: pointer;
+  background: none;
+  outline: none;
+  border: none;
+}

@@ -1,123 +1,226 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import image from "@/assets/images/products/product-d-4-1.png";
-
-import item1 from "@/assets/images/products/product-4-1.png";
-import item2 from "@/assets/images/products/product-4-1.png";
-import item3 from "@/assets/images/products/product-4-1.png";
-import item4 from "@/assets/images/products/product-4-1.png";
-import item5 from "@/assets/images/products/product-4-1.png";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import Responsive from "./responsive";
-import CustomSelect from "../CustomSelect/CustomSelect";
+import { useEffect, useRef, useState } from "react";
+import { Canvas, FabricImage } from "fabric";
 import DashSidebar from "../DashSidebar/DashSidebar";
 
-var settings = {
-  dots: true,
-  infinite: false,
-  speed: 300,
-  slidesToShow: 4,
-  slidesToScroll: 4,
-  initialSlide: 0,
-  responsive: [
-    {
-      breakpoint: 1024,
-      settings: {
-        slidesToShow: 3,
-        slidesToScroll: 3,
-        dots: true,
-      },
-    },
-    {
-      breakpoint: 600,
-      settings: {
-        slidesToShow: 2,
-        slidesToScroll: 2,
-        dots: true,
-      },
-    },
-    {
-      breakpoint: 480,
-      settings: {
-        slidesToShow: 1,
-        slidesToScroll: 1,
-      },
-    },
-  ],
-};
-
-const products = [
-  {
-    id: 1,
-    brand: "Disney",
-    title: "Disney The Lion King Scar I'm Surrounded T-Shirt",
-    price: "$17.95",
-    rating: 4.9,
-    reviews: 65,
-    image: item1,
-  },
-  {
-    id: 2,
-    brand: "Disney",
-    title: "Disney The Lion King Scar I'm Surrounded T-Shirt",
-    price: "$17.95",
-    rating: 4.9,
-    reviews: 65,
-    image: item2,
-  },
-  {
-    id: 3,
-    brand: "Disney",
-    title: "Disney The Lion King Scar I'm Surrounded T-Shirt",
-    price: "$17.95",
-    rating: 4.9,
-    reviews: 65,
-    image: item3,
-  },
-  {
-    id: 4,
-    brand: "Disney",
-    title: "Disney The Lion King Scar I'm Surrounded T-Shirt",
-    price: "$17.95",
-    rating: 4.9,
-    reviews: 65,
-    image: item4,
-  },
-  {
-    id: 5,
-    brand: "Disney",
-    title: "Disney The Lion King Scar I'm Surrounded T-Shirt",
-    price: "$17.95",
-    rating: 4.9,
-    reviews: 65,
-    image: item5,
-  },
-  // Add more product objects here
-];
+import item1 from "@/assets/images/products/product-4-1.png";
 
 export default function AddDesign() {
+  const [isLoading, setIsLoading] = useState(false); // Loading state
   const [fileName, setFileName] = useState("");
-  const [charCount, setCharCount] = useState(200);
+  const [backFileName, setBackFileName] = useState("");
+  const [designImage, setDesignImage] = useState(null);
+  const [designBack, setDesignBack] = useState(null);
+  const [selectedColor, setSelectedColor] = useState("black");
+  const [hoveredColor, setHoveredColor] = useState(null);
+  const [canvas, setCanvas] = useState(null);
+  const [canvasTwo, setCanvasTwo] = useState(null);
+  const [backCanvas, setBackCanvas] = useState(null);
+  const [designPosition, setDesignPosition] = useState({ x: 100, y: 100 });
+  const [designSize, setDesignSize] = useState({ width: 200, height: 200 });
+  const [isBackView, setIsBackView] = useState(false);
+  const [isBackLoading, setIsBackLoading] = useState(false);
 
+  const canvasRef = useRef(null);
+  const canvasTwoRef = useRef(null);
+  const canvasBackRef = useRef(null);
+
+  const products = [
+    {
+      id: 1,
+      brand: "Disney",
+      title: "T-Shirt",
+      price: "$17.95",
+      rating: 4.9,
+      reviews: 65,
+      image: item1,
+      ref: canvasTwoRef,
+    },
+  ];
+
+  const colorMockups = {
+    black: "/mockup.png",
+    green: "/mockup-2.png",
+    teal: "/mockup.png",
+    red: "/mockup-2.png",
+    blue: "/mockup.png",
+    lightBlue: "/mockup-2.png",
+    lightGray: "/mockup.png",
+  };
+
+  // -------------------------
+  // File upload handlers
+  // -------------------------
   const handleFileChange = (e) => {
     if (e.target.files[0]) {
-      setFileName(e.target.files[0].name);
+      const file = e.target.files[0];
+      setFileName(file.name);
+      const reader = new FileReader();
+      reader.onloadend = () => setDesignImage(reader.result);
+      reader.readAsDataURL(file);
     }
   };
 
-  const handleKeywordChange = (e) => {
-    setCharCount(200 - e.target.value.length);
+  const handleBackFileChange = (e) => {
+    if (e.target.files[0]) {
+      const file = e.target.files[0];
+      setBackFileName(file.name);
+      const reader = new FileReader();
+      reader.onloadend = () => setDesignBack(reader.result);
+      reader.readAsDataURL(file);
+    }
   };
-  const options = [
-    { value: "chocolate", label: "Marketplace: All" },
-    { value: "strawberry", label: "Marketplace: All" },
-    { value: "vanilla", label: "Marketplace: All" },
-  ];
+
+  // -------------------------
+  // Initialize canvases once
+  // -------------------------
+  useEffect(() => {
+    if (canvasRef.current) {
+      const c = new Canvas(canvasRef.current, {
+        width: 400,
+        height: 400,
+        selection: false,
+      });
+      setCanvas(c);
+      return () => c.dispose();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (canvasBackRef.current) {
+      const c = new Canvas(canvasBackRef.current, {
+        width: 400,
+        height: 400,
+        selection: false,
+      });
+      setBackCanvas(c);
+      return () => c.dispose();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (canvasTwoRef.current) {
+      const c = new Canvas(canvasTwoRef.current, {
+        width: 200,
+        height: 200,
+        selection: false,
+      });
+      setCanvasTwo(c);
+      return () => c.dispose();
+    }
+  }, []);
+
+  // -------------------------
+  // Update canvas content
+  // -------------------------
+  const updateCanvasMockup = (
+    fabricCanvas,
+    mockupSrc,
+    designSrc,
+    isPreview = false
+  ) => {
+    if (!fabricCanvas) return;
+    const mockupImg = new Image();
+    mockupImg.src = mockupSrc;
+    mockupImg.onload = () => {
+      fabricCanvas.clear();
+
+      const base = new FabricImage(mockupImg, {
+        selectable: false,
+        evented: false,
+      });
+      base.scaleToWidth(fabricCanvas.width);
+      base.scaleToHeight(fabricCanvas.height);
+      fabricCanvas.add(base);
+
+      if (designSrc) {
+        const designImg = new Image();
+        designImg.src = designSrc;
+        designImg.onload = () => {
+          const img = new FabricImage(designImg);
+          if (isPreview) {
+            const targetWidth = 80;
+            const targetHeight = 80;
+            img.set({
+              left: (fabricCanvas.width - targetWidth) / 2,
+              top: (fabricCanvas.height - targetHeight) / 2,
+              scaleX: targetWidth / designImg.width,
+              scaleY: targetHeight / designImg.height,
+              hasControls: true,
+              lockUniScaling: true,
+            });
+          } else {
+            img.set({
+              left: designPosition.x,
+              top: designPosition.y,
+              scaleX: designSize.width / designImg.width,
+              scaleY: designSize.height / designImg.height,
+              hasControls: true,
+              lockUniScaling: true,
+            });
+          }
+          fabricCanvas.add(img);
+          fabricCanvas.renderAll();
+        };
+      } else {
+        fabricCanvas.renderAll();
+      }
+    };
+  };
+
+  // Front canvas
+  useEffect(() => {
+    if (canvas) {
+      updateCanvasMockup(
+        canvas,
+        colorMockups[hoveredColor || selectedColor],
+        designImage
+      );
+    }
+  }, [canvas, selectedColor, hoveredColor, designImage]);
+
+  // Back canvas
+  useEffect(() => {
+    if (backCanvas) {
+      updateCanvasMockup(backCanvas, "/mockup-2.png", designBack);
+    }
+  }, [backCanvas, designBack]);
+
+  // Preview canvas
+  useEffect(() => {
+    if (canvasTwo) {
+      updateCanvasMockup(
+        canvasTwo,
+        colorMockups[hoveredColor || selectedColor],
+        designImage,
+        true
+      );
+    }
+  }, [canvasTwo, selectedColor, hoveredColor, designImage]);
+
+  // -------------------------
+  // Color & View handlers
+  // -------------------------
+  const handleColorChange = (color) => setSelectedColor(color);
+  const handleHoverColor = (color) => setHoveredColor(color);
+  const handleMouseLeave = () => setHoveredColor(null);
+  const handleBackButtonClick = () => setIsBackView(true);
+  const handleFrontButtonClick = () => setIsBackView(false);
+
+  // -------------------------
+  // Save image
+  // -------------------------
+  const saveImage = () => {
+    if (canvas) {
+      const dataURL = canvas.toDataURL({ format: "png", quality: 1.0 });
+      const link = document.createElement("a");
+      link.href = dataURL;
+      link.download = "design_with_mockup.png";
+      link.click();
+    }
+  };
+
   return (
     <section className='dashboard-area section-space'>
       <div className='container'>
@@ -151,34 +254,59 @@ export default function AddDesign() {
                           hidden
                           onChange={handleFileChange}
                         />
-                        <div className='image-upload__icon'>
-                          {/* SVG icon here */}
-                          <svg
-                            xmlns='http://www.w3.org/2000/svg'
-                            width='60'
-                            height='60'
-                            viewBox='0 0 60 60'
-                            fill='none'
+                        {/* Show spinner while loading */}
+                        {isLoading ? (
+                          <div
+                            className='spinner-border text-primary'
+                            role='status'
                           >
-                            <path
-                              d='M49.9908 22.055C47.2178 11.008 36.0146 4.30066 24.9676 7.07371C16.3346 9.24086 10.0661 16.7022 9.42027 25.5795C3.29051 26.5903 -0.859227 32.3789 0.151639 38.5086C1.05025 43.9581 5.77216 47.9489 11.2951 47.927H20.669V44.1774H11.2951C7.15341 44.1774 3.79589 40.8199 3.79589 36.6783C3.79589 32.5366 7.15341 29.1791 11.2951 29.1791C12.3305 29.1791 13.1699 28.3397 13.1699 27.3043C13.1605 17.9855 20.7074 10.4235 30.0261 10.4142C38.0929 10.4062 45.037 16.1091 46.5975 24.0234C46.7515 24.8136 47.3928 25.4173 48.191 25.5232C53.3165 26.2531 56.8797 30.9997 56.1499 36.1251C55.4945 40.7275 51.565 44.1542 46.9162 44.1774H39.417V47.927H46.9162C54.1641 47.9051 60.0219 42.0117 59.9999 34.7637C59.9816 28.7304 55.8519 23.4867 49.9908 22.055Z'
-                              fill='black'
+                            <span className='visually-hidden'>Loading...</span>
+                          </div>
+                        ) : (
+                          // Display image after upload is complete
+                          designImage && (
+                            <img
+                              src={designImage}
+                              alt='Uploaded Design'
+                              width={200}
+                              height={200}
                             />
-                            <path
-                              d='M28.7118 29.7229L21.2126 37.2221L23.8561 39.8656L28.1681 35.5723V53.5516H31.9177V35.5723L36.211 39.8656L38.8545 37.2221L31.3553 29.7229C30.624 28.996 29.4431 28.996 28.7118 29.7229Z'
-                              fill='black'
-                            />
-                          </svg>
-                        </div>
-                        <span className='file-name'>{fileName}</span>
-                        <div className='image-upload__text-box'>
-                          <h3 className='image-upload__title'>
-                            Drag and drop artwork here
-                          </h3>
-                          <p className='image-upload__text'>
-                            or Click to browse for a file
-                          </p>
-                        </div>
+                          )
+                        )}
+                        {designImage ? (
+                          ""
+                        ) : (
+                          <>
+                            <div className='image-upload__icon'>
+                              {/* SVG icon here */}
+                              <svg
+                                xmlns='http://www.w3.org/2000/svg'
+                                width='60'
+                                height='60'
+                                viewBox='0 0 60 60'
+                                fill='none'
+                              >
+                                <path
+                                  d='M49.9908 22.055C47.2178 11.008 36.0146 4.30066 24.9676 7.07371C16.3346 9.24086 10.0661 16.7022 9.42027 25.5795C3.29051 26.5903 -0.859227 32.3789 0.151639 38.5086C1.05025 43.9581 5.77216 47.9489 11.2951 47.927H20.669V44.1774H11.2951C7.15341 44.1774 3.79589 40.8199 3.79589 36.6783C3.79589 32.5366 7.15341 29.1791 11.2951 29.1791C12.3305 29.1791 13.1699 28.3397 13.1699 27.3043C13.1605 17.9855 20.7074 10.4235 30.0261 10.4142C38.0929 10.4062 45.037 16.1091 46.5975 24.0234C46.7515 24.8136 47.3928 25.4173 48.191 25.5232C53.3165 26.2531 56.8797 30.9997 56.1499 36.1251C55.4945 40.7275 51.565 44.1542 46.9162 44.1774H39.417V47.927H46.9162C54.1641 47.9051 60.0219 42.0117 59.9999 34.7637C59.9816 28.7304 55.8519 23.4867 49.9908 22.055Z'
+                                  fill='black'
+                                />
+                                <path
+                                  d='M28.7118 29.7229L21.2126 37.2221L23.8561 39.8656L28.1681 35.5723V53.5516H31.9177V35.5723L36.211 39.8656L38.8545 37.2221L31.3553 29.7229C30.624 28.996 29.4431 28.996 28.7118 29.7229Z'
+                                  fill='black'
+                                />
+                              </svg>
+                            </div>
+                            <span className='file-name'>{fileName}</span>
+                            <div className='image-upload__text-box'>
+                              <h3 className='image-upload__title'>
+                                Drag and drop artwork here
+                              </h3>
+                              <p className='image-upload__text'>
+                                or Click to browse for a file
+                              </p>
+                            </div>
+                          </>
+                        )}
                       </label>
                     </div>
                   </form>
@@ -208,43 +336,36 @@ export default function AddDesign() {
                   </div>
                 </div>
               </div>
-
-              {/* Product Slider Placeholder (use react-slick or similar if dynamic) */}
-              <div className='product-category-list'>
-                <div className=''>
-                  <Slider
-                    {...settings}
-                    className='product-slider__carousel commerce-slick__carousel'
-                  >
-                    {products.map((item, index) => (
-                      <div className='item' key={index}>
-                        <div className='product__item-two'>
-                          <div className='product__item-two__img'>
-                            <a
-                              href='#'
-                              className='product__item-two__img__item'
-                            >
-                              <Image src={item.image} alt='product image' />
-                            </a>
-                          </div>
-                          <div className='product__item-two__content'>
-                            <h4 className='product__item-two__title'>
-                              <a href='product-details'>{item.title}</a>
-                            </h4>
-
-                            <a
-                              href='cart'
-                              className='commerce-btn product__item-two__link'
-                            >
-                              Edit Details <i className='icon-right-arrow'></i>
-                            </a>
-                          </div>
-                        </div>
+              <div className='product-category-list d-flex overflow-x-auto'>
+                {products.map((item, index) => (
+                  <div className='item' key={index}>
+                    <div className='product__item-two'>
+                      <div className='product__item-two__img'>
+                        <a href='#' className='product__item-two__img__item'>
+                          <canvas
+                            ref={item.ref}
+                            style={{
+                              border: "1px solid #ddd",
+                              position: "relative",
+                            }}
+                          ></canvas>
+                        </a>
                       </div>
-                    ))}
-                  </Slider>
-                  {/* <Responsive /> */}
-                </div>
+                      <div className='product__item-two__content'>
+                        <h4 className='product__item-two__title'>
+                          <a href='product-details'>{item.title}</a>
+                        </h4>
+
+                        <a
+                          href='cart'
+                          className='commerce-btn product__item-two__link'
+                        >
+                          Edit Details <i className='icon-right-arrow'></i>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
 
               {/* Product Preview Section */}
@@ -253,17 +374,51 @@ export default function AddDesign() {
                 <div className='row gutter-x-30 gutter-y-30'>
                   <div className='col-lg-6'>
                     <div className='product-preview-panel__view-toggle'>
-                      <button className='toggle-btn active'>Front</button>
-                      <button className='toggle-btn'>Back</button>
+                      <button
+                        className={`toggle-btn ${!isBackView ? "active" : ""}`}
+                        onClick={handleFrontButtonClick}
+                      >
+                        Front
+                      </button>
+                      <button
+                        className={`toggle-btn ${isBackView ? "active" : ""}`}
+                        onClick={handleBackButtonClick}
+                      >
+                        Back
+                      </button>
                     </div>
-                    <div className='product-preview-panel__product-image'>
-                      <Image
-                        src={image}
-                        alt='T-shirt Preview'
-                        width={400}
-                        height={400}
-                      />
-                    </div>
+
+                    {isBackView ? (
+                      <label htmlFor='backimage-upload'>
+                        <canvas
+                          ref={canvasBackRef}
+                          className={`front ${isBackView ? "" : "d-none"}`}
+                          style={{
+                            border: "1px solid #ddd",
+                            position: "relative",
+                          }}
+                        ></canvas>
+                        <input
+                          type='file'
+                          id='backimage-upload'
+                          className='file-upload__input'
+                          hidden
+                          onChange={handleBackFileChange}
+                          disabled={designBack} // Disable input if design is added
+                        />
+                      </label>
+                    ) : (
+                      <div>
+                        <canvas
+                          ref={canvasRef}
+                          className={`front ${isBackView ? "d-none" : ""}`}
+                          style={{
+                            border: "1px solid #ddd",
+                            position: "relative",
+                          }}
+                        ></canvas>
+                      </div>
+                    )}
                   </div>
                   <div className='col-lg-6'>
                     <div className='product-preview-panel__product-options'>
@@ -272,7 +427,11 @@ export default function AddDesign() {
                           Choose fit types:
                         </p>
                         <label className='fit-checkbox'>
-                          <input type='checkbox' checked />
+                          <input
+                            type='checkbox'
+                            checked={true} // or false depending on your use case
+                            readOnly
+                          />
                           <span className='custom-check'></span>
                           Men
                         </label>
@@ -295,8 +454,18 @@ export default function AddDesign() {
                           Choose colors:
                         </p>
                         <div className='color-options'>
-                          <span className='color black'></span>
-                          <span className='color green'></span>
+                          <span
+                            className='color black'
+                            onClick={() => handleColorChange("black")}
+                            onMouseEnter={() => handleHoverColor("black")} // Hover effect
+                            onMouseLeave={handleMouseLeave}
+                          ></span>
+                          <span
+                            className='color green'
+                            onClick={() => handleColorChange("green")}
+                            onMouseEnter={() => handleHoverColor("green")} // Hover effect
+                            onMouseLeave={() => handleHoverColor(null)}
+                          ></span>
                           <span className='color teal'></span>
                           <span className='color red'></span>
                           <span className='color blue'></span>
@@ -307,9 +476,13 @@ export default function AddDesign() {
 
                       <div className='product-preview-panel__price-input-field'>
                         <label className='product-preview-panel__label'>
-                          Price
+                          Price (Minimum BDT 500):
                         </label>
-                        <input type='text' placeholder='BDT 0.00' />
+                        <input
+                          type='text'
+                          placeholder='BDT 0.00'
+                          defaultValue={500}
+                        />
                       </div>
                     </div>
                   </div>
@@ -357,7 +530,7 @@ export default function AddDesign() {
                         </div>
                         <div className='form-control-two'>
                           <label htmlFor='name'>Select Brand</label>
-                          <CustomSelect options={options} />
+                          {/* <CustomSelect options={options} /> */}
 
                           <input
                             type='text'
@@ -435,7 +608,7 @@ export default function AddDesign() {
                         type='text'
                         id='tagInput'
                         className='tag-input'
-                        maxlength='200'
+                        maxLength='200'
                       />
                     </div>
                     <p className='char-limit' id='charLimit'>
@@ -472,7 +645,7 @@ export default function AddDesign() {
                             name='searchability'
                             value='non-searchable'
                             className='sr-only'
-                            checked=''
+                            readOnly
                           />
                           <span className='custom-radio-circle'></span>
                           <div className='availability__item__content'>
@@ -504,7 +677,6 @@ export default function AddDesign() {
                             name='searchability'
                             value='non-searchable'
                             className='sr-only'
-                            checked=''
                           />
                           <span className='custom-radio-circle'></span>
                           <div className='availability__item__content'>

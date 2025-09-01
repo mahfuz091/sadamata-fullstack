@@ -23,9 +23,9 @@ model User {
   role      Role     @default(USER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
+  isActive  Boolean  @default(true)
   // A user can create many brands (if their role is 'BRAND')
-  brands Brand[] @relation("UserBrands") // Add this to complete the relation
+  brands    Brand[]  @relation("UserBrands") // Add this to complete the relation
 }
 
 model Brand {
@@ -36,11 +36,9 @@ model Brand {
   updatedAt       DateTime      @updatedAt
   brandCategory   BrandCategory @relation(fields: [brandCategoryId], references: [id])
   brandCategoryId String
-
-  subBrands SubBrand[]
-
-  user   User   @relation("UserBrands", fields: [userId], references: [id])
-  userId String
+  user            User          @relation("UserBrands", fields: [userId], references: [id])
+  userId          String
+  Product         Product[]
 }
 
 model BrandCategory {
@@ -48,19 +46,46 @@ model BrandCategory {
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  Brand Brand[] // One-to-many relation with Brand
+  Brand     Brand[] // One-to-many relation with Brand
 }
 
-model SubBrand {
-  id        String   @id @default(uuid()) // Changed to UUID
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Product {
+  id          String   @id @default(uuid()) // Changed to UUID
+  title       String
+  description String?
+  designFront String[]
+  designBack  String[]
+  feature     String[]
+  price       Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  tags        String[]
+  // Product belongs to a Brand
+  BrandName   String?
+  BrandId     String?
+  Brand       Brand?   @relation(fields: [BrandId], references: [id])
+  MockupId    String
+  Mockup      Mockup   @relation(fields: [MockupId], references: [id])
+}
 
-  // SubBrand belongs to a Brand
-  brandId String
-  brand   Brand  @relation(fields: [brandId], references: [id])
+model Mockup {
+  id        String          @id @default(uuid()) // Changed to UUID
+  name      String
+  variants  MockupVariant[] // one row per color
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  Product   Product[]
+}
+
+model MockupVariant {
+  id       String  @id @default(uuid())
+  mockupId String
+  mockup   Mockup  @relation(fields: [mockupId], references: [id], onDelete: Cascade)
+  color    String  @db.VarChar(24) // e.g. "black", "green"
+  frontImg String // single image per color (front)
+  backImg  String? // optional: single back image
+
+  @@unique([mockupId, color]) // one row per (mockup, color)
 }
 
 enum Role {

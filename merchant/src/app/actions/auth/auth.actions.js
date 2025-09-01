@@ -71,6 +71,7 @@ export async function registerUser(formData) {
         name,
         password: hashedPassword, // Store hashed password
         role,
+        isActive, // Set the isActive status based on role
       },
     });
 
@@ -103,12 +104,29 @@ export const loginUser = async (prevState, formData) => {
   // Find user (email OR phone)
   const user = await prisma.user.findFirst({
     where: {
-      OR: [{ email: identifier }, { phone: identifier }],
+      AND: [
+        { OR: [{ email: identifier }, { phone: identifier }] },
+        { role: "MERCH" },
+      ],
     },
   });
 
+  console.log(user, "user");
+
   if (!user) {
     return { success: false, message: "User not found" };
+  }
+  if (!user.isActive) {
+    return {
+      success: false,
+      message: "Your account is not active. Please contact support.",
+    };
+  }
+  if (user.role !== "MERCH") {
+    return {
+      success: false,
+      message: "You are not authorized to access this portal.",
+    };
   }
 
   const isPasswordValid = await bcrypt.compare(password, user.password);

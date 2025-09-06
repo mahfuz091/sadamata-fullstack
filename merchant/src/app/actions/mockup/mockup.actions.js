@@ -21,30 +21,45 @@ async function saveFile(file, fieldName) {
   return `/uploads/${filename}`;
 }
 
-// Create new Mockup with one Variant
+
+// Create new Mockup with Variants
 export async function createMockup(formData) {
   const name = formData.get("name");
-  const color = formData.get("color");
-  const frontImg = formData.get("frontImg"); // this is a File object
-  const backImg = formData.get("backImg"); // this is a File object
 
-  const frontImgUrl = await saveFile(frontImg, "frontImg");
-  const backImgUrl =
-    backImg && backImg.size > 0 ? await saveFile(backImg, "backImg") : null;
+  const variants = [];
+  let index = 0;
+
+  while (formData.get(`variants[${index}][color]`)) {
+    const color = formData.get(`variants[${index}][color]`);
+    const fitType = formData.get(`variants[${index}][fitType]`);
+    const frontImg = formData.get(`variants[${index}][frontImg]`);
+    const backImg = formData.get(`variants[${index}][backImg]`);
+
+    const frontImgUrl =
+      frontImg && frontImg.size > 0 ? await saveFile(frontImg, "frontImg") : null;
+    const backImgUrl =
+      backImg && backImg.size > 0 ? await saveFile(backImg, "backImg") : null;
+
+    variants.push({
+      color,
+      fitType,
+      frontImg: frontImgUrl,
+      backImg: backImgUrl,
+    });
+
+    index++;
+  }
 
   const mockup = await prisma.mockup.create({
     data: {
       name,
       variants: {
-        create: {
-          color,
-          frontImg: frontImgUrl,
-          backImg: backImgUrl,
-        },
+        create: variants,
       },
     },
     include: { variants: true },
   });
+
   return mockup;
 }
 
@@ -52,11 +67,13 @@ export async function createMockup(formData) {
 export async function updateVariant(formData) {
   const id = formData.get("id");
   const color = formData.get("color");
+  const fitType = formData.get("fitType");
   const frontImg = formData.get("frontImg");
   const backImg = formData.get("backImg");
 
   const updateData = {};
   if (color) updateData.color = color;
+  if (fitType) updateData.fitType = fitType;
   if (frontImg && frontImg.size > 0)
     updateData.frontImg = await saveFile(frontImg, "frontImg");
   if (backImg && backImg.size > 0)
@@ -79,3 +96,4 @@ export async function deleteVariant(id) {
 export async function getAllMockups() {
   return await prisma.mockup.findMany({ include: { variants: true } });
 }
+

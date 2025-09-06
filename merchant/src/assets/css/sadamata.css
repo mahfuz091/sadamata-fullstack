@@ -7214,11 +7214,13 @@ body.megamenu-popup-active .mobile-nav__content {
 
 .dashboard-area__uplode + .product-category-list {
   margin-top: 30px;
+
+  margin-bottom: 30px;
 }
 
-.product-category-list + .product-preview-panel {
+/* .product-category-list + .product-preview-panel {
   margin-top: 30px;
-}
+} */
 
 .product-preview-panel + .product-details__form {
   margin-top: 30px;
@@ -7464,6 +7466,9 @@ body.megamenu-popup-active .mobile-nav__content {
   display: block;
   border-radius: 50%;
   cursor: pointer;
+}
+.product-preview-panel__color-chooser .color-options .color{
+  background: var(--accent-color);
 }
 .product-preview-panel__color-chooser .color-options .color.black {
   background: #000;

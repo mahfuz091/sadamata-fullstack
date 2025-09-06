@@ -15,17 +15,19 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid()) // Changed to UUID
-  email     String?  @unique
-  phone     String?  @unique
+  id        String    @id @default(uuid()) // Changed to UUID
+  email     String?   @unique
+  phone     String?   @unique
   name      String
   password  String
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  isActive  Boolean  @default(true)
+  role      Role      @default(USER)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  isActive  Boolean   @default(true)
   // A user can create many brands (if their role is 'BRAND')
-  brands    Brand[]  @relation("UserBrands") // Add this to complete the relation
+  brands    Brand[]   @relation("UserBrands") // Add this to complete the relation
+  products  Product[]
+  sales     Sale[]    @relation("MerchantSales")
 }
 
 model Brand {
@@ -39,6 +41,12 @@ model Brand {
   user            User          @relation("UserBrands", fields: [userId], references: [id])
   userId          String
   Product         Product[]
+
+  Sales Sale[] @relation("BrandSales")
+
+  // Default commission settings for this brand
+  defaultBrandPct    Float @default(10.0) // brand share
+  defaultMerchantPct Float @default(10.0) // merchant share
 }
 
 model BrandCategory {
@@ -50,42 +58,123 @@ model BrandCategory {
 }
 
 model Product {
-  id          String   @id @default(uuid()) // Changed to UUID
+  id          String   @id @default(uuid())
   title       String
   description String?
-  designFront String[]
-  designBack  String[]
-  feature     String[]
   price       Float
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  tags        String[]
-  // Product belongs to a Brand
-  BrandName   String?
-  BrandId     String?
-  Brand       Brand?   @relation(fields: [BrandId], references: [id])
-  MockupId    String
-  Mockup      Mockup   @relation(fields: [MockupId], references: [id])
+  isActive    Boolean  @default(false)
+  // Brand handling
+
+  brandName String?
+  brandId   String?
+  Brand     Brand?  @relation(fields: [brandId], references: [id])
+
+  // Relations
+  features Feature[]
+  tags     Tag[]
+  mockupId String
+  Mockup   Mockup           @relation(fields: [mockupId], references: [id])
+  variants ProductVariant[] // <-- each product has multiple variants
+
+  userId String
+  User   User   @relation(fields: [userId], references: [id])
+
+  visibility Boolean @default(true)
+
+  // New: commission % settings
+  brandCommissionPct    Float? // % goes to brand (if Brand attached)
+  merchantCommissionPct Float? // % goes to merchant on each sale
+
+  sales Sale[] // track product sales
+}
+
+model Sale {
+  id        String  @id @default(uuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  merchantId String
+  merchant   User   @relation("MerchantSales", fields: [merchantId], references: [id])
+
+  brandId String? // null if product had no brand
+  brand   Brand?  @relation("BrandSales", fields: [brandId], references: [id])
+
+  quantity Int   @default(1)
+  total    Float // total sale amount
+
+  // Earnings
+  brandEarning    Float    @default(0)
+  merchantEarning Float    @default(0)
+  platformEarning Float    @default(0)
+  createdAt       DateTime @default(now())
+}
+
+model ProductVariant {
+  id        String  @id @default(uuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  color   String
+  fitType FitType
+  price   Float?
+
+  images ProductImage[] // <-- store multiple variant-specific images
+}
+
+model ProductImage {
+  id        String         @id @default(uuid())
+  variantId String
+  variant   ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+  type ImageType // e.g. FRONT, BACK, SIDE, ZOOM
+  url  String
+}
+
+model Feature {
+  id        String @id @default(uuid())
+  productId String
+  content   String
+
+  product Product @relation(fields: [productId], references: [id])
+}
+
+model Tag {
+  id        String @id @default(uuid())
+  productId String
+  value     String
+
+  product Product @relation(fields: [productId], references: [id])
 }
 
 model Mockup {
-  id        String          @id @default(uuid()) // Changed to UUID
+  id        String          @id @default(uuid())
   name      String
-  variants  MockupVariant[] // one row per color
+  variants  MockupVariant[] // one row per (color, fitType)
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
   Product   Product[]
 }
 
 model MockupVariant {
-  id       String  @id @default(uuid())
+  id       String @id @default(uuid())
   mockupId String
-  mockup   Mockup  @relation(fields: [mockupId], references: [id], onDelete: Cascade)
-  color    String  @db.VarChar(24) // e.g. "black", "green"
-  frontImg String // single image per color (front)
-  backImg  String? // optional: single back image
+  mockup   Mockup @relation(fields: [mockupId], references: [id], onDelete: Cascade)
 
-  @@unique([mockupId, color]) // one row per (mockup, color)
+  color   String  @db.VarChar(24) // e.g. "black", "green"
+  fitType FitType // e.g. MEN, WOMEN, YOUTH
+
+  frontImg String // required: front image
+  backImg  String // optional: back image
+
+  @@unique([mockupId, color, fitType]) // one row per (mockup, color, fitType)
+}
+
+enum FitType {
+  MEN
+  WOMEN
+  YOUTH
 }
 
 enum Role {
@@ -93,4 +182,14 @@ enum Role {
   ADMIN
   BRAND // Added the BRAND role
   MERCH
+}
+
+enum Visibility {
+  SEARCHABLE
+  NON_SEARCHABLE
+}
+
+enum ImageType {
+  FRONT
+  BACK
 }

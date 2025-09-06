@@ -263,3 +263,31 @@ h2.terms-section-title {
   outline: none;
   border: none;
 }
+
+.color-option {
+  cursor: pointer;
+  display: inline-block;
+  margin: 5px;
+}
+
+.color-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: inline-block;
+  border: 2px solid #ccc;
+  transition: 0.2s ease;
+}
+
+input[type="radio"]:checked + .color-circle {
+  border: 2px solid black; /* Highlight selected */
+  transform: scale(1.1);
+}
+
+.color-option:hover .color-circle {
+  opacity: 0.8;
+}
+.custom-radio-circle.active {
+    background: #f37927;
+}
+

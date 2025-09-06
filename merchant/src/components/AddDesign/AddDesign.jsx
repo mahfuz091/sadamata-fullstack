@@ -5,6 +5,7 @@ import { Canvas, FabricImage } from "fabric";
 import DashSidebar from "../DashSidebar/DashSidebar";
 
 import item1 from "@/assets/images/products/product-4-1.png";
+import { getAllMockups } from "@/app/actions/mockup/mockup.actions";
 
 export default function AddDesign() {
   const [isLoading, setIsLoading] = useState(false); // Loading state
@@ -25,6 +26,8 @@ export default function AddDesign() {
   const canvasRef = useRef(null);
   const canvasTwoRef = useRef(null);
   const canvasBackRef = useRef(null);
+const allMockup = getAllMockups();
+console.log(allMockup, "mockup");
 
   const products = [
     {

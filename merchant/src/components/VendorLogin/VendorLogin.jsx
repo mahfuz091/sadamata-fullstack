@@ -133,7 +133,7 @@ const VendorLogin = () => {
               <Link href='#'>Forgot your password?</Link>
               <Link href='#'>Other issues with Sign-In</Link>
             </div>
-            <Link href='#'>
+            <Link href='/signup'>
               New to here? <span>Create Account</span>
             </Link>
           </div>

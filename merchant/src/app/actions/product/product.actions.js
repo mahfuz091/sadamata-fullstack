@@ -5,6 +5,7 @@ import fs from "fs/promises";
 import { prisma } from "@/lib/prisma";
 
 const uploadDir = path.join(process.cwd(), "public", "uploads");
+const uploadProductDir = path.join(process.cwd(), "public", "uploads", "product");
 
 // Helper to save uploaded file from FormData
 async function saveFile(file, fieldName) {
@@ -19,81 +20,230 @@ async function saveFile(file, fieldName) {
   await fs.writeFile(filepath, buffer);
   return `/uploads/${filename}`;
 }
+// Helper to save uploaded file from FormData
+async function saveProductFile(file, fieldName) {
+  if (!file) return null;
+  const bytes = await file.arrayBuffer();
+  const buffer = Buffer.from(bytes);
+  const ext = path.extname(file.name) || ".jpg";
+  const filename = `${Date.now()}-${fieldName}${ext}`;
+  const filepath = path.join(uploadProductDir, filename);
+
+  await fs.mkdir(uploadProductDir, { recursive: true });
+  await fs.writeFile(filepath, buffer);
+  return `/uploads/product/${filename}`;
+}
 
 // CREATE PRODUCT
+// export async function createProduct(formData) {
+//   try {
+//     const title = formData.get("title");
+//     const description = formData.get("description");
+//     const price = parseFloat(formData.get("price"));
+//     const brandId = formData.get("brandId") || null;
+//     const brandCommissionPct = formData.get("brandCommissionPct")
+//       ? parseFloat(formData.get("brandCommissionPct"))
+//       : null;
+//     const merchantCommissionPct = formData.get("merchantCommissionPct")
+//       ? parseFloat(formData.get("merchantCommissionPct"))
+//       : null;
+//     const mockupId = formData.get("mockupId");
+//     const userId = formData.get("userId");
+//     const visibility = formData.get("visibility") || "SEARCHABLE";
+
+//     // Handle Variants and Images
+//     const variants = [];
+//     let index = 0;
+
+//     while (formData.get(`variants[${index}][color]`)) {
+//       const color = formData.get(`variants[${index}][color]`);
+//       const fitType = formData.get(`variants[${index}][fitType]`);
+//       const variantPrice = formData.get(`variants[${index}][price]`)
+//         ? parseFloat(formData.get(`variants[${index}][price]`))
+//         : null;
+
+//       // Handle multiple images per variant
+//       const images = [];
+//       let imgIndex = 0;
+//       while (formData.get(`variants[${index}][images][${imgIndex}][type]`)) {
+//         const type = formData.get(`variants[${index}][images][${imgIndex}][type]`);
+//         const file = formData.get(`variants[${index}][images][${imgIndex}][file]`);
+
+//         const url = file && file.size > 0
+//           ? await saveFile(file, `variant${index}-img${imgIndex}`)
+//           : null;
+
+//         if (url) {
+//           images.push({ type, url });
+//         }
+//         imgIndex++;
+//       }
+
+//       variants.push({
+//         color,
+//         fitType,
+//         price: variantPrice,
+//         images: {
+//           create: images,
+//         },
+//       });
+
+//       index++;
+//     }
+
+//     const product = await prisma.product.create({
+//       data: {
+//         title,
+//         description,
+//         price,
+//         brandId,
+//         brandCommissionPct,
+//         merchantCommissionPct,
+//         mockupId,
+//         userId,
+//         visibility,
+//         variants: {
+//           create: variants,
+//         },
+//       },
+//       include: {
+//         variants: { include: { images: true } },
+//         Brand: true,
+//         features: true,
+//         tags: true,
+//         Mockup: true,
+//         User: true,
+//         sales: true,
+//       },
+//     });
+
+//     return {
+//       success: true,
+//       product,
+//       message: "Product created successfully",
+//     };
+//   } catch (error) {
+//     console.error("Error in product creation:", error);
+//     return {
+//       success: false,
+//       message: error.message || "Something went wrong, please try again.",
+//     };
+//   }
+// }
+
 export async function createProduct(formData) {
   try {
     const title = formData.get("title");
     const description = formData.get("description");
     const price = parseFloat(formData.get("price"));
     const brandId = formData.get("brandId") || null;
+    const brandName = formData.get("brandName") || null;
     const brandCommissionPct = formData.get("brandCommissionPct")
       ? parseFloat(formData.get("brandCommissionPct"))
       : null;
     const merchantCommissionPct = formData.get("merchantCommissionPct")
       ? parseFloat(formData.get("merchantCommissionPct"))
       : null;
-    const mockupId = formData.get("mockupId");
-    const userId = formData.get("userId");
-    const visibility = formData.get("visibility") || "SEARCHABLE";
 
-    // Handle Variants and Images
+    const mockupId = formData.get("mockupId") || null; // REQUIRED if relation is required
+    const userId = formData.get("userId") || null; // REQUIRED if relation is required
+    const visibility = (formData.get("visibility") ?? "true") === "true";
+
+    const frontDesignFile = formData.get("frontDesign");
+    const backDesignFile  = formData.get("backDesign");
+
+    const isNonEmptyFile = (f) => f && typeof f.size === "number" && f.size > 0;
+
+    // 2) Save files -> get URLs
+    const frontDesignUrl = isNonEmptyFile(frontDesignFile)
+      ? await saveProductFile(frontDesignFile, "frontDesign") // returns URL string
+      : null;
+
+    const backDesignUrl = isNonEmptyFile(backDesignFile)
+      ? await saveProductFile(backDesignFile, "backDesign")
+      : null;
+
+    // If your Prisma schema requires frontDesign to be non-null:
+    if (!frontDesignUrl) {
+      throw new Error("frontDesign is required (no file uploaded or zero size).");
+    }
+    // ---- arrays from indexed fields
+    const tags = [];
+    const features = [];
+
+    for (const key of formData.keys()) {
+      let m = key.match(/^tags\[(\d+)\]$/);
+      if (m) {
+        const idx = Number(m[1]);
+        tags[idx] = (formData.get(key) || "").toString();
+      }
+      m = key.match(/^features\[(\d+)\]$/);
+      if (m) {
+        const idx = Number(m[1]);
+        features[idx] = (formData.get(key) || "").toString();
+      }
+    }
+    // if your schema requires these relations, fail early
+    if (!mockupId) throw new Error("mockupId is required.");
+    if (!userId) throw new Error("userId is required.");
+
+    // Build variants + nested images
     const variants = [];
     let index = 0;
 
     while (formData.get(`variants[${index}][color]`)) {
       const color = formData.get(`variants[${index}][color]`);
       const fitType = formData.get(`variants[${index}][fitType]`);
-      const variantPrice = formData.get(`variants[${index}][price]`)
-        ? parseFloat(formData.get(`variants[${index}][price]`))
-        : null;
+      const frontImg = formData.get(`variants[${index}][frontImg]`);
+      const backImg = formData.get(`variants[${index}][backImg]`);
 
-      // Handle multiple images per variant
-      const images = [];
-      let imgIndex = 0;
-      while (formData.get(`variants[${index}][images][${imgIndex}][type]`)) {
-        const type = formData.get(`variants[${index}][images][${imgIndex}][type]`);
-        const file = formData.get(`variants[${index}][images][${imgIndex}][file]`);
-
-        const url = file && file.size > 0 
-          ? await saveFile(file, `variant${index}-img${imgIndex}`) 
+      const frontImgUrl =
+        frontImg && frontImg.size > 0
+          ? await saveProductFile(frontImg, "frontImg")
           : null;
-
-        if (url) {
-          images.push({ type, url });
-        }
-        imgIndex++;
-      }
+      const backImgUrl =
+        backImg && backImg.size > 0 ? await saveProductFile(backImg, "backImg") : null;
 
       variants.push({
         color,
         fitType,
-        price: variantPrice,
-        images: {
-          create: images,
-        },
+        frontImg: frontImgUrl,
+        backImg: backImgUrl,
       });
 
       index++;
     }
 
-    const product = await prisma.product.create({
-      data: {
-        title,
-        description,
-        price,
-        brandId,
-        brandCommissionPct,
-        merchantCommissionPct,
-        mockupId,
-        userId,
-        visibility,
-        variants: {
-          create: variants,
-        },
+    
+    // Build data object with relation connects
+    const data = {
+      title,
+      description,
+      price,
+      brandCommissionPct,
+      merchantCommissionPct,
+      visibility,
+      brandName,
+      frontDesign : frontDesignUrl,
+      backDesign : backDesignUrl,
+      tags: { create: tags.filter(Boolean).map((value) => ({ value })) },
+      features: {
+        create: features.filter(Boolean).map((content) => ({ content })),
       },
+      // Required relations: connect by id
+      User: { connect: { id: userId } },
+      Mockup: { connect: { id: mockupId } },
+
+      // Optional brand: connect only if provided
+      ...(brandId ? { Brand: { connect: { id: brandId } } } : {}),
+
+      variants: { create: variants },
+    };
+
+    const product = await prisma.product.create({
+      data,
       include: {
-        variants: { include: { images: true } },
+        variants: true,
         Brand: true,
         features: true,
         tags: true,
@@ -112,11 +262,10 @@ export async function createProduct(formData) {
     console.error("Error in product creation:", error);
     return {
       success: false,
-      message: error.message || "Something went wrong, please try again.",
+      message: error?.message || "Something went wrong, please try again.",
     };
   }
 }
-
 
 // UPDATE PRODUCT
 export async function updateProduct(formData) {
@@ -124,16 +273,23 @@ export async function updateProduct(formData) {
 
   const updateData = {};
   if (formData.get("title")) updateData.title = formData.get("title");
-  if (formData.get("description")) updateData.description = formData.get("description");
-  if (formData.get("price")) updateData.price = parseFloat(formData.get("price"));
+  if (formData.get("description"))
+    updateData.description = formData.get("description");
+  if (formData.get("price"))
+    updateData.price = parseFloat(formData.get("price"));
   if (formData.get("brandId")) updateData.brandId = formData.get("brandId");
   if (formData.get("brandName")) updateData.brandId = formData.get("brandName");
   if (formData.get("brandCommissionPct"))
-    updateData.brandCommissionPct = parseFloat(formData.get("brandCommissionPct"));
+    updateData.brandCommissionPct = parseFloat(
+      formData.get("brandCommissionPct")
+    );
   if (formData.get("merchantCommissionPct"))
-    updateData.merchantCommissionPct = parseFloat(formData.get("merchantCommissionPct"));
+    updateData.merchantCommissionPct = parseFloat(
+      formData.get("merchantCommissionPct")
+    );
   if (formData.get("mockupId")) updateData.mockupId = formData.get("mockupId");
-  if (formData.get("visibility")) updateData.visibility = formData.get("visibility");
+  if (formData.get("visibility"))
+    updateData.visibility = formData.get("visibility");
 
   // Update existing product
   const product = await prisma.product.update({
@@ -162,8 +318,12 @@ export async function updateProduct(formData) {
     // Handle variant images
     let imgIndex = 0;
     while (formData.get(`variants[${index}][images][${imgIndex}][type]`)) {
-      const type = formData.get(`variants[${index}][images][${imgIndex}][type]`);
-      const file = formData.get(`variants[${index}][images][${imgIndex}][file]`);
+      const type = formData.get(
+        `variants[${index}][images][${imgIndex}][type]`
+      );
+      const file = formData.get(
+        `variants[${index}][images][${imgIndex}][file]`
+      );
 
       if (file && file.size > 0) {
         const url = await saveFile(file, `variant${index}-img${imgIndex}`);

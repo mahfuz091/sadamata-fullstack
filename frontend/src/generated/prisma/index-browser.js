@@ -20,12 +20,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.8.2
- * Query Engine version: 2060c79ba17c6bb9f5823312b6f6b7f4a845738e
+ * Prisma Client JS version: 6.10.1
+ * Query Engine version: 9b628578b3b7cae625e8c927178f15a170e74a9c
  */
 Prisma.prismaVersion = {
-  client: "6.8.2",
-  engine: "2060c79ba17c6bb9f5823312b6f6b7f4a845738e"
+  client: "6.10.1",
+  engine: "9b628578b3b7cae625e8c927178f15a170e74a9c"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -113,16 +113,111 @@ Prisma.NullTypes = {
  * Enums
  */
 
+exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
+  ReadUncommitted: 'ReadUncommitted',
+  ReadCommitted: 'ReadCommitted',
+  RepeatableRead: 'RepeatableRead',
+  Serializable: 'Serializable'
+});
+
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   phone: 'phone',
-  firstName: 'firstName',
-  lastName: 'lastName',
+  name: 'name',
   password: 'password',
   role: 'role',
   createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  isActive: 'isActive'
+};
+
+exports.Prisma.BrandScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  brandCategoryId: 'brandCategoryId',
+  userId: 'userId',
+  defaultBrandPct: 'defaultBrandPct',
+  defaultMerchantPct: 'defaultMerchantPct'
+};
+
+exports.Prisma.BrandCategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProductScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  price: 'price',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  isActive: 'isActive',
+  brandName: 'brandName',
+  brandId: 'brandId',
+  mockupId: 'mockupId',
+  userId: 'userId',
+  visibility: 'visibility',
+  backDesign: 'backDesign',
+  frontDesign: 'frontDesign',
+  brandCommissionPct: 'brandCommissionPct',
+  merchantCommissionPct: 'merchantCommissionPct'
+};
+
+exports.Prisma.SaleScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  merchantId: 'merchantId',
+  brandId: 'brandId',
+  quantity: 'quantity',
+  total: 'total',
+  brandEarning: 'brandEarning',
+  merchantEarning: 'merchantEarning',
+  platformEarning: 'platformEarning',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ProductVariantScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  color: 'color',
+  fitType: 'fitType',
+  frontImg: 'frontImg',
+  backImg: 'backImg'
+};
+
+exports.Prisma.FeatureScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  content: 'content'
+};
+
+exports.Prisma.TagScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  value: 'value'
+};
+
+exports.Prisma.MockupScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.MockupVariantScalarFieldEnum = {
+  id: 'id',
+  mockupId: 'mockupId',
+  color: 'color',
+  fitType: 'fitType',
+  frontImg: 'frontImg',
+  backImg: 'backImg'
 };
 
 exports.Prisma.SortOrder = {
@@ -134,14 +229,35 @@ exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
 };
+
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
 exports.Role = exports.$Enums.Role = {
   USER: 'USER',
   ADMIN: 'ADMIN',
-  BRAND: 'BRAND'
+  BRAND: 'BRAND',
+  MERCH: 'MERCH'
+};
+
+exports.FitType = exports.$Enums.FitType = {
+  MEN: 'MEN',
+  WOMEN: 'WOMEN',
+  YOUTH: 'YOUTH'
 };
 
 exports.Prisma.ModelName = {
-  User: 'User'
+  User: 'User',
+  Brand: 'Brand',
+  BrandCategory: 'BrandCategory',
+  Product: 'Product',
+  Sale: 'Sale',
+  ProductVariant: 'ProductVariant',
+  Feature: 'Feature',
+  Tag: 'Tag',
+  Mockup: 'Mockup',
+  MockupVariant: 'MockupVariant'
 };
 
 /**

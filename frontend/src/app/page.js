@@ -11,8 +11,12 @@ import TopMovieBrand from "@/components/TopMovieBrand/TopMovieBrand";
 import TopNatokBrand from "@/components/TopNatokBrand/TopNatokBrand";
 import TopMovieBrandTshirt from "@/components/TopMovieBrandTshirt/TopMovieBrandTshirt";
 import TopNatokBrandTshirt from "@/components/TopNatokBrandTshirt/TopNatokBrandTshirt";
+import { getNewArrivals } from "./actions/product/product.actions";
 
-export default function Home() {
+export default async function Home() {
+  // const newA  =  await getNewArrivals()
+
+  // console.log(newA);
   return (
     <Layout>
       <Hero />

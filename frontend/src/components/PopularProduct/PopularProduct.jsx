@@ -7,6 +7,7 @@ import Link from "next/link";
 // 👉 Static image import (replace / add your own)
 import productImg from "@/assets/images/products/item-1-1.png";
 
+
 /**
  * Dummy data – replace with real data or fetch from an API.
  */
@@ -21,6 +22,9 @@ const products = Array.from({ length: 16 }).map((_, i) => ({
 }));
 
 const PopularProduct = () => {
+
+  
+  
   return (
     <section className='popular-product py-5'>
       <Container>

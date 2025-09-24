@@ -5,6 +5,7 @@ import { Canvas, FabricImage, FabricText } from "fabric"; // Fabric.js v6
 import DashSidebar from "../DashSidebar/DashSidebar";
 import Tag from "./Tag";
 import { toast } from "sonner";
+import { createProduct } from "@/app/actions/product/product.actions";
 
 const SPINNER_SVG_DATAURI =
   "data:image/svg+xml;utf8," +
@@ -15,7 +16,7 @@ const SPINNER_SVG_DATAURI =
         d="M25 5 a20 20 0 0 1 0 40"/>
 </svg>`);
 
-export default function AddDesignFit({ allMockup }) {
+export default function AddDesignFit({ allMockup, currentUserId }) {
   const [activeProductIndex, setActiveProductIndex] = useState(null);
 
   const [fileName, setFileName] = useState("");
@@ -617,135 +618,273 @@ export default function AddDesignFit({ allMockup }) {
     }));
   };
 
-  const prepareMockupFiles = async () => {
-    const canvas = canvasRef.current;
-const backCanvas = canvasBackRef.current;
-if (!allMockup || !canvas || !backCanvas) return null;
-   
+//   const prepareMockupFiles = async () => {
+//     const canvas = canvasRef.current;
+// const backCanvas = canvasBackRef.current;
+// if (!allMockup || !canvas || !backCanvas) return null;
+ 
 
-    const formData = new FormData();
-    const designTitle = features.title || "design";
+//     const formData = new FormData();
+//     const designTitle = features.title || "design";
 
-    // --- Basic product info ---
-    formData.append("title", designTitle);
-    formData.append("description", features.description || "");
-    formData.append("price", features.price || 500);
-    // Set visibility based on selected option
-    formData.append(
-      "visibility",
-      selected === "non-searchable" ? "HIDDEN" : "SEARCHABLE"
-    );
-    formData.append(
-      "brandId",
-      brandOption === "select-brand" ? selectedBrand : null
-    );
+//     // --- Basic product info ---
+//     formData.append("title", designTitle);
+//     formData.append("description", features.description || "");
+//     formData.append("price", features.price || 500);
+//     // Set visibility based on selected option
+//     formData.append(
+//       "visibility",
+//       selected === "non-searchable" ? "HIDDEN" : "SEARCHABLE"
+//     );
+//     formData.append(
+//       "brandId",
+//       brandOption === "select-brand" ? selectedBrand : null
+//     );
 
-    // --- Features ---
-    const featureArr = [features.feature1, features.feature2].filter(Boolean);
-    featureArr.forEach((f, idx) => {
-      formData.append(`features[${idx}][content]`, f);
-    });
+//     // --- Features ---
+//     const featureArr = [features.feature1, features.feature2].filter(Boolean);
+//     featureArr.forEach((f, idx) => {
+//       formData.append(`features[${idx}][content]`, f);
+//     });
 
-    // --- Tags ---
-    tags.forEach((tag, idx) => {
-      formData.append(`tags[${idx}][value]`, tag);
-    });
+//     // --- Tags ---
+//     tags.forEach((tag, idx) => {
+//       formData.append(`tags[${idx}][value]`, tag);
+//     });
 
-    let variantIndex = 0;
+//     let variantIndex = 0;
 
-    for (
-      let productIndex = 0;
-      productIndex < allMockup.length;
-      productIndex++
-    ) {
-      const product = allMockup[productIndex];
-      const conf = mockupsByProduct[product.name.toLowerCase()];
-      if (!conf) continue;
+//     for (
+//       let productIndex = 0;
+//       productIndex < allMockup.length;
+//       productIndex++
+//     ) {
+//       const product = allMockup[productIndex];
+//       const conf = mockupsByProduct[product.name.toLowerCase()];
+//       if (!conf) continue;
 
-      const fit = selectedFitType[productIndex] || conf.fitTypes[0];
-      const color = selectedColor[productIndex] || conf.fits[fit].colors[0];
+//       const fit = selectedFitType[productIndex] || conf.fitTypes[0];
+//       const color = selectedColor[productIndex] || conf.fits[fit].colors[0];
 
-      // --- FRONT IMAGE ---
-      const frontSrc = conf.fits[fit].colorFront[color];
-      if (frontSrc) {
-        // Clear & redraw canvas
-        canvas.clear();
-        await new Promise((resolve) => {
-          canvas.setBackgroundImage(frontSrc, () => {
-            addDesignToCanvas(canvas);
-            canvas.renderAll();
-            resolve();
-          });
-        });
+//       // --- FRONT IMAGE ---
+//       const frontSrc = conf.fits[fit].colorFront[color];
+//       if (frontSrc) {
+//         // Clear & redraw canvas
+//         canvas.clear();
+//         await new Promise((resolve) => {
+//           canvas.setBackgroundImage(frontSrc, () => {
+//             addDesignToCanvas(canvas);
+//             canvas.renderAll();
+//             resolve();
+//           });
+//         });
 
-        const frontBlob = await new Promise((res) =>
-          canvas.toBlob(res, "image/png")
-        );
-        if (frontBlob) {
-          formData.append(
-            `variants[${variantIndex}][images][0][file]`,
-            frontBlob,
-            `${designTitle}_${fit}_${color}_front.png`
-          );
-          formData.append(
-            `variants[${variantIndex}][images][0][type]`,
-            "FRONT"
-          );
-        }
-      }
+//         const frontBlob = await new Promise((res) =>
+//           canvas.toBlob(res, "image/png")
+//         );
+//         if (frontBlob) {
+//           formData.append(
+//             `variants[${variantIndex}][images][0][file]`,
+//             frontBlob,
+//             `${designTitle}_${fit}_${color}_front.png`
+//           );
+//           formData.append(
+//             `variants[${variantIndex}][images][0][type]`,
+//             "FRONT"
+//           );
+//         }
+//       }
 
-      // --- BACK IMAGE ---
-      const backSrc = conf.fits[fit].colorBack[color];
-      if (backSrc && designBack) {
-        backCanvas.clear();
-        await new Promise((resolve) => {
-          backCanvas.setBackgroundImage(backSrc, () => {
-            addDesignToBackCanvas(backCanvas);
-            backCanvas.renderAll();
-            resolve();
-          });
-        });
+//       // --- BACK IMAGE ---
+//       const backSrc = conf.fits[fit].colorBack[color];
+//       if (backSrc && designBack) {
+//         backCanvas.clear();
+//         await new Promise((resolve) => {
+//           backCanvas.setBackgroundImage(backSrc, () => {
+//             addDesignToBackCanvas(backCanvas);
+//             backCanvas.renderAll();
+//             resolve();
+//           });
+//         });
 
-        const backBlob = await new Promise((res) =>
-          backCanvas.toBlob(res, "image/png")
-        );
-        if (backBlob) {
-          formData.append(
-            `variants[${variantIndex}][images][1][file]`,
-            backBlob,
-            `${designTitle}_${fit}_${color}_back.png`
-          );
-          formData.append(`variants[${variantIndex}][images][1][type]`, "BACK");
-        }
-      }
+//         const backBlob = await new Promise((res) =>
+//           backCanvas.toBlob(res, "image/png")
+//         );
+//         if (backBlob) {
+//           formData.append(
+//             `variants[${variantIndex}][images][1][file]`,
+//             backBlob,
+//             `${designTitle}_${fit}_${color}_back.png`
+//           );
+//           formData.append(`variants[${variantIndex}][images][1][type]`, "BACK");
+//         }
+//       }
 
-      // --- Variant info ---
-      formData.append(`variants[${variantIndex}][color]`, color);
-      formData.append(`variants[${variantIndex}][fitType]`, fit);
-      formData.append(
-        `variants[${variantIndex}][price]`,
-        features.price || 500
-      );
+//       // --- Variant info ---
+//       formData.append(`variants[${variantIndex}][color]`, color);
+//       formData.append(`variants[${variantIndex}][fitType]`, fit);
+//       formData.append(
+//         `variants[${variantIndex}][price]`,
+//         features.price || 500
+//       );
 
-      variantIndex++;
-    }
+//       variantIndex++;
+//     }
 
-    return formData;
-  };
+//     return formData;
+//   };
 
   // Usage
-const handleCreateProduct = async () => {
+
+const dataURLToBlob = async (dataURL) => {
+  const res = await fetch(dataURL);
+  return await res.blob();
+};
+
+const loadBaseOnFabric = (fabricCanvas, src) =>
+  new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = src;
+    img.onload = () => {
+      // Clear and place base
+      // fabricCanvas.clear();
+      const base = new FabricImage(img, {
+        left: 0,
+        top: 0,
+        scaleX: fabricCanvas.getWidth() / img.width,
+        scaleY: fabricCanvas.getHeight() / img.height,
+        selectable: false,
+        evented: false,
+      });
+      fabricCanvas.add(base);
+      resolve();
+    };
+    img.onerror = reject;
+  });
+
+const prepareMockupFiles = async () => {
+  // Use Fabric instances, not DOM refs
+  const frontFabric = canvas;       // from useState
+  let backFabric = backCanvas;      // from useState
+
+  if (!Array.isArray(allMockup) || allMockup.length === 0 || !frontFabric) {
+    toast.error("Missing products or front canvas.");
+    return null;
+  }
+
+  // If back canvas isn't mounted but we end up needing one, create an offscreen Fabric canvas
+  const ensureBackFabric = () => {
+    if (backFabric) return backFabric;
+    const el = document.createElement("canvas");
+    backFabric = new Canvas(el, { width: 400, height: 400, selection: false });
+    return backFabric;
+  };
+
+  const formData = new FormData();
+  const designTitle = (features.title || "design").trim() || "design";
+
+  // Basic info
+  formData.append("title", designTitle);
+  formData.append("description", features.description || "");
+  formData.append("price", features.price || 500);
+  formData.append(
+    "visibility",
+    selected === "non-searchable" ? false : "SEARCHABLE"
+  );
+  // If you actually mean a chosen brand ID, wire a selectedBrand state and use it here:
+  // formData.append("brandId", brandOption === "select-brand" ? selectedBrand : "");
+
+  // Features
+  [features.feature1, features.feature2]
+    .filter(Boolean)
+    .forEach((f, idx) => formData.append(`features[${idx}][content]`, f));
+
+  // Tags
+  tags.forEach((tag, idx) => {
+    formData.append(`tags[${idx}][value]`, tag);
+  });
+
+  let variantIndex = 0;
+
+  for (let productIndex = 0; productIndex < allMockup.length; productIndex++) {
+    const product = allMockup[productIndex];
+    const conf = mockupsByProduct[product.name.toLowerCase()];
+    if (!conf) continue;
+
+    const fit = selectedFitType[productIndex] || conf.fitTypes[0];
+    const colors = conf.fits?.[fit]?.colors || [];
+    if (!fit || colors.length === 0) continue;
+
+    const color =
+      selectedColor[productIndex] || (colors.length ? colors[0] : null);
+    if (!color) continue;
+
+    // FRONT
+    const frontSrc = conf.fits[fit].colorFront[color];
+    if (frontSrc) {
+      await loadBaseOnFabric(frontFabric, frontSrc);
+      // place the uploaded design on top
+      addDesignToCanvas(frontFabric);
+      frontFabric.renderAll();
+
+      const frontDataURL = frontFabric.toDataURL({ format: "png", quality: 1 });
+      const frontBlob = await dataURLToBlob(frontDataURL);
+      formData.append(
+        `variants[${variantIndex}][images][0][file]`,
+        frontBlob,
+        `${designTitle}_${fit}_${color}_front.png`
+      );
+      formData.append(`variants[${variantIndex}][images][0][type]`, "FRONT");
+    }
+
+    // BACK (only if we have a back src AND a back design image)
+    const backSrc = conf.fits[fit].colorBack[color];
+    if (backSrc && designBack) {
+      const bf = ensureBackFabric();
+      await loadBaseOnFabric(bf, backSrc);
+      addDesignToBackCanvas(bf);
+      bf.renderAll();
+
+      const backDataURL = bf.toDataURL({ format: "png", quality: 1 });
+      const backBlob = await dataURLToBlob(backDataURL);
+      formData.append(
+        `variants[${variantIndex}][images][1][file]`,
+        backBlob,
+        `${designTitle}_${fit}_${color}_back.png`
+      );
+      formData.append(`variants[${variantIndex}][images][1][type]`, "BACK");
+    }
+
+    // Variant info
+    formData.append(`variants[${variantIndex}][color]`, color);
+    formData.append(`variants[${variantIndex}][fitType]`, fit);
+    formData.append(
+      `variants[${variantIndex}][price]`,
+      features.price || 500
+    );
+ if (activeProduct?.id) {
+    formData.append("mockupId", activeProduct.id);
+  }
+  formData.append("userId", currentUserId);
+    variantIndex++;
+  }
+
+  return formData;
+};
+
+  const handleCreateProduct = async () => {
   try {
     console.log("Creating product...");
 
-    const canvas = canvasRef.current;
-    const backCanvas = canvasBackRef.current;
+   
 
     const formData = await prepareMockupFiles();
     
+console.log(formData, "formdata");
 
     if (!formData) {
-      console.warn("No form data available. Check if allMockup or canvas refs are set.");
+      console.warn("No form data available. ");
       return;
     }
 
@@ -1046,6 +1185,9 @@ const handleCreateProduct = async () => {
                             type="text"
                             placeholder="BDT 0.00"
                             defaultValue={500}
+                            onChange={(e) =>
+    setFeatures((p) => ({ ...p, price: Number(e.target.value) || 500 }))
+  }
                           />
                         </div>
                       </div>

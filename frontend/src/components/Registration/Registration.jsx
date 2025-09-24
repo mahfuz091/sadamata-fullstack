@@ -57,6 +57,7 @@ const Registration = () => {
     formData.append("firstName", firstName || "");
     formData.append("lastName", lastName.join(" ") || "");
     formData.append("password", data.password);
+    // formData.append("role", "User");
     if (data.contact.includes("@")) {
       formData.append("email", data.contact);
     } else {

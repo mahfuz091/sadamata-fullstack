@@ -28,7 +28,45 @@ model User {
   brands    Brand[]   @relation("UserBrands") // Add this to complete the relation
   products  Product[]
   sales     Sale[]    @relation("MerchantSales")
+   // NEW: one-to-one merchant profile
+  merchantProfile MerchantProfile?
 }
+
+
+model MerchantProfile {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Personal Information (keep email/phone in User; allow contact overrides if needed)
+  fullName           String        @db.VarChar(120)
+  dateOfBirth        DateTime?
+  contactEmail       String?       @db.VarChar(190)
+  contactPhone       String?       @db.VarChar(32)
+  nidOrPassportNo    String?       @db.VarChar(64)
+
+  presentAddress     String?       @db.VarChar(255)
+  permanentAddress   String?       @db.VarChar(255)
+
+  portfolioUrl       String?       @db.VarChar(255)
+  websiteUrl         String?       @db.VarChar(255)
+
+  // Bank (single account from your form; split into its own model later if you need multi-account)
+  bankName           String?       @db.VarChar(80)     // e.g., "DBBL"
+  bankBranch         String?       @db.VarChar(80)     // e.g., "Dhaka"
+  accountName        String?       @db.VarChar(120)
+  accountNumber      String?       @db.VarChar(64)
+  routingNumber      String?       @db.VarChar(64)
+
+  // Additional
+  message            String?       @db.Text
+
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  @@index([bankName, bankBranch])
+}
+
 
 model Brand {
   id              String        @id @default(uuid()) // Changed to UUID
@@ -83,6 +121,12 @@ model Product {
 
   visibility Boolean @default(true)
 
+  // Design File
+
+  backDesign String?
+  frontDesign String
+
+
   // New: commission % settings
   brandCommissionPct    Float? // % goes to brand (if Brand attached)
   merchantCommissionPct Float? // % goes to merchant on each sale
@@ -93,7 +137,7 @@ model Product {
 model Sale {
   id        String  @id @default(uuid())
   productId String
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   merchantId String
   merchant   User   @relation("MerchantSales", fields: [merchantId], references: [id])
@@ -109,6 +153,8 @@ model Sale {
   merchantEarning Float    @default(0)
   platformEarning Float    @default(0)
   createdAt       DateTime @default(now())
+
+   @@index([productId, createdAt]) // speeds up time-window queries
 }
 
 model ProductVariant {
@@ -116,28 +162,24 @@ model ProductVariant {
   productId String
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  color   String
-  fitType FitType
-  price   Float?
+  color   String  @db.VarChar(24) // e.g. "black", "green"
+  fitType FitType // e.g. MEN, WOMEN, YOUTH
 
-  images ProductImage[] // <-- store multiple variant-specific images
+  frontImg String // required: front image
+  backImg  String? // optional: back image
+
+ @@unique([productId, color, fitType]) // <- change this
+
+  // images ProductImage[] // <-- store multiple variant-specific images
 }
 
-model ProductImage {
-  id        String         @id @default(uuid())
-  variantId String
-  variant   ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
-
-  type ImageType // e.g. FRONT, BACK, SIDE, ZOOM
-  url  String
-}
 
 model Feature {
   id        String @id @default(uuid())
   productId String
   content   String
 
-  product Product @relation(fields: [productId], references: [id])
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model Tag {
@@ -145,7 +187,7 @@ model Tag {
   productId String
   value     String
 
-  product Product @relation(fields: [productId], references: [id])
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model Mockup {

@@ -291,3 +291,9 @@ input[type="radio"]:checked + .color-circle {
     background: #f37927;
 }
 
+.product-details__form .form-control-two input[type="radio"] {
+  height: 32px;
+}
+
+
+

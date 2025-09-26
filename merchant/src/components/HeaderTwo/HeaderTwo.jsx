@@ -31,7 +31,7 @@ const HeaderTwo = ({ session }) => {
                     <Link href='/login' className='commerce-btn login'>
                       Login
                     </Link>
-                    <Link href='/sign-up' className='commerce-btn'>
+                    <Link href='/signup' className='commerce-btn'>
                       Register <i className='icon-right-arrow' />
                     </Link>
                   </>

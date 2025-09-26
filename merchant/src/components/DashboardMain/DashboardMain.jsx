@@ -65,9 +65,9 @@ const DashboardMain = () => {
                   )}
                 </div>
                 <div className='dashboard__top__btn'>
-                  <a href='#' className='commerce-btn'>
+                  <Link href='/dashboard/add-design' className='commerce-btn'>
                     Create <i className='icon-right-arrow'></i>
-                  </a>
+                  </Link>
                 </div>
               </div>
               <div className='dashboard__metrics'>

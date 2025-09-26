@@ -40,27 +40,28 @@ model MerchantProfile {
 
   // Personal Information (keep email/phone in User; allow contact overrides if needed)
   fullName           String        @db.VarChar(120)
-  dateOfBirth        DateTime?
-  contactEmail       String?       @db.VarChar(190)
-  contactPhone       String?       @db.VarChar(32)
-  nidOrPassportNo    String?       @db.VarChar(64)
+  dateOfBirth        DateTime
+  contactEmail       String       @db.VarChar(190)
+  contactPhone       String       @db.VarChar(32)
+  nidOrPassportNo    String       @db.VarChar(64)
 
-  presentAddress     String?       @db.VarChar(255)
-  permanentAddress   String?       @db.VarChar(255)
+  presentAddress     String       @db.VarChar(255)
+  permanentAddress   String       @db.VarChar(255)
 
   portfolioUrl       String?       @db.VarChar(255)
   websiteUrl         String?       @db.VarChar(255)
 
   // Bank (single account from your form; split into its own model later if you need multi-account)
-  bankName           String?       @db.VarChar(80)     // e.g., "DBBL"
-  bankBranch         String?       @db.VarChar(80)     // e.g., "Dhaka"
-  accountName        String?       @db.VarChar(120)
-  accountNumber      String?       @db.VarChar(64)
-  routingNumber      String?       @db.VarChar(64)
+  bankName           String       @db.VarChar(80)     // e.g., "DBBL"
+  bankBranch         String       @db.VarChar(80)     // e.g., "Dhaka"
+  accountName        String       @db.VarChar(120)
+  accountNumber      String       @db.VarChar(64)
+  routingNumber      String       @db.VarChar(64)
 
   // Additional
   message            String?       @db.Text
-
+tiar  Int @default(10)
+brandOption Boolean @default(false)
   createdAt          DateTime      @default(now())
   updatedAt          DateTime      @updatedAt
 

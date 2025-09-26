@@ -16,9 +16,17 @@ const page =async () => {
   const allMockup = await getAllMockups();
   const session = await auth();
   const currentUserId = session?.user.id;
-
+ const user = await prisma.user.findUnique({
+  where: {
+    id: currentUserId,
+  },
+  select: {
+    name: true,
+    merchantProfile: true, // must match your relation field name in schema
+  },
+});
 console.log(brands, "mockup");
-  return <AddDesignFitNew allMockup={allMockup} currentUserId={currentUserId} brands={brands} />;
+  return <AddDesignFitNew allMockup={allMockup} currentUserId={currentUserId} brands={brands}  user={user}/>;
 };
 
 export default page;

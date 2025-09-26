@@ -224,3 +224,20 @@ h2.terms-section-title {
   padding: 0 15px;
   margin: 0;
 }
+
+.product-details__image {
+    background: #F7F8FA;
+    border-radius: 10px;
+}
+
+ul.populer-feature__list.list-unstyled li i {
+    color: #4273F1;
+    font-size: 18px;
+    margin-right: 10px;
+}
+.product-details__quantity__box .add {
+    position: absolute;
+    bottom: 1px;
+    right: 10px;
+    transform: rotate(0deg);
+}

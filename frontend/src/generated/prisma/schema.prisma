@@ -15,19 +15,56 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(uuid()) // Changed to UUID
-  email     String?   @unique
-  phone     String?   @unique
-  name      String
-  password  String
-  role      Role      @default(USER)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  isActive  Boolean   @default(true)
+  id              String           @id @default(uuid()) // Changed to UUID
+  email           String?          @unique
+  phone           String?          @unique
+  name            String
+  password        String
+  role            Role             @default(USER)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  isActive        Boolean          @default(true)
   // A user can create many brands (if their role is 'BRAND')
-  brands    Brand[]   @relation("UserBrands") // Add this to complete the relation
-  products  Product[]
-  sales     Sale[]    @relation("MerchantSales")
+  brands          Brand[]          @relation("UserBrands") // Add this to complete the relation
+  products        Product[]
+  sales           Sale[]           @relation("MerchantSales")
+  // NEW: one-to-one merchant profile
+  merchantProfile MerchantProfile?
+}
+
+model MerchantProfile {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Personal Information (keep email/phone in User; allow contact overrides if needed)
+  fullName        String   @db.VarChar(120)
+  dateOfBirth     DateTime
+  contactEmail    String   @db.VarChar(190)
+  contactPhone    String   @db.VarChar(32)
+  nidOrPassportNo String   @db.VarChar(64)
+
+  presentAddress   String @db.VarChar(255)
+  permanentAddress String @db.VarChar(255)
+
+  portfolioUrl String? @db.VarChar(255)
+  websiteUrl   String? @db.VarChar(255)
+
+  // Bank (single account from your form; split into its own model later if you need multi-account)
+  bankName      String @db.VarChar(80) // e.g., "DBBL"
+  bankBranch    String @db.VarChar(80) // e.g., "Dhaka"
+  accountName   String @db.VarChar(120)
+  accountNumber String @db.VarChar(64)
+  routingNumber String @db.VarChar(64)
+
+  // Additional
+  message     String?  @db.Text
+  tiar        Int      @default(10)
+  brandOption Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([bankName, bankBranch])
 }
 
 model Brand {

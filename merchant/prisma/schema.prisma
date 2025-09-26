@@ -98,6 +98,7 @@ model BrandCategory {
 
 model Product {
   id          String   @id @default(uuid())
+  productId String @unique
   title       String
   description String?
   price       Float

@@ -9,6 +9,7 @@ import { createProduct } from "@/app/actions/product/product.actions";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import BrandDropdown from "./BrandDropDown";
+import { prisma } from "@/lib/prisma";
 
 const SPINNER_SVG_DATAURI =
   "data:image/svg+xml;utf8," +
@@ -19,7 +20,8 @@ const SPINNER_SVG_DATAURI =
         d="M25 5 a20 20 0 0 1 0 40"/>
 </svg>`);
 
-export default function AddDesignFitNew({ allMockup, currentUserId, brands }) {
+export default function AddDesignFitNew({ allMockup, currentUserId, brands , user}) {
+console.log(user);
 
 
   const [activeProductIndex, setActiveProductIndex] = useState(null);
@@ -1111,7 +1113,10 @@ formData.append('backDesign', designBackFile, "designback");}
     }
   };
 
-  
+ 
+
+
+
 
   return (
     <section className="dashboard-area section-space">
@@ -1455,7 +1460,7 @@ formData.append('backDesign', designBackFile, "designback");}
                           </span>
                         </div>
 
-                        <div className="form-control-two">
+                        {/* <div className="form-control-two">
                           <label>Select Brand</label>
                           <div className="flex items-center gap-4 mt-2">
                             <label>
@@ -1511,7 +1516,59 @@ formData.append('backDesign', designBackFile, "designback");}
                           <span>
                             50 characters remaining (minimum 3 characters)
                           </span>
-                        </div>
+                        </div> */}
+                        <div className="form-control-two">
+  <label>Select Brand</label>
+
+  {user?.merchantProfile?.brandOption ? (
+    // Case 1: brandOption = true → show radio buttons
+    <>
+      <div className="flex items-center gap-4 mt-2">
+        <label>
+          <input
+            type="radio"
+            name="brandOption"
+            value="non-brand"
+            checked={brandOption === "non-brand"}
+            onChange={(e) => setBrandOption(e.target.value)}
+          />
+          Non-brand
+        </label>
+
+        <label>
+          <input
+            type="radio"
+            name="brandOption"
+            value="select-brand"
+            checked={brandOption === "select-brand"}
+            onChange={(e) => setBrandOption(e.target.value)}
+          />
+          Select Brand
+        </label>
+      </div>
+
+      {brandOption === "non-brand" && (
+        <input
+          type="text"
+          name="brandName"
+          placeholder="Write your brand"
+          className="mt-2"
+          onChange={handleFeatureChange}
+        />
+      )}
+
+      {brandOption === "select-brand" && (
+        <BrandDropdown brands={brands} onBrandChange={(id) => setBrandId(id)} />
+      )}
+    </>
+  ) : (
+    // Case 2: brandOption = false → show only dropdown
+    <BrandDropdown brands={brands} onBrandChange={(id) => setBrandId(id)} />
+  )}
+
+  <span>50 characters remaining (minimum 3 characters)</span>
+</div>
+
                       </div>
                     </div>
 

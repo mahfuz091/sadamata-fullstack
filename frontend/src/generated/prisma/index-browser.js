@@ -132,6 +132,30 @@ exports.Prisma.UserScalarFieldEnum = {
   isActive: 'isActive'
 };
 
+exports.Prisma.MerchantProfileScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  fullName: 'fullName',
+  dateOfBirth: 'dateOfBirth',
+  contactEmail: 'contactEmail',
+  contactPhone: 'contactPhone',
+  nidOrPassportNo: 'nidOrPassportNo',
+  presentAddress: 'presentAddress',
+  permanentAddress: 'permanentAddress',
+  portfolioUrl: 'portfolioUrl',
+  websiteUrl: 'websiteUrl',
+  bankName: 'bankName',
+  bankBranch: 'bankBranch',
+  accountName: 'accountName',
+  accountNumber: 'accountNumber',
+  routingNumber: 'routingNumber',
+  message: 'message',
+  tiar: 'tiar',
+  brandOption: 'brandOption',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.BrandScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -153,6 +177,7 @@ exports.Prisma.BrandCategoryScalarFieldEnum = {
 
 exports.Prisma.ProductScalarFieldEnum = {
   id: 'id',
+  productId: 'productId',
   title: 'title',
   description: 'description',
   price: 'price',
@@ -249,6 +274,7 @@ exports.FitType = exports.$Enums.FitType = {
 
 exports.Prisma.ModelName = {
   User: 'User',
+  MerchantProfile: 'MerchantProfile',
   Brand: 'Brand',
   BrandCategory: 'BrandCategory',
   Product: 'Product',

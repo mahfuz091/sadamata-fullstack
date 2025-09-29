@@ -3,6 +3,7 @@
 import path from "path";
 import fs from "fs/promises";
 import { prisma } from "@/lib/prisma";
+import generateBlogId from "@/utils/generateTitle";
 
 const uploadDir = path.join(process.cwd(), "public", "uploads");
 const uploadProductDir = path.join(process.cwd(), "public", "uploads", "product");
@@ -151,6 +152,7 @@ export async function createProduct(formData) {
 
     const frontDesignFile = formData.get("frontDesign");
     const backDesignFile  = formData.get("backDesign");
+console.log(brandId, "brandId");
 
     const isNonEmptyFile = (f) => f && typeof f.size === "number" && f.size > 0;
 
@@ -214,10 +216,13 @@ export async function createProduct(formData) {
       index++;
     }
 
+    const productId = generateBlogId(title)
+
     
     // Build data object with relation connects
     const data = {
       title,
+      productId,
       description,
       price,
       brandCommissionPct,
@@ -255,7 +260,7 @@ export async function createProduct(formData) {
 
     return {
       success: true,
-      product,
+      // product,
       message: "Product created successfully",
     };
   } catch (error) {

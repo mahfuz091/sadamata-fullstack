@@ -15,17 +15,56 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid()) // Changed to UUID
-  email     String?  @unique
-  phone     String?  @unique
-  name      String
-  password  String
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  id              String           @id @default(uuid()) // Changed to UUID
+  email           String?          @unique
+  phone           String?          @unique
+  name            String
+  password        String
+  role            Role             @default(USER)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  isActive        Boolean          @default(true)
   // A user can create many brands (if their role is 'BRAND')
-  brands Brand[] @relation("UserBrands") // Add this to complete the relation
+  brands          Brand[]          @relation("UserBrands") // Add this to complete the relation
+  products        Product[]
+  sales           Sale[]           @relation("MerchantSales")
+  // NEW: one-to-one merchant profile
+  merchantProfile MerchantProfile?
+}
+
+model MerchantProfile {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Personal Information (keep email/phone in User; allow contact overrides if needed)
+  fullName        String   @db.VarChar(120)
+  dateOfBirth     DateTime
+  contactEmail    String   @db.VarChar(190)
+  contactPhone    String   @db.VarChar(32)
+  nidOrPassportNo String   @db.VarChar(64)
+
+  presentAddress   String @db.VarChar(255)
+  permanentAddress String @db.VarChar(255)
+
+  portfolioUrl String? @db.VarChar(255)
+  websiteUrl   String? @db.VarChar(255)
+
+  // Bank (single account from your form; split into its own model later if you need multi-account)
+  bankName      String @db.VarChar(80) // e.g., "DBBL"
+  bankBranch    String @db.VarChar(80) // e.g., "Dhaka"
+  accountName   String @db.VarChar(120)
+  accountNumber String @db.VarChar(64)
+  routingNumber String @db.VarChar(64)
+
+  // Additional
+  message     String?  @db.Text
+  tiar        Int      @default(10)
+  brandOption Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([bankName, bankBranch])
 }
 
 model Brand {
@@ -36,11 +75,41 @@ model Brand {
   updatedAt       DateTime      @updatedAt
   brandCategory   BrandCategory @relation(fields: [brandCategoryId], references: [id])
   brandCategoryId String
+  user            User          @relation("UserBrands", fields: [userId], references: [id])
+  userId          String
+  Product         Product[]
 
-  subBrands SubBrand[]
+  Sales Sale[] @relation("BrandSales")
 
-  user   User   @relation("UserBrands", fields: [userId], references: [id])
-  userId String
+  // Default commission settings for this brand
+  defaultBrandPct    Float @default(10.0) // brand share
+  defaultMerchantPct Float @default(10.0) // merchant share
+
+  // Personal Information (keep email/phone in User; allow contact overrides if needed)
+  
+  dateOfBirth     DateTime
+  contactEmail    String   @db.VarChar(190)
+  contactPhone    String   @db.VarChar(32)
+  nidOrPassportNo String   @db.VarChar(64)
+
+  presentAddress   String @db.VarChar(255)
+  permanentAddress String @db.VarChar(255)
+
+  portfolioUrl String? @db.VarChar(255)
+  websiteUrl   String? @db.VarChar(255)
+
+  // Bank (single account from your form; split into its own model later if you need multi-account)
+  bankName      String @db.VarChar(80) // e.g., "DBBL"
+  bankBranch    String @db.VarChar(80) // e.g., "Dhaka"
+  accountName   String @db.VarChar(120)
+  accountNumber String @db.VarChar(64)
+  routingNumber String @db.VarChar(64)
+
+  // Additional
+  message String? @db.Text
+
+  industryType  String
+  socialProfile String
 }
 
 model BrandCategory {
@@ -48,23 +117,145 @@ model BrandCategory {
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  Brand Brand[] // One-to-many relation with Brand
+  Brand     Brand[] // One-to-many relation with Brand
 }
 
-model SubBrand {
-  id        String   @id @default(uuid()) // Changed to UUID
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Product {
+  id          String   @id @default(uuid())
+  productId   String   @unique
+  title       String
+  description String?
+  price       Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isActive    Boolean  @default(false)
+  // Brand handling
 
-  // SubBrand belongs to a Brand
-  brandId String
-  brand   Brand  @relation(fields: [brandId], references: [id])
+  brandName String?
+  brandId   String?
+  Brand     Brand?  @relation(fields: [brandId], references: [id])
+
+  // Relations
+  features Feature[]
+  tags     Tag[]
+  mockupId String
+  Mockup   Mockup           @relation(fields: [mockupId], references: [id])
+  variants ProductVariant[] // <-- each product has multiple variants
+
+  userId String
+  User   User   @relation(fields: [userId], references: [id])
+
+  visibility Boolean @default(true)
+
+  // Design File
+
+  backDesign  String?
+  frontDesign String
+
+  // New: commission % settings
+  brandCommissionPct    Float? // % goes to brand (if Brand attached)
+  merchantCommissionPct Float? // % goes to merchant on each sale
+
+  sales Sale[] // track product sales
+}
+
+model Sale {
+  id        String  @id @default(uuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  merchantId String
+  merchant   User   @relation("MerchantSales", fields: [merchantId], references: [id])
+
+  brandId String? // null if product had no brand
+  brand   Brand?  @relation("BrandSales", fields: [brandId], references: [id])
+
+  quantity Int   @default(1)
+  total    Float // total sale amount
+
+  // Earnings
+  brandEarning    Float    @default(0)
+  merchantEarning Float    @default(0)
+  platformEarning Float    @default(0)
+  createdAt       DateTime @default(now())
+
+  @@index([productId, createdAt]) // speeds up time-window queries
+}
+
+model ProductVariant {
+  id        String  @id @default(uuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  color   String  @db.VarChar(24) // e.g. "black", "green"
+  fitType FitType // e.g. MEN, WOMEN, YOUTH
+
+  frontImg String // required: front image
+  backImg  String? // optional: back image
+
+  // images ProductImage[] // <-- store multiple variant-specific images
+
+  @@unique([productId, color, fitType]) // <- change this
+}
+
+model Feature {
+  id        String @id @default(uuid())
+  productId String
+  content   String
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Tag {
+  id        String @id @default(uuid())
+  productId String
+  value     String
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Mockup {
+  id        String          @id @default(uuid())
+  name      String
+  variants  MockupVariant[] // one row per (color, fitType)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  Product   Product[]
+}
+
+model MockupVariant {
+  id       String @id @default(uuid())
+  mockupId String
+  mockup   Mockup @relation(fields: [mockupId], references: [id], onDelete: Cascade)
+
+  color   String  @db.VarChar(24) // e.g. "black", "green"
+  fitType FitType // e.g. MEN, WOMEN, YOUTH
+
+  frontImg String // required: front image
+  backImg  String // optional: back image
+
+  @@unique([mockupId, color, fitType]) // one row per (mockup, color, fitType)
+}
+
+enum FitType {
+  MEN
+  WOMEN
+  YOUTH
 }
 
 enum Role {
   USER
   ADMIN
   BRAND // Added the BRAND role
+  MERCH
+}
+
+enum Visibility {
+  SEARCHABLE
+  NON_SEARCHABLE
+}
+
+enum ImageType {
+  FRONT
+  BACK
 }

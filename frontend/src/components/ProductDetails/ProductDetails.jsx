@@ -11,7 +11,7 @@ import product1 from "@/assets/images/products/product-d-1-1.png";
 import user1 from "@/assets/images/resources/user-1-2.png";
 import Image from "next/image";
 
-export default function ProductDetails() {
+export default function ProductDetails({product}) {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [quantity, setQuantity] = useState(1);
   return (

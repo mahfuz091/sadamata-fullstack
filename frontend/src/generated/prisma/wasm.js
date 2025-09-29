@@ -5,13 +5,28 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 
 const {
+  PrismaClientKnownRequestError,
+  PrismaClientUnknownRequestError,
+  PrismaClientRustPanicError,
+  PrismaClientInitializationError,
+  PrismaClientValidationError,
+  getPrismaClient,
+  sqltag,
+  empty,
+  join,
+  raw,
+  skip,
   Decimal,
+  Debug,
   objectEnumValues,
   makeStrictEnum,
+  Extensions,
+  warnOnce,
+  defineDmmfProperty,
   Public,
   getRuntime,
-  skip
-} = require('./runtime/index-browser.js')
+  createParam,
+} = require('./runtime/wasm-engine-edge.js')
 
 
 const Prisma = {}
@@ -20,79 +35,35 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.10.1
- * Query Engine version: 9b628578b3b7cae625e8c927178f15a170e74a9c
+ * Prisma Client JS version: 6.16.2
+ * Query Engine version: 1c57fdcd7e44b29b9313256c76699e91c3ac3c43
  */
 Prisma.prismaVersion = {
-  client: "6.10.1",
-  engine: "9b628578b3b7cae625e8c927178f15a170e74a9c"
+  client: "6.16.2",
+  engine: "1c57fdcd7e44b29b9313256c76699e91c3ac3c43"
 }
 
-Prisma.PrismaClientKnownRequestError = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`PrismaClientKnownRequestError is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)};
-Prisma.PrismaClientUnknownRequestError = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`PrismaClientUnknownRequestError is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
-Prisma.PrismaClientRustPanicError = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`PrismaClientRustPanicError is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
-Prisma.PrismaClientInitializationError = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`PrismaClientInitializationError is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
-Prisma.PrismaClientValidationError = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`PrismaClientValidationError is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
+Prisma.PrismaClientKnownRequestError = PrismaClientKnownRequestError;
+Prisma.PrismaClientUnknownRequestError = PrismaClientUnknownRequestError
+Prisma.PrismaClientRustPanicError = PrismaClientRustPanicError
+Prisma.PrismaClientInitializationError = PrismaClientInitializationError
+Prisma.PrismaClientValidationError = PrismaClientValidationError
 Prisma.Decimal = Decimal
 
 /**
  * Re-export of sql-template-tag
  */
-Prisma.sql = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`sqltag is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
-Prisma.empty = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`empty is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
-Prisma.join = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`join is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
-Prisma.raw = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`raw is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
+Prisma.sql = sqltag
+Prisma.empty = empty
+Prisma.join = join
+Prisma.raw = raw
 Prisma.validator = Public.validator
 
 /**
 * Extensions
 */
-Prisma.getExtensionContext = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`Extensions.getExtensionContext is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
-Prisma.defineExtension = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`Extensions.defineExtension is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
+Prisma.getExtensionContext = Extensions.getExtensionContext
+Prisma.defineExtension = Extensions.defineExtension
 
 /**
  * Shorthand utilities for JSON filtering
@@ -109,10 +80,11 @@ Prisma.NullTypes = {
 
 
 
+
+
 /**
  * Enums
  */
-
 exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   ReadUncommitted: 'ReadUncommitted',
   ReadCommitted: 'ReadCommitted',
@@ -259,6 +231,12 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+exports.FitType = exports.$Enums.FitType = {
+  MEN: 'MEN',
+  WOMEN: 'WOMEN',
+  YOUTH: 'YOUTH'
+};
+
 exports.Role = exports.$Enums.Role = {
   USER: 'USER',
   ADMIN: 'ADMIN',
@@ -266,10 +244,14 @@ exports.Role = exports.$Enums.Role = {
   MERCH: 'MERCH'
 };
 
-exports.FitType = exports.$Enums.FitType = {
-  MEN: 'MEN',
-  WOMEN: 'WOMEN',
-  YOUTH: 'YOUTH'
+exports.Visibility = exports.$Enums.Visibility = {
+  SEARCHABLE: 'SEARCHABLE',
+  NON_SEARCHABLE: 'NON_SEARCHABLE'
+};
+
+exports.ImageType = exports.$Enums.ImageType = {
+  FRONT: 'FRONT',
+  BACK: 'BACK'
 };
 
 exports.Prisma.ModelName = {
@@ -285,34 +267,83 @@ exports.Prisma.ModelName = {
   Mockup: 'Mockup',
   MockupVariant: 'MockupVariant'
 };
-
 /**
- * This is a stub Prisma Client that will error at runtime if called.
+ * Create the Client
  */
-class PrismaClient {
-  constructor() {
-    return new Proxy(this, {
-      get(target, prop) {
-        let message
-        const runtime = getRuntime()
-        if (runtime.isEdge) {
-          message = `PrismaClient is not configured to run in ${runtime.prettyName}. In order to run Prisma Client on edge runtime, either:
-- Use Prisma Accelerate: https://pris.ly/d/accelerate
-- Use Driver Adapters: https://pris.ly/d/driver-adapters
-`;
-        } else {
-          message = 'PrismaClient is unable to run in this browser environment, or has been bundled for the browser (running in `' + runtime.prettyName + '`).'
-        }
-
-        message += `
-If this is unexpected, please open an issue: https://pris.ly/prisma-prisma-bug-report`
-
-        throw new Error(message)
+const config = {
+  "generator": {
+    "name": "client",
+    "provider": {
+      "fromEnvVar": null,
+      "value": "prisma-client-js"
+    },
+    "output": {
+      "value": "C:\\Sadamata\\sadamata-fullstack\\frontend\\src\\generated\\prisma",
+      "fromEnvVar": null
+    },
+    "config": {
+      "engineType": "library"
+    },
+    "binaryTargets": [
+      {
+        "fromEnvVar": null,
+        "value": "windows",
+        "native": true
       }
-    })
+    ],
+    "previewFeatures": [],
+    "sourceFilePath": "C:\\Sadamata\\sadamata-fullstack\\frontend\\prisma\\schema.prisma",
+    "isCustomOutput": true
+  },
+  "relativeEnvPaths": {
+    "rootEnvPath": null,
+    "schemaEnvPath": "../../../.env"
+  },
+  "relativePath": "../../../prisma",
+  "clientVersion": "6.16.2",
+  "engineVersion": "1c57fdcd7e44b29b9313256c76699e91c3ac3c43",
+  "datasourceNames": [
+    "db"
+  ],
+  "activeProvider": "postgresql",
+  "postinstall": false,
+  "inlineDatasources": {
+    "db": {
+      "url": {
+        "fromEnvVar": "DATABASE_URL",
+        "value": null
+      }
+    }
+  },
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id              String           @id @default(uuid()) // Changed to UUID\n  email           String?          @unique\n  phone           String?          @unique\n  name            String\n  password        String\n  role            Role             @default(USER)\n  createdAt       DateTime         @default(now())\n  updatedAt       DateTime         @updatedAt\n  isActive        Boolean          @default(true)\n  // A user can create many brands (if their role is 'BRAND')\n  brands          Brand[]          @relation(\"UserBrands\") // Add this to complete the relation\n  products        Product[]\n  sales           Sale[]           @relation(\"MerchantSales\")\n  // NEW: one-to-one merchant profile\n  merchantProfile MerchantProfile?\n}\n\nmodel MerchantProfile {\n  id     String @id @default(uuid())\n  userId String @unique\n  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  // Personal Information (keep email/phone in User; allow contact overrides if needed)\n  fullName        String   @db.VarChar(120)\n  dateOfBirth     DateTime\n  contactEmail    String   @db.VarChar(190)\n  contactPhone    String   @db.VarChar(32)\n  nidOrPassportNo String   @db.VarChar(64)\n\n  presentAddress   String @db.VarChar(255)\n  permanentAddress String @db.VarChar(255)\n\n  portfolioUrl String? @db.VarChar(255)\n  websiteUrl   String? @db.VarChar(255)\n\n  // Bank (single account from your form; split into its own model later if you need multi-account)\n  bankName      String @db.VarChar(80) // e.g., \"DBBL\"\n  bankBranch    String @db.VarChar(80) // e.g., \"Dhaka\"\n  accountName   String @db.VarChar(120)\n  accountNumber String @db.VarChar(64)\n  routingNumber String @db.VarChar(64)\n\n  // Additional\n  message     String?  @db.Text\n  tiar        Int      @default(10)\n  brandOption Boolean  @default(false)\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n\n  @@index([bankName, bankBranch])\n}\n\nmodel Brand {\n  id              String        @id @default(uuid()) // Changed to UUID\n  name            String\n  isActive        Boolean       @default(false) // Default is false for new brands\n  createdAt       DateTime      @default(now())\n  updatedAt       DateTime      @updatedAt\n  brandCategory   BrandCategory @relation(fields: [brandCategoryId], references: [id])\n  brandCategoryId String\n  user            User          @relation(\"UserBrands\", fields: [userId], references: [id])\n  userId          String\n  Product         Product[]\n\n  Sales Sale[] @relation(\"BrandSales\")\n\n  // Default commission settings for this brand\n  defaultBrandPct    Float @default(10.0) // brand share\n  defaultMerchantPct Float @default(10.0) // merchant share\n}\n\nmodel BrandCategory {\n  id        String   @id @default(uuid()) // Changed to UUID\n  name      String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  Brand     Brand[] // One-to-many relation with Brand\n}\n\nmodel Product {\n  id          String   @id @default(uuid())\n  productId   String   @unique\n  title       String\n  description String?\n  price       Float\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n  isActive    Boolean  @default(false)\n  // Brand handling\n\n  brandName String?\n  brandId   String?\n  Brand     Brand?  @relation(fields: [brandId], references: [id])\n\n  // Relations\n  features Feature[]\n  tags     Tag[]\n  mockupId String\n  Mockup   Mockup           @relation(fields: [mockupId], references: [id])\n  variants ProductVariant[] // <-- each product has multiple variants\n\n  userId String\n  User   User   @relation(fields: [userId], references: [id])\n\n  visibility Boolean @default(true)\n\n  // Design File\n\n  backDesign  String?\n  frontDesign String\n\n  // New: commission % settings\n  brandCommissionPct    Float? // % goes to brand (if Brand attached)\n  merchantCommissionPct Float? // % goes to merchant on each sale\n\n  sales Sale[] // track product sales\n}\n\nmodel Sale {\n  id        String  @id @default(uuid())\n  productId String\n  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)\n\n  merchantId String\n  merchant   User   @relation(\"MerchantSales\", fields: [merchantId], references: [id])\n\n  brandId String? // null if product had no brand\n  brand   Brand?  @relation(\"BrandSales\", fields: [brandId], references: [id])\n\n  quantity Int   @default(1)\n  total    Float // total sale amount\n\n  // Earnings\n  brandEarning    Float    @default(0)\n  merchantEarning Float    @default(0)\n  platformEarning Float    @default(0)\n  createdAt       DateTime @default(now())\n\n  @@index([productId, createdAt]) // speeds up time-window queries\n}\n\nmodel ProductVariant {\n  id        String  @id @default(uuid())\n  productId String\n  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)\n\n  color   String  @db.VarChar(24) // e.g. \"black\", \"green\"\n  fitType FitType // e.g. MEN, WOMEN, YOUTH\n\n  frontImg String // required: front image\n  backImg  String? // optional: back image\n\n  // images ProductImage[] // <-- store multiple variant-specific images\n\n  @@unique([productId, color, fitType]) // <- change this\n}\n\nmodel Feature {\n  id        String @id @default(uuid())\n  productId String\n  content   String\n\n  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)\n}\n\nmodel Tag {\n  id        String @id @default(uuid())\n  productId String\n  value     String\n\n  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)\n}\n\nmodel Mockup {\n  id        String          @id @default(uuid())\n  name      String\n  variants  MockupVariant[] // one row per (color, fitType)\n  createdAt DateTime        @default(now())\n  updatedAt DateTime        @updatedAt\n  Product   Product[]\n}\n\nmodel MockupVariant {\n  id       String @id @default(uuid())\n  mockupId String\n  mockup   Mockup @relation(fields: [mockupId], references: [id], onDelete: Cascade)\n\n  color   String  @db.VarChar(24) // e.g. \"black\", \"green\"\n  fitType FitType // e.g. MEN, WOMEN, YOUTH\n\n  frontImg String // required: front image\n  backImg  String // optional: back image\n\n  @@unique([mockupId, color, fitType]) // one row per (mockup, color, fitType)\n}\n\nenum FitType {\n  MEN\n  WOMEN\n  YOUTH\n}\n\nenum Role {\n  USER\n  ADMIN\n  BRAND // Added the BRAND role\n  MERCH\n}\n\nenum Visibility {\n  SEARCHABLE\n  NON_SEARCHABLE\n}\n\nenum ImageType {\n  FRONT\n  BACK\n}\n",
+  "inlineSchemaHash": "26d0dfc07e6e81680dcb1ae8b361a54b87124c1db8a1e4ccac7ebe49bf3817ff",
+  "copyEngine": true
+}
+config.dirname = '/'
+
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"isActive\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"brands\",\"kind\":\"object\",\"type\":\"Brand\",\"relationName\":\"UserBrands\"},{\"name\":\"products\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"ProductToUser\"},{\"name\":\"sales\",\"kind\":\"object\",\"type\":\"Sale\",\"relationName\":\"MerchantSales\"},{\"name\":\"merchantProfile\",\"kind\":\"object\",\"type\":\"MerchantProfile\",\"relationName\":\"MerchantProfileToUser\"}],\"dbName\":null},\"MerchantProfile\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"MerchantProfileToUser\"},{\"name\":\"fullName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"dateOfBirth\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"contactEmail\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"contactPhone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"nidOrPassportNo\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"presentAddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"permanentAddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"portfolioUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"websiteUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"bankName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"bankBranch\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accountName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accountNumber\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"routingNumber\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"message\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"tiar\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"brandOption\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Brand\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"isActive\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"brandCategory\",\"kind\":\"object\",\"type\":\"BrandCategory\",\"relationName\":\"BrandToBrandCategory\"},{\"name\":\"brandCategoryId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"UserBrands\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"Product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"BrandToProduct\"},{\"name\":\"Sales\",\"kind\":\"object\",\"type\":\"Sale\",\"relationName\":\"BrandSales\"},{\"name\":\"defaultBrandPct\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"defaultMerchantPct\",\"kind\":\"scalar\",\"type\":\"Float\"}],\"dbName\":null},\"BrandCategory\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"Brand\",\"kind\":\"object\",\"type\":\"Brand\",\"relationName\":\"BrandToBrandCategory\"}],\"dbName\":null},\"Product\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"isActive\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"brandName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"brandId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"Brand\",\"kind\":\"object\",\"type\":\"Brand\",\"relationName\":\"BrandToProduct\"},{\"name\":\"features\",\"kind\":\"object\",\"type\":\"Feature\",\"relationName\":\"FeatureToProduct\"},{\"name\":\"tags\",\"kind\":\"object\",\"type\":\"Tag\",\"relationName\":\"ProductToTag\"},{\"name\":\"mockupId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"Mockup\",\"kind\":\"object\",\"type\":\"Mockup\",\"relationName\":\"MockupToProduct\"},{\"name\":\"variants\",\"kind\":\"object\",\"type\":\"ProductVariant\",\"relationName\":\"ProductToProductVariant\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"User\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"ProductToUser\"},{\"name\":\"visibility\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"backDesign\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"frontDesign\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"brandCommissionPct\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"merchantCommissionPct\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"sales\",\"kind\":\"object\",\"type\":\"Sale\",\"relationName\":\"ProductToSale\"}],\"dbName\":null},\"Sale\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"ProductToSale\"},{\"name\":\"merchantId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"merchant\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"MerchantSales\"},{\"name\":\"brandId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"brand\",\"kind\":\"object\",\"type\":\"Brand\",\"relationName\":\"BrandSales\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"total\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"brandEarning\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"merchantEarning\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"platformEarning\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"ProductVariant\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"ProductToProductVariant\"},{\"name\":\"color\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fitType\",\"kind\":\"enum\",\"type\":\"FitType\"},{\"name\":\"frontImg\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"backImg\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"Feature\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"content\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"FeatureToProduct\"}],\"dbName\":null},\"Tag\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"ProductToTag\"}],\"dbName\":null},\"Mockup\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"variants\",\"kind\":\"object\",\"type\":\"MockupVariant\",\"relationName\":\"MockupToMockupVariant\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"Product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"MockupToProduct\"}],\"dbName\":null},\"MockupVariant\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"mockupId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"mockup\",\"kind\":\"object\",\"type\":\"Mockup\",\"relationName\":\"MockupToMockupVariant\"},{\"name\":\"color\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fitType\",\"kind\":\"enum\",\"type\":\"FitType\"},{\"name\":\"frontImg\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"backImg\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
+config.engineWasm = {
+  getRuntime: async () => require('./query_engine_bg.js'),
+  getQueryEngineWasmModule: async () => {
+    const loader = (await import('#wasm-engine-loader')).default
+    const engine = (await loader).default
+    return engine
   }
 }
+config.compilerWasm = undefined
 
+config.injectableEdgeEnv = () => ({
+  parsed: {
+    DATABASE_URL: typeof globalThis !== 'undefined' && globalThis['DATABASE_URL'] || typeof process !== 'undefined' && process.env && process.env.DATABASE_URL || undefined
+  }
+})
+
+if (typeof globalThis !== 'undefined' && globalThis['DEBUG'] || typeof process !== 'undefined' && process.env && process.env.DEBUG || undefined) {
+  Debug.enable(typeof globalThis !== 'undefined' && globalThis['DEBUG'] || typeof process !== 'undefined' && process.env && process.env.DEBUG || undefined)
+}
+
+const PrismaClient = getPrismaClient(config)
 exports.PrismaClient = PrismaClient
-
 Object.assign(exports, Prisma)
+

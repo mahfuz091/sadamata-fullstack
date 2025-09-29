@@ -21,7 +21,7 @@ export const createCategory = async (categoryName) => {
 // Get all categories
 export const getAllCategories = async () => {
   try {
-    const categories = await prisma.category.findMany();
+    const categories = await prisma.brandCategory.findMany();
     return categories;
   } catch (error) {
     console.error("Error retrieving categories:", error);

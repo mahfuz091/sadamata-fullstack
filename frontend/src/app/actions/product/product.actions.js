@@ -405,3 +405,29 @@ export async function getFeaturedProducts({ page = 1, pageSize = 12, featuredTag
     items,
   };
 }
+export async function getProductsByProductId(productId) {
+  if (!productId) {
+    throw new Error("productId is required");
+  }
+
+  const product = await prisma.product.findUnique({
+    where: { productId },
+    include: commonProductInclude, // reuse same includes as getBestSellers
+  });
+
+  if (!product) {
+    return {
+      kind: "product_by_id",
+      productId,
+      found: false,
+      item: null,
+    };
+  }
+
+  return {
+    kind: "product_by_id",
+    productId,
+    found: true,
+    item: product,
+  };
+}

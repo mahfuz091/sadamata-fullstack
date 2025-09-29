@@ -11,6 +11,7 @@ import {
   getBestSellers,
   getFeaturedProducts,
 } from "@/app/actions/product/product.actions";
+import Link from "next/link";
 const TABS = [
   { label: "All Products", key: "all" },
   { label: "New Arrivals", key: "new" },
@@ -37,6 +38,7 @@ const FeatureProduct = () => {
   const pageSize = 8;
 
 
+console.log(products, "products");
 
 
 
@@ -227,7 +229,7 @@ console.log(products, "products");
                     </p>
 
                     <h4 className="product__item__title my-2">
-                      <a>{product.title}</a>
+                      <Link href={`/products/${product.productId}`}>{product.title}</Link>
                     </h4>
 
                     <div className="product__item__box d-flex justify-content-between align-items-center">

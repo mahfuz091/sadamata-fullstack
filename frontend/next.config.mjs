@@ -8,6 +8,12 @@ const nextConfig = {
         port: "3001",
         pathname: "/**", // or "/uploads/**" if you want to restrict
       },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "3000",
+        pathname: "/**", // or "/uploads/**" if you want to restrict
+      },
     ],
   },
     experimental: {

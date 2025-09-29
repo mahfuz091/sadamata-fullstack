@@ -616,6 +616,7 @@ const [designImageFile, setDesignImageFile] = useState(null);
   });
 
   const [brandId , setBrandId] = useState(null);
+console.log(brandId, "brandId");
 
   // Generic handler for input and textarea fields
   const handleFeatureChange = (e) => {
@@ -1018,7 +1019,7 @@ formData.append('frontDesign', designImageFile, "designFront");
 formData.append('backDesign', designBackFile, "designback");}
 
   // Optional brand/commission fields that createProduct() understands
-  if (features.brandId) formData.append("brandId", brandId);
+  if (brandId) formData.append("brandId", brandId);
   if (features.brandCommissionPct != null) {
     formData.append("brandCommissionPct", String(features.brandCommissionPct));
   }

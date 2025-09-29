@@ -7,6 +7,7 @@ const customStyles = {
   container: (base) => ({
     ...base,
     width: "100%",
+   
     zIndex: 99,
   }),
   control: (base) => ({
@@ -14,6 +15,8 @@ const customStyles = {
     border: "1px solid #E8EFFC",
     boxShadow: "none",
     zIndex: 99,
+     height:"58px",
+     borderRadius:"8px",
 
     "&:hover": {
       background: "#E8EFFC",

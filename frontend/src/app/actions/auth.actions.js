@@ -7,143 +7,192 @@ import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
-
-
-export async function registerUser(formData) {
+export async function registerUser(prevState, formData) {
   try {
-    // Extract form data from the FormData object
-    const name = formData.get("name"); // Full name of the user
-    const email = formData.get("email"); // User email
-    const phone = formData.get("phone"); // User phone number
-    const password = formData.get("password"); // User password
-    const confirmPassword = formData.get("confirmPassword"); // Confirm password
-    // const role = formData.get("role"); // User role (e.g., "BRAND", "USER")
+    const name = (formData.get("name") || "").toString().trim();
+    const email = (formData.get("email") || "").toString().trim() || null;
+    const phone = (formData.get("phone") || "").toString().trim() || null;
+    const password = (formData.get("password") || "").toString();
+    const confirmPassword = (formData.get("confirmPassword") || "").toString();
+    let role = ((formData.get("role") || "USER").toString() || "USER").toUpperCase();
 
-    // Basic validation: Ensure required fields are provided
-    if (!name || !password || !confirmPassword || !role) {
-      console.error("Validation error: All fields are required");
+    if (!name || !password || !confirmPassword || (!email && !phone)) {
       return { success: false, message: "All fields are required" };
     }
-
-    // Password confirmation check
     if (password !== confirmPassword) {
       return { success: false, message: "Passwords do not match." };
     }
 
-    // Validate if either email or phone is provided
-    if (!email && !phone) {
-      console.error("Validation error: Either email or phone must be provided");
-      return {
-        success: false,
-        message: "Either email or phone must be provided",
-      };
-    }
-
-    // Check if the email or phone already exists in the database
-    let existingUser;
+    // Uniqueness check
+    let existingUser = null;
     if (email) {
-      // If email is provided, check if email exists
       existingUser = await prisma.user.findUnique({ where: { email } });
     } else if (phone) {
-      // If phone is provided, check if phone exists
       existingUser = await prisma.user.findUnique({ where: { phone } });
     }
-
     if (existingUser) {
-      console.error("User already exists:", email || phone);
       return { success: false, message: "Email or phone already taken" };
     }
 
-    // Hash the password before saving
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Handle default behavior for `isActive`
-    let isActive = true; // Default to true for `user` and `admin`
+    // Activation logic
+    let isActive = true;
     if (role === "BRAND" || role === "MERCH") {
-      isActive = false; // Set to false for `brand` and `merch`
+      isActive = false;
     }
 
-    // Determine the contact method (email or phone) to use
-    const contact = email || phone; // Prioritize email if both are provided
-
-    // Create the user in the database using Prisma
     const user = await prisma.user.create({
       data: {
-        email: email || null, // Store email if provided
-        phone: phone || null, // Store phone if provided
         name,
-        password: hashedPassword, // Store hashed password
+        email,
+        phone,
+        password: hashedPassword,
         role,
-        isActive, // Set the isActive status based on role
+        isActive,
       },
     });
 
-    return {
-      success: true,
-      user,
-      message: "Registration successful",
-    };
+    return { success: true, user, message: "Registration successful" };
   } catch (error) {
     console.error("Error in user registration:", error);
     return {
       success: false,
-      message: error.message || "Something went wrong, please try again.",
+      message: error?.message || "Something went wrong, please try again.",
     };
   }
 }
 
+// export async function registerUser(formData) {
+//   try {
+//     // Extract form data from the FormData object
+//     const name = formData.get("name"); // Full name of the user
+//     const email = formData.get("email"); // User email
+//     const phone = formData.get("phone"); // User phone number
+//     const password = formData.get("password"); // User password
+//     const confirmPassword = formData.get("confirmPassword"); // Confirm password
+//     // const role = formData.get("role"); // User role (e.g., "BRAND", "USER")
+
+//     // Basic validation: Ensure required fields are provided
+//     if (!name || !password || !confirmPassword || !role) {
+//       console.error("Validation error: All fields are required");
+//       return { success: false, message: "All fields are required" };
+//     }
+
+//     // Password confirmation check
+//     if (password !== confirmPassword) {
+//       return { success: false, message: "Passwords do not match." };
+//     }
+
+//     // Validate if either email or phone is provided
+//     if (!email && !phone) {
+//       console.error("Validation error: Either email or phone must be provided");
+//       return {
+//         success: false,
+//         message: "Either email or phone must be provided",
+//       };
+//     }
+
+//     // Check if the email or phone already exists in the database
+//     let existingUser;
+//     if (email) {
+//       // If email is provided, check if email exists
+//       existingUser = await prisma.user.findUnique({ where: { email } });
+//     } else if (phone) {
+//       // If phone is provided, check if phone exists
+//       existingUser = await prisma.user.findUnique({ where: { phone } });
+//     }
+
+//     if (existingUser) {
+//       console.error("User already exists:", email || phone);
+//       return { success: false, message: "Email or phone already taken" };
+//     }
+
+//     // Hash the password before saving
+//     const hashedPassword = await bcrypt.hash(password, 10);
+
+//     // Handle default behavior for `isActive`
+//     let isActive = true; // Default to true for `user` and `admin`
+//     if (role === "BRAND" || role === "MERCH") {
+//       isActive = false; // Set to false for `brand` and `merch`
+//     }
+
+//     // Determine the contact method (email or phone) to use
+//     const contact = email || phone; // Prioritize email if both are provided
+
+//     // Create the user in the database using Prisma
+//     const user = await prisma.user.create({
+//       data: {
+//         email: email || null, // Store email if provided
+//         phone: phone || null, // Store phone if provided
+//         name,
+//         password: hashedPassword, // Store hashed password
+//         role,
+//         isActive, // Set the isActive status based on role
+//       },
+//     });
+
+//     return {
+//       success: true,
+//       user,
+//       message: "Registration successful",
+//     };
+//   } catch (error) {
+//     console.error("Error in user registration:", error);
+//     return {
+//       success: false,
+//       message: error.message || "Something went wrong, please try again.",
+//     };
+//   }
+// }
+
 // login
-export const loginUser = async (prevState, formData) => {
-  const identifier = formData.get("identifier");
-  const password = formData.get("password");
+// export const loginUser = async (prevState, formData) => {
+//   const identifier = formData.get("identifier");
+//   const password = formData.get("password");
 
-  if (!identifier) {
-    return { success: false, message: "Email or phone is required" };
-  }
-  if (!password) {
-    return { success: false, message: "Password is required" };
-  }
+//   if (!identifier) {
+//     return { success: false, message: "Email or phone is required" };
+//   }
+//   if (!password) {
+//     return { success: false, message: "Password is required" };
+//   }
 
-  // Find user (email OR phone)
-  const user = await prisma.user.findFirst({
-    where: {
-      AND: [
-        { OR: [{ email: identifier }, { phone: identifier }] },
-        { role: "MERCH" },
-      ],
-    },
-  });
+//   // Find user (email OR phone)
+//   const user = await prisma.user.findFirst({
+//     where: {
+//       AND: [
+//         { OR: [{ email: identifier }, { phone: identifier }] },
+//         { role: "USER" },
+//       ],
+//     },
+//   });
 
-  console.log(user, "user");
+//   console.log(user, "user");
 
-  if (!user) {
-    return { success: false, message: "User not found" };
-  }
-  if (!user.isActive) {
-    return {
-      success: false,
-      message: "Your account is not active. Please contact support.",
-    };
-  }
-  if (user.role !== "MERCH") {
-    return {
-      success: false,
-      message: "You are not authorized to access this portal.",
-    };
-  }
+//   if (!user) {
+//     return { success: false, message: "User not found" };
+//   }
+//   if (!user.isActive) {
+//     return {
+//       success: false,
+//       message: "Your account is not active. Please contact support.",
+//     };
+//   }
+  
 
-  const isPasswordValid = await bcrypt.compare(password, user.password);
-  if (!isPasswordValid) {
-    return { success: false, message: "Invalid password" };
-  }
+//   const isPasswordValid = await bcrypt.compare(password, user.password);
+//   if (!isPasswordValid) {
+//     return { success: false, message: "Invalid password" };
+//   }
 
-  // NextAuth signIn
-  const response = await signIn("credentials", {
-    redirect: "/dashboard",
-    identifier,
-    password,
-  });
-};
+//   // NextAuth signIn
+//   const response = await signIn("credentials", {
+//     redirect: "/dashboard",
+//     identifier,
+//     password,
+//   });
+// };
 
 // log out
 export const logOut = async () => {
@@ -151,6 +200,95 @@ export const logOut = async () => {
   // redirect("/login");
   revalidatePath("/dashboard/*");
 };
+// export const loginUser = async (prevState, formData) => {
+//   const identifier = formData.get("identifier");
+//   const password = formData.get("password");
+
+//   if (!identifier) {
+//     return { success: false, message: "Email or phone is required" };
+//   }
+//   if (!password) {
+//     return { success: false, message: "Password is required" };
+//   }
+
+//   const user = await prisma.user.findFirst({
+//     where: {
+//       AND: [
+//         { OR: [{ email: identifier }, { phone: identifier }] },
+//         { role: "USER" },
+//       ],
+//     },
+//   });
+
+//   console.log(user, "user");
+
+//   if (!user) {
+//     return { success: false, message: "User not found" };
+//   }
+  
+
+
+//   const isPasswordValid = await bcrypt.compare(password, user.password);
+//   if (!isPasswordValid) {
+//     return { success: false, message: "Invalid password" };
+//   }
+
+
+//   const response = await signIn("credentials", {
+//     identifier,
+//     password,
+    
+//   });
+//   return { success: true , message: "Login successful" };
+// };
+export const loginUser = async (prevState, formData) => {
+  try {
+    const identifier = formData.get("identifier");
+    const password = formData.get("password");
+
+    if (!identifier) {
+      return { success: false, message: "Email or phone is required" };
+    }
+    if (!password) {
+      return { success: false, message: "Password is required" };
+    }
+
+    // Find user (email OR phone)
+    const user = await prisma.user.findFirst({
+      where: {
+        AND: [
+          { OR: [{ email: identifier }, { phone: identifier }] },
+          { role: "USER" },
+        ],
+      },
+    });
+
+    console.log(user, "user");
+
+    if (!user) {
+      return { success: false, message: "User not found" };
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return { success: false, message: "Invalid password" };
+    }
+
+    // NextAuth signIn
+    const response = await signIn("credentials", {
+      identifier,
+      password,
+      redirect: false,
+    });
+
+    return { success: true, message: "Login successful" };
+  } catch (error) {
+    console.error("Login error:", error);
+    return { success: false, message: "An unexpected error occurred. Please try again." };
+  }
+};
+
+
 
 // export async function updateUserAccount(userId, action) {
 //   try {

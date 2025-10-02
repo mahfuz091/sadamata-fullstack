@@ -13,53 +13,77 @@ import appleIcon from "@/assets/images/icon/apple.png";
 import googleIcon from "@/assets/images/icon/google.png";
 import facebookIcon from "@/assets/images/icon/facebook.png";
 import { loginUser } from "@/app/actions/auth.actions"; // adjust as needed
+import { isValidBDPhone, isValidEmail } from "@/utils/validation";
 
 const initialState = { success: false, message: "" };
 
 const Login = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    watch,
-  } = useForm();
+  const initialState = {
+    message: "",
+    success: false,
+  };
 
-  //   const [state, formAction, isPending] = useActionState(async (_, formData) => {
-  //     const result = await loginUser(_, formData); // your server action
-  //     return result;
-  //   }, initialState);
   const [state, formAction, isPending] = useActionState(
     loginUser,
     initialState
   );
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [checkboxError, setCheckboxError] = useState(false);
-  const router = useRouter();
-  console.log(isPending, "isPending");
-
-  const onSubmit = (data) => {
-    if (!data.terms) {
-      setCheckboxError(true);
-      return;
+  console.log(state);
+  useEffect(() => {
+    if(state.message){
+if (!state?.success) {
+      toast.warning(state?.message);
     }
-    setCheckboxError(false);
+    else if(state?.success){
+      toast.success(state?.message);
+      console.log(state, "state");
+    }
+    }
+    
 
-    const formData = new FormData();
-    formData.append("password", data.password);
-    formData.append("identifier", data.contact);
+  }, [state]);
 
-    formAction(formData);
+  
+
+const [identifier, setIdentifier] = useState("");
+  const [errors, setErrors] = useState({ identifier: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
+   const [password, setPassword] = useState("");
+
+  const handleIdentifierChange = (e) => {
+    const value = e.target.value;
+    setIdentifier(value);
+
+    if (!value) {
+      setErrors((prev) => ({
+        ...prev,
+        identifier: "Email or phone is required",
+      }));
+    } else if (!isValidEmail(value) && !isValidBDPhone(value)) {
+      setErrors((prev) => ({
+        ...prev,
+        identifier: "Enter a valid email or BD phone",
+      }));
+    } else {
+      setErrors((prev) => ({ ...prev, identifier: "" }));
+    }
   };
 
-  useEffect(() => {
-    if (state.success) {
-      toast.success(state.message);
-      router.push("/"); // adjust as needed
-    } else if (state.message) {
-      toast.error(state.message);
+  const handlePasswordChange = (e) => {
+    const value = e.target.value;
+    setPassword(value);
+
+    if (!value) {
+      setErrors((prev) => ({ ...prev, password: "Password is required" }));
+    } else if (value.length < 6) {
+      setErrors((prev) => ({
+        ...prev,
+        password: "Password must be at least 6 characters",
+      }));
+    } else {
+      setErrors((prev) => ({ ...prev, password: "" }));
     }
-  }, [state]);
+  };
 
   return (
     <section className='login-page'>
@@ -72,29 +96,32 @@ const Login = () => {
             </p>
           </div>
 
-          <form className='login-page__form' onSubmit={handleSubmit(onSubmit)}>
+          <form className='login-page__form' action={formAction}>
             <div className='login-page__form-input-box'>
               <input
                 type='text'
-                placeholder='Your Email or Mobile Number'
-                {...register("contact", {
-                  required: "Email or Phone is required",
-                })}
+                id='identifier'
+                name='identifier'
+                value={identifier}
+                onChange={handleIdentifierChange}
+                placeholder='Email or mobile phone number'
+                required
               />
-              <span className='login-page__form-input-box__icon icon-mail'></span>
-              {errors.contact && (
-                <p className='text-red-500 text-sm'>{errors.contact.message}</p>
+              {errors.identifier && (
+                <p className='text-red-500 text-sm mt-1'>{errors.identifier}</p>
               )}
             </div>
 
             <div className='login-page__form-input-box'>
+              
               <input
                 type={showPassword ? "text" : "password"}
-                placeholder='Password*'
-                {...register("password", {
-                  required: "Password is required",
-                  minLength: { value: 6, message: "Minimum 6 characters" },
-                })}
+                id='password'
+                name='password'
+                value={password}
+                onChange={handlePasswordChange}
+                placeholder='Password'
+                required
               />
               <span className='login-page__form-input-box__icon icon-lock'></span>
               <i
@@ -112,20 +139,16 @@ const Login = () => {
             </div>
 
             <div className='login-page__checked-box'>
-              <div className='login-page__checked-inner'>
+              {/* <div className='login-page__checked-inner'>
                 <input type='checkbox' id='save-data' {...register("terms")} />
                 <label htmlFor='save-data'>
                   <span></span>I agree to the Terms & Conditions
                 </label>
-              </div>
+              </div> */}
               <div className='login-page__checked-inner'>
                 <Link href='#'>Forgot password</Link>
               </div>
-              {checkboxError && (
-                <p className='text-red-500 text-sm mt-1'>
-                  You must agree to the Terms & Conditions
-                </p>
-              )}
+              
             </div>
 
             <div className='login-page__form-input-box'>
@@ -153,7 +176,7 @@ const Login = () => {
             <div className='login-page__bottom__social'>
               <a
                 href='https://www.facebook.com/'
-                className='login-page__bottom__social__item'
+                className='login-page__bottom__social__item d-none'
               >
                 <Image src={facebookIcon} alt='Facebook' />
               </a>
@@ -165,7 +188,7 @@ const Login = () => {
               </a>
               <a
                 href='https://www.apple.com/'
-                className='login-page__bottom__social__item'
+                className='login-page__bottom__social__item d-none' 
               >
                 <Image src={appleIcon} alt='Apple' />
               </a>

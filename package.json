@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\" \"cd merchant && npm run dev\" \"cd brand && npm run dev\""
+    "dev": "concurrently  \"cd frontend && npm run dev\" \"cd merchant && npm run dev\" \"cd brand && npm run dev\""
   },
   "dependencies": {
    

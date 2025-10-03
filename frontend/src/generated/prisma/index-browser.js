@@ -132,6 +132,19 @@ exports.Prisma.UserScalarFieldEnum = {
   isActive: 'isActive'
 };
 
+exports.Prisma.UserAddressScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  phone: 'phone',
+  email: 'email',
+  address: 'address',
+  isDefault: 'isDefault',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.MerchantProfileScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -165,7 +178,23 @@ exports.Prisma.BrandScalarFieldEnum = {
   brandCategoryId: 'brandCategoryId',
   userId: 'userId',
   defaultBrandPct: 'defaultBrandPct',
-  defaultMerchantPct: 'defaultMerchantPct'
+  defaultMerchantPct: 'defaultMerchantPct',
+  dateOfBirth: 'dateOfBirth',
+  contactEmail: 'contactEmail',
+  contactPhone: 'contactPhone',
+  nidOrPassportNo: 'nidOrPassportNo',
+  presentAddress: 'presentAddress',
+  permanentAddress: 'permanentAddress',
+  portfolioUrl: 'portfolioUrl',
+  websiteUrl: 'websiteUrl',
+  bankName: 'bankName',
+  bankBranch: 'bankBranch',
+  accountName: 'accountName',
+  accountNumber: 'accountNumber',
+  routingNumber: 'routingNumber',
+  message: 'message',
+  industryType: 'industryType',
+  socialProfile: 'socialProfile'
 };
 
 exports.Prisma.BrandCategoryScalarFieldEnum = {
@@ -245,9 +274,55 @@ exports.Prisma.MockupVariantScalarFieldEnum = {
   backImg: 'backImg'
 };
 
+exports.Prisma.OrderScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  addressId: 'addressId',
+  currency: 'currency',
+  subtotal: 'subtotal',
+  discount: 'discount',
+  tax: 'tax',
+  shippingFee: 'shippingFee',
+  grandTotal: 'grandTotal',
+  couponCode: 'couponCode',
+  couponRate: 'couponRate',
+  status: 'status',
+  tranId: 'tranId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.OrderItemScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  productId: 'productId',
+  productTitle: 'productTitle',
+  unitPrice: 'unitPrice',
+  quantity: 'quantity',
+  color: 'color',
+  fitType: 'fitType',
+  size: 'size'
+};
+
+exports.Prisma.PaymentScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  valId: 'valId',
+  bankTranId: 'bankTranId',
+  cardType: 'cardType',
+  rawPayload: 'rawPayload',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -258,6 +333,12 @@ exports.Prisma.QueryMode = {
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 exports.Role = exports.$Enums.Role = {
   USER: 'USER',
@@ -274,6 +355,7 @@ exports.FitType = exports.$Enums.FitType = {
 
 exports.Prisma.ModelName = {
   User: 'User',
+  UserAddress: 'UserAddress',
   MerchantProfile: 'MerchantProfile',
   Brand: 'Brand',
   BrandCategory: 'BrandCategory',
@@ -283,7 +365,10 @@ exports.Prisma.ModelName = {
   Feature: 'Feature',
   Tag: 'Tag',
   Mockup: 'Mockup',
-  MockupVariant: 'MockupVariant'
+  MockupVariant: 'MockupVariant',
+  Order: 'Order',
+  OrderItem: 'OrderItem',
+  Payment: 'Payment'
 };
 
 /**

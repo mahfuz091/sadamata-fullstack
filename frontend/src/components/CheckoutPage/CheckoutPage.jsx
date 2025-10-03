@@ -1,8 +1,9 @@
 'use client';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useTransition } from 'react';
 import Image from 'next/image';
 import cartData from '../CartPage/cartData';
 import { useRouter } from 'next/navigation';
+import { createCheckoutSession } from '@/app/actions/payment/payment.actions';
 
 const COUPONS = {
   SAVE10: 0.1,
@@ -11,6 +12,8 @@ const COUPONS = {
 };
 
 const CheckoutPage = ({user}) => {
+
+  const [pending, start] = useTransition();
     console.log(user);
     
     const router = useRouter()
@@ -303,6 +306,17 @@ const CheckoutPage = ({user}) => {
               <button type="button" className="commerce-btn">
                 Continue to Shipping <i className="icon-right-arrow"></i>
               </button>
+              <button
+      disabled={pending}
+      onClick={() =>
+        start(async () => {
+          const { url } = await createCheckoutSession(500); // BDT 500
+          window.location.href = url;
+        })
+      }
+    >
+      {pending ? "Redirecting…" : "Pay ৳500"}
+    </button>
             </div>
           </div>
         </div>

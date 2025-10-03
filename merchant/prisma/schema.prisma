@@ -241,6 +241,30 @@ model MockupVariant {
   @@unique([mockupId, color, fitType]) // one row per (mockup, color, fitType)
 }
 
+model Order {
+  id            String   @id @default(cuid())
+  amount        Decimal  @db.Decimal(10, 2)
+  currency      String   @default("BDT")
+  status        String   @default("PENDING") // PENDING | PAID | FAILED | CANCELLED
+  tranId        String   @unique            // matches SSLCOMMERZ `tran_id`
+  customerEmail String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  payment       Payment?
+}
+
+model Payment {
+  id           String   @id @default(cuid())
+  orderId      String   @unique
+  order        Order    @relation(fields: [orderId], references: [id])
+  valId        String?  // from SSLCOMMERZ validation / redirect/IPN
+  bankTranId   String?  // bank_tran_id
+  cardType     String?
+  rawPayload   Json?    // store last payload (success/ipn)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
 enum FitType {
   MEN
   WOMEN

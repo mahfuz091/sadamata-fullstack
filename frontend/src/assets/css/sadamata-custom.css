@@ -250,3 +250,19 @@ ul.populer-feature__list.list-unstyled li i {
     overflow: hidden;
     background-color: transparent;
 }
+.form-one .bootstrap-select > .dropdown-toggle, .form-one input[type="text"], .form-one input[type="tel"], .form-one input[type="email"], .form-one input[type="number"], .form-one input[type="date"], .form-one textarea {
+    display: block;
+    width: 100%;
+    padding-left: 16px;
+    padding-right: 16px;
+    height: 58px;
+    border-radius: 8px;
+    border: 1.5px solid #e8effc;
+    background: var(--commerce-white);
+    color: var(--commerce-black);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 160%;
+    letter-spacing: -0.08px;
+}

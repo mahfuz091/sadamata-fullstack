@@ -30,6 +30,51 @@ model User {
   sales           Sale[]           @relation("MerchantSales")
   // NEW: one-to-one merchant profile
   merchantProfile MerchantProfile?
+  addresses       UserAddress[] // NEW
+
+  Order Order[]
+}
+
+// model UserAddress {
+//   id        String   @id @default(cuid())
+//   userId    String
+//   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//   label     String?        // "Home", "Office", etc.
+//   firstName  String
+//   lastName  String
+//   phone     String
+//   address  String
+//   address2  String?
+//   city      String
+//   postcode  String
+//   country   String @default("Bangladesh")
+//   isDefault Boolean @default(false)
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@index([userId, isDefault])
+//   Order Order[]
+// }
+
+model UserAddress {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  firstName String
+  lastName  String
+  phone     String
+  email     String? // optional if you prefer to use User.email
+  address   String // full free-form address line
+  isDefault Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Order     Order[]
+
+  @@index([userId, isDefault])
 }
 
 model MerchantProfile {
@@ -84,6 +129,32 @@ model Brand {
   // Default commission settings for this brand
   defaultBrandPct    Float @default(10.0) // brand share
   defaultMerchantPct Float @default(10.0) // merchant share
+
+  // Personal Information (keep email/phone in User; allow contact overrides if needed)
+
+  dateOfBirth     DateTime
+  contactEmail    String   @db.VarChar(190)
+  contactPhone    String   @db.VarChar(32)
+  nidOrPassportNo String   @db.VarChar(64)
+
+  presentAddress   String @db.VarChar(255)
+  permanentAddress String @db.VarChar(255)
+
+  portfolioUrl String? @db.VarChar(255)
+  websiteUrl   String? @db.VarChar(255)
+
+  // Bank (single account from your form; split into its own model later if you need multi-account)
+  bankName      String @db.VarChar(80) // e.g., "DBBL"
+  bankBranch    String @db.VarChar(80) // e.g., "Dhaka"
+  accountName   String @db.VarChar(120)
+  accountNumber String @db.VarChar(64)
+  routingNumber String @db.VarChar(64)
+
+  // Additional
+  message String? @db.Text
+
+  industryType  String
+  socialProfile String
 }
 
 model BrandCategory {
@@ -209,6 +280,72 @@ model MockupVariant {
   backImg  String // optional: back image
 
   @@unique([mockupId, color, fitType]) // one row per (mockup, color, fitType)
+}
+
+model Order {
+  id String @id @default(cuid())
+
+  // required: no guest orders
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  // required: always point to a saved address
+  addressId String
+  address   UserAddress @relation(fields: [addressId], references: [id])
+  // (default referential action prevents deleting an address that’s used)
+
+  // money
+  currency    String  @default("BDT")
+  subtotal    Decimal @db.Decimal(12, 2)
+  discount    Decimal @default(0) @db.Decimal(12, 2)
+  tax         Decimal @default(0) @db.Decimal(12, 2)
+  shippingFee Decimal @default(0) @db.Decimal(12, 2)
+  grandTotal  Decimal @db.Decimal(12, 2)
+
+  // coupon
+  couponCode String?
+  couponRate Decimal? @db.Decimal(5, 4)
+
+  // payment / gateway
+  status String @default("PENDING") // PENDING | PAID | FAILED | CANCELLED
+  tranId String @unique
+
+  // relations
+  items   OrderItem[]
+  payment Payment?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, createdAt])
+  @@index([addressId])
+}
+
+model OrderItem {
+  id      String @id @default(cuid())
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  productId    String?
+  productTitle String
+  unitPrice    Decimal @db.Decimal(12, 2)
+  quantity     Int     @default(1)
+
+  color   String?
+  fitType FitType?
+  size    String?
+}
+
+model Payment {
+  id         String   @id @default(cuid())
+  orderId    String   @unique
+  order      Order    @relation(fields: [orderId], references: [id])
+  valId      String? // from SSLCOMMERZ validation / redirect/IPN
+  bankTranId String? // bank_tran_id
+  cardType   String?
+  rawPayload Json? // store last payload (success/ipn)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 enum FitType {

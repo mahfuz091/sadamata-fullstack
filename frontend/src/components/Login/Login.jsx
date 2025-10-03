@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useActionState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
 import Image from "next/image";
@@ -18,6 +18,9 @@ import { isValidBDPhone, isValidEmail } from "@/utils/validation";
 const initialState = { success: false, message: "" };
 
 const Login = () => {
+  const params = useSearchParams();
+  const redirectTo = params.get("redirect") || "/";
+
   const initialState = {
     message: "",
     success: false,
@@ -97,6 +100,7 @@ const [identifier, setIdentifier] = useState("");
           </div>
 
           <form className='login-page__form' action={formAction}>
+             <input type="hidden" name="redirect" value={redirectTo} />
             <div className='login-page__form-input-box'>
               <input
                 type='text'

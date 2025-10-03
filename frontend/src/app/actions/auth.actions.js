@@ -1,10 +1,10 @@
 "use server";
 
 import  prisma  from "@/lib/prisma";
+import { AuthError } from "next-auth";
 import bcrypt from "bcryptjs"; // for hashing passwords
 import { signIn, signOut, auth } from "@/auth";
-import { NextResponse } from "next/server";
-import { redirect } from "next/navigation";
+
 import { revalidatePath } from "next/cache";
 
 export async function registerUser(prevState, formData) {
@@ -245,46 +245,37 @@ export const loginUser = async (prevState, formData) => {
   try {
     const identifier = formData.get("identifier");
     const password = formData.get("password");
+    const redirectRaw = formData.get("redirect") || "/";
+    const redirectTo =
+      typeof redirectRaw === "string" && redirectRaw.startsWith("/") ? redirectRaw : "/";
 
-    if (!identifier) {
-      return { success: false, message: "Email or phone is required" };
-    }
-    if (!password) {
-      return { success: false, message: "Password is required" };
-    }
+    if (!identifier) return { success: false, message: "Email or phone is required" };
+    if (!password) return { success: false, message: "Password is required" };
 
-    // Find user (email OR phone)
+    // (Your pre-check; optional—see note below)
     const user = await prisma.user.findFirst({
-      where: {
-        AND: [
-          { OR: [{ email: identifier }, { phone: identifier }] },
-          { role: "USER" },
-        ],
-      },
+      where: { AND: [{ OR: [{ email: identifier }, { phone: identifier }] }, { role: "USER" }] },
     });
-
-    console.log(user, "user");
-
-    if (!user) {
-      return { success: false, message: "User not found" };
-    }
+    if (!user) return { success: false, message: "User not found" };
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return { success: false, message: "Invalid password" };
-    }
+    if (!isPasswordValid) return { success: false, message: "Invalid password" };
 
-    // NextAuth signIn
-    const response = await signIn("credentials", {
-      identifier,
-      password,
-      redirect: false,
-    });
+    // NextAuth signIn — on success this will THROW a NEXT_REDIRECT
+    await signIn("credentials", { identifier, password, redirectTo });
 
+    // Unreachable on success (redirect already happened); kept for completeness
     return { success: true, message: "Login successful" };
   } catch (error) {
-    console.error("Login error:", error);
-    return { success: false, message: "An unexpected error occurred. Please try again." };
+    // Handle *auth failures* only
+    if (error instanceof AuthError) {
+      if (error.type === "CredentialsSignin") {
+        return { success: false, message: "Invalid email/phone or password" };
+      }
+      return { success: false, message: "Authentication failed. Please try again." };
+    }
+    // IMPORTANT: let NEXT_REDIRECT bubble (do NOT swallow it)
+    throw error;
   }
 };
 

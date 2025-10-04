@@ -116,9 +116,9 @@ export async function createCheckoutSession(payload) {
     currency: "BDT",
     tran_id: order.tranId,
 
-    success_url: successBridge,
-    fail_url:    joinUrl(base, `/payment-failed`),
-    cancel_url:  joinUrl(base, `/payment-cancelled`),
+    success_url: joinUrl(base, `/api/sslcz/success?tran=${encodeURIComponent(tranId)}`),
+    fail_url:    joinUrl(base, `/api/sslcz/return/fail`),
+    cancel_url:  joinUrl(base, `/api/sslcz/return/cancel`),
     ipn_url:     joinUrl(base, `/api/sslcz/ipn`), // keep IPN for authoritative update
 
     cus_name:  `${addr.firstName} ${addr.lastName}`.trim(),

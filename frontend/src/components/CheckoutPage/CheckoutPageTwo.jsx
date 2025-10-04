@@ -411,6 +411,10 @@ console.log(sanitizedCart, "sanitizedCart");
                         addressId: selectedId,
                       };
                       const { url } = await createCheckoutSession(payload);
+                      // ✅ Clear cart from localStorage after payment session is created
+        localStorage.removeItem("cart");
+        localStorage.removeItem("checkoutMeta");
+        
                       window.location.href = url;
                     } catch (err) {
                       console.error(err);

@@ -2484,6 +2484,37 @@ export namespace Prisma {
 
 
   /**
+   * Count Type OrderItemCountOutputType
+   */
+
+  export type OrderItemCountOutputType = {
+    Sale: number
+  }
+
+  export type OrderItemCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Sale?: boolean | OrderItemCountOutputTypeCountSaleArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * OrderItemCountOutputType without action
+   */
+  export type OrderItemCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderItemCountOutputType
+     */
+    select?: OrderItemCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * OrderItemCountOutputType without action
+   */
+  export type OrderItemCountOutputTypeCountSaleArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SaleWhereInput
+  }
+
+
+  /**
    * Models
    */
 
@@ -10111,6 +10142,7 @@ export namespace Prisma {
 
   export type SaleMinAggregateOutputType = {
     id: string | null
+    orderItemId: string | null
     productId: string | null
     merchantId: string | null
     brandId: string | null
@@ -10124,6 +10156,7 @@ export namespace Prisma {
 
   export type SaleMaxAggregateOutputType = {
     id: string | null
+    orderItemId: string | null
     productId: string | null
     merchantId: string | null
     brandId: string | null
@@ -10137,6 +10170,7 @@ export namespace Prisma {
 
   export type SaleCountAggregateOutputType = {
     id: number
+    orderItemId: number
     productId: number
     merchantId: number
     brandId: number
@@ -10168,6 +10202,7 @@ export namespace Prisma {
 
   export type SaleMinAggregateInputType = {
     id?: true
+    orderItemId?: true
     productId?: true
     merchantId?: true
     brandId?: true
@@ -10181,6 +10216,7 @@ export namespace Prisma {
 
   export type SaleMaxAggregateInputType = {
     id?: true
+    orderItemId?: true
     productId?: true
     merchantId?: true
     brandId?: true
@@ -10194,6 +10230,7 @@ export namespace Prisma {
 
   export type SaleCountAggregateInputType = {
     id?: true
+    orderItemId?: true
     productId?: true
     merchantId?: true
     brandId?: true
@@ -10294,6 +10331,7 @@ export namespace Prisma {
 
   export type SaleGroupByOutputType = {
     id: string
+    orderItemId: string
     productId: string
     merchantId: string
     brandId: string | null
@@ -10326,6 +10364,7 @@ export namespace Prisma {
 
   export type SaleSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    orderItemId?: boolean
     productId?: boolean
     merchantId?: boolean
     brandId?: boolean
@@ -10335,6 +10374,7 @@ export namespace Prisma {
     merchantEarning?: boolean
     platformEarning?: boolean
     createdAt?: boolean
+    orderItem?: boolean | OrderItemDefaultArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
     merchant?: boolean | UserDefaultArgs<ExtArgs>
     brand?: boolean | Sale$brandArgs<ExtArgs>
@@ -10342,6 +10382,7 @@ export namespace Prisma {
 
   export type SaleSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    orderItemId?: boolean
     productId?: boolean
     merchantId?: boolean
     brandId?: boolean
@@ -10351,6 +10392,7 @@ export namespace Prisma {
     merchantEarning?: boolean
     platformEarning?: boolean
     createdAt?: boolean
+    orderItem?: boolean | OrderItemDefaultArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
     merchant?: boolean | UserDefaultArgs<ExtArgs>
     brand?: boolean | Sale$brandArgs<ExtArgs>
@@ -10358,6 +10400,7 @@ export namespace Prisma {
 
   export type SaleSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    orderItemId?: boolean
     productId?: boolean
     merchantId?: boolean
     brandId?: boolean
@@ -10367,6 +10410,7 @@ export namespace Prisma {
     merchantEarning?: boolean
     platformEarning?: boolean
     createdAt?: boolean
+    orderItem?: boolean | OrderItemDefaultArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
     merchant?: boolean | UserDefaultArgs<ExtArgs>
     brand?: boolean | Sale$brandArgs<ExtArgs>
@@ -10374,6 +10418,7 @@ export namespace Prisma {
 
   export type SaleSelectScalar = {
     id?: boolean
+    orderItemId?: boolean
     productId?: boolean
     merchantId?: boolean
     brandId?: boolean
@@ -10385,18 +10430,21 @@ export namespace Prisma {
     createdAt?: boolean
   }
 
-  export type SaleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productId" | "merchantId" | "brandId" | "quantity" | "total" | "brandEarning" | "merchantEarning" | "platformEarning" | "createdAt", ExtArgs["result"]["sale"]>
+  export type SaleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orderItemId" | "productId" | "merchantId" | "brandId" | "quantity" | "total" | "brandEarning" | "merchantEarning" | "platformEarning" | "createdAt", ExtArgs["result"]["sale"]>
   export type SaleInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    orderItem?: boolean | OrderItemDefaultArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
     merchant?: boolean | UserDefaultArgs<ExtArgs>
     brand?: boolean | Sale$brandArgs<ExtArgs>
   }
   export type SaleIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    orderItem?: boolean | OrderItemDefaultArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
     merchant?: boolean | UserDefaultArgs<ExtArgs>
     brand?: boolean | Sale$brandArgs<ExtArgs>
   }
   export type SaleIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    orderItem?: boolean | OrderItemDefaultArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
     merchant?: boolean | UserDefaultArgs<ExtArgs>
     brand?: boolean | Sale$brandArgs<ExtArgs>
@@ -10405,12 +10453,14 @@ export namespace Prisma {
   export type $SalePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Sale"
     objects: {
+      orderItem: Prisma.$OrderItemPayload<ExtArgs>
       product: Prisma.$ProductPayload<ExtArgs>
       merchant: Prisma.$UserPayload<ExtArgs>
       brand: Prisma.$BrandPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      orderItemId: string
       productId: string
       merchantId: string
       brandId: string | null
@@ -10814,6 +10864,7 @@ export namespace Prisma {
    */
   export interface Prisma__SaleClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    orderItem<T extends OrderItemDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrderItemDefaultArgs<ExtArgs>>): Prisma__OrderItemClient<$Result.GetResult<Prisma.$OrderItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     product<T extends ProductDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProductDefaultArgs<ExtArgs>>): Prisma__ProductClient<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     merchant<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     brand<T extends Sale$brandArgs<ExtArgs> = {}>(args?: Subset<T, Sale$brandArgs<ExtArgs>>): Prisma__BrandClient<$Result.GetResult<Prisma.$BrandPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -10847,6 +10898,7 @@ export namespace Prisma {
    */
   interface SaleFieldRefs {
     readonly id: FieldRef<"Sale", 'String'>
+    readonly orderItemId: FieldRef<"Sale", 'String'>
     readonly productId: FieldRef<"Sale", 'String'>
     readonly merchantId: FieldRef<"Sale", 'String'>
     readonly brandId: FieldRef<"Sale", 'String'>
@@ -16626,6 +16678,7 @@ export namespace Prisma {
     tranId: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    settledAt: Date | null
   }
 
   export type OrderMaxAggregateOutputType = {
@@ -16644,6 +16697,7 @@ export namespace Prisma {
     tranId: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    settledAt: Date | null
   }
 
   export type OrderCountAggregateOutputType = {
@@ -16662,6 +16716,7 @@ export namespace Prisma {
     tranId: number
     createdAt: number
     updatedAt: number
+    settledAt: number
     _all: number
   }
 
@@ -16700,6 +16755,7 @@ export namespace Prisma {
     tranId?: true
     createdAt?: true
     updatedAt?: true
+    settledAt?: true
   }
 
   export type OrderMaxAggregateInputType = {
@@ -16718,6 +16774,7 @@ export namespace Prisma {
     tranId?: true
     createdAt?: true
     updatedAt?: true
+    settledAt?: true
   }
 
   export type OrderCountAggregateInputType = {
@@ -16736,6 +16793,7 @@ export namespace Prisma {
     tranId?: true
     createdAt?: true
     updatedAt?: true
+    settledAt?: true
     _all?: true
   }
 
@@ -16841,6 +16899,7 @@ export namespace Prisma {
     tranId: string
     createdAt: Date
     updatedAt: Date
+    settledAt: Date | null
     _count: OrderCountAggregateOutputType | null
     _avg: OrderAvgAggregateOutputType | null
     _sum: OrderSumAggregateOutputType | null
@@ -16878,6 +16937,7 @@ export namespace Prisma {
     tranId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    settledAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     address?: boolean | UserAddressDefaultArgs<ExtArgs>
     items?: boolean | Order$itemsArgs<ExtArgs>
@@ -16901,6 +16961,7 @@ export namespace Prisma {
     tranId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    settledAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     address?: boolean | UserAddressDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["order"]>
@@ -16921,6 +16982,7 @@ export namespace Prisma {
     tranId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    settledAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     address?: boolean | UserAddressDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["order"]>
@@ -16941,9 +17003,10 @@ export namespace Prisma {
     tranId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    settledAt?: boolean
   }
 
-  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "addressId" | "currency" | "subtotal" | "discount" | "tax" | "shippingFee" | "grandTotal" | "couponCode" | "couponRate" | "status" | "tranId" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
+  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "addressId" | "currency" | "subtotal" | "discount" | "tax" | "shippingFee" | "grandTotal" | "couponCode" | "couponRate" | "status" | "tranId" | "createdAt" | "updatedAt" | "settledAt", ExtArgs["result"]["order"]>
   export type OrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     address?: boolean | UserAddressDefaultArgs<ExtArgs>
@@ -16984,6 +17047,7 @@ export namespace Prisma {
       tranId: string
       createdAt: Date
       updatedAt: Date
+      settledAt: Date | null
     }, ExtArgs["result"]["order"]>
     composites: {}
   }
@@ -17426,6 +17490,7 @@ export namespace Prisma {
     readonly tranId: FieldRef<"Order", 'String'>
     readonly createdAt: FieldRef<"Order", 'DateTime'>
     readonly updatedAt: FieldRef<"Order", 'DateTime'>
+    readonly settledAt: FieldRef<"Order", 'DateTime'>
   }
     
 
@@ -18118,6 +18183,8 @@ export namespace Prisma {
     fitType?: boolean
     size?: boolean
     order?: boolean | OrderDefaultArgs<ExtArgs>
+    Sale?: boolean | OrderItem$SaleArgs<ExtArgs>
+    _count?: boolean | OrderItemCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["orderItem"]>
 
   export type OrderItemSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -18161,6 +18228,8 @@ export namespace Prisma {
   export type OrderItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orderId" | "productId" | "productTitle" | "unitPrice" | "quantity" | "color" | "fitType" | "size", ExtArgs["result"]["orderItem"]>
   export type OrderItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     order?: boolean | OrderDefaultArgs<ExtArgs>
+    Sale?: boolean | OrderItem$SaleArgs<ExtArgs>
+    _count?: boolean | OrderItemCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OrderItemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     order?: boolean | OrderDefaultArgs<ExtArgs>
@@ -18173,6 +18242,7 @@ export namespace Prisma {
     name: "OrderItem"
     objects: {
       order: Prisma.$OrderPayload<ExtArgs>
+      Sale: Prisma.$SalePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -18579,6 +18649,7 @@ export namespace Prisma {
   export interface Prisma__OrderItemClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     order<T extends OrderDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrderDefaultArgs<ExtArgs>>): Prisma__OrderClient<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    Sale<T extends OrderItem$SaleArgs<ExtArgs> = {}>(args?: Subset<T, OrderItem$SaleArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -19010,6 +19081,30 @@ export namespace Prisma {
      * Limit how many OrderItems to delete.
      */
     limit?: number
+  }
+
+  /**
+   * OrderItem.Sale
+   */
+  export type OrderItem$SaleArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Sale
+     */
+    select?: SaleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Sale
+     */
+    omit?: SaleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SaleInclude<ExtArgs> | null
+    where?: SaleWhereInput
+    orderBy?: SaleOrderByWithRelationInput | SaleOrderByWithRelationInput[]
+    cursor?: SaleWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SaleScalarFieldEnum | SaleScalarFieldEnum[]
   }
 
   /**
@@ -20262,6 +20357,7 @@ export namespace Prisma {
 
   export const SaleScalarFieldEnum: {
     id: 'id',
+    orderItemId: 'orderItemId',
     productId: 'productId',
     merchantId: 'merchantId',
     brandId: 'brandId',
@@ -20343,7 +20439,8 @@ export namespace Prisma {
     status: 'status',
     tranId: 'tranId',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    settledAt: 'settledAt'
   };
 
   export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum]
@@ -21212,6 +21309,7 @@ export namespace Prisma {
     OR?: SaleWhereInput[]
     NOT?: SaleWhereInput | SaleWhereInput[]
     id?: StringFilter<"Sale"> | string
+    orderItemId?: StringFilter<"Sale"> | string
     productId?: StringFilter<"Sale"> | string
     merchantId?: StringFilter<"Sale"> | string
     brandId?: StringNullableFilter<"Sale"> | string | null
@@ -21221,6 +21319,7 @@ export namespace Prisma {
     merchantEarning?: FloatFilter<"Sale"> | number
     platformEarning?: FloatFilter<"Sale"> | number
     createdAt?: DateTimeFilter<"Sale"> | Date | string
+    orderItem?: XOR<OrderItemScalarRelationFilter, OrderItemWhereInput>
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
     merchant?: XOR<UserScalarRelationFilter, UserWhereInput>
     brand?: XOR<BrandNullableScalarRelationFilter, BrandWhereInput> | null
@@ -21228,6 +21327,7 @@ export namespace Prisma {
 
   export type SaleOrderByWithRelationInput = {
     id?: SortOrder
+    orderItemId?: SortOrder
     productId?: SortOrder
     merchantId?: SortOrder
     brandId?: SortOrderInput | SortOrder
@@ -21237,6 +21337,7 @@ export namespace Prisma {
     merchantEarning?: SortOrder
     platformEarning?: SortOrder
     createdAt?: SortOrder
+    orderItem?: OrderItemOrderByWithRelationInput
     product?: ProductOrderByWithRelationInput
     merchant?: UserOrderByWithRelationInput
     brand?: BrandOrderByWithRelationInput
@@ -21244,6 +21345,7 @@ export namespace Prisma {
 
   export type SaleWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    orderItemId?: string
     AND?: SaleWhereInput | SaleWhereInput[]
     OR?: SaleWhereInput[]
     NOT?: SaleWhereInput | SaleWhereInput[]
@@ -21256,13 +21358,15 @@ export namespace Prisma {
     merchantEarning?: FloatFilter<"Sale"> | number
     platformEarning?: FloatFilter<"Sale"> | number
     createdAt?: DateTimeFilter<"Sale"> | Date | string
+    orderItem?: XOR<OrderItemScalarRelationFilter, OrderItemWhereInput>
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
     merchant?: XOR<UserScalarRelationFilter, UserWhereInput>
     brand?: XOR<BrandNullableScalarRelationFilter, BrandWhereInput> | null
-  }, "id">
+  }, "id" | "orderItemId">
 
   export type SaleOrderByWithAggregationInput = {
     id?: SortOrder
+    orderItemId?: SortOrder
     productId?: SortOrder
     merchantId?: SortOrder
     brandId?: SortOrderInput | SortOrder
@@ -21284,6 +21388,7 @@ export namespace Prisma {
     OR?: SaleScalarWhereWithAggregatesInput[]
     NOT?: SaleScalarWhereWithAggregatesInput | SaleScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Sale"> | string
+    orderItemId?: StringWithAggregatesFilter<"Sale"> | string
     productId?: StringWithAggregatesFilter<"Sale"> | string
     merchantId?: StringWithAggregatesFilter<"Sale"> | string
     brandId?: StringNullableWithAggregatesFilter<"Sale"> | string | null
@@ -21579,6 +21684,7 @@ export namespace Prisma {
     tranId?: StringFilter<"Order"> | string
     createdAt?: DateTimeFilter<"Order"> | Date | string
     updatedAt?: DateTimeFilter<"Order"> | Date | string
+    settledAt?: DateTimeNullableFilter<"Order"> | Date | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     address?: XOR<UserAddressScalarRelationFilter, UserAddressWhereInput>
     items?: OrderItemListRelationFilter
@@ -21601,6 +21707,7 @@ export namespace Prisma {
     tranId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    settledAt?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
     address?: UserAddressOrderByWithRelationInput
     items?: OrderItemOrderByRelationAggregateInput
@@ -21626,6 +21733,7 @@ export namespace Prisma {
     status?: StringFilter<"Order"> | string
     createdAt?: DateTimeFilter<"Order"> | Date | string
     updatedAt?: DateTimeFilter<"Order"> | Date | string
+    settledAt?: DateTimeNullableFilter<"Order"> | Date | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     address?: XOR<UserAddressScalarRelationFilter, UserAddressWhereInput>
     items?: OrderItemListRelationFilter
@@ -21648,6 +21756,7 @@ export namespace Prisma {
     tranId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    settledAt?: SortOrderInput | SortOrder
     _count?: OrderCountOrderByAggregateInput
     _avg?: OrderAvgOrderByAggregateInput
     _max?: OrderMaxOrderByAggregateInput
@@ -21674,6 +21783,7 @@ export namespace Prisma {
     tranId?: StringWithAggregatesFilter<"Order"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Order"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Order"> | Date | string
+    settledAt?: DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
   }
 
   export type OrderItemWhereInput = {
@@ -21690,6 +21800,7 @@ export namespace Prisma {
     fitType?: EnumFitTypeNullableFilter<"OrderItem"> | $Enums.FitType | null
     size?: StringNullableFilter<"OrderItem"> | string | null
     order?: XOR<OrderScalarRelationFilter, OrderWhereInput>
+    Sale?: SaleListRelationFilter
   }
 
   export type OrderItemOrderByWithRelationInput = {
@@ -21703,6 +21814,7 @@ export namespace Prisma {
     fitType?: SortOrderInput | SortOrder
     size?: SortOrderInput | SortOrder
     order?: OrderOrderByWithRelationInput
+    Sale?: SaleOrderByRelationAggregateInput
   }
 
   export type OrderItemWhereUniqueInput = Prisma.AtLeast<{
@@ -21719,6 +21831,7 @@ export namespace Prisma {
     fitType?: EnumFitTypeNullableFilter<"OrderItem"> | $Enums.FitType | null
     size?: StringNullableFilter<"OrderItem"> | string | null
     order?: XOR<OrderScalarRelationFilter, OrderWhereInput>
+    Sale?: SaleListRelationFilter
   }, "id">
 
   export type OrderItemOrderByWithAggregationInput = {
@@ -22608,6 +22721,7 @@ export namespace Prisma {
     merchantEarning?: number
     platformEarning?: number
     createdAt?: Date | string
+    orderItem: OrderItemCreateNestedOneWithoutSaleInput
     product: ProductCreateNestedOneWithoutSalesInput
     merchant: UserCreateNestedOneWithoutSalesInput
     brand?: BrandCreateNestedOneWithoutSalesInput
@@ -22615,6 +22729,7 @@ export namespace Prisma {
 
   export type SaleUncheckedCreateInput = {
     id?: string
+    orderItemId: string
     productId: string
     merchantId: string
     brandId?: string | null
@@ -22634,6 +22749,7 @@ export namespace Prisma {
     merchantEarning?: FloatFieldUpdateOperationsInput | number
     platformEarning?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderItem?: OrderItemUpdateOneRequiredWithoutSaleNestedInput
     product?: ProductUpdateOneRequiredWithoutSalesNestedInput
     merchant?: UserUpdateOneRequiredWithoutSalesNestedInput
     brand?: BrandUpdateOneWithoutSalesNestedInput
@@ -22641,6 +22757,7 @@ export namespace Prisma {
 
   export type SaleUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    orderItemId?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
     merchantId?: StringFieldUpdateOperationsInput | string
     brandId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -22654,6 +22771,7 @@ export namespace Prisma {
 
   export type SaleCreateManyInput = {
     id?: string
+    orderItemId: string
     productId: string
     merchantId: string
     brandId?: string | null
@@ -22677,6 +22795,7 @@ export namespace Prisma {
 
   export type SaleUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    orderItemId?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
     merchantId?: StringFieldUpdateOperationsInput | string
     brandId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -22965,6 +23084,7 @@ export namespace Prisma {
     tranId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    settledAt?: Date | string | null
     user: UserCreateNestedOneWithoutOrderInput
     address: UserAddressCreateNestedOneWithoutOrderInput
     items?: OrderItemCreateNestedManyWithoutOrderInput
@@ -22987,6 +23107,7 @@ export namespace Prisma {
     tranId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    settledAt?: Date | string | null
     items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     payment?: PaymentUncheckedCreateNestedOneWithoutOrderInput
   }
@@ -23005,6 +23126,7 @@ export namespace Prisma {
     tranId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutOrderNestedInput
     address?: UserAddressUpdateOneRequiredWithoutOrderNestedInput
     items?: OrderItemUpdateManyWithoutOrderNestedInput
@@ -23027,6 +23149,7 @@ export namespace Prisma {
     tranId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     payment?: PaymentUncheckedUpdateOneWithoutOrderNestedInput
   }
@@ -23047,6 +23170,7 @@ export namespace Prisma {
     tranId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    settledAt?: Date | string | null
   }
 
   export type OrderUpdateManyMutationInput = {
@@ -23063,6 +23187,7 @@ export namespace Prisma {
     tranId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type OrderUncheckedUpdateManyInput = {
@@ -23081,6 +23206,7 @@ export namespace Prisma {
     tranId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type OrderItemCreateInput = {
@@ -23093,6 +23219,7 @@ export namespace Prisma {
     fitType?: $Enums.FitType | null
     size?: string | null
     order: OrderCreateNestedOneWithoutItemsInput
+    Sale?: SaleCreateNestedManyWithoutOrderItemInput
   }
 
   export type OrderItemUncheckedCreateInput = {
@@ -23105,6 +23232,7 @@ export namespace Prisma {
     color?: string | null
     fitType?: $Enums.FitType | null
     size?: string | null
+    Sale?: SaleUncheckedCreateNestedManyWithoutOrderItemInput
   }
 
   export type OrderItemUpdateInput = {
@@ -23117,6 +23245,7 @@ export namespace Prisma {
     fitType?: NullableEnumFitTypeFieldUpdateOperationsInput | $Enums.FitType | null
     size?: NullableStringFieldUpdateOperationsInput | string | null
     order?: OrderUpdateOneRequiredWithoutItemsNestedInput
+    Sale?: SaleUpdateManyWithoutOrderItemNestedInput
   }
 
   export type OrderItemUncheckedUpdateInput = {
@@ -23129,6 +23258,7 @@ export namespace Prisma {
     color?: NullableStringFieldUpdateOperationsInput | string | null
     fitType?: NullableEnumFitTypeFieldUpdateOperationsInput | $Enums.FitType | null
     size?: NullableStringFieldUpdateOperationsInput | string | null
+    Sale?: SaleUncheckedUpdateManyWithoutOrderItemNestedInput
   }
 
   export type OrderItemCreateManyInput = {
@@ -23896,6 +24026,11 @@ export namespace Prisma {
     _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
+  export type OrderItemScalarRelationFilter = {
+    is?: OrderItemWhereInput
+    isNot?: OrderItemWhereInput
+  }
+
   export type ProductScalarRelationFilter = {
     is?: ProductWhereInput
     isNot?: ProductWhereInput
@@ -23903,6 +24038,7 @@ export namespace Prisma {
 
   export type SaleCountOrderByAggregateInput = {
     id?: SortOrder
+    orderItemId?: SortOrder
     productId?: SortOrder
     merchantId?: SortOrder
     brandId?: SortOrder
@@ -23924,6 +24060,7 @@ export namespace Prisma {
 
   export type SaleMaxOrderByAggregateInput = {
     id?: SortOrder
+    orderItemId?: SortOrder
     productId?: SortOrder
     merchantId?: SortOrder
     brandId?: SortOrder
@@ -23937,6 +24074,7 @@ export namespace Prisma {
 
   export type SaleMinOrderByAggregateInput = {
     id?: SortOrder
+    orderItemId?: SortOrder
     productId?: SortOrder
     merchantId?: SortOrder
     brandId?: SortOrder
@@ -24128,6 +24266,17 @@ export namespace Prisma {
     not?: NestedDecimalNullableFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
   }
 
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type UserAddressScalarRelationFilter = {
     is?: UserAddressWhereInput
     isNot?: UserAddressWhereInput
@@ -24164,6 +24313,7 @@ export namespace Prisma {
     tranId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    settledAt?: SortOrder
   }
 
   export type OrderAvgOrderByAggregateInput = {
@@ -24191,6 +24341,7 @@ export namespace Prisma {
     tranId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    settledAt?: SortOrder
   }
 
   export type OrderMinOrderByAggregateInput = {
@@ -24209,6 +24360,7 @@ export namespace Prisma {
     tranId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    settledAt?: SortOrder
   }
 
   export type OrderSumOrderByAggregateInput = {
@@ -24250,6 +24402,20 @@ export namespace Prisma {
     _sum?: NestedDecimalNullableFilter<$PrismaModel>
     _min?: NestedDecimalNullableFilter<$PrismaModel>
     _max?: NestedDecimalNullableFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type EnumFitTypeNullableFilter<$PrismaModel = never> = {
@@ -25122,6 +25288,12 @@ export namespace Prisma {
     deleteMany?: SaleScalarWhereInput | SaleScalarWhereInput[]
   }
 
+  export type OrderItemCreateNestedOneWithoutSaleInput = {
+    create?: XOR<OrderItemCreateWithoutSaleInput, OrderItemUncheckedCreateWithoutSaleInput>
+    connectOrCreate?: OrderItemCreateOrConnectWithoutSaleInput
+    connect?: OrderItemWhereUniqueInput
+  }
+
   export type ProductCreateNestedOneWithoutSalesInput = {
     create?: XOR<ProductCreateWithoutSalesInput, ProductUncheckedCreateWithoutSalesInput>
     connectOrCreate?: ProductCreateOrConnectWithoutSalesInput
@@ -25138,6 +25310,14 @@ export namespace Prisma {
     create?: XOR<BrandCreateWithoutSalesInput, BrandUncheckedCreateWithoutSalesInput>
     connectOrCreate?: BrandCreateOrConnectWithoutSalesInput
     connect?: BrandWhereUniqueInput
+  }
+
+  export type OrderItemUpdateOneRequiredWithoutSaleNestedInput = {
+    create?: XOR<OrderItemCreateWithoutSaleInput, OrderItemUncheckedCreateWithoutSaleInput>
+    connectOrCreate?: OrderItemCreateOrConnectWithoutSaleInput
+    upsert?: OrderItemUpsertWithoutSaleInput
+    connect?: OrderItemWhereUniqueInput
+    update?: XOR<XOR<OrderItemUpdateToOneWithWhereWithoutSaleInput, OrderItemUpdateWithoutSaleInput>, OrderItemUncheckedUpdateWithoutSaleInput>
   }
 
   export type ProductUpdateOneRequiredWithoutSalesNestedInput = {
@@ -25364,6 +25544,10 @@ export namespace Prisma {
     divide?: Decimal | DecimalJsLike | number | string
   }
 
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
   export type UserUpdateOneRequiredWithoutOrderNestedInput = {
     create?: XOR<UserCreateWithoutOrderInput, UserUncheckedCreateWithoutOrderInput>
     connectOrCreate?: UserCreateOrConnectWithoutOrderInput
@@ -25434,6 +25618,20 @@ export namespace Prisma {
     connect?: OrderWhereUniqueInput
   }
 
+  export type SaleCreateNestedManyWithoutOrderItemInput = {
+    create?: XOR<SaleCreateWithoutOrderItemInput, SaleUncheckedCreateWithoutOrderItemInput> | SaleCreateWithoutOrderItemInput[] | SaleUncheckedCreateWithoutOrderItemInput[]
+    connectOrCreate?: SaleCreateOrConnectWithoutOrderItemInput | SaleCreateOrConnectWithoutOrderItemInput[]
+    createMany?: SaleCreateManyOrderItemInputEnvelope
+    connect?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
+  }
+
+  export type SaleUncheckedCreateNestedManyWithoutOrderItemInput = {
+    create?: XOR<SaleCreateWithoutOrderItemInput, SaleUncheckedCreateWithoutOrderItemInput> | SaleCreateWithoutOrderItemInput[] | SaleUncheckedCreateWithoutOrderItemInput[]
+    connectOrCreate?: SaleCreateOrConnectWithoutOrderItemInput | SaleCreateOrConnectWithoutOrderItemInput[]
+    createMany?: SaleCreateManyOrderItemInputEnvelope
+    connect?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
+  }
+
   export type NullableEnumFitTypeFieldUpdateOperationsInput = {
     set?: $Enums.FitType | null
   }
@@ -25444,6 +25642,34 @@ export namespace Prisma {
     upsert?: OrderUpsertWithoutItemsInput
     connect?: OrderWhereUniqueInput
     update?: XOR<XOR<OrderUpdateToOneWithWhereWithoutItemsInput, OrderUpdateWithoutItemsInput>, OrderUncheckedUpdateWithoutItemsInput>
+  }
+
+  export type SaleUpdateManyWithoutOrderItemNestedInput = {
+    create?: XOR<SaleCreateWithoutOrderItemInput, SaleUncheckedCreateWithoutOrderItemInput> | SaleCreateWithoutOrderItemInput[] | SaleUncheckedCreateWithoutOrderItemInput[]
+    connectOrCreate?: SaleCreateOrConnectWithoutOrderItemInput | SaleCreateOrConnectWithoutOrderItemInput[]
+    upsert?: SaleUpsertWithWhereUniqueWithoutOrderItemInput | SaleUpsertWithWhereUniqueWithoutOrderItemInput[]
+    createMany?: SaleCreateManyOrderItemInputEnvelope
+    set?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
+    disconnect?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
+    delete?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
+    connect?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
+    update?: SaleUpdateWithWhereUniqueWithoutOrderItemInput | SaleUpdateWithWhereUniqueWithoutOrderItemInput[]
+    updateMany?: SaleUpdateManyWithWhereWithoutOrderItemInput | SaleUpdateManyWithWhereWithoutOrderItemInput[]
+    deleteMany?: SaleScalarWhereInput | SaleScalarWhereInput[]
+  }
+
+  export type SaleUncheckedUpdateManyWithoutOrderItemNestedInput = {
+    create?: XOR<SaleCreateWithoutOrderItemInput, SaleUncheckedCreateWithoutOrderItemInput> | SaleCreateWithoutOrderItemInput[] | SaleUncheckedCreateWithoutOrderItemInput[]
+    connectOrCreate?: SaleCreateOrConnectWithoutOrderItemInput | SaleCreateOrConnectWithoutOrderItemInput[]
+    upsert?: SaleUpsertWithWhereUniqueWithoutOrderItemInput | SaleUpsertWithWhereUniqueWithoutOrderItemInput[]
+    createMany?: SaleCreateManyOrderItemInputEnvelope
+    set?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
+    disconnect?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
+    delete?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
+    connect?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
+    update?: SaleUpdateWithWhereUniqueWithoutOrderItemInput | SaleUpdateWithWhereUniqueWithoutOrderItemInput[]
+    updateMany?: SaleUpdateManyWithWhereWithoutOrderItemInput | SaleUpdateManyWithWhereWithoutOrderItemInput[]
+    deleteMany?: SaleScalarWhereInput | SaleScalarWhereInput[]
   }
 
   export type OrderCreateNestedOneWithoutPaymentInput = {
@@ -25708,6 +25934,17 @@ export namespace Prisma {
     not?: NestedDecimalNullableFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
   }
 
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
     in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
@@ -25738,6 +25975,20 @@ export namespace Prisma {
     _sum?: NestedDecimalNullableFilter<$PrismaModel>
     _min?: NestedDecimalNullableFilter<$PrismaModel>
     _max?: NestedDecimalNullableFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumFitTypeNullableFilter<$PrismaModel = never> = {
@@ -25912,12 +26163,14 @@ export namespace Prisma {
     merchantEarning?: number
     platformEarning?: number
     createdAt?: Date | string
+    orderItem: OrderItemCreateNestedOneWithoutSaleInput
     product: ProductCreateNestedOneWithoutSalesInput
     brand?: BrandCreateNestedOneWithoutSalesInput
   }
 
   export type SaleUncheckedCreateWithoutMerchantInput = {
     id?: string
+    orderItemId: string
     productId: string
     brandId?: string | null
     quantity?: number
@@ -26039,6 +26292,7 @@ export namespace Prisma {
     tranId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    settledAt?: Date | string | null
     address: UserAddressCreateNestedOneWithoutOrderInput
     items?: OrderItemCreateNestedManyWithoutOrderInput
     payment?: PaymentCreateNestedOneWithoutOrderInput
@@ -26059,6 +26313,7 @@ export namespace Prisma {
     tranId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    settledAt?: Date | string | null
     items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     payment?: PaymentUncheckedCreateNestedOneWithoutOrderInput
   }
@@ -26180,6 +26435,7 @@ export namespace Prisma {
     OR?: SaleScalarWhereInput[]
     NOT?: SaleScalarWhereInput | SaleScalarWhereInput[]
     id?: StringFilter<"Sale"> | string
+    orderItemId?: StringFilter<"Sale"> | string
     productId?: StringFilter<"Sale"> | string
     merchantId?: StringFilter<"Sale"> | string
     brandId?: StringNullableFilter<"Sale"> | string | null
@@ -26315,6 +26571,7 @@ export namespace Prisma {
     tranId?: StringFilter<"Order"> | string
     createdAt?: DateTimeFilter<"Order"> | Date | string
     updatedAt?: DateTimeFilter<"Order"> | Date | string
+    settledAt?: DateTimeNullableFilter<"Order"> | Date | string | null
   }
 
   export type UserCreateWithoutAddressesInput = {
@@ -26370,6 +26627,7 @@ export namespace Prisma {
     tranId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    settledAt?: Date | string | null
     user: UserCreateNestedOneWithoutOrderInput
     items?: OrderItemCreateNestedManyWithoutOrderInput
     payment?: PaymentCreateNestedOneWithoutOrderInput
@@ -26390,6 +26648,7 @@ export namespace Prisma {
     tranId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    settledAt?: Date | string | null
     items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     payment?: PaymentUncheckedCreateNestedOneWithoutOrderInput
   }
@@ -26671,12 +26930,14 @@ export namespace Prisma {
     merchantEarning?: number
     platformEarning?: number
     createdAt?: Date | string
+    orderItem: OrderItemCreateNestedOneWithoutSaleInput
     product: ProductCreateNestedOneWithoutSalesInput
     merchant: UserCreateNestedOneWithoutSalesInput
   }
 
   export type SaleUncheckedCreateWithoutBrandInput = {
     id?: string
+    orderItemId: string
     productId: string
     merchantId: string
     quantity?: number
@@ -27080,12 +27341,14 @@ export namespace Prisma {
     merchantEarning?: number
     platformEarning?: number
     createdAt?: Date | string
+    orderItem: OrderItemCreateNestedOneWithoutSaleInput
     merchant: UserCreateNestedOneWithoutSalesInput
     brand?: BrandCreateNestedOneWithoutSalesInput
   }
 
   export type SaleUncheckedCreateWithoutProductInput = {
     id?: string
+    orderItemId: string
     merchantId: string
     brandId?: string | null
     quantity?: number
@@ -27341,6 +27604,35 @@ export namespace Prisma {
     data: XOR<SaleUpdateManyMutationInput, SaleUncheckedUpdateManyWithoutProductInput>
   }
 
+  export type OrderItemCreateWithoutSaleInput = {
+    id?: string
+    productId?: string | null
+    productTitle: string
+    unitPrice: Decimal | DecimalJsLike | number | string
+    quantity?: number
+    color?: string | null
+    fitType?: $Enums.FitType | null
+    size?: string | null
+    order: OrderCreateNestedOneWithoutItemsInput
+  }
+
+  export type OrderItemUncheckedCreateWithoutSaleInput = {
+    id?: string
+    orderId: string
+    productId?: string | null
+    productTitle: string
+    unitPrice: Decimal | DecimalJsLike | number | string
+    quantity?: number
+    color?: string | null
+    fitType?: $Enums.FitType | null
+    size?: string | null
+  }
+
+  export type OrderItemCreateOrConnectWithoutSaleInput = {
+    where: OrderItemWhereUniqueInput
+    create: XOR<OrderItemCreateWithoutSaleInput, OrderItemUncheckedCreateWithoutSaleInput>
+  }
+
   export type ProductCreateWithoutSalesInput = {
     id?: string
     productId: string
@@ -27492,6 +27784,41 @@ export namespace Prisma {
   export type BrandCreateOrConnectWithoutSalesInput = {
     where: BrandWhereUniqueInput
     create: XOR<BrandCreateWithoutSalesInput, BrandUncheckedCreateWithoutSalesInput>
+  }
+
+  export type OrderItemUpsertWithoutSaleInput = {
+    update: XOR<OrderItemUpdateWithoutSaleInput, OrderItemUncheckedUpdateWithoutSaleInput>
+    create: XOR<OrderItemCreateWithoutSaleInput, OrderItemUncheckedCreateWithoutSaleInput>
+    where?: OrderItemWhereInput
+  }
+
+  export type OrderItemUpdateToOneWithWhereWithoutSaleInput = {
+    where?: OrderItemWhereInput
+    data: XOR<OrderItemUpdateWithoutSaleInput, OrderItemUncheckedUpdateWithoutSaleInput>
+  }
+
+  export type OrderItemUpdateWithoutSaleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: NullableStringFieldUpdateOperationsInput | string | null
+    productTitle?: StringFieldUpdateOperationsInput | string
+    unitPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    fitType?: NullableEnumFitTypeFieldUpdateOperationsInput | $Enums.FitType | null
+    size?: NullableStringFieldUpdateOperationsInput | string | null
+    order?: OrderUpdateOneRequiredWithoutItemsNestedInput
+  }
+
+  export type OrderItemUncheckedUpdateWithoutSaleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    productId?: NullableStringFieldUpdateOperationsInput | string | null
+    productTitle?: StringFieldUpdateOperationsInput | string
+    unitPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    fitType?: NullableEnumFitTypeFieldUpdateOperationsInput | $Enums.FitType | null
+    size?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ProductUpsertWithoutSalesInput = {
@@ -28242,6 +28569,7 @@ export namespace Prisma {
     color?: string | null
     fitType?: $Enums.FitType | null
     size?: string | null
+    Sale?: SaleCreateNestedManyWithoutOrderItemInput
   }
 
   export type OrderItemUncheckedCreateWithoutOrderInput = {
@@ -28253,6 +28581,7 @@ export namespace Prisma {
     color?: string | null
     fitType?: $Enums.FitType | null
     size?: string | null
+    Sale?: SaleUncheckedCreateNestedManyWithoutOrderItemInput
   }
 
   export type OrderItemCreateOrConnectWithoutOrderInput = {
@@ -28448,6 +28777,7 @@ export namespace Prisma {
     tranId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    settledAt?: Date | string | null
     user: UserCreateNestedOneWithoutOrderInput
     address: UserAddressCreateNestedOneWithoutOrderInput
     payment?: PaymentCreateNestedOneWithoutOrderInput
@@ -28469,12 +28799,49 @@ export namespace Prisma {
     tranId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    settledAt?: Date | string | null
     payment?: PaymentUncheckedCreateNestedOneWithoutOrderInput
   }
 
   export type OrderCreateOrConnectWithoutItemsInput = {
     where: OrderWhereUniqueInput
     create: XOR<OrderCreateWithoutItemsInput, OrderUncheckedCreateWithoutItemsInput>
+  }
+
+  export type SaleCreateWithoutOrderItemInput = {
+    id?: string
+    quantity?: number
+    total: number
+    brandEarning?: number
+    merchantEarning?: number
+    platformEarning?: number
+    createdAt?: Date | string
+    product: ProductCreateNestedOneWithoutSalesInput
+    merchant: UserCreateNestedOneWithoutSalesInput
+    brand?: BrandCreateNestedOneWithoutSalesInput
+  }
+
+  export type SaleUncheckedCreateWithoutOrderItemInput = {
+    id?: string
+    productId: string
+    merchantId: string
+    brandId?: string | null
+    quantity?: number
+    total: number
+    brandEarning?: number
+    merchantEarning?: number
+    platformEarning?: number
+    createdAt?: Date | string
+  }
+
+  export type SaleCreateOrConnectWithoutOrderItemInput = {
+    where: SaleWhereUniqueInput
+    create: XOR<SaleCreateWithoutOrderItemInput, SaleUncheckedCreateWithoutOrderItemInput>
+  }
+
+  export type SaleCreateManyOrderItemInputEnvelope = {
+    data: SaleCreateManyOrderItemInput | SaleCreateManyOrderItemInput[]
+    skipDuplicates?: boolean
   }
 
   export type OrderUpsertWithoutItemsInput = {
@@ -28502,6 +28869,7 @@ export namespace Prisma {
     tranId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutOrderNestedInput
     address?: UserAddressUpdateOneRequiredWithoutOrderNestedInput
     payment?: PaymentUpdateOneWithoutOrderNestedInput
@@ -28523,7 +28891,24 @@ export namespace Prisma {
     tranId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     payment?: PaymentUncheckedUpdateOneWithoutOrderNestedInput
+  }
+
+  export type SaleUpsertWithWhereUniqueWithoutOrderItemInput = {
+    where: SaleWhereUniqueInput
+    update: XOR<SaleUpdateWithoutOrderItemInput, SaleUncheckedUpdateWithoutOrderItemInput>
+    create: XOR<SaleCreateWithoutOrderItemInput, SaleUncheckedCreateWithoutOrderItemInput>
+  }
+
+  export type SaleUpdateWithWhereUniqueWithoutOrderItemInput = {
+    where: SaleWhereUniqueInput
+    data: XOR<SaleUpdateWithoutOrderItemInput, SaleUncheckedUpdateWithoutOrderItemInput>
+  }
+
+  export type SaleUpdateManyWithWhereWithoutOrderItemInput = {
+    where: SaleScalarWhereInput
+    data: XOR<SaleUpdateManyMutationInput, SaleUncheckedUpdateManyWithoutOrderItemInput>
   }
 
   export type OrderCreateWithoutPaymentInput = {
@@ -28540,6 +28925,7 @@ export namespace Prisma {
     tranId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    settledAt?: Date | string | null
     user: UserCreateNestedOneWithoutOrderInput
     address: UserAddressCreateNestedOneWithoutOrderInput
     items?: OrderItemCreateNestedManyWithoutOrderInput
@@ -28561,6 +28947,7 @@ export namespace Prisma {
     tranId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    settledAt?: Date | string | null
     items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
   }
 
@@ -28594,6 +28981,7 @@ export namespace Prisma {
     tranId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutOrderNestedInput
     address?: UserAddressUpdateOneRequiredWithoutOrderNestedInput
     items?: OrderItemUpdateManyWithoutOrderNestedInput
@@ -28615,6 +29003,7 @@ export namespace Prisma {
     tranId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
   }
 
@@ -28666,6 +29055,7 @@ export namespace Prisma {
 
   export type SaleCreateManyMerchantInput = {
     id?: string
+    orderItemId: string
     productId: string
     brandId?: string | null
     quantity?: number
@@ -28703,6 +29093,7 @@ export namespace Prisma {
     tranId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    settledAt?: Date | string | null
   }
 
   export type BrandUpdateWithoutUserInput = {
@@ -28863,12 +29254,14 @@ export namespace Prisma {
     merchantEarning?: FloatFieldUpdateOperationsInput | number
     platformEarning?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderItem?: OrderItemUpdateOneRequiredWithoutSaleNestedInput
     product?: ProductUpdateOneRequiredWithoutSalesNestedInput
     brand?: BrandUpdateOneWithoutSalesNestedInput
   }
 
   export type SaleUncheckedUpdateWithoutMerchantInput = {
     id?: StringFieldUpdateOperationsInput | string
+    orderItemId?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
     brandId?: NullableStringFieldUpdateOperationsInput | string | null
     quantity?: IntFieldUpdateOperationsInput | number
@@ -28881,6 +29274,7 @@ export namespace Prisma {
 
   export type SaleUncheckedUpdateManyWithoutMerchantInput = {
     id?: StringFieldUpdateOperationsInput | string
+    orderItemId?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
     brandId?: NullableStringFieldUpdateOperationsInput | string | null
     quantity?: IntFieldUpdateOperationsInput | number
@@ -28943,6 +29337,7 @@ export namespace Prisma {
     tranId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     address?: UserAddressUpdateOneRequiredWithoutOrderNestedInput
     items?: OrderItemUpdateManyWithoutOrderNestedInput
     payment?: PaymentUpdateOneWithoutOrderNestedInput
@@ -28963,6 +29358,7 @@ export namespace Prisma {
     tranId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     payment?: PaymentUncheckedUpdateOneWithoutOrderNestedInput
   }
@@ -28982,6 +29378,7 @@ export namespace Prisma {
     tranId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type OrderCreateManyAddressInput = {
@@ -28999,6 +29396,7 @@ export namespace Prisma {
     tranId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    settledAt?: Date | string | null
   }
 
   export type OrderUpdateWithoutAddressInput = {
@@ -29015,6 +29413,7 @@ export namespace Prisma {
     tranId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutOrderNestedInput
     items?: OrderItemUpdateManyWithoutOrderNestedInput
     payment?: PaymentUpdateOneWithoutOrderNestedInput
@@ -29035,6 +29434,7 @@ export namespace Prisma {
     tranId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     payment?: PaymentUncheckedUpdateOneWithoutOrderNestedInput
   }
@@ -29054,6 +29454,7 @@ export namespace Prisma {
     tranId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ProductCreateManyBrandInput = {
@@ -29077,6 +29478,7 @@ export namespace Prisma {
 
   export type SaleCreateManyBrandInput = {
     id?: string
+    orderItemId: string
     productId: string
     merchantId: string
     quantity?: number
@@ -29160,12 +29562,14 @@ export namespace Prisma {
     merchantEarning?: FloatFieldUpdateOperationsInput | number
     platformEarning?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderItem?: OrderItemUpdateOneRequiredWithoutSaleNestedInput
     product?: ProductUpdateOneRequiredWithoutSalesNestedInput
     merchant?: UserUpdateOneRequiredWithoutSalesNestedInput
   }
 
   export type SaleUncheckedUpdateWithoutBrandInput = {
     id?: StringFieldUpdateOperationsInput | string
+    orderItemId?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
     merchantId?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
@@ -29178,6 +29582,7 @@ export namespace Prisma {
 
   export type SaleUncheckedUpdateManyWithoutBrandInput = {
     id?: StringFieldUpdateOperationsInput | string
+    orderItemId?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
     merchantId?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
@@ -29320,6 +29725,7 @@ export namespace Prisma {
 
   export type SaleCreateManyProductInput = {
     id?: string
+    orderItemId: string
     merchantId: string
     brandId?: string | null
     quantity?: number
@@ -29392,12 +29798,14 @@ export namespace Prisma {
     merchantEarning?: FloatFieldUpdateOperationsInput | number
     platformEarning?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderItem?: OrderItemUpdateOneRequiredWithoutSaleNestedInput
     merchant?: UserUpdateOneRequiredWithoutSalesNestedInput
     brand?: BrandUpdateOneWithoutSalesNestedInput
   }
 
   export type SaleUncheckedUpdateWithoutProductInput = {
     id?: StringFieldUpdateOperationsInput | string
+    orderItemId?: StringFieldUpdateOperationsInput | string
     merchantId?: StringFieldUpdateOperationsInput | string
     brandId?: NullableStringFieldUpdateOperationsInput | string | null
     quantity?: IntFieldUpdateOperationsInput | number
@@ -29410,6 +29818,7 @@ export namespace Prisma {
 
   export type SaleUncheckedUpdateManyWithoutProductInput = {
     id?: StringFieldUpdateOperationsInput | string
+    orderItemId?: StringFieldUpdateOperationsInput | string
     merchantId?: StringFieldUpdateOperationsInput | string
     brandId?: NullableStringFieldUpdateOperationsInput | string | null
     quantity?: IntFieldUpdateOperationsInput | number
@@ -29556,6 +29965,7 @@ export namespace Prisma {
     color?: NullableStringFieldUpdateOperationsInput | string | null
     fitType?: NullableEnumFitTypeFieldUpdateOperationsInput | $Enums.FitType | null
     size?: NullableStringFieldUpdateOperationsInput | string | null
+    Sale?: SaleUpdateManyWithoutOrderItemNestedInput
   }
 
   export type OrderItemUncheckedUpdateWithoutOrderInput = {
@@ -29567,6 +29977,7 @@ export namespace Prisma {
     color?: NullableStringFieldUpdateOperationsInput | string | null
     fitType?: NullableEnumFitTypeFieldUpdateOperationsInput | $Enums.FitType | null
     size?: NullableStringFieldUpdateOperationsInput | string | null
+    Sale?: SaleUncheckedUpdateManyWithoutOrderItemNestedInput
   }
 
   export type OrderItemUncheckedUpdateManyWithoutOrderInput = {
@@ -29578,6 +29989,58 @@ export namespace Prisma {
     color?: NullableStringFieldUpdateOperationsInput | string | null
     fitType?: NullableEnumFitTypeFieldUpdateOperationsInput | $Enums.FitType | null
     size?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type SaleCreateManyOrderItemInput = {
+    id?: string
+    productId: string
+    merchantId: string
+    brandId?: string | null
+    quantity?: number
+    total: number
+    brandEarning?: number
+    merchantEarning?: number
+    platformEarning?: number
+    createdAt?: Date | string
+  }
+
+  export type SaleUpdateWithoutOrderItemInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    total?: FloatFieldUpdateOperationsInput | number
+    brandEarning?: FloatFieldUpdateOperationsInput | number
+    merchantEarning?: FloatFieldUpdateOperationsInput | number
+    platformEarning?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    product?: ProductUpdateOneRequiredWithoutSalesNestedInput
+    merchant?: UserUpdateOneRequiredWithoutSalesNestedInput
+    brand?: BrandUpdateOneWithoutSalesNestedInput
+  }
+
+  export type SaleUncheckedUpdateWithoutOrderItemInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    merchantId?: StringFieldUpdateOperationsInput | string
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
+    quantity?: IntFieldUpdateOperationsInput | number
+    total?: FloatFieldUpdateOperationsInput | number
+    brandEarning?: FloatFieldUpdateOperationsInput | number
+    merchantEarning?: FloatFieldUpdateOperationsInput | number
+    platformEarning?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SaleUncheckedUpdateManyWithoutOrderItemInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    merchantId?: StringFieldUpdateOperationsInput | string
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
+    quantity?: IntFieldUpdateOperationsInput | number
+    total?: FloatFieldUpdateOperationsInput | number
+    brandEarning?: FloatFieldUpdateOperationsInput | number
+    merchantEarning?: FloatFieldUpdateOperationsInput | number
+    platformEarning?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

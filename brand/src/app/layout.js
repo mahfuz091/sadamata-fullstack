@@ -10,7 +10,8 @@ import "@/assets/css/sadamata-custom.css";
 import { Toaster } from "sonner";
 
 export const metadata = {
-  title: "Sadamata",
+  title: {
+    default: "Brand Sadamata", template:"%s || Brand Sadamata"},
   description: "Sadamata",
 };
 

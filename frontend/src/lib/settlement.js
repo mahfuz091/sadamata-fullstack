@@ -19,13 +19,13 @@ function resolveRates(product, brand) {
 export async function settleOrderEarnings(orderId) {
   const order = await prisma.order.findUnique({
     where: { id: orderId },
-    include: {
-      items: true,
-    },
+    include: { items: true },
   });
   if (!order) throw new Error("Order not found");
 
-  const productIds = order.items.map(i => i.productId).filter(Boolean);
+  const productIds = order.items.map((i) => i.productId).filter(Boolean);
+  if (productIds.length === 0) return; // nothing to settle
+
   const products = await prisma.product.findMany({
     where: { id: { in: productIds } },
     include: {
@@ -33,50 +33,70 @@ export async function settleOrderEarnings(orderId) {
       User: { select: { id: true } },
     },
   });
-  const productMap = new Map(products.map(p => [p.id, p]));
+  const productMap = new Map(products.map((p) => [p.id, p]));
 
-  const actions = order.items.map((item) => {
-    if (!item.productId) return null; // skip lines without productId
-    const product = productMap.get(item.productId);
-    if (!product) return null;
+  await prisma.$transaction(async (tx) => {
+    for (const item of order.items) {
+      if (!item.productId) continue; // skip lines without productId
 
-    const brand = product.Brand || null;
-    const merchantId = product.userId;      // product owner = merchant
-    const brandId = product.brandId || null;
+      const product = productMap.get(item.productId);
+      if (!product) continue;
 
-    const unit = Number(item.unitPrice);    // Decimal -> number
-    const qty = item.quantity;
-    const total = unit * qty;
+      const brand = product.Brand || null;
+      const merchantId = product.userId;         // product owner = merchant
+      const brandId = product.brandId || null;
 
-    const { brandPct, merchantPct, platformPct } = resolveRates(product, brand);
-    const brandEarning    = +(total * (brandPct / 100)).toFixed(2);
-    const merchantEarning = +(total * (merchantPct / 100)).toFixed(2);
-    const platformEarning = +(total * (platformPct / 100)).toFixed(2);
+      const unit = Number(item.unitPrice);       // Decimal -> number
+      const qty = item.quantity;
+      const total = unit * qty;
 
-    // 🔑 HOTFIX: use Sale.id = OrderItem.id for idempotency
-    return prisma.sale.upsert({
-  where: { orderItemId: item.id },      // unique key
+      const { brandPct, merchantPct, platformPct } = resolveRates(product, brand);
+      const brandEarning    = +(total * (brandPct / 100)).toFixed(2);
+      const merchantEarning = +(total * (merchantPct / 100)).toFixed(2);
+      const platformEarning = +(total * (platformPct / 100)).toFixed(2);
+
+      // 1) Upsert Sale (idempotent per orderItem)
+      const sale = await tx.sale.upsert({
+        where: { orderItemId: item.id }, // <-- UNIQUE on Sale.orderItemId
+        create: {
+          orderItemId: item.id,
+          productId: product.id,
+          merchantId,
+          brandId,
+          quantity: qty,
+          total,
+          brandEarning,
+          merchantEarning,
+          platformEarning,
+        },
+        update: {
+          quantity: qty,
+          total,
+          brandEarning,
+          merchantEarning,
+          platformEarning,
+        },
+      });
+
+      // 2) Upsert SaleItem linked to the Sale (also idempotent per orderItem)
+      await tx.saleItem.upsert({
+  where: { orderItemId: item.id },
   create: {
-    orderItemId: item.id,               // <-- REQUIRED (non-null)
+    orderItemId: item.id,
+    saleId: sale.id,
     productId: product.id,
-    merchantId,
-    brandId,
     quantity: qty,
+    unitPrice: unit,
     total,
-    brandEarning,
-    merchantEarning,
-    platformEarning,
   },
   update: {
+    saleId: sale.id,
+    productId: product.id,
     quantity: qty,
+    unitPrice: unit,
     total,
-    brandEarning,
-    merchantEarning,
-    platformEarning,
   },
 });
-
-  }).filter(Boolean);
-
-  await prisma.$transaction(actions);
+    }
+  });
 }

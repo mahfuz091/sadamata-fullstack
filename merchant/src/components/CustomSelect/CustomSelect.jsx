@@ -29,19 +29,23 @@ const customStyles = {
   }),
 };
 
-export default function CustomSelect({ options, onChange, placeholder }) {
+export default function CustomSelect({ options = [],
+  value,                 // <-- use controlled value
+  onChange,
+  placeholder,
+  isSearchable = false,
+  isClearable = true,}) {
   return (
     <Select
       options={options}
-      styles={customStyles}
-      components={{
-        IndicatorSeparator: () => null,
-      }}
-      defaultValue={options[0]}
-      isClearable={false}
-      isSearchable={false}
-      placeholder={placeholder}
+      value={value}       // <-- controlled
       onChange={onChange}
+      placeholder={placeholder}
+      isClearable={isClearable}
+      isSearchable={isSearchable}
+      styles={customStyles}
+      components={{ IndicatorSeparator: () => null }}
+      menuPortalTarget={typeof document !== "undefined" ? document.body : null}
     />
   );
 }

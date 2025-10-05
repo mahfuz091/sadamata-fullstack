@@ -1,10 +1,12 @@
 "use server";
 import { removeAuthCookie, setAuthCookie, signAuthToken } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { signIn, signOut, auth } from "@/auth";
 import bcrypt from "bcryptjs"; // for hashing passwords
 // helpers
 function pick(...vals) {
-  for (const v of vals) if (v != null && String(v).trim() !== "") return String(v).trim();
+  for (const v of vals)
+    if (v != null && String(v).trim() !== "") return String(v).trim();
   return "";
 }
 const opt = (v) => (v && v.length ? v : null);
@@ -106,16 +108,22 @@ export async function registerUser(formData) {
     const brandCategoryId = pick(formData.get("brandCategoryId"));
     const industryType = pick(formData.get("industryType"));
     const socialProfile = pick(formData.get("socialProfileLink"));
-console.log(socialProfile, brandCategoryId, industryType, "is");
+    console.log(socialProfile, brandCategoryId, industryType, "is");
 
     if (!name || !password || !confirmPassword || !role) {
-      return { success: false, message: "All required fields must be provided." };
+      return {
+        success: false,
+        message: "All required fields must be provided.",
+      };
     }
     if (password !== confirmPassword) {
       return { success: false, message: "Passwords do not match." };
     }
     if (!emailRaw && !phoneRaw) {
-      return { success: false, message: "Either email or phone must be provided." };
+      return {
+        success: false,
+        message: "Either email or phone must be provided.",
+      };
     }
     if (!["USER", "ADMIN", "BRAND", "MERCH"].includes(role)) {
       return { success: false, message: "Invalid role." };
@@ -127,10 +135,7 @@ console.log(socialProfile, brandCategoryId, industryType, "is");
     // ---- uniqueness check (email OR phone) ----
     const existing = await prisma.user.findFirst({
       where: {
-        OR: [
-          ...(email ? [{ email }] : []),
-          ...(phone ? [{ phone }] : []),
-        ],
+        OR: [...(email ? [{ email }] : []), ...(phone ? [{ phone }] : [])],
       },
       select: { id: true },
     });
@@ -143,28 +148,56 @@ console.log(socialProfile, brandCategoryId, industryType, "is");
 
     // ---- collect ALL MerchantProfile fields (from your form names) ----
 
-    const dateOfBirth = toDate(pick(formData.get("birth-yard"), formData.get("dateOfBirth")));
+    const dateOfBirth = toDate(
+      pick(formData.get("birth-yard"), formData.get("dateOfBirth"))
+    );
     const contactEmail = email;
     const contactPhone = phone;
 
-    const nidOrPassportNo = opt(pick(formData.get("nid-number"), formData.get("nidOrPassportNo")));
+    const nidOrPassportNo = opt(
+      pick(formData.get("nid-number"), formData.get("nidOrPassportNo"))
+    );
     const presentAddress = opt(
-      pick(formData.get("present-address"), formData.get("address"), formData.get("presentAddress"))
+      pick(
+        formData.get("present-address"),
+        formData.get("address"),
+        formData.get("presentAddress")
+      )
     );
     const permanentAddress = opt(
-      pick(formData.get("permanent-address"), formData.get("permanet-address"), formData.get("permanentAddress"))
+      pick(
+        formData.get("permanent-address"),
+        formData.get("permanet-address"),
+        formData.get("permanentAddress")
+      )
     );
 
-    const portfolioUrl = opt(pick(formData.get("portfolio-link"), formData.get("portfolioUrl")));
-    const websiteUrl = opt(pick(formData.get("web-link"), formData.get("websiteUrl")));
+    const portfolioUrl = opt(
+      pick(formData.get("portfolio-link"), formData.get("portfolioUrl"))
+    );
+    const websiteUrl = opt(
+      pick(formData.get("web-link"), formData.get("websiteUrl"))
+    );
 
-    const bankName = opt(pick(formData.get("bank-name"), formData.get("bankName")));
-    const bankBranch = opt(pick(formData.get("branch-name"), formData.get("bankBranch")));
+    const bankName = opt(
+      pick(formData.get("bank-name"), formData.get("bankName"))
+    );
+    const bankBranch = opt(
+      pick(formData.get("branch-name"), formData.get("bankBranch"))
+    );
     const accountName = opt(
-      pick(formData.get("account-name"), formData.get("accountName"), formData.get("full-name"))
+      pick(
+        formData.get("account-name"),
+        formData.get("accountName"),
+        formData.get("full-name")
+      )
     );
-    const accountNumber = opt(pick(formData.get("account-number"), formData.get("accountNumber")));
-    const routingNumber = opt(pick(formData.get("routing-number"), formData.get("routingNumber")));
+    const accountNumber = opt(
+      pick(formData.get("account-number"), formData.get("accountNumber"))
+    );
+    const routingNumber = opt(
+      pick(formData.get("routing-number"), formData.get("routingNumber"))
+    );
 
     const message = opt(pick(formData.get("message"), formData.get("massage"))); // textarea id was "massage"
 
@@ -187,8 +220,8 @@ console.log(socialProfile, brandCategoryId, industryType, "is");
         brandProfile = await tx.brand.create({
           data: {
             user: {
-      connect: { id: user.id },
-    },
+              connect: { id: user.id },
+            },
             name,
             dateOfBirth,
             contactEmail,
@@ -205,10 +238,22 @@ console.log(socialProfile, brandCategoryId, industryType, "is");
             routingNumber,
             message,
             socialProfile,
-    industryType,
+            industryType,
             brandCategory: {
-        connect: { id: brandCategoryId}, // Connecting to an existing BrandCategory
-      },
+              connect: { id: brandCategoryId }, // Connecting to an existing BrandCategory
+            },
+          },
+        });
+
+         await tx.commissionSetting.create({
+          data: {
+            brandId: brandProfile.id,
+            merchantId: null,
+            productId: null,
+            brandCommissionPct: brandProfile.defaultBrandPct ?? 10.0,
+            merchantCommissionPct: brandProfile.defaultMerchantPct ?? 10.0,
+            effectiveFrom: new Date(),
+            isActive: true,
           },
         });
       }
@@ -229,7 +274,10 @@ console.log(socialProfile, brandCategoryId, industryType, "is");
       return { success: false, message: "Email or phone already taken." };
     }
     console.error("Error in user registration:", error);
-    return { success: false, message: (error && error.message) || "Something went wrong." };
+    return {
+      success: false,
+      message: (error && error.message) || "Something went wrong.",
+    };
   }
 }
 
@@ -281,73 +329,57 @@ export async function updateUserAccount(userId, action) {
   }
 }
 
-export async function loginUser(formData) {
-  try {
-    const email = formData.get("email"); // User email
-    const phone = formData.get("phone"); // User phone number
-    const password = formData.get("password"); // User password
+export const loginUser = async (prevState, formData) => {
+  const identifier = formData.get("identifier");
+  const password = formData.get("password");
 
-    // Basic validation: Ensure password is provided
-    if (!password) {
-      console.error("Validation error: Password is required.");
-      return { success: false, message: "Password is required" };
-    }
+  if (!identifier) {
+    return { success: false, message: "Email or phone is required" };
+  }
+  if (!password) {
+    return { success: false, message: "Password is required" };
+  }
 
-    // Check if either email or phone is provided
-    if (!email && !phone) {
-      console.error("Validation error: Either email or phone is required.");
-      return { success: false, message: "Either email or phone is required" };
-    }
+  // Find user (email OR phone)
+  const user = await prisma.user.findFirst({
+    where: {
+      AND: [
+        { OR: [{ email: identifier }, { phone: identifier }] },
+        { role: "BRAND" },
+      ],
+    },
+  });
 
-    // Find the user based on email or phone
-    let user;
-    if (email) {
-      // If email is provided, check if email exists
-      user = await prisma.user.findUnique({ where: { email } });
-    } else if (phone) {
-      // If phone is provided, check if phone exists
-      user = await prisma.user.findUnique({ where: { phone } });
-    }
+  console.log(user, "user");
 
-    if (!user) {
-      console.error("User not found:", email || phone);
-      return { success: false, message: "User not found" };
-    }
-
-    // Check if the user is active (if not, deny login)
-    // if (!user.isActive) {
-    //   return {
-    //     success: false,
-    //     message: "Your account is inactive. Please contact support.",
-    //   };
-    // }
-
-    // Compare the provided password with the stored hashed password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return { success: false, message: "Invalid password" };
-    }
-
-    // Generate JWT token upon successful login
-    const tokenPayload = { userId: user.id, role: user.role };
-    const token = await signAuthToken(tokenPayload);
-
-    // Set JWT token in the cookie
-    await setAuthCookie(token);
-
-    return {
-      success: true,
-      message: "Login successful",
-      user,
-    };
-  } catch (error) {
-    console.error("Error during login:", error);
+  if (!user) {
+    return { success: false, message: "User not found" };
+  }
+  if (!user.isActive) {
     return {
       success: false,
-      message: error.message || "Something went wrong, please try again.",
+      message: "Your account is not active. Please contact support.",
     };
   }
-}
+  if (user.role !== "BRAND") {
+    return {
+      success: false,
+      message: "You are not authorized to access this portal.",
+    };
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  if (!isPasswordValid) {
+    return { success: false, message: "Invalid password" };
+  }
+
+  // NextAuth signIn
+  const response = await signIn("credentials", {
+    redirect: "/dashboard",
+    identifier,
+    password,
+  });
+};
 
 export async function logoutUser() {
   try {

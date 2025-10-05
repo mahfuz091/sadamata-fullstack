@@ -33,6 +33,10 @@ model User {
   addresses       UserAddress[] // NEW
 
   Order Order[]
+
+  CommissionSetting CommissionSetting[]
+
+  Payout Payout[] @relation("MerchantPayouts")
 }
 
 // model UserAddress {
@@ -105,6 +109,7 @@ model MerchantProfile {
   // Additional
   message     String?  @db.Text
   tiar        Int      @default(10)
+  leftTiar    Int      @default(0)
   brandOption Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -155,6 +160,10 @@ model Brand {
 
   industryType  String
   socialProfile String
+
+  CommissionSetting CommissionSetting[]
+
+  Payout Payout[] @relation("BrandPayouts")
 }
 
 model BrandCategory {
@@ -202,6 +211,8 @@ model Product {
   merchantCommissionPct Float? // % goes to merchant on each sale
 
   sales Sale[] // track product sales
+
+  CommissionSetting CommissionSetting[]
 }
 
 model Sale {
@@ -221,12 +232,27 @@ model Sale {
   total    Float // total sale amount
 
   // Earnings
-  brandEarning    Float    @default(0)
-  merchantEarning Float    @default(0)
-  platformEarning Float    @default(0)
-  createdAt       DateTime @default(now())
+  brandEarning    Float      @default(0)
+  merchantEarning Float      @default(0)
+  platformEarning Float      @default(0)
+  createdAt       DateTime   @default(now())
+  SaleItem        SaleItem[]
 
   @@index([productId, createdAt]) // speeds up time-window queries
+}
+
+model SaleItem {
+  id        String  @id @default(uuid())
+  saleId    String
+  productId String
+  quantity  Int
+  unitPrice Decimal
+  total     Decimal
+
+  // add this:
+  orderItemId String @unique
+
+  Sale Sale @relation(fields: [saleId], references: [id])
 }
 
 model ProductVariant {
@@ -352,6 +378,57 @@ model Payment {
   rawPayload Json? // store last payload (success/ipn)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+}
+
+model CommissionSetting {
+  id String @id @default(uuid())
+
+  // Optional foreign keys to associate commissions with specific Brand or Merchant
+  brandId String?
+  brand   Brand?  @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  merchantId String?
+  merchant   User?   @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+
+  // Commission percentages
+  brandCommissionPct    Float @default(10.0) // default brand share in %
+  merchantCommissionPct Float @default(10.0) // default merchant share in %
+
+  // Apply globally or to specific products if needed
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  // For versioning or tracking
+  effectiveFrom DateTime  @default(now())
+  effectiveTo   DateTime?
+  isActive      Boolean   @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([brandId, merchantId, productId])
+}
+
+enum PayoutActor {
+  BRAND
+  MERCHANT
+}
+
+model Payout {
+  id         String      @id @default(uuid())
+  actor      PayoutActor
+  brandId    String?
+  merchantId String?
+
+  amount    Decimal  @db.Decimal(12, 2)
+  note      String?
+  createdAt DateTime @default(now())
+
+  // named relations + SetNull keeps payout records if brand/user gets removed
+  brand    Brand? @relation("BrandPayouts", fields: [brandId], references: [id], onDelete: SetNull)
+  merchant User?  @relation("MerchantPayouts", fields: [merchantId], references: [id], onDelete: SetNull)
+
+  @@index([actor, brandId, merchantId, createdAt])
 }
 
 enum FitType {

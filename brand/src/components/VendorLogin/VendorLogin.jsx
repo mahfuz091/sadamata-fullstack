@@ -1,42 +1,77 @@
 "use client";
-import React, { useState } from "react";
+
+import React, { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
 import { loginUser } from "@/app/actions/auth/auth.actions";
+import { isValidEmail, isValidBDPhone } from "@/utils/validation"; // 👈 re-use our validators
+import { toast } from "sonner";
 
 const VendorLogin = () => {
-  const [formData, setFormData] = useState(new FormData());
+  const initialState = {
+    msg: "",
+    success: false,
+  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const [state, formAction, isPending] = useActionState(
+    loginUser,
+    initialState
+  );
 
-    // Call loginUser function with form data
-    const result = await loginUser(formData);
-    if (result.success) {
-      // Handle successful login, maybe redirect to dashboard
-      console.log("Login successful:", result.user);
+  console.log(state);
+  useEffect(() => {
+    if(state.message){
+if (!state?.success) {
+      toast.warning(state?.message);
+    }
+    else if(state?.success){
+      toast.success(state?.message);
+      console.log(state, "state");
+    }
+    }
+    
+
+  }, [state]);
+
+  // console.log(state?.msg, state?.success);
+
+  // Local validation states
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({ identifier: "", password: "" });
+
+  const handleIdentifierChange = (e) => {
+    const value = e.target.value;
+    setIdentifier(value);
+
+    if (!value) {
+      setErrors((prev) => ({
+        ...prev,
+        identifier: "Email or phone is required",
+      }));
+    } else if (!isValidEmail(value) && !isValidBDPhone(value)) {
+      setErrors((prev) => ({
+        ...prev,
+        identifier: "Enter a valid email or BD phone",
+      }));
     } else {
-      // Handle failed login
-      console.log("Login failed:", result.message);
+      setErrors((prev) => ({ ...prev, identifier: "" }));
     }
   };
 
-  // const handleInputChange = (e) => {
-  //   setFormData((prevFormData) => {
-  //     const newFormData = new FormData(prevFormData);
-  //     newFormData.set(e.target.name, e.target.value);
-  //     return newFormData;
-  //   });
-  // };
-  const handleInputChange = (e) => {
-    setFormData((prevFormData) => {
-      const newFormData = new FormData(); // Create a new instance of FormData
-      // Copy the existing data from the previous FormData
-      prevFormData.forEach((value, key) => {
-        newFormData.append(key, value);
-      });
-      newFormData.set(e.target.name, e.target.value); // Update with the new input value
-      return newFormData;
-    });
+  const handlePasswordChange = (e) => {
+    const value = e.target.value;
+    setPassword(value);
+
+    if (!value) {
+      setErrors((prev) => ({ ...prev, password: "Password is required" }));
+    } else if (value.length < 6) {
+      setErrors((prev) => ({
+        ...prev,
+        password: "Password must be at least 6 characters",
+      }));
+    } else {
+      setErrors((prev) => ({ ...prev, password: "" }));
+    }
   };
 
   return (
@@ -46,44 +81,67 @@ const VendorLogin = () => {
           <div className='user-login__top'>
             <h4 className='user-login__top__title'>Sign in</h4>
           </div>
-          <form className='user-login__form' onSubmit={handleSubmit}>
+
+          <form className='user-login__form' action={formAction}>
+            {/* Identifier */}
             <div className='user-login__form-input-box'>
               <label htmlFor='identifier'>Email or mobile phone number</label>
               <input
                 type='text'
                 id='identifier'
                 name='identifier'
-                placeholder='Email or Phone'
-                onChange={handleInputChange}
+                value={identifier}
+                onChange={handleIdentifierChange}
+                placeholder='Email or mobile phone number'
+                required
               />
+              {errors.identifier && (
+                <p className='text-red-500 text-sm mt-1'>{errors.identifier}</p>
+              )}
             </div>
+
+            {/* Password */}
             <div className='user-login__form-input-box'>
               <label htmlFor='password'>Password</label>
               <input
                 type='password'
                 id='password'
                 name='password'
+                value={password}
+                onChange={handlePasswordChange}
                 placeholder='Password'
-                onChange={handleInputChange}
+                required
               />
+              {errors.password && (
+                <p className='text-red-500 text-sm mt-1'>{errors.password}</p>
+              )}
+
               <p>
                 By continuing, you agree to amazon’s{" "}
                 <Link href='#'>conditions of use</Link> and{" "}
                 <Link href='#'>privacy notice</Link>.
               </p>
             </div>
+
+            {/* Submit */}
             <div className='user-login__form-input-box'>
-              <button type='submit' className='commerce-btn'>
-                Register <i className='icon-right-arrow' />
+              <button
+                type='submit'
+                className='commerce-btn'
+                disabled={!!errors.identifier || !!errors.password || isPending}
+              >
+                {isPending ? "Login..." : "Login"}
+                <i className='icon-right-arrow' />
               </button>
             </div>
           </form>
+
           <div className='user-login__bottom'>
             <div className='user-login__bottom__top'>
               <Link href='#'>Forgot your password?</Link>
               <Link href='#'>Other issues with Sign-In</Link>
             </div>
-            <Link href='#'>
+            <Link href='/signup'>
               New to here? <span>Create Account</span>
             </Link>
           </div>

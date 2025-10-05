@@ -30,6 +30,55 @@ model User {
   sales           Sale[]           @relation("MerchantSales")
   // NEW: one-to-one merchant profile
   merchantProfile MerchantProfile?
+  addresses       UserAddress[] // NEW
+
+  Order Order[]
+
+  CommissionSetting CommissionSetting[]
+
+  Payout Payout[] @relation("MerchantPayouts")
+}
+
+// model UserAddress {
+//   id        String   @id @default(cuid())
+//   userId    String
+//   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//   label     String?        // "Home", "Office", etc.
+//   firstName  String
+//   lastName  String
+//   phone     String
+//   address  String
+//   address2  String?
+//   city      String
+//   postcode  String
+//   country   String @default("Bangladesh")
+//   isDefault Boolean @default(false)
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@index([userId, isDefault])
+//   Order Order[]
+// }
+
+model UserAddress {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  firstName String
+  lastName  String
+  phone     String
+  email     String? // optional if you prefer to use User.email
+  address   String // full free-form address line
+  isDefault Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Order     Order[]
+
+  @@index([userId, isDefault])
 }
 
 model MerchantProfile {
@@ -60,6 +109,7 @@ model MerchantProfile {
   // Additional
   message     String?  @db.Text
   tiar        Int      @default(10)
+  leftTiar    Int      @default(0)
   brandOption Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -86,7 +136,7 @@ model Brand {
   defaultMerchantPct Float @default(10.0) // merchant share
 
   // Personal Information (keep email/phone in User; allow contact overrides if needed)
-  
+
   dateOfBirth     DateTime
   contactEmail    String   @db.VarChar(190)
   contactPhone    String   @db.VarChar(32)
@@ -110,6 +160,10 @@ model Brand {
 
   industryType  String
   socialProfile String
+
+  CommissionSetting CommissionSetting[]
+
+  Payout Payout[] @relation("BrandPayouts")
 }
 
 model BrandCategory {
@@ -157,12 +211,16 @@ model Product {
   merchantCommissionPct Float? // % goes to merchant on each sale
 
   sales Sale[] // track product sales
+
+  CommissionSetting CommissionSetting[]
 }
 
 model Sale {
-  id        String  @id @default(uuid())
-  productId String
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  id          String    @id @default(uuid())
+  orderItemId String    @unique
+  orderItem   OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   merchantId String
   merchant   User   @relation("MerchantSales", fields: [merchantId], references: [id])
@@ -180,6 +238,21 @@ model Sale {
   createdAt       DateTime @default(now())
 
   @@index([productId, createdAt]) // speeds up time-window queries
+  SaleItem SaleItem[]
+}
+
+model SaleItem {
+  id          String  @id @default(uuid())
+  saleId      String
+  productId   String
+  quantity    Int
+  unitPrice   Decimal
+  total       Decimal
+
+  // add this:
+  orderItemId String  @unique
+
+  Sale        Sale    @relation(fields: [saleId], references: [id])
 }
 
 model ProductVariant {
@@ -235,6 +308,127 @@ model MockupVariant {
   backImg  String // optional: back image
 
   @@unique([mockupId, color, fitType]) // one row per (mockup, color, fitType)
+}
+
+model Order {
+  id String @id @default(cuid())
+
+  // required: no guest orders
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  // required: always point to a saved address
+  addressId String
+  address   UserAddress @relation(fields: [addressId], references: [id])
+  // (default referential action prevents deleting an address that’s used)
+
+  // money
+  currency    String  @default("BDT")
+  subtotal    Decimal @db.Decimal(12, 2)
+  discount    Decimal @default(0) @db.Decimal(12, 2)
+  tax         Decimal @default(0) @db.Decimal(12, 2)
+  shippingFee Decimal @default(0) @db.Decimal(12, 2)
+  grandTotal  Decimal @db.Decimal(12, 2)
+
+  // coupon
+  couponCode String?
+  couponRate Decimal? @db.Decimal(5, 4)
+
+  // payment / gateway
+  status String @default("PENDING") // PENDING | PAID | FAILED | CANCELLED
+  tranId String @unique
+
+  // relations
+  items   OrderItem[]
+  payment Payment?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  settledAt DateTime?
+
+  @@index([userId, createdAt])
+  @@index([addressId])
+}
+
+model OrderItem {
+  id      String @id @default(cuid())
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  productId    String?
+  productTitle String
+  unitPrice    Decimal @db.Decimal(12, 2)
+  quantity     Int     @default(1)
+
+  color   String?
+  fitType FitType?
+  size    String?
+
+  Sale Sale[]
+}
+
+model Payment {
+  id         String   @id @default(cuid())
+  orderId    String   @unique
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  valId      String? // from SSLCOMMERZ validation / redirect/IPN
+  bankTranId String? // bank_tran_id
+  cardType   String?
+  rawPayload Json? // store last payload (success/ipn)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model CommissionSetting {
+  id String @id @default(uuid())
+
+  // Optional foreign keys to associate commissions with specific Brand or Merchant
+  brandId String?
+  brand   Brand?  @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  merchantId String?
+  merchant   User?   @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+
+  // Commission percentages
+  brandCommissionPct    Float @default(10.0) // default brand share in %
+  merchantCommissionPct Float @default(10.0) // default merchant share in %
+
+  // Apply globally or to specific products if needed
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  // For versioning or tracking
+  effectiveFrom DateTime  @default(now())
+  effectiveTo   DateTime?
+  isActive      Boolean   @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([brandId, merchantId, productId])
+}
+
+enum PayoutActor {
+  BRAND
+  MERCHANT
+}
+
+model Payout {
+  id         String      @id @default(uuid())
+  actor      PayoutActor
+  brandId    String?
+  merchantId String?
+
+  amount    Decimal  @db.Decimal(12, 2)
+  note      String?
+  createdAt DateTime @default(now())
+
+  // named relations + SetNull keeps payout records if brand/user gets removed
+  brand    Brand? @relation("BrandPayouts", fields: [brandId], references: [id], onDelete: SetNull)
+  merchant User?  @relation("MerchantPayouts", fields: [merchantId], references: [id], onDelete: SetNull)
+
+  @@index([actor, brandId, merchantId, createdAt])
 }
 
 enum FitType {

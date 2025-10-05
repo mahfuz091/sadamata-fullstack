@@ -1399,7 +1399,7 @@ formData.append('backDesign', designBackFile, "designback");}
                           <input
                             type="text"
                             placeholder="BDT 0.00"
-                            defaultValue={500}
+                            
                             onChange={(e) =>
                               setFeatures((p) => ({
                                 ...p,
@@ -1415,7 +1415,7 @@ formData.append('backDesign', designBackFile, "designback");}
               )}
 
               {/* Product Details Form */}
-              <div className="product-details__form">
+              <div className="product-details__form mt-4">
                 <div className="product-details__form-top">
                   <h2 className="product-details__form-title">
                     Artworld should be:
@@ -1772,15 +1772,15 @@ formData.append('backDesign', designBackFile, "designback");}
                   </button>
                   <button
                     type="button"
-                    className="commerce-btn"
+                    className="commerce-btn ms-3"
                     onClick={handleCreateProduct}
                   >
                     Publish <i className="icon-right-arrow"></i>
                   </button>
-                  <button className="commerce-btn" onClick={saveImage}>
+                  {/* <button className="commerce-btn" onClick={saveImage}>
                     Save Image
-                  </button>
-                  <button
+                  </button> */}
+                  {/* <button
                     className="commerce-btn"
                     onClick={downloadAllMockups}
                     disabled={isDownloading || !designImage}
@@ -1789,7 +1789,7 @@ formData.append('backDesign', designBackFile, "designback");}
                     {isDownloading
                       ? "Preparing ZIP..."
                       : "Download All Images (ZIP)"}
-                  </button>
+                  </button> */}
                 </div>
 
                 <p className="product-details__availability__text">

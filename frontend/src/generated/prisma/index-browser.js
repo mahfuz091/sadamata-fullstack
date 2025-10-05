@@ -164,6 +164,7 @@ exports.Prisma.MerchantProfileScalarFieldEnum = {
   routingNumber: 'routingNumber',
   message: 'message',
   tiar: 'tiar',
+  leftTiar: 'leftTiar',
   brandOption: 'brandOption',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -236,6 +237,16 @@ exports.Prisma.SaleScalarFieldEnum = {
   merchantEarning: 'merchantEarning',
   platformEarning: 'platformEarning',
   createdAt: 'createdAt'
+};
+
+exports.Prisma.SaleItemScalarFieldEnum = {
+  id: 'id',
+  saleId: 'saleId',
+  productId: 'productId',
+  quantity: 'quantity',
+  unitPrice: 'unitPrice',
+  total: 'total',
+  orderItemId: 'orderItemId'
 };
 
 exports.Prisma.ProductVariantScalarFieldEnum = {
@@ -317,6 +328,30 @@ exports.Prisma.PaymentScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.CommissionSettingScalarFieldEnum = {
+  id: 'id',
+  brandId: 'brandId',
+  merchantId: 'merchantId',
+  brandCommissionPct: 'brandCommissionPct',
+  merchantCommissionPct: 'merchantCommissionPct',
+  productId: 'productId',
+  effectiveFrom: 'effectiveFrom',
+  effectiveTo: 'effectiveTo',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PayoutScalarFieldEnum = {
+  id: 'id',
+  actor: 'actor',
+  brandId: 'brandId',
+  merchantId: 'merchantId',
+  amount: 'amount',
+  note: 'note',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -355,6 +390,11 @@ exports.FitType = exports.$Enums.FitType = {
   YOUTH: 'YOUTH'
 };
 
+exports.PayoutActor = exports.$Enums.PayoutActor = {
+  BRAND: 'BRAND',
+  MERCHANT: 'MERCHANT'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   UserAddress: 'UserAddress',
@@ -363,6 +403,7 @@ exports.Prisma.ModelName = {
   BrandCategory: 'BrandCategory',
   Product: 'Product',
   Sale: 'Sale',
+  SaleItem: 'SaleItem',
   ProductVariant: 'ProductVariant',
   Feature: 'Feature',
   Tag: 'Tag',
@@ -370,7 +411,9 @@ exports.Prisma.ModelName = {
   MockupVariant: 'MockupVariant',
   Order: 'Order',
   OrderItem: 'OrderItem',
-  Payment: 'Payment'
+  Payment: 'Payment',
+  CommissionSetting: 'CommissionSetting',
+  Payout: 'Payout'
 };
 
 /**

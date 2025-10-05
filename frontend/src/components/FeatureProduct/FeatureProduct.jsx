@@ -246,9 +246,9 @@ console.log(products, "products");
                       </div>
                     </div>
 
-                    <a className="commerce-btn product__item__link mt-2">
+                    <Link href={`/products/${product.productId}`} className="commerce-btn product__item__link mt-2">
                       Add to Cart <i className="icon-right-arrow"></i>
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </Col>

@@ -49,6 +49,11 @@ export type Product = $Result.DefaultSelection<Prisma.$ProductPayload>
  */
 export type Sale = $Result.DefaultSelection<Prisma.$SalePayload>
 /**
+ * Model SaleItem
+ * 
+ */
+export type SaleItem = $Result.DefaultSelection<Prisma.$SaleItemPayload>
+/**
  * Model ProductVariant
  * 
  */
@@ -88,12 +93,30 @@ export type OrderItem = $Result.DefaultSelection<Prisma.$OrderItemPayload>
  * 
  */
 export type Payment = $Result.DefaultSelection<Prisma.$PaymentPayload>
+/**
+ * Model CommissionSetting
+ * 
+ */
+export type CommissionSetting = $Result.DefaultSelection<Prisma.$CommissionSettingPayload>
+/**
+ * Model Payout
+ * 
+ */
+export type Payout = $Result.DefaultSelection<Prisma.$PayoutPayload>
 
 /**
  * Enums
  */
 export namespace $Enums {
-  export const FitType: {
+  export const PayoutActor: {
+  BRAND: 'BRAND',
+  MERCHANT: 'MERCHANT'
+};
+
+export type PayoutActor = (typeof PayoutActor)[keyof typeof PayoutActor]
+
+
+export const FitType: {
   MEN: 'MEN',
   WOMEN: 'WOMEN',
   YOUTH: 'YOUTH'
@@ -128,6 +151,10 @@ export const ImageType: {
 export type ImageType = (typeof ImageType)[keyof typeof ImageType]
 
 }
+
+export type PayoutActor = $Enums.PayoutActor
+
+export const PayoutActor: typeof $Enums.PayoutActor
 
 export type FitType = $Enums.FitType
 
@@ -334,6 +361,16 @@ export class PrismaClient<
   get sale(): Prisma.SaleDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.saleItem`: Exposes CRUD operations for the **SaleItem** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SaleItems
+    * const saleItems = await prisma.saleItem.findMany()
+    * ```
+    */
+  get saleItem(): Prisma.SaleItemDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.productVariant`: Exposes CRUD operations for the **ProductVariant** model.
     * Example usage:
     * ```ts
@@ -412,6 +449,26 @@ export class PrismaClient<
     * ```
     */
   get payment(): Prisma.PaymentDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.commissionSetting`: Exposes CRUD operations for the **CommissionSetting** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CommissionSettings
+    * const commissionSettings = await prisma.commissionSetting.findMany()
+    * ```
+    */
+  get commissionSetting(): Prisma.CommissionSettingDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.payout`: Exposes CRUD operations for the **Payout** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Payouts
+    * const payouts = await prisma.payout.findMany()
+    * ```
+    */
+  get payout(): Prisma.PayoutDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -859,6 +916,7 @@ export namespace Prisma {
     BrandCategory: 'BrandCategory',
     Product: 'Product',
     Sale: 'Sale',
+    SaleItem: 'SaleItem',
     ProductVariant: 'ProductVariant',
     Feature: 'Feature',
     Tag: 'Tag',
@@ -866,7 +924,9 @@ export namespace Prisma {
     MockupVariant: 'MockupVariant',
     Order: 'Order',
     OrderItem: 'OrderItem',
-    Payment: 'Payment'
+    Payment: 'Payment',
+    CommissionSetting: 'CommissionSetting',
+    Payout: 'Payout'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -885,7 +945,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "userAddress" | "merchantProfile" | "brand" | "brandCategory" | "product" | "sale" | "productVariant" | "feature" | "tag" | "mockup" | "mockupVariant" | "order" | "orderItem" | "payment"
+      modelProps: "user" | "userAddress" | "merchantProfile" | "brand" | "brandCategory" | "product" | "sale" | "saleItem" | "productVariant" | "feature" | "tag" | "mockup" | "mockupVariant" | "order" | "orderItem" | "payment" | "commissionSetting" | "payout"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1404,6 +1464,80 @@ export namespace Prisma {
           count: {
             args: Prisma.SaleCountArgs<ExtArgs>
             result: $Utils.Optional<SaleCountAggregateOutputType> | number
+          }
+        }
+      }
+      SaleItem: {
+        payload: Prisma.$SaleItemPayload<ExtArgs>
+        fields: Prisma.SaleItemFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SaleItemFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SaleItemPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SaleItemFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SaleItemPayload>
+          }
+          findFirst: {
+            args: Prisma.SaleItemFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SaleItemPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SaleItemFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SaleItemPayload>
+          }
+          findMany: {
+            args: Prisma.SaleItemFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SaleItemPayload>[]
+          }
+          create: {
+            args: Prisma.SaleItemCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SaleItemPayload>
+          }
+          createMany: {
+            args: Prisma.SaleItemCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SaleItemCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SaleItemPayload>[]
+          }
+          delete: {
+            args: Prisma.SaleItemDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SaleItemPayload>
+          }
+          update: {
+            args: Prisma.SaleItemUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SaleItemPayload>
+          }
+          deleteMany: {
+            args: Prisma.SaleItemDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SaleItemUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SaleItemUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SaleItemPayload>[]
+          }
+          upsert: {
+            args: Prisma.SaleItemUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SaleItemPayload>
+          }
+          aggregate: {
+            args: Prisma.SaleItemAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSaleItem>
+          }
+          groupBy: {
+            args: Prisma.SaleItemGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SaleItemGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SaleItemCountArgs<ExtArgs>
+            result: $Utils.Optional<SaleItemCountAggregateOutputType> | number
           }
         }
       }
@@ -1999,6 +2133,154 @@ export namespace Prisma {
           }
         }
       }
+      CommissionSetting: {
+        payload: Prisma.$CommissionSettingPayload<ExtArgs>
+        fields: Prisma.CommissionSettingFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CommissionSettingFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CommissionSettingPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CommissionSettingFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CommissionSettingPayload>
+          }
+          findFirst: {
+            args: Prisma.CommissionSettingFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CommissionSettingPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CommissionSettingFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CommissionSettingPayload>
+          }
+          findMany: {
+            args: Prisma.CommissionSettingFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CommissionSettingPayload>[]
+          }
+          create: {
+            args: Prisma.CommissionSettingCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CommissionSettingPayload>
+          }
+          createMany: {
+            args: Prisma.CommissionSettingCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CommissionSettingCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CommissionSettingPayload>[]
+          }
+          delete: {
+            args: Prisma.CommissionSettingDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CommissionSettingPayload>
+          }
+          update: {
+            args: Prisma.CommissionSettingUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CommissionSettingPayload>
+          }
+          deleteMany: {
+            args: Prisma.CommissionSettingDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CommissionSettingUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CommissionSettingUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CommissionSettingPayload>[]
+          }
+          upsert: {
+            args: Prisma.CommissionSettingUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CommissionSettingPayload>
+          }
+          aggregate: {
+            args: Prisma.CommissionSettingAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCommissionSetting>
+          }
+          groupBy: {
+            args: Prisma.CommissionSettingGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CommissionSettingGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CommissionSettingCountArgs<ExtArgs>
+            result: $Utils.Optional<CommissionSettingCountAggregateOutputType> | number
+          }
+        }
+      }
+      Payout: {
+        payload: Prisma.$PayoutPayload<ExtArgs>
+        fields: Prisma.PayoutFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PayoutFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PayoutPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PayoutFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PayoutPayload>
+          }
+          findFirst: {
+            args: Prisma.PayoutFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PayoutPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PayoutFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PayoutPayload>
+          }
+          findMany: {
+            args: Prisma.PayoutFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PayoutPayload>[]
+          }
+          create: {
+            args: Prisma.PayoutCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PayoutPayload>
+          }
+          createMany: {
+            args: Prisma.PayoutCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PayoutCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PayoutPayload>[]
+          }
+          delete: {
+            args: Prisma.PayoutDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PayoutPayload>
+          }
+          update: {
+            args: Prisma.PayoutUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PayoutPayload>
+          }
+          deleteMany: {
+            args: Prisma.PayoutDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PayoutUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PayoutUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PayoutPayload>[]
+          }
+          upsert: {
+            args: Prisma.PayoutUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PayoutPayload>
+          }
+          aggregate: {
+            args: Prisma.PayoutAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePayout>
+          }
+          groupBy: {
+            args: Prisma.PayoutGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PayoutGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PayoutCountArgs<ExtArgs>
+            result: $Utils.Optional<PayoutCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2102,6 +2384,7 @@ export namespace Prisma {
     brandCategory?: BrandCategoryOmit
     product?: ProductOmit
     sale?: SaleOmit
+    saleItem?: SaleItemOmit
     productVariant?: ProductVariantOmit
     feature?: FeatureOmit
     tag?: TagOmit
@@ -2110,6 +2393,8 @@ export namespace Prisma {
     order?: OrderOmit
     orderItem?: OrderItemOmit
     payment?: PaymentOmit
+    commissionSetting?: CommissionSettingOmit
+    payout?: PayoutOmit
   }
 
   /* Types for Logging */
@@ -2195,6 +2480,8 @@ export namespace Prisma {
     sales: number
     addresses: number
     Order: number
+    CommissionSetting: number
+    Payout: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2203,6 +2490,8 @@ export namespace Prisma {
     sales?: boolean | UserCountOutputTypeCountSalesArgs
     addresses?: boolean | UserCountOutputTypeCountAddressesArgs
     Order?: boolean | UserCountOutputTypeCountOrderArgs
+    CommissionSetting?: boolean | UserCountOutputTypeCountCommissionSettingArgs
+    Payout?: boolean | UserCountOutputTypeCountPayoutArgs
   }
 
   // Custom InputTypes
@@ -2251,6 +2540,20 @@ export namespace Prisma {
     where?: OrderWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountCommissionSettingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CommissionSettingWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountPayoutArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PayoutWhereInput
+  }
+
 
   /**
    * Count Type UserAddressCountOutputType
@@ -2290,11 +2593,15 @@ export namespace Prisma {
   export type BrandCountOutputType = {
     Product: number
     Sales: number
+    CommissionSetting: number
+    Payout: number
   }
 
   export type BrandCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Product?: boolean | BrandCountOutputTypeCountProductArgs
     Sales?: boolean | BrandCountOutputTypeCountSalesArgs
+    CommissionSetting?: boolean | BrandCountOutputTypeCountCommissionSettingArgs
+    Payout?: boolean | BrandCountOutputTypeCountPayoutArgs
   }
 
   // Custom InputTypes
@@ -2320,6 +2627,20 @@ export namespace Prisma {
    */
   export type BrandCountOutputTypeCountSalesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SaleWhereInput
+  }
+
+  /**
+   * BrandCountOutputType without action
+   */
+  export type BrandCountOutputTypeCountCommissionSettingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CommissionSettingWhereInput
+  }
+
+  /**
+   * BrandCountOutputType without action
+   */
+  export type BrandCountOutputTypeCountPayoutArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PayoutWhereInput
   }
 
 
@@ -2363,6 +2684,7 @@ export namespace Prisma {
     tags: number
     variants: number
     sales: number
+    CommissionSetting: number
   }
 
   export type ProductCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2370,6 +2692,7 @@ export namespace Prisma {
     tags?: boolean | ProductCountOutputTypeCountTagsArgs
     variants?: boolean | ProductCountOutputTypeCountVariantsArgs
     sales?: boolean | ProductCountOutputTypeCountSalesArgs
+    CommissionSetting?: boolean | ProductCountOutputTypeCountCommissionSettingArgs
   }
 
   // Custom InputTypes
@@ -2409,6 +2732,44 @@ export namespace Prisma {
    */
   export type ProductCountOutputTypeCountSalesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SaleWhereInput
+  }
+
+  /**
+   * ProductCountOutputType without action
+   */
+  export type ProductCountOutputTypeCountCommissionSettingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CommissionSettingWhereInput
+  }
+
+
+  /**
+   * Count Type SaleCountOutputType
+   */
+
+  export type SaleCountOutputType = {
+    SaleItem: number
+  }
+
+  export type SaleCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    SaleItem?: boolean | SaleCountOutputTypeCountSaleItemArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * SaleCountOutputType without action
+   */
+  export type SaleCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SaleCountOutputType
+     */
+    select?: SaleCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * SaleCountOutputType without action
+   */
+  export type SaleCountOutputTypeCountSaleItemArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SaleItemWhereInput
   }
 
 
@@ -2720,6 +3081,8 @@ export namespace Prisma {
     merchantProfile?: boolean | User$merchantProfileArgs<ExtArgs>
     addresses?: boolean | User$addressesArgs<ExtArgs>
     Order?: boolean | User$OrderArgs<ExtArgs>
+    CommissionSetting?: boolean | User$CommissionSettingArgs<ExtArgs>
+    Payout?: boolean | User$PayoutArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2767,6 +3130,8 @@ export namespace Prisma {
     merchantProfile?: boolean | User$merchantProfileArgs<ExtArgs>
     addresses?: boolean | User$addressesArgs<ExtArgs>
     Order?: boolean | User$OrderArgs<ExtArgs>
+    CommissionSetting?: boolean | User$CommissionSettingArgs<ExtArgs>
+    Payout?: boolean | User$PayoutArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2781,6 +3146,8 @@ export namespace Prisma {
       merchantProfile: Prisma.$MerchantProfilePayload<ExtArgs> | null
       addresses: Prisma.$UserAddressPayload<ExtArgs>[]
       Order: Prisma.$OrderPayload<ExtArgs>[]
+      CommissionSetting: Prisma.$CommissionSettingPayload<ExtArgs>[]
+      Payout: Prisma.$PayoutPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3192,6 +3559,8 @@ export namespace Prisma {
     merchantProfile<T extends User$merchantProfileArgs<ExtArgs> = {}>(args?: Subset<T, User$merchantProfileArgs<ExtArgs>>): Prisma__MerchantProfileClient<$Result.GetResult<Prisma.$MerchantProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     addresses<T extends User$addressesArgs<ExtArgs> = {}>(args?: Subset<T, User$addressesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserAddressPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     Order<T extends User$OrderArgs<ExtArgs> = {}>(args?: Subset<T, User$OrderArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    CommissionSetting<T extends User$CommissionSettingArgs<ExtArgs> = {}>(args?: Subset<T, User$CommissionSettingArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommissionSettingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    Payout<T extends User$PayoutArgs<ExtArgs> = {}>(args?: Subset<T, User$PayoutArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PayoutPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3754,6 +4123,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: OrderScalarFieldEnum | OrderScalarFieldEnum[]
+  }
+
+  /**
+   * User.CommissionSetting
+   */
+  export type User$CommissionSettingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CommissionSetting
+     */
+    select?: CommissionSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CommissionSetting
+     */
+    omit?: CommissionSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommissionSettingInclude<ExtArgs> | null
+    where?: CommissionSettingWhereInput
+    orderBy?: CommissionSettingOrderByWithRelationInput | CommissionSettingOrderByWithRelationInput[]
+    cursor?: CommissionSettingWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CommissionSettingScalarFieldEnum | CommissionSettingScalarFieldEnum[]
+  }
+
+  /**
+   * User.Payout
+   */
+  export type User$PayoutArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Payout
+     */
+    select?: PayoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Payout
+     */
+    omit?: PayoutOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PayoutInclude<ExtArgs> | null
+    where?: PayoutWhereInput
+    orderBy?: PayoutOrderByWithRelationInput | PayoutOrderByWithRelationInput[]
+    cursor?: PayoutWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PayoutScalarFieldEnum | PayoutScalarFieldEnum[]
   }
 
   /**
@@ -4942,10 +5359,12 @@ export namespace Prisma {
 
   export type MerchantProfileAvgAggregateOutputType = {
     tiar: number | null
+    leftTiar: number | null
   }
 
   export type MerchantProfileSumAggregateOutputType = {
     tiar: number | null
+    leftTiar: number | null
   }
 
   export type MerchantProfileMinAggregateOutputType = {
@@ -4967,6 +5386,7 @@ export namespace Prisma {
     routingNumber: string | null
     message: string | null
     tiar: number | null
+    leftTiar: number | null
     brandOption: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -4991,6 +5411,7 @@ export namespace Prisma {
     routingNumber: string | null
     message: string | null
     tiar: number | null
+    leftTiar: number | null
     brandOption: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -5015,6 +5436,7 @@ export namespace Prisma {
     routingNumber: number
     message: number
     tiar: number
+    leftTiar: number
     brandOption: number
     createdAt: number
     updatedAt: number
@@ -5024,10 +5446,12 @@ export namespace Prisma {
 
   export type MerchantProfileAvgAggregateInputType = {
     tiar?: true
+    leftTiar?: true
   }
 
   export type MerchantProfileSumAggregateInputType = {
     tiar?: true
+    leftTiar?: true
   }
 
   export type MerchantProfileMinAggregateInputType = {
@@ -5049,6 +5473,7 @@ export namespace Prisma {
     routingNumber?: true
     message?: true
     tiar?: true
+    leftTiar?: true
     brandOption?: true
     createdAt?: true
     updatedAt?: true
@@ -5073,6 +5498,7 @@ export namespace Prisma {
     routingNumber?: true
     message?: true
     tiar?: true
+    leftTiar?: true
     brandOption?: true
     createdAt?: true
     updatedAt?: true
@@ -5097,6 +5523,7 @@ export namespace Prisma {
     routingNumber?: true
     message?: true
     tiar?: true
+    leftTiar?: true
     brandOption?: true
     createdAt?: true
     updatedAt?: true
@@ -5208,6 +5635,7 @@ export namespace Prisma {
     routingNumber: string
     message: string | null
     tiar: number
+    leftTiar: number
     brandOption: boolean
     createdAt: Date
     updatedAt: Date
@@ -5251,6 +5679,7 @@ export namespace Prisma {
     routingNumber?: boolean
     message?: boolean
     tiar?: boolean
+    leftTiar?: boolean
     brandOption?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -5276,6 +5705,7 @@ export namespace Prisma {
     routingNumber?: boolean
     message?: boolean
     tiar?: boolean
+    leftTiar?: boolean
     brandOption?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -5301,6 +5731,7 @@ export namespace Prisma {
     routingNumber?: boolean
     message?: boolean
     tiar?: boolean
+    leftTiar?: boolean
     brandOption?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -5326,12 +5757,13 @@ export namespace Prisma {
     routingNumber?: boolean
     message?: boolean
     tiar?: boolean
+    leftTiar?: boolean
     brandOption?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type MerchantProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "fullName" | "dateOfBirth" | "contactEmail" | "contactPhone" | "nidOrPassportNo" | "presentAddress" | "permanentAddress" | "portfolioUrl" | "websiteUrl" | "bankName" | "bankBranch" | "accountName" | "accountNumber" | "routingNumber" | "message" | "tiar" | "brandOption" | "createdAt" | "updatedAt", ExtArgs["result"]["merchantProfile"]>
+  export type MerchantProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "fullName" | "dateOfBirth" | "contactEmail" | "contactPhone" | "nidOrPassportNo" | "presentAddress" | "permanentAddress" | "portfolioUrl" | "websiteUrl" | "bankName" | "bankBranch" | "accountName" | "accountNumber" | "routingNumber" | "message" | "tiar" | "leftTiar" | "brandOption" | "createdAt" | "updatedAt", ExtArgs["result"]["merchantProfile"]>
   export type MerchantProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -5366,6 +5798,7 @@ export namespace Prisma {
       routingNumber: string
       message: string | null
       tiar: number
+      leftTiar: number
       brandOption: boolean
       createdAt: Date
       updatedAt: Date
@@ -5811,6 +6244,7 @@ export namespace Prisma {
     readonly routingNumber: FieldRef<"MerchantProfile", 'String'>
     readonly message: FieldRef<"MerchantProfile", 'String'>
     readonly tiar: FieldRef<"MerchantProfile", 'Int'>
+    readonly leftTiar: FieldRef<"MerchantProfile", 'Int'>
     readonly brandOption: FieldRef<"MerchantProfile", 'Boolean'>
     readonly createdAt: FieldRef<"MerchantProfile", 'DateTime'>
     readonly updatedAt: FieldRef<"MerchantProfile", 'DateTime'>
@@ -6594,6 +7028,8 @@ export namespace Prisma {
     user?: boolean | UserDefaultArgs<ExtArgs>
     Product?: boolean | Brand$ProductArgs<ExtArgs>
     Sales?: boolean | Brand$SalesArgs<ExtArgs>
+    CommissionSetting?: boolean | Brand$CommissionSettingArgs<ExtArgs>
+    Payout?: boolean | Brand$PayoutArgs<ExtArgs>
     _count?: boolean | BrandCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["brand"]>
 
@@ -6691,6 +7127,8 @@ export namespace Prisma {
     user?: boolean | UserDefaultArgs<ExtArgs>
     Product?: boolean | Brand$ProductArgs<ExtArgs>
     Sales?: boolean | Brand$SalesArgs<ExtArgs>
+    CommissionSetting?: boolean | Brand$CommissionSettingArgs<ExtArgs>
+    Payout?: boolean | Brand$PayoutArgs<ExtArgs>
     _count?: boolean | BrandCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type BrandIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6709,6 +7147,8 @@ export namespace Prisma {
       user: Prisma.$UserPayload<ExtArgs>
       Product: Prisma.$ProductPayload<ExtArgs>[]
       Sales: Prisma.$SalePayload<ExtArgs>[]
+      CommissionSetting: Prisma.$CommissionSettingPayload<ExtArgs>[]
+      Payout: Prisma.$PayoutPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -7134,6 +7574,8 @@ export namespace Prisma {
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     Product<T extends Brand$ProductArgs<ExtArgs> = {}>(args?: Subset<T, Brand$ProductArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     Sales<T extends Brand$SalesArgs<ExtArgs> = {}>(args?: Subset<T, Brand$SalesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    CommissionSetting<T extends Brand$CommissionSettingArgs<ExtArgs> = {}>(args?: Subset<T, Brand$CommissionSettingArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommissionSettingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    Payout<T extends Brand$PayoutArgs<ExtArgs> = {}>(args?: Subset<T, Brand$PayoutArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PayoutPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7629,6 +8071,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: SaleScalarFieldEnum | SaleScalarFieldEnum[]
+  }
+
+  /**
+   * Brand.CommissionSetting
+   */
+  export type Brand$CommissionSettingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CommissionSetting
+     */
+    select?: CommissionSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CommissionSetting
+     */
+    omit?: CommissionSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommissionSettingInclude<ExtArgs> | null
+    where?: CommissionSettingWhereInput
+    orderBy?: CommissionSettingOrderByWithRelationInput | CommissionSettingOrderByWithRelationInput[]
+    cursor?: CommissionSettingWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CommissionSettingScalarFieldEnum | CommissionSettingScalarFieldEnum[]
+  }
+
+  /**
+   * Brand.Payout
+   */
+  export type Brand$PayoutArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Payout
+     */
+    select?: PayoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Payout
+     */
+    omit?: PayoutOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PayoutInclude<ExtArgs> | null
+    where?: PayoutWhereInput
+    orderBy?: PayoutOrderByWithRelationInput | PayoutOrderByWithRelationInput[]
+    cursor?: PayoutWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PayoutScalarFieldEnum | PayoutScalarFieldEnum[]
   }
 
   /**
@@ -9016,6 +9506,7 @@ export namespace Prisma {
     variants?: boolean | Product$variantsArgs<ExtArgs>
     User?: boolean | UserDefaultArgs<ExtArgs>
     sales?: boolean | Product$salesArgs<ExtArgs>
+    CommissionSetting?: boolean | Product$CommissionSettingArgs<ExtArgs>
     _count?: boolean | ProductCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["product"]>
 
@@ -9094,6 +9585,7 @@ export namespace Prisma {
     variants?: boolean | Product$variantsArgs<ExtArgs>
     User?: boolean | UserDefaultArgs<ExtArgs>
     sales?: boolean | Product$salesArgs<ExtArgs>
+    CommissionSetting?: boolean | Product$CommissionSettingArgs<ExtArgs>
     _count?: boolean | ProductCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ProductIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9117,6 +9609,7 @@ export namespace Prisma {
       variants: Prisma.$ProductVariantPayload<ExtArgs>[]
       User: Prisma.$UserPayload<ExtArgs>
       sales: Prisma.$SalePayload<ExtArgs>[]
+      CommissionSetting: Prisma.$CommissionSettingPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9537,6 +10030,7 @@ export namespace Prisma {
     variants<T extends Product$variantsArgs<ExtArgs> = {}>(args?: Subset<T, Product$variantsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductVariantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     User<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     sales<T extends Product$salesArgs<ExtArgs> = {}>(args?: Subset<T, Product$salesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    CommissionSetting<T extends Product$CommissionSettingArgs<ExtArgs> = {}>(args?: Subset<T, Product$CommissionSettingArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommissionSettingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10094,6 +10588,30 @@ export namespace Prisma {
   }
 
   /**
+   * Product.CommissionSetting
+   */
+  export type Product$CommissionSettingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CommissionSetting
+     */
+    select?: CommissionSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CommissionSetting
+     */
+    omit?: CommissionSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommissionSettingInclude<ExtArgs> | null
+    where?: CommissionSettingWhereInput
+    orderBy?: CommissionSettingOrderByWithRelationInput | CommissionSettingOrderByWithRelationInput[]
+    cursor?: CommissionSettingWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CommissionSettingScalarFieldEnum | CommissionSettingScalarFieldEnum[]
+  }
+
+  /**
    * Product without action
    */
   export type ProductDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10378,6 +10896,8 @@ export namespace Prisma {
     product?: boolean | ProductDefaultArgs<ExtArgs>
     merchant?: boolean | UserDefaultArgs<ExtArgs>
     brand?: boolean | Sale$brandArgs<ExtArgs>
+    SaleItem?: boolean | Sale$SaleItemArgs<ExtArgs>
+    _count?: boolean | SaleCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["sale"]>
 
   export type SaleSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -10436,6 +10956,8 @@ export namespace Prisma {
     product?: boolean | ProductDefaultArgs<ExtArgs>
     merchant?: boolean | UserDefaultArgs<ExtArgs>
     brand?: boolean | Sale$brandArgs<ExtArgs>
+    SaleItem?: boolean | Sale$SaleItemArgs<ExtArgs>
+    _count?: boolean | SaleCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type SaleIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     orderItem?: boolean | OrderItemDefaultArgs<ExtArgs>
@@ -10457,6 +10979,7 @@ export namespace Prisma {
       product: Prisma.$ProductPayload<ExtArgs>
       merchant: Prisma.$UserPayload<ExtArgs>
       brand: Prisma.$BrandPayload<ExtArgs> | null
+      SaleItem: Prisma.$SaleItemPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -10868,6 +11391,7 @@ export namespace Prisma {
     product<T extends ProductDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProductDefaultArgs<ExtArgs>>): Prisma__ProductClient<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     merchant<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     brand<T extends Sale$brandArgs<ExtArgs> = {}>(args?: Subset<T, Sale$brandArgs<ExtArgs>>): Prisma__BrandClient<$Result.GetResult<Prisma.$BrandPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    SaleItem<T extends Sale$SaleItemArgs<ExtArgs> = {}>(args?: Subset<T, Sale$SaleItemArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SaleItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11323,6 +11847,30 @@ export namespace Prisma {
   }
 
   /**
+   * Sale.SaleItem
+   */
+  export type Sale$SaleItemArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SaleItem
+     */
+    select?: SaleItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SaleItem
+     */
+    omit?: SaleItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SaleItemInclude<ExtArgs> | null
+    where?: SaleItemWhereInput
+    orderBy?: SaleItemOrderByWithRelationInput | SaleItemOrderByWithRelationInput[]
+    cursor?: SaleItemWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SaleItemScalarFieldEnum | SaleItemScalarFieldEnum[]
+  }
+
+  /**
    * Sale without action
    */
   export type SaleDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -11338,6 +11886,1132 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: SaleInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model SaleItem
+   */
+
+  export type AggregateSaleItem = {
+    _count: SaleItemCountAggregateOutputType | null
+    _avg: SaleItemAvgAggregateOutputType | null
+    _sum: SaleItemSumAggregateOutputType | null
+    _min: SaleItemMinAggregateOutputType | null
+    _max: SaleItemMaxAggregateOutputType | null
+  }
+
+  export type SaleItemAvgAggregateOutputType = {
+    quantity: number | null
+    unitPrice: Decimal | null
+    total: Decimal | null
+  }
+
+  export type SaleItemSumAggregateOutputType = {
+    quantity: number | null
+    unitPrice: Decimal | null
+    total: Decimal | null
+  }
+
+  export type SaleItemMinAggregateOutputType = {
+    id: string | null
+    saleId: string | null
+    productId: string | null
+    quantity: number | null
+    unitPrice: Decimal | null
+    total: Decimal | null
+    orderItemId: string | null
+  }
+
+  export type SaleItemMaxAggregateOutputType = {
+    id: string | null
+    saleId: string | null
+    productId: string | null
+    quantity: number | null
+    unitPrice: Decimal | null
+    total: Decimal | null
+    orderItemId: string | null
+  }
+
+  export type SaleItemCountAggregateOutputType = {
+    id: number
+    saleId: number
+    productId: number
+    quantity: number
+    unitPrice: number
+    total: number
+    orderItemId: number
+    _all: number
+  }
+
+
+  export type SaleItemAvgAggregateInputType = {
+    quantity?: true
+    unitPrice?: true
+    total?: true
+  }
+
+  export type SaleItemSumAggregateInputType = {
+    quantity?: true
+    unitPrice?: true
+    total?: true
+  }
+
+  export type SaleItemMinAggregateInputType = {
+    id?: true
+    saleId?: true
+    productId?: true
+    quantity?: true
+    unitPrice?: true
+    total?: true
+    orderItemId?: true
+  }
+
+  export type SaleItemMaxAggregateInputType = {
+    id?: true
+    saleId?: true
+    productId?: true
+    quantity?: true
+    unitPrice?: true
+    total?: true
+    orderItemId?: true
+  }
+
+  export type SaleItemCountAggregateInputType = {
+    id?: true
+    saleId?: true
+    productId?: true
+    quantity?: true
+    unitPrice?: true
+    total?: true
+    orderItemId?: true
+    _all?: true
+  }
+
+  export type SaleItemAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SaleItem to aggregate.
+     */
+    where?: SaleItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SaleItems to fetch.
+     */
+    orderBy?: SaleItemOrderByWithRelationInput | SaleItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SaleItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SaleItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SaleItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SaleItems
+    **/
+    _count?: true | SaleItemCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SaleItemAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SaleItemSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SaleItemMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SaleItemMaxAggregateInputType
+  }
+
+  export type GetSaleItemAggregateType<T extends SaleItemAggregateArgs> = {
+        [P in keyof T & keyof AggregateSaleItem]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSaleItem[P]>
+      : GetScalarType<T[P], AggregateSaleItem[P]>
+  }
+
+
+
+
+  export type SaleItemGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SaleItemWhereInput
+    orderBy?: SaleItemOrderByWithAggregationInput | SaleItemOrderByWithAggregationInput[]
+    by: SaleItemScalarFieldEnum[] | SaleItemScalarFieldEnum
+    having?: SaleItemScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SaleItemCountAggregateInputType | true
+    _avg?: SaleItemAvgAggregateInputType
+    _sum?: SaleItemSumAggregateInputType
+    _min?: SaleItemMinAggregateInputType
+    _max?: SaleItemMaxAggregateInputType
+  }
+
+  export type SaleItemGroupByOutputType = {
+    id: string
+    saleId: string
+    productId: string
+    quantity: number
+    unitPrice: Decimal
+    total: Decimal
+    orderItemId: string
+    _count: SaleItemCountAggregateOutputType | null
+    _avg: SaleItemAvgAggregateOutputType | null
+    _sum: SaleItemSumAggregateOutputType | null
+    _min: SaleItemMinAggregateOutputType | null
+    _max: SaleItemMaxAggregateOutputType | null
+  }
+
+  type GetSaleItemGroupByPayload<T extends SaleItemGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SaleItemGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SaleItemGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SaleItemGroupByOutputType[P]>
+            : GetScalarType<T[P], SaleItemGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SaleItemSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    saleId?: boolean
+    productId?: boolean
+    quantity?: boolean
+    unitPrice?: boolean
+    total?: boolean
+    orderItemId?: boolean
+    Sale?: boolean | SaleDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["saleItem"]>
+
+  export type SaleItemSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    saleId?: boolean
+    productId?: boolean
+    quantity?: boolean
+    unitPrice?: boolean
+    total?: boolean
+    orderItemId?: boolean
+    Sale?: boolean | SaleDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["saleItem"]>
+
+  export type SaleItemSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    saleId?: boolean
+    productId?: boolean
+    quantity?: boolean
+    unitPrice?: boolean
+    total?: boolean
+    orderItemId?: boolean
+    Sale?: boolean | SaleDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["saleItem"]>
+
+  export type SaleItemSelectScalar = {
+    id?: boolean
+    saleId?: boolean
+    productId?: boolean
+    quantity?: boolean
+    unitPrice?: boolean
+    total?: boolean
+    orderItemId?: boolean
+  }
+
+  export type SaleItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "saleId" | "productId" | "quantity" | "unitPrice" | "total" | "orderItemId", ExtArgs["result"]["saleItem"]>
+  export type SaleItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Sale?: boolean | SaleDefaultArgs<ExtArgs>
+  }
+  export type SaleItemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Sale?: boolean | SaleDefaultArgs<ExtArgs>
+  }
+  export type SaleItemIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Sale?: boolean | SaleDefaultArgs<ExtArgs>
+  }
+
+  export type $SaleItemPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SaleItem"
+    objects: {
+      Sale: Prisma.$SalePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      saleId: string
+      productId: string
+      quantity: number
+      unitPrice: Prisma.Decimal
+      total: Prisma.Decimal
+      orderItemId: string
+    }, ExtArgs["result"]["saleItem"]>
+    composites: {}
+  }
+
+  type SaleItemGetPayload<S extends boolean | null | undefined | SaleItemDefaultArgs> = $Result.GetResult<Prisma.$SaleItemPayload, S>
+
+  type SaleItemCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SaleItemFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SaleItemCountAggregateInputType | true
+    }
+
+  export interface SaleItemDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SaleItem'], meta: { name: 'SaleItem' } }
+    /**
+     * Find zero or one SaleItem that matches the filter.
+     * @param {SaleItemFindUniqueArgs} args - Arguments to find a SaleItem
+     * @example
+     * // Get one SaleItem
+     * const saleItem = await prisma.saleItem.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SaleItemFindUniqueArgs>(args: SelectSubset<T, SaleItemFindUniqueArgs<ExtArgs>>): Prisma__SaleItemClient<$Result.GetResult<Prisma.$SaleItemPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SaleItem that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SaleItemFindUniqueOrThrowArgs} args - Arguments to find a SaleItem
+     * @example
+     * // Get one SaleItem
+     * const saleItem = await prisma.saleItem.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SaleItemFindUniqueOrThrowArgs>(args: SelectSubset<T, SaleItemFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SaleItemClient<$Result.GetResult<Prisma.$SaleItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SaleItem that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SaleItemFindFirstArgs} args - Arguments to find a SaleItem
+     * @example
+     * // Get one SaleItem
+     * const saleItem = await prisma.saleItem.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SaleItemFindFirstArgs>(args?: SelectSubset<T, SaleItemFindFirstArgs<ExtArgs>>): Prisma__SaleItemClient<$Result.GetResult<Prisma.$SaleItemPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SaleItem that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SaleItemFindFirstOrThrowArgs} args - Arguments to find a SaleItem
+     * @example
+     * // Get one SaleItem
+     * const saleItem = await prisma.saleItem.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SaleItemFindFirstOrThrowArgs>(args?: SelectSubset<T, SaleItemFindFirstOrThrowArgs<ExtArgs>>): Prisma__SaleItemClient<$Result.GetResult<Prisma.$SaleItemPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SaleItems that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SaleItemFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SaleItems
+     * const saleItems = await prisma.saleItem.findMany()
+     * 
+     * // Get first 10 SaleItems
+     * const saleItems = await prisma.saleItem.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const saleItemWithIdOnly = await prisma.saleItem.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SaleItemFindManyArgs>(args?: SelectSubset<T, SaleItemFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SaleItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SaleItem.
+     * @param {SaleItemCreateArgs} args - Arguments to create a SaleItem.
+     * @example
+     * // Create one SaleItem
+     * const SaleItem = await prisma.saleItem.create({
+     *   data: {
+     *     // ... data to create a SaleItem
+     *   }
+     * })
+     * 
+     */
+    create<T extends SaleItemCreateArgs>(args: SelectSubset<T, SaleItemCreateArgs<ExtArgs>>): Prisma__SaleItemClient<$Result.GetResult<Prisma.$SaleItemPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SaleItems.
+     * @param {SaleItemCreateManyArgs} args - Arguments to create many SaleItems.
+     * @example
+     * // Create many SaleItems
+     * const saleItem = await prisma.saleItem.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SaleItemCreateManyArgs>(args?: SelectSubset<T, SaleItemCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SaleItems and returns the data saved in the database.
+     * @param {SaleItemCreateManyAndReturnArgs} args - Arguments to create many SaleItems.
+     * @example
+     * // Create many SaleItems
+     * const saleItem = await prisma.saleItem.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SaleItems and only return the `id`
+     * const saleItemWithIdOnly = await prisma.saleItem.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SaleItemCreateManyAndReturnArgs>(args?: SelectSubset<T, SaleItemCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SaleItemPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SaleItem.
+     * @param {SaleItemDeleteArgs} args - Arguments to delete one SaleItem.
+     * @example
+     * // Delete one SaleItem
+     * const SaleItem = await prisma.saleItem.delete({
+     *   where: {
+     *     // ... filter to delete one SaleItem
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SaleItemDeleteArgs>(args: SelectSubset<T, SaleItemDeleteArgs<ExtArgs>>): Prisma__SaleItemClient<$Result.GetResult<Prisma.$SaleItemPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SaleItem.
+     * @param {SaleItemUpdateArgs} args - Arguments to update one SaleItem.
+     * @example
+     * // Update one SaleItem
+     * const saleItem = await prisma.saleItem.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SaleItemUpdateArgs>(args: SelectSubset<T, SaleItemUpdateArgs<ExtArgs>>): Prisma__SaleItemClient<$Result.GetResult<Prisma.$SaleItemPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SaleItems.
+     * @param {SaleItemDeleteManyArgs} args - Arguments to filter SaleItems to delete.
+     * @example
+     * // Delete a few SaleItems
+     * const { count } = await prisma.saleItem.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SaleItemDeleteManyArgs>(args?: SelectSubset<T, SaleItemDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SaleItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SaleItemUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SaleItems
+     * const saleItem = await prisma.saleItem.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SaleItemUpdateManyArgs>(args: SelectSubset<T, SaleItemUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SaleItems and returns the data updated in the database.
+     * @param {SaleItemUpdateManyAndReturnArgs} args - Arguments to update many SaleItems.
+     * @example
+     * // Update many SaleItems
+     * const saleItem = await prisma.saleItem.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SaleItems and only return the `id`
+     * const saleItemWithIdOnly = await prisma.saleItem.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SaleItemUpdateManyAndReturnArgs>(args: SelectSubset<T, SaleItemUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SaleItemPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SaleItem.
+     * @param {SaleItemUpsertArgs} args - Arguments to update or create a SaleItem.
+     * @example
+     * // Update or create a SaleItem
+     * const saleItem = await prisma.saleItem.upsert({
+     *   create: {
+     *     // ... data to create a SaleItem
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SaleItem we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SaleItemUpsertArgs>(args: SelectSubset<T, SaleItemUpsertArgs<ExtArgs>>): Prisma__SaleItemClient<$Result.GetResult<Prisma.$SaleItemPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SaleItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SaleItemCountArgs} args - Arguments to filter SaleItems to count.
+     * @example
+     * // Count the number of SaleItems
+     * const count = await prisma.saleItem.count({
+     *   where: {
+     *     // ... the filter for the SaleItems we want to count
+     *   }
+     * })
+    **/
+    count<T extends SaleItemCountArgs>(
+      args?: Subset<T, SaleItemCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SaleItemCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SaleItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SaleItemAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SaleItemAggregateArgs>(args: Subset<T, SaleItemAggregateArgs>): Prisma.PrismaPromise<GetSaleItemAggregateType<T>>
+
+    /**
+     * Group by SaleItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SaleItemGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SaleItemGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SaleItemGroupByArgs['orderBy'] }
+        : { orderBy?: SaleItemGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SaleItemGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSaleItemGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SaleItem model
+   */
+  readonly fields: SaleItemFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SaleItem.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SaleItemClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    Sale<T extends SaleDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SaleDefaultArgs<ExtArgs>>): Prisma__SaleClient<$Result.GetResult<Prisma.$SalePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SaleItem model
+   */
+  interface SaleItemFieldRefs {
+    readonly id: FieldRef<"SaleItem", 'String'>
+    readonly saleId: FieldRef<"SaleItem", 'String'>
+    readonly productId: FieldRef<"SaleItem", 'String'>
+    readonly quantity: FieldRef<"SaleItem", 'Int'>
+    readonly unitPrice: FieldRef<"SaleItem", 'Decimal'>
+    readonly total: FieldRef<"SaleItem", 'Decimal'>
+    readonly orderItemId: FieldRef<"SaleItem", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SaleItem findUnique
+   */
+  export type SaleItemFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SaleItem
+     */
+    select?: SaleItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SaleItem
+     */
+    omit?: SaleItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SaleItemInclude<ExtArgs> | null
+    /**
+     * Filter, which SaleItem to fetch.
+     */
+    where: SaleItemWhereUniqueInput
+  }
+
+  /**
+   * SaleItem findUniqueOrThrow
+   */
+  export type SaleItemFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SaleItem
+     */
+    select?: SaleItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SaleItem
+     */
+    omit?: SaleItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SaleItemInclude<ExtArgs> | null
+    /**
+     * Filter, which SaleItem to fetch.
+     */
+    where: SaleItemWhereUniqueInput
+  }
+
+  /**
+   * SaleItem findFirst
+   */
+  export type SaleItemFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SaleItem
+     */
+    select?: SaleItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SaleItem
+     */
+    omit?: SaleItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SaleItemInclude<ExtArgs> | null
+    /**
+     * Filter, which SaleItem to fetch.
+     */
+    where?: SaleItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SaleItems to fetch.
+     */
+    orderBy?: SaleItemOrderByWithRelationInput | SaleItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SaleItems.
+     */
+    cursor?: SaleItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SaleItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SaleItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SaleItems.
+     */
+    distinct?: SaleItemScalarFieldEnum | SaleItemScalarFieldEnum[]
+  }
+
+  /**
+   * SaleItem findFirstOrThrow
+   */
+  export type SaleItemFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SaleItem
+     */
+    select?: SaleItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SaleItem
+     */
+    omit?: SaleItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SaleItemInclude<ExtArgs> | null
+    /**
+     * Filter, which SaleItem to fetch.
+     */
+    where?: SaleItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SaleItems to fetch.
+     */
+    orderBy?: SaleItemOrderByWithRelationInput | SaleItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SaleItems.
+     */
+    cursor?: SaleItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SaleItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SaleItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SaleItems.
+     */
+    distinct?: SaleItemScalarFieldEnum | SaleItemScalarFieldEnum[]
+  }
+
+  /**
+   * SaleItem findMany
+   */
+  export type SaleItemFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SaleItem
+     */
+    select?: SaleItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SaleItem
+     */
+    omit?: SaleItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SaleItemInclude<ExtArgs> | null
+    /**
+     * Filter, which SaleItems to fetch.
+     */
+    where?: SaleItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SaleItems to fetch.
+     */
+    orderBy?: SaleItemOrderByWithRelationInput | SaleItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SaleItems.
+     */
+    cursor?: SaleItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SaleItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SaleItems.
+     */
+    skip?: number
+    distinct?: SaleItemScalarFieldEnum | SaleItemScalarFieldEnum[]
+  }
+
+  /**
+   * SaleItem create
+   */
+  export type SaleItemCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SaleItem
+     */
+    select?: SaleItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SaleItem
+     */
+    omit?: SaleItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SaleItemInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SaleItem.
+     */
+    data: XOR<SaleItemCreateInput, SaleItemUncheckedCreateInput>
+  }
+
+  /**
+   * SaleItem createMany
+   */
+  export type SaleItemCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SaleItems.
+     */
+    data: SaleItemCreateManyInput | SaleItemCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SaleItem createManyAndReturn
+   */
+  export type SaleItemCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SaleItem
+     */
+    select?: SaleItemSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SaleItem
+     */
+    omit?: SaleItemOmit<ExtArgs> | null
+    /**
+     * The data used to create many SaleItems.
+     */
+    data: SaleItemCreateManyInput | SaleItemCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SaleItemIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SaleItem update
+   */
+  export type SaleItemUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SaleItem
+     */
+    select?: SaleItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SaleItem
+     */
+    omit?: SaleItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SaleItemInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SaleItem.
+     */
+    data: XOR<SaleItemUpdateInput, SaleItemUncheckedUpdateInput>
+    /**
+     * Choose, which SaleItem to update.
+     */
+    where: SaleItemWhereUniqueInput
+  }
+
+  /**
+   * SaleItem updateMany
+   */
+  export type SaleItemUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SaleItems.
+     */
+    data: XOR<SaleItemUpdateManyMutationInput, SaleItemUncheckedUpdateManyInput>
+    /**
+     * Filter which SaleItems to update
+     */
+    where?: SaleItemWhereInput
+    /**
+     * Limit how many SaleItems to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SaleItem updateManyAndReturn
+   */
+  export type SaleItemUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SaleItem
+     */
+    select?: SaleItemSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SaleItem
+     */
+    omit?: SaleItemOmit<ExtArgs> | null
+    /**
+     * The data used to update SaleItems.
+     */
+    data: XOR<SaleItemUpdateManyMutationInput, SaleItemUncheckedUpdateManyInput>
+    /**
+     * Filter which SaleItems to update
+     */
+    where?: SaleItemWhereInput
+    /**
+     * Limit how many SaleItems to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SaleItemIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SaleItem upsert
+   */
+  export type SaleItemUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SaleItem
+     */
+    select?: SaleItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SaleItem
+     */
+    omit?: SaleItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SaleItemInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SaleItem to update in case it exists.
+     */
+    where: SaleItemWhereUniqueInput
+    /**
+     * In case the SaleItem found by the `where` argument doesn't exist, create a new SaleItem with this data.
+     */
+    create: XOR<SaleItemCreateInput, SaleItemUncheckedCreateInput>
+    /**
+     * In case the SaleItem was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SaleItemUpdateInput, SaleItemUncheckedUpdateInput>
+  }
+
+  /**
+   * SaleItem delete
+   */
+  export type SaleItemDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SaleItem
+     */
+    select?: SaleItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SaleItem
+     */
+    omit?: SaleItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SaleItemInclude<ExtArgs> | null
+    /**
+     * Filter which SaleItem to delete.
+     */
+    where: SaleItemWhereUniqueInput
+  }
+
+  /**
+   * SaleItem deleteMany
+   */
+  export type SaleItemDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SaleItems to delete
+     */
+    where?: SaleItemWhereInput
+    /**
+     * Limit how many SaleItems to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SaleItem without action
+   */
+  export type SaleItemDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SaleItem
+     */
+    select?: SaleItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SaleItem
+     */
+    omit?: SaleItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SaleItemInclude<ExtArgs> | null
   }
 
 
@@ -20220,6 +21894,2417 @@ export namespace Prisma {
 
 
   /**
+   * Model CommissionSetting
+   */
+
+  export type AggregateCommissionSetting = {
+    _count: CommissionSettingCountAggregateOutputType | null
+    _avg: CommissionSettingAvgAggregateOutputType | null
+    _sum: CommissionSettingSumAggregateOutputType | null
+    _min: CommissionSettingMinAggregateOutputType | null
+    _max: CommissionSettingMaxAggregateOutputType | null
+  }
+
+  export type CommissionSettingAvgAggregateOutputType = {
+    brandCommissionPct: number | null
+    merchantCommissionPct: number | null
+  }
+
+  export type CommissionSettingSumAggregateOutputType = {
+    brandCommissionPct: number | null
+    merchantCommissionPct: number | null
+  }
+
+  export type CommissionSettingMinAggregateOutputType = {
+    id: string | null
+    brandId: string | null
+    merchantId: string | null
+    brandCommissionPct: number | null
+    merchantCommissionPct: number | null
+    productId: string | null
+    effectiveFrom: Date | null
+    effectiveTo: Date | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CommissionSettingMaxAggregateOutputType = {
+    id: string | null
+    brandId: string | null
+    merchantId: string | null
+    brandCommissionPct: number | null
+    merchantCommissionPct: number | null
+    productId: string | null
+    effectiveFrom: Date | null
+    effectiveTo: Date | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CommissionSettingCountAggregateOutputType = {
+    id: number
+    brandId: number
+    merchantId: number
+    brandCommissionPct: number
+    merchantCommissionPct: number
+    productId: number
+    effectiveFrom: number
+    effectiveTo: number
+    isActive: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type CommissionSettingAvgAggregateInputType = {
+    brandCommissionPct?: true
+    merchantCommissionPct?: true
+  }
+
+  export type CommissionSettingSumAggregateInputType = {
+    brandCommissionPct?: true
+    merchantCommissionPct?: true
+  }
+
+  export type CommissionSettingMinAggregateInputType = {
+    id?: true
+    brandId?: true
+    merchantId?: true
+    brandCommissionPct?: true
+    merchantCommissionPct?: true
+    productId?: true
+    effectiveFrom?: true
+    effectiveTo?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CommissionSettingMaxAggregateInputType = {
+    id?: true
+    brandId?: true
+    merchantId?: true
+    brandCommissionPct?: true
+    merchantCommissionPct?: true
+    productId?: true
+    effectiveFrom?: true
+    effectiveTo?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CommissionSettingCountAggregateInputType = {
+    id?: true
+    brandId?: true
+    merchantId?: true
+    brandCommissionPct?: true
+    merchantCommissionPct?: true
+    productId?: true
+    effectiveFrom?: true
+    effectiveTo?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type CommissionSettingAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CommissionSetting to aggregate.
+     */
+    where?: CommissionSettingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CommissionSettings to fetch.
+     */
+    orderBy?: CommissionSettingOrderByWithRelationInput | CommissionSettingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CommissionSettingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CommissionSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CommissionSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CommissionSettings
+    **/
+    _count?: true | CommissionSettingCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: CommissionSettingAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CommissionSettingSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CommissionSettingMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CommissionSettingMaxAggregateInputType
+  }
+
+  export type GetCommissionSettingAggregateType<T extends CommissionSettingAggregateArgs> = {
+        [P in keyof T & keyof AggregateCommissionSetting]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCommissionSetting[P]>
+      : GetScalarType<T[P], AggregateCommissionSetting[P]>
+  }
+
+
+
+
+  export type CommissionSettingGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CommissionSettingWhereInput
+    orderBy?: CommissionSettingOrderByWithAggregationInput | CommissionSettingOrderByWithAggregationInput[]
+    by: CommissionSettingScalarFieldEnum[] | CommissionSettingScalarFieldEnum
+    having?: CommissionSettingScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CommissionSettingCountAggregateInputType | true
+    _avg?: CommissionSettingAvgAggregateInputType
+    _sum?: CommissionSettingSumAggregateInputType
+    _min?: CommissionSettingMinAggregateInputType
+    _max?: CommissionSettingMaxAggregateInputType
+  }
+
+  export type CommissionSettingGroupByOutputType = {
+    id: string
+    brandId: string | null
+    merchantId: string | null
+    brandCommissionPct: number
+    merchantCommissionPct: number
+    productId: string | null
+    effectiveFrom: Date
+    effectiveTo: Date | null
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: CommissionSettingCountAggregateOutputType | null
+    _avg: CommissionSettingAvgAggregateOutputType | null
+    _sum: CommissionSettingSumAggregateOutputType | null
+    _min: CommissionSettingMinAggregateOutputType | null
+    _max: CommissionSettingMaxAggregateOutputType | null
+  }
+
+  type GetCommissionSettingGroupByPayload<T extends CommissionSettingGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CommissionSettingGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CommissionSettingGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CommissionSettingGroupByOutputType[P]>
+            : GetScalarType<T[P], CommissionSettingGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CommissionSettingSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    brandId?: boolean
+    merchantId?: boolean
+    brandCommissionPct?: boolean
+    merchantCommissionPct?: boolean
+    productId?: boolean
+    effectiveFrom?: boolean
+    effectiveTo?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    brand?: boolean | CommissionSetting$brandArgs<ExtArgs>
+    merchant?: boolean | CommissionSetting$merchantArgs<ExtArgs>
+    product?: boolean | CommissionSetting$productArgs<ExtArgs>
+  }, ExtArgs["result"]["commissionSetting"]>
+
+  export type CommissionSettingSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    brandId?: boolean
+    merchantId?: boolean
+    brandCommissionPct?: boolean
+    merchantCommissionPct?: boolean
+    productId?: boolean
+    effectiveFrom?: boolean
+    effectiveTo?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    brand?: boolean | CommissionSetting$brandArgs<ExtArgs>
+    merchant?: boolean | CommissionSetting$merchantArgs<ExtArgs>
+    product?: boolean | CommissionSetting$productArgs<ExtArgs>
+  }, ExtArgs["result"]["commissionSetting"]>
+
+  export type CommissionSettingSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    brandId?: boolean
+    merchantId?: boolean
+    brandCommissionPct?: boolean
+    merchantCommissionPct?: boolean
+    productId?: boolean
+    effectiveFrom?: boolean
+    effectiveTo?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    brand?: boolean | CommissionSetting$brandArgs<ExtArgs>
+    merchant?: boolean | CommissionSetting$merchantArgs<ExtArgs>
+    product?: boolean | CommissionSetting$productArgs<ExtArgs>
+  }, ExtArgs["result"]["commissionSetting"]>
+
+  export type CommissionSettingSelectScalar = {
+    id?: boolean
+    brandId?: boolean
+    merchantId?: boolean
+    brandCommissionPct?: boolean
+    merchantCommissionPct?: boolean
+    productId?: boolean
+    effectiveFrom?: boolean
+    effectiveTo?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type CommissionSettingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "brandId" | "merchantId" | "brandCommissionPct" | "merchantCommissionPct" | "productId" | "effectiveFrom" | "effectiveTo" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["commissionSetting"]>
+  export type CommissionSettingInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    brand?: boolean | CommissionSetting$brandArgs<ExtArgs>
+    merchant?: boolean | CommissionSetting$merchantArgs<ExtArgs>
+    product?: boolean | CommissionSetting$productArgs<ExtArgs>
+  }
+  export type CommissionSettingIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    brand?: boolean | CommissionSetting$brandArgs<ExtArgs>
+    merchant?: boolean | CommissionSetting$merchantArgs<ExtArgs>
+    product?: boolean | CommissionSetting$productArgs<ExtArgs>
+  }
+  export type CommissionSettingIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    brand?: boolean | CommissionSetting$brandArgs<ExtArgs>
+    merchant?: boolean | CommissionSetting$merchantArgs<ExtArgs>
+    product?: boolean | CommissionSetting$productArgs<ExtArgs>
+  }
+
+  export type $CommissionSettingPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CommissionSetting"
+    objects: {
+      brand: Prisma.$BrandPayload<ExtArgs> | null
+      merchant: Prisma.$UserPayload<ExtArgs> | null
+      product: Prisma.$ProductPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      brandId: string | null
+      merchantId: string | null
+      brandCommissionPct: number
+      merchantCommissionPct: number
+      productId: string | null
+      effectiveFrom: Date
+      effectiveTo: Date | null
+      isActive: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["commissionSetting"]>
+    composites: {}
+  }
+
+  type CommissionSettingGetPayload<S extends boolean | null | undefined | CommissionSettingDefaultArgs> = $Result.GetResult<Prisma.$CommissionSettingPayload, S>
+
+  type CommissionSettingCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CommissionSettingFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CommissionSettingCountAggregateInputType | true
+    }
+
+  export interface CommissionSettingDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CommissionSetting'], meta: { name: 'CommissionSetting' } }
+    /**
+     * Find zero or one CommissionSetting that matches the filter.
+     * @param {CommissionSettingFindUniqueArgs} args - Arguments to find a CommissionSetting
+     * @example
+     * // Get one CommissionSetting
+     * const commissionSetting = await prisma.commissionSetting.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CommissionSettingFindUniqueArgs>(args: SelectSubset<T, CommissionSettingFindUniqueArgs<ExtArgs>>): Prisma__CommissionSettingClient<$Result.GetResult<Prisma.$CommissionSettingPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CommissionSetting that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CommissionSettingFindUniqueOrThrowArgs} args - Arguments to find a CommissionSetting
+     * @example
+     * // Get one CommissionSetting
+     * const commissionSetting = await prisma.commissionSetting.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CommissionSettingFindUniqueOrThrowArgs>(args: SelectSubset<T, CommissionSettingFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CommissionSettingClient<$Result.GetResult<Prisma.$CommissionSettingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CommissionSetting that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CommissionSettingFindFirstArgs} args - Arguments to find a CommissionSetting
+     * @example
+     * // Get one CommissionSetting
+     * const commissionSetting = await prisma.commissionSetting.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CommissionSettingFindFirstArgs>(args?: SelectSubset<T, CommissionSettingFindFirstArgs<ExtArgs>>): Prisma__CommissionSettingClient<$Result.GetResult<Prisma.$CommissionSettingPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CommissionSetting that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CommissionSettingFindFirstOrThrowArgs} args - Arguments to find a CommissionSetting
+     * @example
+     * // Get one CommissionSetting
+     * const commissionSetting = await prisma.commissionSetting.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CommissionSettingFindFirstOrThrowArgs>(args?: SelectSubset<T, CommissionSettingFindFirstOrThrowArgs<ExtArgs>>): Prisma__CommissionSettingClient<$Result.GetResult<Prisma.$CommissionSettingPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CommissionSettings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CommissionSettingFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CommissionSettings
+     * const commissionSettings = await prisma.commissionSetting.findMany()
+     * 
+     * // Get first 10 CommissionSettings
+     * const commissionSettings = await prisma.commissionSetting.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const commissionSettingWithIdOnly = await prisma.commissionSetting.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CommissionSettingFindManyArgs>(args?: SelectSubset<T, CommissionSettingFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommissionSettingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CommissionSetting.
+     * @param {CommissionSettingCreateArgs} args - Arguments to create a CommissionSetting.
+     * @example
+     * // Create one CommissionSetting
+     * const CommissionSetting = await prisma.commissionSetting.create({
+     *   data: {
+     *     // ... data to create a CommissionSetting
+     *   }
+     * })
+     * 
+     */
+    create<T extends CommissionSettingCreateArgs>(args: SelectSubset<T, CommissionSettingCreateArgs<ExtArgs>>): Prisma__CommissionSettingClient<$Result.GetResult<Prisma.$CommissionSettingPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CommissionSettings.
+     * @param {CommissionSettingCreateManyArgs} args - Arguments to create many CommissionSettings.
+     * @example
+     * // Create many CommissionSettings
+     * const commissionSetting = await prisma.commissionSetting.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CommissionSettingCreateManyArgs>(args?: SelectSubset<T, CommissionSettingCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CommissionSettings and returns the data saved in the database.
+     * @param {CommissionSettingCreateManyAndReturnArgs} args - Arguments to create many CommissionSettings.
+     * @example
+     * // Create many CommissionSettings
+     * const commissionSetting = await prisma.commissionSetting.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CommissionSettings and only return the `id`
+     * const commissionSettingWithIdOnly = await prisma.commissionSetting.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CommissionSettingCreateManyAndReturnArgs>(args?: SelectSubset<T, CommissionSettingCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommissionSettingPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CommissionSetting.
+     * @param {CommissionSettingDeleteArgs} args - Arguments to delete one CommissionSetting.
+     * @example
+     * // Delete one CommissionSetting
+     * const CommissionSetting = await prisma.commissionSetting.delete({
+     *   where: {
+     *     // ... filter to delete one CommissionSetting
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CommissionSettingDeleteArgs>(args: SelectSubset<T, CommissionSettingDeleteArgs<ExtArgs>>): Prisma__CommissionSettingClient<$Result.GetResult<Prisma.$CommissionSettingPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CommissionSetting.
+     * @param {CommissionSettingUpdateArgs} args - Arguments to update one CommissionSetting.
+     * @example
+     * // Update one CommissionSetting
+     * const commissionSetting = await prisma.commissionSetting.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CommissionSettingUpdateArgs>(args: SelectSubset<T, CommissionSettingUpdateArgs<ExtArgs>>): Prisma__CommissionSettingClient<$Result.GetResult<Prisma.$CommissionSettingPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CommissionSettings.
+     * @param {CommissionSettingDeleteManyArgs} args - Arguments to filter CommissionSettings to delete.
+     * @example
+     * // Delete a few CommissionSettings
+     * const { count } = await prisma.commissionSetting.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CommissionSettingDeleteManyArgs>(args?: SelectSubset<T, CommissionSettingDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CommissionSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CommissionSettingUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CommissionSettings
+     * const commissionSetting = await prisma.commissionSetting.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CommissionSettingUpdateManyArgs>(args: SelectSubset<T, CommissionSettingUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CommissionSettings and returns the data updated in the database.
+     * @param {CommissionSettingUpdateManyAndReturnArgs} args - Arguments to update many CommissionSettings.
+     * @example
+     * // Update many CommissionSettings
+     * const commissionSetting = await prisma.commissionSetting.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CommissionSettings and only return the `id`
+     * const commissionSettingWithIdOnly = await prisma.commissionSetting.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CommissionSettingUpdateManyAndReturnArgs>(args: SelectSubset<T, CommissionSettingUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommissionSettingPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CommissionSetting.
+     * @param {CommissionSettingUpsertArgs} args - Arguments to update or create a CommissionSetting.
+     * @example
+     * // Update or create a CommissionSetting
+     * const commissionSetting = await prisma.commissionSetting.upsert({
+     *   create: {
+     *     // ... data to create a CommissionSetting
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CommissionSetting we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CommissionSettingUpsertArgs>(args: SelectSubset<T, CommissionSettingUpsertArgs<ExtArgs>>): Prisma__CommissionSettingClient<$Result.GetResult<Prisma.$CommissionSettingPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CommissionSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CommissionSettingCountArgs} args - Arguments to filter CommissionSettings to count.
+     * @example
+     * // Count the number of CommissionSettings
+     * const count = await prisma.commissionSetting.count({
+     *   where: {
+     *     // ... the filter for the CommissionSettings we want to count
+     *   }
+     * })
+    **/
+    count<T extends CommissionSettingCountArgs>(
+      args?: Subset<T, CommissionSettingCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CommissionSettingCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CommissionSetting.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CommissionSettingAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CommissionSettingAggregateArgs>(args: Subset<T, CommissionSettingAggregateArgs>): Prisma.PrismaPromise<GetCommissionSettingAggregateType<T>>
+
+    /**
+     * Group by CommissionSetting.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CommissionSettingGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CommissionSettingGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CommissionSettingGroupByArgs['orderBy'] }
+        : { orderBy?: CommissionSettingGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CommissionSettingGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCommissionSettingGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CommissionSetting model
+   */
+  readonly fields: CommissionSettingFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CommissionSetting.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CommissionSettingClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    brand<T extends CommissionSetting$brandArgs<ExtArgs> = {}>(args?: Subset<T, CommissionSetting$brandArgs<ExtArgs>>): Prisma__BrandClient<$Result.GetResult<Prisma.$BrandPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    merchant<T extends CommissionSetting$merchantArgs<ExtArgs> = {}>(args?: Subset<T, CommissionSetting$merchantArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    product<T extends CommissionSetting$productArgs<ExtArgs> = {}>(args?: Subset<T, CommissionSetting$productArgs<ExtArgs>>): Prisma__ProductClient<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CommissionSetting model
+   */
+  interface CommissionSettingFieldRefs {
+    readonly id: FieldRef<"CommissionSetting", 'String'>
+    readonly brandId: FieldRef<"CommissionSetting", 'String'>
+    readonly merchantId: FieldRef<"CommissionSetting", 'String'>
+    readonly brandCommissionPct: FieldRef<"CommissionSetting", 'Float'>
+    readonly merchantCommissionPct: FieldRef<"CommissionSetting", 'Float'>
+    readonly productId: FieldRef<"CommissionSetting", 'String'>
+    readonly effectiveFrom: FieldRef<"CommissionSetting", 'DateTime'>
+    readonly effectiveTo: FieldRef<"CommissionSetting", 'DateTime'>
+    readonly isActive: FieldRef<"CommissionSetting", 'Boolean'>
+    readonly createdAt: FieldRef<"CommissionSetting", 'DateTime'>
+    readonly updatedAt: FieldRef<"CommissionSetting", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CommissionSetting findUnique
+   */
+  export type CommissionSettingFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CommissionSetting
+     */
+    select?: CommissionSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CommissionSetting
+     */
+    omit?: CommissionSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommissionSettingInclude<ExtArgs> | null
+    /**
+     * Filter, which CommissionSetting to fetch.
+     */
+    where: CommissionSettingWhereUniqueInput
+  }
+
+  /**
+   * CommissionSetting findUniqueOrThrow
+   */
+  export type CommissionSettingFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CommissionSetting
+     */
+    select?: CommissionSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CommissionSetting
+     */
+    omit?: CommissionSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommissionSettingInclude<ExtArgs> | null
+    /**
+     * Filter, which CommissionSetting to fetch.
+     */
+    where: CommissionSettingWhereUniqueInput
+  }
+
+  /**
+   * CommissionSetting findFirst
+   */
+  export type CommissionSettingFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CommissionSetting
+     */
+    select?: CommissionSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CommissionSetting
+     */
+    omit?: CommissionSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommissionSettingInclude<ExtArgs> | null
+    /**
+     * Filter, which CommissionSetting to fetch.
+     */
+    where?: CommissionSettingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CommissionSettings to fetch.
+     */
+    orderBy?: CommissionSettingOrderByWithRelationInput | CommissionSettingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CommissionSettings.
+     */
+    cursor?: CommissionSettingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CommissionSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CommissionSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CommissionSettings.
+     */
+    distinct?: CommissionSettingScalarFieldEnum | CommissionSettingScalarFieldEnum[]
+  }
+
+  /**
+   * CommissionSetting findFirstOrThrow
+   */
+  export type CommissionSettingFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CommissionSetting
+     */
+    select?: CommissionSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CommissionSetting
+     */
+    omit?: CommissionSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommissionSettingInclude<ExtArgs> | null
+    /**
+     * Filter, which CommissionSetting to fetch.
+     */
+    where?: CommissionSettingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CommissionSettings to fetch.
+     */
+    orderBy?: CommissionSettingOrderByWithRelationInput | CommissionSettingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CommissionSettings.
+     */
+    cursor?: CommissionSettingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CommissionSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CommissionSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CommissionSettings.
+     */
+    distinct?: CommissionSettingScalarFieldEnum | CommissionSettingScalarFieldEnum[]
+  }
+
+  /**
+   * CommissionSetting findMany
+   */
+  export type CommissionSettingFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CommissionSetting
+     */
+    select?: CommissionSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CommissionSetting
+     */
+    omit?: CommissionSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommissionSettingInclude<ExtArgs> | null
+    /**
+     * Filter, which CommissionSettings to fetch.
+     */
+    where?: CommissionSettingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CommissionSettings to fetch.
+     */
+    orderBy?: CommissionSettingOrderByWithRelationInput | CommissionSettingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CommissionSettings.
+     */
+    cursor?: CommissionSettingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CommissionSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CommissionSettings.
+     */
+    skip?: number
+    distinct?: CommissionSettingScalarFieldEnum | CommissionSettingScalarFieldEnum[]
+  }
+
+  /**
+   * CommissionSetting create
+   */
+  export type CommissionSettingCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CommissionSetting
+     */
+    select?: CommissionSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CommissionSetting
+     */
+    omit?: CommissionSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommissionSettingInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CommissionSetting.
+     */
+    data: XOR<CommissionSettingCreateInput, CommissionSettingUncheckedCreateInput>
+  }
+
+  /**
+   * CommissionSetting createMany
+   */
+  export type CommissionSettingCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CommissionSettings.
+     */
+    data: CommissionSettingCreateManyInput | CommissionSettingCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CommissionSetting createManyAndReturn
+   */
+  export type CommissionSettingCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CommissionSetting
+     */
+    select?: CommissionSettingSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CommissionSetting
+     */
+    omit?: CommissionSettingOmit<ExtArgs> | null
+    /**
+     * The data used to create many CommissionSettings.
+     */
+    data: CommissionSettingCreateManyInput | CommissionSettingCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommissionSettingIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CommissionSetting update
+   */
+  export type CommissionSettingUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CommissionSetting
+     */
+    select?: CommissionSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CommissionSetting
+     */
+    omit?: CommissionSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommissionSettingInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CommissionSetting.
+     */
+    data: XOR<CommissionSettingUpdateInput, CommissionSettingUncheckedUpdateInput>
+    /**
+     * Choose, which CommissionSetting to update.
+     */
+    where: CommissionSettingWhereUniqueInput
+  }
+
+  /**
+   * CommissionSetting updateMany
+   */
+  export type CommissionSettingUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CommissionSettings.
+     */
+    data: XOR<CommissionSettingUpdateManyMutationInput, CommissionSettingUncheckedUpdateManyInput>
+    /**
+     * Filter which CommissionSettings to update
+     */
+    where?: CommissionSettingWhereInput
+    /**
+     * Limit how many CommissionSettings to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CommissionSetting updateManyAndReturn
+   */
+  export type CommissionSettingUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CommissionSetting
+     */
+    select?: CommissionSettingSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CommissionSetting
+     */
+    omit?: CommissionSettingOmit<ExtArgs> | null
+    /**
+     * The data used to update CommissionSettings.
+     */
+    data: XOR<CommissionSettingUpdateManyMutationInput, CommissionSettingUncheckedUpdateManyInput>
+    /**
+     * Filter which CommissionSettings to update
+     */
+    where?: CommissionSettingWhereInput
+    /**
+     * Limit how many CommissionSettings to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommissionSettingIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CommissionSetting upsert
+   */
+  export type CommissionSettingUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CommissionSetting
+     */
+    select?: CommissionSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CommissionSetting
+     */
+    omit?: CommissionSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommissionSettingInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CommissionSetting to update in case it exists.
+     */
+    where: CommissionSettingWhereUniqueInput
+    /**
+     * In case the CommissionSetting found by the `where` argument doesn't exist, create a new CommissionSetting with this data.
+     */
+    create: XOR<CommissionSettingCreateInput, CommissionSettingUncheckedCreateInput>
+    /**
+     * In case the CommissionSetting was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CommissionSettingUpdateInput, CommissionSettingUncheckedUpdateInput>
+  }
+
+  /**
+   * CommissionSetting delete
+   */
+  export type CommissionSettingDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CommissionSetting
+     */
+    select?: CommissionSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CommissionSetting
+     */
+    omit?: CommissionSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommissionSettingInclude<ExtArgs> | null
+    /**
+     * Filter which CommissionSetting to delete.
+     */
+    where: CommissionSettingWhereUniqueInput
+  }
+
+  /**
+   * CommissionSetting deleteMany
+   */
+  export type CommissionSettingDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CommissionSettings to delete
+     */
+    where?: CommissionSettingWhereInput
+    /**
+     * Limit how many CommissionSettings to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CommissionSetting.brand
+   */
+  export type CommissionSetting$brandArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Brand
+     */
+    select?: BrandSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Brand
+     */
+    omit?: BrandOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BrandInclude<ExtArgs> | null
+    where?: BrandWhereInput
+  }
+
+  /**
+   * CommissionSetting.merchant
+   */
+  export type CommissionSetting$merchantArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * CommissionSetting.product
+   */
+  export type CommissionSetting$productArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Product
+     */
+    select?: ProductSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Product
+     */
+    omit?: ProductOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductInclude<ExtArgs> | null
+    where?: ProductWhereInput
+  }
+
+  /**
+   * CommissionSetting without action
+   */
+  export type CommissionSettingDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CommissionSetting
+     */
+    select?: CommissionSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CommissionSetting
+     */
+    omit?: CommissionSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommissionSettingInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Payout
+   */
+
+  export type AggregatePayout = {
+    _count: PayoutCountAggregateOutputType | null
+    _avg: PayoutAvgAggregateOutputType | null
+    _sum: PayoutSumAggregateOutputType | null
+    _min: PayoutMinAggregateOutputType | null
+    _max: PayoutMaxAggregateOutputType | null
+  }
+
+  export type PayoutAvgAggregateOutputType = {
+    amount: Decimal | null
+  }
+
+  export type PayoutSumAggregateOutputType = {
+    amount: Decimal | null
+  }
+
+  export type PayoutMinAggregateOutputType = {
+    id: string | null
+    actor: $Enums.PayoutActor | null
+    brandId: string | null
+    merchantId: string | null
+    amount: Decimal | null
+    note: string | null
+    createdAt: Date | null
+  }
+
+  export type PayoutMaxAggregateOutputType = {
+    id: string | null
+    actor: $Enums.PayoutActor | null
+    brandId: string | null
+    merchantId: string | null
+    amount: Decimal | null
+    note: string | null
+    createdAt: Date | null
+  }
+
+  export type PayoutCountAggregateOutputType = {
+    id: number
+    actor: number
+    brandId: number
+    merchantId: number
+    amount: number
+    note: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type PayoutAvgAggregateInputType = {
+    amount?: true
+  }
+
+  export type PayoutSumAggregateInputType = {
+    amount?: true
+  }
+
+  export type PayoutMinAggregateInputType = {
+    id?: true
+    actor?: true
+    brandId?: true
+    merchantId?: true
+    amount?: true
+    note?: true
+    createdAt?: true
+  }
+
+  export type PayoutMaxAggregateInputType = {
+    id?: true
+    actor?: true
+    brandId?: true
+    merchantId?: true
+    amount?: true
+    note?: true
+    createdAt?: true
+  }
+
+  export type PayoutCountAggregateInputType = {
+    id?: true
+    actor?: true
+    brandId?: true
+    merchantId?: true
+    amount?: true
+    note?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type PayoutAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Payout to aggregate.
+     */
+    where?: PayoutWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Payouts to fetch.
+     */
+    orderBy?: PayoutOrderByWithRelationInput | PayoutOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PayoutWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Payouts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Payouts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Payouts
+    **/
+    _count?: true | PayoutCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PayoutAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PayoutSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PayoutMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PayoutMaxAggregateInputType
+  }
+
+  export type GetPayoutAggregateType<T extends PayoutAggregateArgs> = {
+        [P in keyof T & keyof AggregatePayout]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePayout[P]>
+      : GetScalarType<T[P], AggregatePayout[P]>
+  }
+
+
+
+
+  export type PayoutGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PayoutWhereInput
+    orderBy?: PayoutOrderByWithAggregationInput | PayoutOrderByWithAggregationInput[]
+    by: PayoutScalarFieldEnum[] | PayoutScalarFieldEnum
+    having?: PayoutScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PayoutCountAggregateInputType | true
+    _avg?: PayoutAvgAggregateInputType
+    _sum?: PayoutSumAggregateInputType
+    _min?: PayoutMinAggregateInputType
+    _max?: PayoutMaxAggregateInputType
+  }
+
+  export type PayoutGroupByOutputType = {
+    id: string
+    actor: $Enums.PayoutActor
+    brandId: string | null
+    merchantId: string | null
+    amount: Decimal
+    note: string | null
+    createdAt: Date
+    _count: PayoutCountAggregateOutputType | null
+    _avg: PayoutAvgAggregateOutputType | null
+    _sum: PayoutSumAggregateOutputType | null
+    _min: PayoutMinAggregateOutputType | null
+    _max: PayoutMaxAggregateOutputType | null
+  }
+
+  type GetPayoutGroupByPayload<T extends PayoutGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PayoutGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PayoutGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PayoutGroupByOutputType[P]>
+            : GetScalarType<T[P], PayoutGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PayoutSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    actor?: boolean
+    brandId?: boolean
+    merchantId?: boolean
+    amount?: boolean
+    note?: boolean
+    createdAt?: boolean
+    brand?: boolean | Payout$brandArgs<ExtArgs>
+    merchant?: boolean | Payout$merchantArgs<ExtArgs>
+  }, ExtArgs["result"]["payout"]>
+
+  export type PayoutSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    actor?: boolean
+    brandId?: boolean
+    merchantId?: boolean
+    amount?: boolean
+    note?: boolean
+    createdAt?: boolean
+    brand?: boolean | Payout$brandArgs<ExtArgs>
+    merchant?: boolean | Payout$merchantArgs<ExtArgs>
+  }, ExtArgs["result"]["payout"]>
+
+  export type PayoutSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    actor?: boolean
+    brandId?: boolean
+    merchantId?: boolean
+    amount?: boolean
+    note?: boolean
+    createdAt?: boolean
+    brand?: boolean | Payout$brandArgs<ExtArgs>
+    merchant?: boolean | Payout$merchantArgs<ExtArgs>
+  }, ExtArgs["result"]["payout"]>
+
+  export type PayoutSelectScalar = {
+    id?: boolean
+    actor?: boolean
+    brandId?: boolean
+    merchantId?: boolean
+    amount?: boolean
+    note?: boolean
+    createdAt?: boolean
+  }
+
+  export type PayoutOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "actor" | "brandId" | "merchantId" | "amount" | "note" | "createdAt", ExtArgs["result"]["payout"]>
+  export type PayoutInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    brand?: boolean | Payout$brandArgs<ExtArgs>
+    merchant?: boolean | Payout$merchantArgs<ExtArgs>
+  }
+  export type PayoutIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    brand?: boolean | Payout$brandArgs<ExtArgs>
+    merchant?: boolean | Payout$merchantArgs<ExtArgs>
+  }
+  export type PayoutIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    brand?: boolean | Payout$brandArgs<ExtArgs>
+    merchant?: boolean | Payout$merchantArgs<ExtArgs>
+  }
+
+  export type $PayoutPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Payout"
+    objects: {
+      brand: Prisma.$BrandPayload<ExtArgs> | null
+      merchant: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      actor: $Enums.PayoutActor
+      brandId: string | null
+      merchantId: string | null
+      amount: Prisma.Decimal
+      note: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["payout"]>
+    composites: {}
+  }
+
+  type PayoutGetPayload<S extends boolean | null | undefined | PayoutDefaultArgs> = $Result.GetResult<Prisma.$PayoutPayload, S>
+
+  type PayoutCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PayoutFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PayoutCountAggregateInputType | true
+    }
+
+  export interface PayoutDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Payout'], meta: { name: 'Payout' } }
+    /**
+     * Find zero or one Payout that matches the filter.
+     * @param {PayoutFindUniqueArgs} args - Arguments to find a Payout
+     * @example
+     * // Get one Payout
+     * const payout = await prisma.payout.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PayoutFindUniqueArgs>(args: SelectSubset<T, PayoutFindUniqueArgs<ExtArgs>>): Prisma__PayoutClient<$Result.GetResult<Prisma.$PayoutPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Payout that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PayoutFindUniqueOrThrowArgs} args - Arguments to find a Payout
+     * @example
+     * // Get one Payout
+     * const payout = await prisma.payout.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PayoutFindUniqueOrThrowArgs>(args: SelectSubset<T, PayoutFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PayoutClient<$Result.GetResult<Prisma.$PayoutPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Payout that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PayoutFindFirstArgs} args - Arguments to find a Payout
+     * @example
+     * // Get one Payout
+     * const payout = await prisma.payout.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PayoutFindFirstArgs>(args?: SelectSubset<T, PayoutFindFirstArgs<ExtArgs>>): Prisma__PayoutClient<$Result.GetResult<Prisma.$PayoutPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Payout that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PayoutFindFirstOrThrowArgs} args - Arguments to find a Payout
+     * @example
+     * // Get one Payout
+     * const payout = await prisma.payout.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PayoutFindFirstOrThrowArgs>(args?: SelectSubset<T, PayoutFindFirstOrThrowArgs<ExtArgs>>): Prisma__PayoutClient<$Result.GetResult<Prisma.$PayoutPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Payouts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PayoutFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Payouts
+     * const payouts = await prisma.payout.findMany()
+     * 
+     * // Get first 10 Payouts
+     * const payouts = await prisma.payout.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const payoutWithIdOnly = await prisma.payout.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PayoutFindManyArgs>(args?: SelectSubset<T, PayoutFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PayoutPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Payout.
+     * @param {PayoutCreateArgs} args - Arguments to create a Payout.
+     * @example
+     * // Create one Payout
+     * const Payout = await prisma.payout.create({
+     *   data: {
+     *     // ... data to create a Payout
+     *   }
+     * })
+     * 
+     */
+    create<T extends PayoutCreateArgs>(args: SelectSubset<T, PayoutCreateArgs<ExtArgs>>): Prisma__PayoutClient<$Result.GetResult<Prisma.$PayoutPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Payouts.
+     * @param {PayoutCreateManyArgs} args - Arguments to create many Payouts.
+     * @example
+     * // Create many Payouts
+     * const payout = await prisma.payout.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PayoutCreateManyArgs>(args?: SelectSubset<T, PayoutCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Payouts and returns the data saved in the database.
+     * @param {PayoutCreateManyAndReturnArgs} args - Arguments to create many Payouts.
+     * @example
+     * // Create many Payouts
+     * const payout = await prisma.payout.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Payouts and only return the `id`
+     * const payoutWithIdOnly = await prisma.payout.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PayoutCreateManyAndReturnArgs>(args?: SelectSubset<T, PayoutCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PayoutPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Payout.
+     * @param {PayoutDeleteArgs} args - Arguments to delete one Payout.
+     * @example
+     * // Delete one Payout
+     * const Payout = await prisma.payout.delete({
+     *   where: {
+     *     // ... filter to delete one Payout
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PayoutDeleteArgs>(args: SelectSubset<T, PayoutDeleteArgs<ExtArgs>>): Prisma__PayoutClient<$Result.GetResult<Prisma.$PayoutPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Payout.
+     * @param {PayoutUpdateArgs} args - Arguments to update one Payout.
+     * @example
+     * // Update one Payout
+     * const payout = await prisma.payout.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PayoutUpdateArgs>(args: SelectSubset<T, PayoutUpdateArgs<ExtArgs>>): Prisma__PayoutClient<$Result.GetResult<Prisma.$PayoutPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Payouts.
+     * @param {PayoutDeleteManyArgs} args - Arguments to filter Payouts to delete.
+     * @example
+     * // Delete a few Payouts
+     * const { count } = await prisma.payout.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PayoutDeleteManyArgs>(args?: SelectSubset<T, PayoutDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Payouts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PayoutUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Payouts
+     * const payout = await prisma.payout.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PayoutUpdateManyArgs>(args: SelectSubset<T, PayoutUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Payouts and returns the data updated in the database.
+     * @param {PayoutUpdateManyAndReturnArgs} args - Arguments to update many Payouts.
+     * @example
+     * // Update many Payouts
+     * const payout = await prisma.payout.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Payouts and only return the `id`
+     * const payoutWithIdOnly = await prisma.payout.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PayoutUpdateManyAndReturnArgs>(args: SelectSubset<T, PayoutUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PayoutPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Payout.
+     * @param {PayoutUpsertArgs} args - Arguments to update or create a Payout.
+     * @example
+     * // Update or create a Payout
+     * const payout = await prisma.payout.upsert({
+     *   create: {
+     *     // ... data to create a Payout
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Payout we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PayoutUpsertArgs>(args: SelectSubset<T, PayoutUpsertArgs<ExtArgs>>): Prisma__PayoutClient<$Result.GetResult<Prisma.$PayoutPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Payouts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PayoutCountArgs} args - Arguments to filter Payouts to count.
+     * @example
+     * // Count the number of Payouts
+     * const count = await prisma.payout.count({
+     *   where: {
+     *     // ... the filter for the Payouts we want to count
+     *   }
+     * })
+    **/
+    count<T extends PayoutCountArgs>(
+      args?: Subset<T, PayoutCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PayoutCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Payout.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PayoutAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PayoutAggregateArgs>(args: Subset<T, PayoutAggregateArgs>): Prisma.PrismaPromise<GetPayoutAggregateType<T>>
+
+    /**
+     * Group by Payout.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PayoutGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PayoutGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PayoutGroupByArgs['orderBy'] }
+        : { orderBy?: PayoutGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PayoutGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPayoutGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Payout model
+   */
+  readonly fields: PayoutFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Payout.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PayoutClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    brand<T extends Payout$brandArgs<ExtArgs> = {}>(args?: Subset<T, Payout$brandArgs<ExtArgs>>): Prisma__BrandClient<$Result.GetResult<Prisma.$BrandPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    merchant<T extends Payout$merchantArgs<ExtArgs> = {}>(args?: Subset<T, Payout$merchantArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Payout model
+   */
+  interface PayoutFieldRefs {
+    readonly id: FieldRef<"Payout", 'String'>
+    readonly actor: FieldRef<"Payout", 'PayoutActor'>
+    readonly brandId: FieldRef<"Payout", 'String'>
+    readonly merchantId: FieldRef<"Payout", 'String'>
+    readonly amount: FieldRef<"Payout", 'Decimal'>
+    readonly note: FieldRef<"Payout", 'String'>
+    readonly createdAt: FieldRef<"Payout", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Payout findUnique
+   */
+  export type PayoutFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Payout
+     */
+    select?: PayoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Payout
+     */
+    omit?: PayoutOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PayoutInclude<ExtArgs> | null
+    /**
+     * Filter, which Payout to fetch.
+     */
+    where: PayoutWhereUniqueInput
+  }
+
+  /**
+   * Payout findUniqueOrThrow
+   */
+  export type PayoutFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Payout
+     */
+    select?: PayoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Payout
+     */
+    omit?: PayoutOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PayoutInclude<ExtArgs> | null
+    /**
+     * Filter, which Payout to fetch.
+     */
+    where: PayoutWhereUniqueInput
+  }
+
+  /**
+   * Payout findFirst
+   */
+  export type PayoutFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Payout
+     */
+    select?: PayoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Payout
+     */
+    omit?: PayoutOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PayoutInclude<ExtArgs> | null
+    /**
+     * Filter, which Payout to fetch.
+     */
+    where?: PayoutWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Payouts to fetch.
+     */
+    orderBy?: PayoutOrderByWithRelationInput | PayoutOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Payouts.
+     */
+    cursor?: PayoutWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Payouts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Payouts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Payouts.
+     */
+    distinct?: PayoutScalarFieldEnum | PayoutScalarFieldEnum[]
+  }
+
+  /**
+   * Payout findFirstOrThrow
+   */
+  export type PayoutFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Payout
+     */
+    select?: PayoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Payout
+     */
+    omit?: PayoutOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PayoutInclude<ExtArgs> | null
+    /**
+     * Filter, which Payout to fetch.
+     */
+    where?: PayoutWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Payouts to fetch.
+     */
+    orderBy?: PayoutOrderByWithRelationInput | PayoutOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Payouts.
+     */
+    cursor?: PayoutWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Payouts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Payouts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Payouts.
+     */
+    distinct?: PayoutScalarFieldEnum | PayoutScalarFieldEnum[]
+  }
+
+  /**
+   * Payout findMany
+   */
+  export type PayoutFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Payout
+     */
+    select?: PayoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Payout
+     */
+    omit?: PayoutOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PayoutInclude<ExtArgs> | null
+    /**
+     * Filter, which Payouts to fetch.
+     */
+    where?: PayoutWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Payouts to fetch.
+     */
+    orderBy?: PayoutOrderByWithRelationInput | PayoutOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Payouts.
+     */
+    cursor?: PayoutWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Payouts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Payouts.
+     */
+    skip?: number
+    distinct?: PayoutScalarFieldEnum | PayoutScalarFieldEnum[]
+  }
+
+  /**
+   * Payout create
+   */
+  export type PayoutCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Payout
+     */
+    select?: PayoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Payout
+     */
+    omit?: PayoutOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PayoutInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Payout.
+     */
+    data: XOR<PayoutCreateInput, PayoutUncheckedCreateInput>
+  }
+
+  /**
+   * Payout createMany
+   */
+  export type PayoutCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Payouts.
+     */
+    data: PayoutCreateManyInput | PayoutCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Payout createManyAndReturn
+   */
+  export type PayoutCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Payout
+     */
+    select?: PayoutSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Payout
+     */
+    omit?: PayoutOmit<ExtArgs> | null
+    /**
+     * The data used to create many Payouts.
+     */
+    data: PayoutCreateManyInput | PayoutCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PayoutIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Payout update
+   */
+  export type PayoutUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Payout
+     */
+    select?: PayoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Payout
+     */
+    omit?: PayoutOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PayoutInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Payout.
+     */
+    data: XOR<PayoutUpdateInput, PayoutUncheckedUpdateInput>
+    /**
+     * Choose, which Payout to update.
+     */
+    where: PayoutWhereUniqueInput
+  }
+
+  /**
+   * Payout updateMany
+   */
+  export type PayoutUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Payouts.
+     */
+    data: XOR<PayoutUpdateManyMutationInput, PayoutUncheckedUpdateManyInput>
+    /**
+     * Filter which Payouts to update
+     */
+    where?: PayoutWhereInput
+    /**
+     * Limit how many Payouts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Payout updateManyAndReturn
+   */
+  export type PayoutUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Payout
+     */
+    select?: PayoutSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Payout
+     */
+    omit?: PayoutOmit<ExtArgs> | null
+    /**
+     * The data used to update Payouts.
+     */
+    data: XOR<PayoutUpdateManyMutationInput, PayoutUncheckedUpdateManyInput>
+    /**
+     * Filter which Payouts to update
+     */
+    where?: PayoutWhereInput
+    /**
+     * Limit how many Payouts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PayoutIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Payout upsert
+   */
+  export type PayoutUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Payout
+     */
+    select?: PayoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Payout
+     */
+    omit?: PayoutOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PayoutInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Payout to update in case it exists.
+     */
+    where: PayoutWhereUniqueInput
+    /**
+     * In case the Payout found by the `where` argument doesn't exist, create a new Payout with this data.
+     */
+    create: XOR<PayoutCreateInput, PayoutUncheckedCreateInput>
+    /**
+     * In case the Payout was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PayoutUpdateInput, PayoutUncheckedUpdateInput>
+  }
+
+  /**
+   * Payout delete
+   */
+  export type PayoutDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Payout
+     */
+    select?: PayoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Payout
+     */
+    omit?: PayoutOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PayoutInclude<ExtArgs> | null
+    /**
+     * Filter which Payout to delete.
+     */
+    where: PayoutWhereUniqueInput
+  }
+
+  /**
+   * Payout deleteMany
+   */
+  export type PayoutDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Payouts to delete
+     */
+    where?: PayoutWhereInput
+    /**
+     * Limit how many Payouts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Payout.brand
+   */
+  export type Payout$brandArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Brand
+     */
+    select?: BrandSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Brand
+     */
+    omit?: BrandOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BrandInclude<ExtArgs> | null
+    where?: BrandWhereInput
+  }
+
+  /**
+   * Payout.merchant
+   */
+  export type Payout$merchantArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * Payout without action
+   */
+  export type PayoutDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Payout
+     */
+    select?: PayoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Payout
+     */
+    omit?: PayoutOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PayoutInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -20283,6 +24368,7 @@ export namespace Prisma {
     routingNumber: 'routingNumber',
     message: 'message',
     tiar: 'tiar',
+    leftTiar: 'leftTiar',
     brandOption: 'brandOption',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -20370,6 +24456,19 @@ export namespace Prisma {
   };
 
   export type SaleScalarFieldEnum = (typeof SaleScalarFieldEnum)[keyof typeof SaleScalarFieldEnum]
+
+
+  export const SaleItemScalarFieldEnum: {
+    id: 'id',
+    saleId: 'saleId',
+    productId: 'productId',
+    quantity: 'quantity',
+    unitPrice: 'unitPrice',
+    total: 'total',
+    orderItemId: 'orderItemId'
+  };
+
+  export type SaleItemScalarFieldEnum = (typeof SaleItemScalarFieldEnum)[keyof typeof SaleItemScalarFieldEnum]
 
 
   export const ProductVariantScalarFieldEnum: {
@@ -20473,6 +24572,36 @@ export namespace Prisma {
   };
 
   export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
+
+
+  export const CommissionSettingScalarFieldEnum: {
+    id: 'id',
+    brandId: 'brandId',
+    merchantId: 'merchantId',
+    brandCommissionPct: 'brandCommissionPct',
+    merchantCommissionPct: 'merchantCommissionPct',
+    productId: 'productId',
+    effectiveFrom: 'effectiveFrom',
+    effectiveTo: 'effectiveTo',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type CommissionSettingScalarFieldEnum = (typeof CommissionSettingScalarFieldEnum)[keyof typeof CommissionSettingScalarFieldEnum]
+
+
+  export const PayoutScalarFieldEnum: {
+    id: 'id',
+    actor: 'actor',
+    brandId: 'brandId',
+    merchantId: 'merchantId',
+    amount: 'amount',
+    note: 'note',
+    createdAt: 'createdAt'
+  };
+
+  export type PayoutScalarFieldEnum = (typeof PayoutScalarFieldEnum)[keyof typeof PayoutScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -20599,20 +24728,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'FitType'
-   */
-  export type EnumFitTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FitType'>
-    
-
-
-  /**
-   * Reference to a field of type 'FitType[]'
-   */
-  export type ListEnumFitTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FitType[]'>
-    
-
-
-  /**
    * Reference to a field of type 'Decimal'
    */
   export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
@@ -20627,6 +24742,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'FitType'
+   */
+  export type EnumFitTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FitType'>
+    
+
+
+  /**
+   * Reference to a field of type 'FitType[]'
+   */
+  export type ListEnumFitTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FitType[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Json'
    */
   export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
@@ -20637,6 +24766,20 @@ export namespace Prisma {
    * Reference to a field of type 'QueryMode'
    */
   export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+  /**
+   * Reference to a field of type 'PayoutActor'
+   */
+  export type EnumPayoutActorFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PayoutActor'>
+    
+
+
+  /**
+   * Reference to a field of type 'PayoutActor[]'
+   */
+  export type ListEnumPayoutActorFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PayoutActor[]'>
     
   /**
    * Deep Input Types
@@ -20662,6 +24805,8 @@ export namespace Prisma {
     merchantProfile?: XOR<MerchantProfileNullableScalarRelationFilter, MerchantProfileWhereInput> | null
     addresses?: UserAddressListRelationFilter
     Order?: OrderListRelationFilter
+    CommissionSetting?: CommissionSettingListRelationFilter
+    Payout?: PayoutListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -20680,6 +24825,8 @@ export namespace Prisma {
     merchantProfile?: MerchantProfileOrderByWithRelationInput
     addresses?: UserAddressOrderByRelationAggregateInput
     Order?: OrderOrderByRelationAggregateInput
+    CommissionSetting?: CommissionSettingOrderByRelationAggregateInput
+    Payout?: PayoutOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -20701,6 +24848,8 @@ export namespace Prisma {
     merchantProfile?: XOR<MerchantProfileNullableScalarRelationFilter, MerchantProfileWhereInput> | null
     addresses?: UserAddressListRelationFilter
     Order?: OrderListRelationFilter
+    CommissionSetting?: CommissionSettingListRelationFilter
+    Payout?: PayoutListRelationFilter
   }, "id" | "email" | "phone">
 
   export type UserOrderByWithAggregationInput = {
@@ -20838,6 +24987,7 @@ export namespace Prisma {
     routingNumber?: StringFilter<"MerchantProfile"> | string
     message?: StringNullableFilter<"MerchantProfile"> | string | null
     tiar?: IntFilter<"MerchantProfile"> | number
+    leftTiar?: IntFilter<"MerchantProfile"> | number
     brandOption?: BoolFilter<"MerchantProfile"> | boolean
     createdAt?: DateTimeFilter<"MerchantProfile"> | Date | string
     updatedAt?: DateTimeFilter<"MerchantProfile"> | Date | string
@@ -20863,6 +25013,7 @@ export namespace Prisma {
     routingNumber?: SortOrder
     message?: SortOrderInput | SortOrder
     tiar?: SortOrder
+    leftTiar?: SortOrder
     brandOption?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -20891,6 +25042,7 @@ export namespace Prisma {
     routingNumber?: StringFilter<"MerchantProfile"> | string
     message?: StringNullableFilter<"MerchantProfile"> | string | null
     tiar?: IntFilter<"MerchantProfile"> | number
+    leftTiar?: IntFilter<"MerchantProfile"> | number
     brandOption?: BoolFilter<"MerchantProfile"> | boolean
     createdAt?: DateTimeFilter<"MerchantProfile"> | Date | string
     updatedAt?: DateTimeFilter<"MerchantProfile"> | Date | string
@@ -20916,6 +25068,7 @@ export namespace Prisma {
     routingNumber?: SortOrder
     message?: SortOrderInput | SortOrder
     tiar?: SortOrder
+    leftTiar?: SortOrder
     brandOption?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -20948,6 +25101,7 @@ export namespace Prisma {
     routingNumber?: StringWithAggregatesFilter<"MerchantProfile"> | string
     message?: StringNullableWithAggregatesFilter<"MerchantProfile"> | string | null
     tiar?: IntWithAggregatesFilter<"MerchantProfile"> | number
+    leftTiar?: IntWithAggregatesFilter<"MerchantProfile"> | number
     brandOption?: BoolWithAggregatesFilter<"MerchantProfile"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"MerchantProfile"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"MerchantProfile"> | Date | string
@@ -20986,6 +25140,8 @@ export namespace Prisma {
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     Product?: ProductListRelationFilter
     Sales?: SaleListRelationFilter
+    CommissionSetting?: CommissionSettingListRelationFilter
+    Payout?: PayoutListRelationFilter
   }
 
   export type BrandOrderByWithRelationInput = {
@@ -21018,6 +25174,8 @@ export namespace Prisma {
     user?: UserOrderByWithRelationInput
     Product?: ProductOrderByRelationAggregateInput
     Sales?: SaleOrderByRelationAggregateInput
+    CommissionSetting?: CommissionSettingOrderByRelationAggregateInput
+    Payout?: PayoutOrderByRelationAggregateInput
   }
 
   export type BrandWhereUniqueInput = Prisma.AtLeast<{
@@ -21053,6 +25211,8 @@ export namespace Prisma {
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     Product?: ProductListRelationFilter
     Sales?: SaleListRelationFilter
+    CommissionSetting?: CommissionSettingListRelationFilter
+    Payout?: PayoutListRelationFilter
   }, "id">
 
   export type BrandOrderByWithAggregationInput = {
@@ -21197,6 +25357,7 @@ export namespace Prisma {
     variants?: ProductVariantListRelationFilter
     User?: XOR<UserScalarRelationFilter, UserWhereInput>
     sales?: SaleListRelationFilter
+    CommissionSetting?: CommissionSettingListRelationFilter
   }
 
   export type ProductOrderByWithRelationInput = {
@@ -21224,6 +25385,7 @@ export namespace Prisma {
     variants?: ProductVariantOrderByRelationAggregateInput
     User?: UserOrderByWithRelationInput
     sales?: SaleOrderByRelationAggregateInput
+    CommissionSetting?: CommissionSettingOrderByRelationAggregateInput
   }
 
   export type ProductWhereUniqueInput = Prisma.AtLeast<{
@@ -21254,6 +25416,7 @@ export namespace Prisma {
     variants?: ProductVariantListRelationFilter
     User?: XOR<UserScalarRelationFilter, UserWhereInput>
     sales?: SaleListRelationFilter
+    CommissionSetting?: CommissionSettingListRelationFilter
   }, "id" | "productId">
 
   export type ProductOrderByWithAggregationInput = {
@@ -21323,6 +25486,7 @@ export namespace Prisma {
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
     merchant?: XOR<UserScalarRelationFilter, UserWhereInput>
     brand?: XOR<BrandNullableScalarRelationFilter, BrandWhereInput> | null
+    SaleItem?: SaleItemListRelationFilter
   }
 
   export type SaleOrderByWithRelationInput = {
@@ -21341,6 +25505,7 @@ export namespace Prisma {
     product?: ProductOrderByWithRelationInput
     merchant?: UserOrderByWithRelationInput
     brand?: BrandOrderByWithRelationInput
+    SaleItem?: SaleItemOrderByRelationAggregateInput
   }
 
   export type SaleWhereUniqueInput = Prisma.AtLeast<{
@@ -21362,6 +25527,7 @@ export namespace Prisma {
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
     merchant?: XOR<UserScalarRelationFilter, UserWhereInput>
     brand?: XOR<BrandNullableScalarRelationFilter, BrandWhereInput> | null
+    SaleItem?: SaleItemListRelationFilter
   }, "id" | "orderItemId">
 
   export type SaleOrderByWithAggregationInput = {
@@ -21398,6 +25564,73 @@ export namespace Prisma {
     merchantEarning?: FloatWithAggregatesFilter<"Sale"> | number
     platformEarning?: FloatWithAggregatesFilter<"Sale"> | number
     createdAt?: DateTimeWithAggregatesFilter<"Sale"> | Date | string
+  }
+
+  export type SaleItemWhereInput = {
+    AND?: SaleItemWhereInput | SaleItemWhereInput[]
+    OR?: SaleItemWhereInput[]
+    NOT?: SaleItemWhereInput | SaleItemWhereInput[]
+    id?: StringFilter<"SaleItem"> | string
+    saleId?: StringFilter<"SaleItem"> | string
+    productId?: StringFilter<"SaleItem"> | string
+    quantity?: IntFilter<"SaleItem"> | number
+    unitPrice?: DecimalFilter<"SaleItem"> | Decimal | DecimalJsLike | number | string
+    total?: DecimalFilter<"SaleItem"> | Decimal | DecimalJsLike | number | string
+    orderItemId?: StringFilter<"SaleItem"> | string
+    Sale?: XOR<SaleScalarRelationFilter, SaleWhereInput>
+  }
+
+  export type SaleItemOrderByWithRelationInput = {
+    id?: SortOrder
+    saleId?: SortOrder
+    productId?: SortOrder
+    quantity?: SortOrder
+    unitPrice?: SortOrder
+    total?: SortOrder
+    orderItemId?: SortOrder
+    Sale?: SaleOrderByWithRelationInput
+  }
+
+  export type SaleItemWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    orderItemId?: string
+    AND?: SaleItemWhereInput | SaleItemWhereInput[]
+    OR?: SaleItemWhereInput[]
+    NOT?: SaleItemWhereInput | SaleItemWhereInput[]
+    saleId?: StringFilter<"SaleItem"> | string
+    productId?: StringFilter<"SaleItem"> | string
+    quantity?: IntFilter<"SaleItem"> | number
+    unitPrice?: DecimalFilter<"SaleItem"> | Decimal | DecimalJsLike | number | string
+    total?: DecimalFilter<"SaleItem"> | Decimal | DecimalJsLike | number | string
+    Sale?: XOR<SaleScalarRelationFilter, SaleWhereInput>
+  }, "id" | "orderItemId">
+
+  export type SaleItemOrderByWithAggregationInput = {
+    id?: SortOrder
+    saleId?: SortOrder
+    productId?: SortOrder
+    quantity?: SortOrder
+    unitPrice?: SortOrder
+    total?: SortOrder
+    orderItemId?: SortOrder
+    _count?: SaleItemCountOrderByAggregateInput
+    _avg?: SaleItemAvgOrderByAggregateInput
+    _max?: SaleItemMaxOrderByAggregateInput
+    _min?: SaleItemMinOrderByAggregateInput
+    _sum?: SaleItemSumOrderByAggregateInput
+  }
+
+  export type SaleItemScalarWhereWithAggregatesInput = {
+    AND?: SaleItemScalarWhereWithAggregatesInput | SaleItemScalarWhereWithAggregatesInput[]
+    OR?: SaleItemScalarWhereWithAggregatesInput[]
+    NOT?: SaleItemScalarWhereWithAggregatesInput | SaleItemScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SaleItem"> | string
+    saleId?: StringWithAggregatesFilter<"SaleItem"> | string
+    productId?: StringWithAggregatesFilter<"SaleItem"> | string
+    quantity?: IntWithAggregatesFilter<"SaleItem"> | number
+    unitPrice?: DecimalWithAggregatesFilter<"SaleItem"> | Decimal | DecimalJsLike | number | string
+    total?: DecimalWithAggregatesFilter<"SaleItem"> | Decimal | DecimalJsLike | number | string
+    orderItemId?: StringWithAggregatesFilter<"SaleItem"> | string
   }
 
   export type ProductVariantWhereInput = {
@@ -21936,6 +26169,169 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Payment"> | Date | string
   }
 
+  export type CommissionSettingWhereInput = {
+    AND?: CommissionSettingWhereInput | CommissionSettingWhereInput[]
+    OR?: CommissionSettingWhereInput[]
+    NOT?: CommissionSettingWhereInput | CommissionSettingWhereInput[]
+    id?: StringFilter<"CommissionSetting"> | string
+    brandId?: StringNullableFilter<"CommissionSetting"> | string | null
+    merchantId?: StringNullableFilter<"CommissionSetting"> | string | null
+    brandCommissionPct?: FloatFilter<"CommissionSetting"> | number
+    merchantCommissionPct?: FloatFilter<"CommissionSetting"> | number
+    productId?: StringNullableFilter<"CommissionSetting"> | string | null
+    effectiveFrom?: DateTimeFilter<"CommissionSetting"> | Date | string
+    effectiveTo?: DateTimeNullableFilter<"CommissionSetting"> | Date | string | null
+    isActive?: BoolFilter<"CommissionSetting"> | boolean
+    createdAt?: DateTimeFilter<"CommissionSetting"> | Date | string
+    updatedAt?: DateTimeFilter<"CommissionSetting"> | Date | string
+    brand?: XOR<BrandNullableScalarRelationFilter, BrandWhereInput> | null
+    merchant?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    product?: XOR<ProductNullableScalarRelationFilter, ProductWhereInput> | null
+  }
+
+  export type CommissionSettingOrderByWithRelationInput = {
+    id?: SortOrder
+    brandId?: SortOrderInput | SortOrder
+    merchantId?: SortOrderInput | SortOrder
+    brandCommissionPct?: SortOrder
+    merchantCommissionPct?: SortOrder
+    productId?: SortOrderInput | SortOrder
+    effectiveFrom?: SortOrder
+    effectiveTo?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    brand?: BrandOrderByWithRelationInput
+    merchant?: UserOrderByWithRelationInput
+    product?: ProductOrderByWithRelationInput
+  }
+
+  export type CommissionSettingWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: CommissionSettingWhereInput | CommissionSettingWhereInput[]
+    OR?: CommissionSettingWhereInput[]
+    NOT?: CommissionSettingWhereInput | CommissionSettingWhereInput[]
+    brandId?: StringNullableFilter<"CommissionSetting"> | string | null
+    merchantId?: StringNullableFilter<"CommissionSetting"> | string | null
+    brandCommissionPct?: FloatFilter<"CommissionSetting"> | number
+    merchantCommissionPct?: FloatFilter<"CommissionSetting"> | number
+    productId?: StringNullableFilter<"CommissionSetting"> | string | null
+    effectiveFrom?: DateTimeFilter<"CommissionSetting"> | Date | string
+    effectiveTo?: DateTimeNullableFilter<"CommissionSetting"> | Date | string | null
+    isActive?: BoolFilter<"CommissionSetting"> | boolean
+    createdAt?: DateTimeFilter<"CommissionSetting"> | Date | string
+    updatedAt?: DateTimeFilter<"CommissionSetting"> | Date | string
+    brand?: XOR<BrandNullableScalarRelationFilter, BrandWhereInput> | null
+    merchant?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    product?: XOR<ProductNullableScalarRelationFilter, ProductWhereInput> | null
+  }, "id">
+
+  export type CommissionSettingOrderByWithAggregationInput = {
+    id?: SortOrder
+    brandId?: SortOrderInput | SortOrder
+    merchantId?: SortOrderInput | SortOrder
+    brandCommissionPct?: SortOrder
+    merchantCommissionPct?: SortOrder
+    productId?: SortOrderInput | SortOrder
+    effectiveFrom?: SortOrder
+    effectiveTo?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: CommissionSettingCountOrderByAggregateInput
+    _avg?: CommissionSettingAvgOrderByAggregateInput
+    _max?: CommissionSettingMaxOrderByAggregateInput
+    _min?: CommissionSettingMinOrderByAggregateInput
+    _sum?: CommissionSettingSumOrderByAggregateInput
+  }
+
+  export type CommissionSettingScalarWhereWithAggregatesInput = {
+    AND?: CommissionSettingScalarWhereWithAggregatesInput | CommissionSettingScalarWhereWithAggregatesInput[]
+    OR?: CommissionSettingScalarWhereWithAggregatesInput[]
+    NOT?: CommissionSettingScalarWhereWithAggregatesInput | CommissionSettingScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CommissionSetting"> | string
+    brandId?: StringNullableWithAggregatesFilter<"CommissionSetting"> | string | null
+    merchantId?: StringNullableWithAggregatesFilter<"CommissionSetting"> | string | null
+    brandCommissionPct?: FloatWithAggregatesFilter<"CommissionSetting"> | number
+    merchantCommissionPct?: FloatWithAggregatesFilter<"CommissionSetting"> | number
+    productId?: StringNullableWithAggregatesFilter<"CommissionSetting"> | string | null
+    effectiveFrom?: DateTimeWithAggregatesFilter<"CommissionSetting"> | Date | string
+    effectiveTo?: DateTimeNullableWithAggregatesFilter<"CommissionSetting"> | Date | string | null
+    isActive?: BoolWithAggregatesFilter<"CommissionSetting"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"CommissionSetting"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"CommissionSetting"> | Date | string
+  }
+
+  export type PayoutWhereInput = {
+    AND?: PayoutWhereInput | PayoutWhereInput[]
+    OR?: PayoutWhereInput[]
+    NOT?: PayoutWhereInput | PayoutWhereInput[]
+    id?: StringFilter<"Payout"> | string
+    actor?: EnumPayoutActorFilter<"Payout"> | $Enums.PayoutActor
+    brandId?: StringNullableFilter<"Payout"> | string | null
+    merchantId?: StringNullableFilter<"Payout"> | string | null
+    amount?: DecimalFilter<"Payout"> | Decimal | DecimalJsLike | number | string
+    note?: StringNullableFilter<"Payout"> | string | null
+    createdAt?: DateTimeFilter<"Payout"> | Date | string
+    brand?: XOR<BrandNullableScalarRelationFilter, BrandWhereInput> | null
+    merchant?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type PayoutOrderByWithRelationInput = {
+    id?: SortOrder
+    actor?: SortOrder
+    brandId?: SortOrderInput | SortOrder
+    merchantId?: SortOrderInput | SortOrder
+    amount?: SortOrder
+    note?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    brand?: BrandOrderByWithRelationInput
+    merchant?: UserOrderByWithRelationInput
+  }
+
+  export type PayoutWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: PayoutWhereInput | PayoutWhereInput[]
+    OR?: PayoutWhereInput[]
+    NOT?: PayoutWhereInput | PayoutWhereInput[]
+    actor?: EnumPayoutActorFilter<"Payout"> | $Enums.PayoutActor
+    brandId?: StringNullableFilter<"Payout"> | string | null
+    merchantId?: StringNullableFilter<"Payout"> | string | null
+    amount?: DecimalFilter<"Payout"> | Decimal | DecimalJsLike | number | string
+    note?: StringNullableFilter<"Payout"> | string | null
+    createdAt?: DateTimeFilter<"Payout"> | Date | string
+    brand?: XOR<BrandNullableScalarRelationFilter, BrandWhereInput> | null
+    merchant?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id">
+
+  export type PayoutOrderByWithAggregationInput = {
+    id?: SortOrder
+    actor?: SortOrder
+    brandId?: SortOrderInput | SortOrder
+    merchantId?: SortOrderInput | SortOrder
+    amount?: SortOrder
+    note?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: PayoutCountOrderByAggregateInput
+    _avg?: PayoutAvgOrderByAggregateInput
+    _max?: PayoutMaxOrderByAggregateInput
+    _min?: PayoutMinOrderByAggregateInput
+    _sum?: PayoutSumOrderByAggregateInput
+  }
+
+  export type PayoutScalarWhereWithAggregatesInput = {
+    AND?: PayoutScalarWhereWithAggregatesInput | PayoutScalarWhereWithAggregatesInput[]
+    OR?: PayoutScalarWhereWithAggregatesInput[]
+    NOT?: PayoutScalarWhereWithAggregatesInput | PayoutScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Payout"> | string
+    actor?: EnumPayoutActorWithAggregatesFilter<"Payout"> | $Enums.PayoutActor
+    brandId?: StringNullableWithAggregatesFilter<"Payout"> | string | null
+    merchantId?: StringNullableWithAggregatesFilter<"Payout"> | string | null
+    amount?: DecimalWithAggregatesFilter<"Payout"> | Decimal | DecimalJsLike | number | string
+    note?: StringNullableWithAggregatesFilter<"Payout"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Payout"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     email?: string | null
@@ -21952,6 +26348,8 @@ export namespace Prisma {
     merchantProfile?: MerchantProfileCreateNestedOneWithoutUserInput
     addresses?: UserAddressCreateNestedManyWithoutUserInput
     Order?: OrderCreateNestedManyWithoutUserInput
+    CommissionSetting?: CommissionSettingCreateNestedManyWithoutMerchantInput
+    Payout?: PayoutCreateNestedManyWithoutMerchantInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -21970,6 +26368,8 @@ export namespace Prisma {
     merchantProfile?: MerchantProfileUncheckedCreateNestedOneWithoutUserInput
     addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
     Order?: OrderUncheckedCreateNestedManyWithoutUserInput
+    CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutMerchantInput
+    Payout?: PayoutUncheckedCreateNestedManyWithoutMerchantInput
   }
 
   export type UserUpdateInput = {
@@ -21988,6 +26388,8 @@ export namespace Prisma {
     merchantProfile?: MerchantProfileUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUpdateManyWithoutUserNestedInput
     Order?: OrderUpdateManyWithoutUserNestedInput
+    CommissionSetting?: CommissionSettingUpdateManyWithoutMerchantNestedInput
+    Payout?: PayoutUpdateManyWithoutMerchantNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -22006,6 +26408,8 @@ export namespace Prisma {
     merchantProfile?: MerchantProfileUncheckedUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
     Order?: OrderUncheckedUpdateManyWithoutUserNestedInput
+    CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutMerchantNestedInput
+    Payout?: PayoutUncheckedUpdateManyWithoutMerchantNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -22156,6 +26560,7 @@ export namespace Prisma {
     routingNumber: string
     message?: string | null
     tiar?: number
+    leftTiar?: number
     brandOption?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -22181,6 +26586,7 @@ export namespace Prisma {
     routingNumber: string
     message?: string | null
     tiar?: number
+    leftTiar?: number
     brandOption?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -22204,6 +26610,7 @@ export namespace Prisma {
     routingNumber?: StringFieldUpdateOperationsInput | string
     message?: NullableStringFieldUpdateOperationsInput | string | null
     tiar?: IntFieldUpdateOperationsInput | number
+    leftTiar?: IntFieldUpdateOperationsInput | number
     brandOption?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22229,6 +26636,7 @@ export namespace Prisma {
     routingNumber?: StringFieldUpdateOperationsInput | string
     message?: NullableStringFieldUpdateOperationsInput | string | null
     tiar?: IntFieldUpdateOperationsInput | number
+    leftTiar?: IntFieldUpdateOperationsInput | number
     brandOption?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22253,6 +26661,7 @@ export namespace Prisma {
     routingNumber: string
     message?: string | null
     tiar?: number
+    leftTiar?: number
     brandOption?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -22276,6 +26685,7 @@ export namespace Prisma {
     routingNumber?: StringFieldUpdateOperationsInput | string
     message?: NullableStringFieldUpdateOperationsInput | string | null
     tiar?: IntFieldUpdateOperationsInput | number
+    leftTiar?: IntFieldUpdateOperationsInput | number
     brandOption?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22300,6 +26710,7 @@ export namespace Prisma {
     routingNumber?: StringFieldUpdateOperationsInput | string
     message?: NullableStringFieldUpdateOperationsInput | string | null
     tiar?: IntFieldUpdateOperationsInput | number
+    leftTiar?: IntFieldUpdateOperationsInput | number
     brandOption?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22333,6 +26744,8 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutBrandsInput
     Product?: ProductCreateNestedManyWithoutBrandInput
     Sales?: SaleCreateNestedManyWithoutBrandInput
+    CommissionSetting?: CommissionSettingCreateNestedManyWithoutBrandInput
+    Payout?: PayoutCreateNestedManyWithoutBrandInput
   }
 
   export type BrandUncheckedCreateInput = {
@@ -22363,6 +26776,8 @@ export namespace Prisma {
     socialProfile: string
     Product?: ProductUncheckedCreateNestedManyWithoutBrandInput
     Sales?: SaleUncheckedCreateNestedManyWithoutBrandInput
+    CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutBrandInput
+    Payout?: PayoutUncheckedCreateNestedManyWithoutBrandInput
   }
 
   export type BrandUpdateInput = {
@@ -22393,6 +26808,8 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutBrandsNestedInput
     Product?: ProductUpdateManyWithoutBrandNestedInput
     Sales?: SaleUpdateManyWithoutBrandNestedInput
+    CommissionSetting?: CommissionSettingUpdateManyWithoutBrandNestedInput
+    Payout?: PayoutUpdateManyWithoutBrandNestedInput
   }
 
   export type BrandUncheckedUpdateInput = {
@@ -22423,6 +26840,8 @@ export namespace Prisma {
     socialProfile?: StringFieldUpdateOperationsInput | string
     Product?: ProductUncheckedUpdateManyWithoutBrandNestedInput
     Sales?: SaleUncheckedUpdateManyWithoutBrandNestedInput
+    CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutBrandNestedInput
+    Payout?: PayoutUncheckedUpdateManyWithoutBrandNestedInput
   }
 
   export type BrandCreateManyInput = {
@@ -22582,6 +27001,7 @@ export namespace Prisma {
     variants?: ProductVariantCreateNestedManyWithoutProductInput
     User: UserCreateNestedOneWithoutProductsInput
     sales?: SaleCreateNestedManyWithoutProductInput
+    CommissionSetting?: CommissionSettingCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateInput = {
@@ -22606,6 +27026,7 @@ export namespace Prisma {
     tags?: TagUncheckedCreateNestedManyWithoutProductInput
     variants?: ProductVariantUncheckedCreateNestedManyWithoutProductInput
     sales?: SaleUncheckedCreateNestedManyWithoutProductInput
+    CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductUpdateInput = {
@@ -22630,6 +27051,7 @@ export namespace Prisma {
     variants?: ProductVariantUpdateManyWithoutProductNestedInput
     User?: UserUpdateOneRequiredWithoutProductsNestedInput
     sales?: SaleUpdateManyWithoutProductNestedInput
+    CommissionSetting?: CommissionSettingUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateInput = {
@@ -22654,6 +27076,7 @@ export namespace Prisma {
     tags?: TagUncheckedUpdateManyWithoutProductNestedInput
     variants?: ProductVariantUncheckedUpdateManyWithoutProductNestedInput
     sales?: SaleUncheckedUpdateManyWithoutProductNestedInput
+    CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type ProductCreateManyInput = {
@@ -22725,6 +27148,7 @@ export namespace Prisma {
     product: ProductCreateNestedOneWithoutSalesInput
     merchant: UserCreateNestedOneWithoutSalesInput
     brand?: BrandCreateNestedOneWithoutSalesInput
+    SaleItem?: SaleItemCreateNestedManyWithoutSaleInput
   }
 
   export type SaleUncheckedCreateInput = {
@@ -22739,6 +27163,7 @@ export namespace Prisma {
     merchantEarning?: number
     platformEarning?: number
     createdAt?: Date | string
+    SaleItem?: SaleItemUncheckedCreateNestedManyWithoutSaleInput
   }
 
   export type SaleUpdateInput = {
@@ -22753,6 +27178,7 @@ export namespace Prisma {
     product?: ProductUpdateOneRequiredWithoutSalesNestedInput
     merchant?: UserUpdateOneRequiredWithoutSalesNestedInput
     brand?: BrandUpdateOneWithoutSalesNestedInput
+    SaleItem?: SaleItemUpdateManyWithoutSaleNestedInput
   }
 
   export type SaleUncheckedUpdateInput = {
@@ -22767,6 +27193,7 @@ export namespace Prisma {
     merchantEarning?: FloatFieldUpdateOperationsInput | number
     platformEarning?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    SaleItem?: SaleItemUncheckedUpdateManyWithoutSaleNestedInput
   }
 
   export type SaleCreateManyInput = {
@@ -22805,6 +27232,75 @@ export namespace Prisma {
     merchantEarning?: FloatFieldUpdateOperationsInput | number
     platformEarning?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SaleItemCreateInput = {
+    id?: string
+    productId: string
+    quantity: number
+    unitPrice: Decimal | DecimalJsLike | number | string
+    total: Decimal | DecimalJsLike | number | string
+    orderItemId: string
+    Sale: SaleCreateNestedOneWithoutSaleItemInput
+  }
+
+  export type SaleItemUncheckedCreateInput = {
+    id?: string
+    saleId: string
+    productId: string
+    quantity: number
+    unitPrice: Decimal | DecimalJsLike | number | string
+    total: Decimal | DecimalJsLike | number | string
+    orderItemId: string
+  }
+
+  export type SaleItemUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    unitPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    orderItemId?: StringFieldUpdateOperationsInput | string
+    Sale?: SaleUpdateOneRequiredWithoutSaleItemNestedInput
+  }
+
+  export type SaleItemUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    saleId?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    unitPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    orderItemId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type SaleItemCreateManyInput = {
+    id?: string
+    saleId: string
+    productId: string
+    quantity: number
+    unitPrice: Decimal | DecimalJsLike | number | string
+    total: Decimal | DecimalJsLike | number | string
+    orderItemId: string
+  }
+
+  export type SaleItemUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    unitPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    orderItemId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type SaleItemUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    saleId?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    unitPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    orderItemId?: StringFieldUpdateOperationsInput | string
   }
 
   export type ProductVariantCreateInput = {
@@ -23372,6 +27868,169 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type CommissionSettingCreateInput = {
+    id?: string
+    brandCommissionPct?: number
+    merchantCommissionPct?: number
+    effectiveFrom?: Date | string
+    effectiveTo?: Date | string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    brand?: BrandCreateNestedOneWithoutCommissionSettingInput
+    merchant?: UserCreateNestedOneWithoutCommissionSettingInput
+    product?: ProductCreateNestedOneWithoutCommissionSettingInput
+  }
+
+  export type CommissionSettingUncheckedCreateInput = {
+    id?: string
+    brandId?: string | null
+    merchantId?: string | null
+    brandCommissionPct?: number
+    merchantCommissionPct?: number
+    productId?: string | null
+    effectiveFrom?: Date | string
+    effectiveTo?: Date | string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CommissionSettingUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    brandCommissionPct?: FloatFieldUpdateOperationsInput | number
+    merchantCommissionPct?: FloatFieldUpdateOperationsInput | number
+    effectiveFrom?: DateTimeFieldUpdateOperationsInput | Date | string
+    effectiveTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    brand?: BrandUpdateOneWithoutCommissionSettingNestedInput
+    merchant?: UserUpdateOneWithoutCommissionSettingNestedInput
+    product?: ProductUpdateOneWithoutCommissionSettingNestedInput
+  }
+
+  export type CommissionSettingUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
+    merchantId?: NullableStringFieldUpdateOperationsInput | string | null
+    brandCommissionPct?: FloatFieldUpdateOperationsInput | number
+    merchantCommissionPct?: FloatFieldUpdateOperationsInput | number
+    productId?: NullableStringFieldUpdateOperationsInput | string | null
+    effectiveFrom?: DateTimeFieldUpdateOperationsInput | Date | string
+    effectiveTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CommissionSettingCreateManyInput = {
+    id?: string
+    brandId?: string | null
+    merchantId?: string | null
+    brandCommissionPct?: number
+    merchantCommissionPct?: number
+    productId?: string | null
+    effectiveFrom?: Date | string
+    effectiveTo?: Date | string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CommissionSettingUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    brandCommissionPct?: FloatFieldUpdateOperationsInput | number
+    merchantCommissionPct?: FloatFieldUpdateOperationsInput | number
+    effectiveFrom?: DateTimeFieldUpdateOperationsInput | Date | string
+    effectiveTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CommissionSettingUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
+    merchantId?: NullableStringFieldUpdateOperationsInput | string | null
+    brandCommissionPct?: FloatFieldUpdateOperationsInput | number
+    merchantCommissionPct?: FloatFieldUpdateOperationsInput | number
+    productId?: NullableStringFieldUpdateOperationsInput | string | null
+    effectiveFrom?: DateTimeFieldUpdateOperationsInput | Date | string
+    effectiveTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PayoutCreateInput = {
+    id?: string
+    actor: $Enums.PayoutActor
+    amount: Decimal | DecimalJsLike | number | string
+    note?: string | null
+    createdAt?: Date | string
+    brand?: BrandCreateNestedOneWithoutPayoutInput
+    merchant?: UserCreateNestedOneWithoutPayoutInput
+  }
+
+  export type PayoutUncheckedCreateInput = {
+    id?: string
+    actor: $Enums.PayoutActor
+    brandId?: string | null
+    merchantId?: string | null
+    amount: Decimal | DecimalJsLike | number | string
+    note?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PayoutUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    actor?: EnumPayoutActorFieldUpdateOperationsInput | $Enums.PayoutActor
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    brand?: BrandUpdateOneWithoutPayoutNestedInput
+    merchant?: UserUpdateOneWithoutPayoutNestedInput
+  }
+
+  export type PayoutUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    actor?: EnumPayoutActorFieldUpdateOperationsInput | $Enums.PayoutActor
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
+    merchantId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PayoutCreateManyInput = {
+    id?: string
+    actor: $Enums.PayoutActor
+    brandId?: string | null
+    merchantId?: string | null
+    amount: Decimal | DecimalJsLike | number | string
+    note?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PayoutUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    actor?: EnumPayoutActorFieldUpdateOperationsInput | $Enums.PayoutActor
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PayoutUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    actor?: EnumPayoutActorFieldUpdateOperationsInput | $Enums.PayoutActor
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
+    merchantId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -23460,6 +28119,18 @@ export namespace Prisma {
     none?: OrderWhereInput
   }
 
+  export type CommissionSettingListRelationFilter = {
+    every?: CommissionSettingWhereInput
+    some?: CommissionSettingWhereInput
+    none?: CommissionSettingWhereInput
+  }
+
+  export type PayoutListRelationFilter = {
+    every?: PayoutWhereInput
+    some?: PayoutWhereInput
+    none?: PayoutWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -23482,6 +28153,14 @@ export namespace Prisma {
   }
 
   export type OrderOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CommissionSettingOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type PayoutOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -23663,6 +28342,7 @@ export namespace Prisma {
     routingNumber?: SortOrder
     message?: SortOrder
     tiar?: SortOrder
+    leftTiar?: SortOrder
     brandOption?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -23670,6 +28350,7 @@ export namespace Prisma {
 
   export type MerchantProfileAvgOrderByAggregateInput = {
     tiar?: SortOrder
+    leftTiar?: SortOrder
   }
 
   export type MerchantProfileMaxOrderByAggregateInput = {
@@ -23691,6 +28372,7 @@ export namespace Prisma {
     routingNumber?: SortOrder
     message?: SortOrder
     tiar?: SortOrder
+    leftTiar?: SortOrder
     brandOption?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -23715,6 +28397,7 @@ export namespace Prisma {
     routingNumber?: SortOrder
     message?: SortOrder
     tiar?: SortOrder
+    leftTiar?: SortOrder
     brandOption?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -23722,6 +28405,7 @@ export namespace Prisma {
 
   export type MerchantProfileSumOrderByAggregateInput = {
     tiar?: SortOrder
+    leftTiar?: SortOrder
   }
 
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
@@ -24036,6 +28720,16 @@ export namespace Prisma {
     isNot?: ProductWhereInput
   }
 
+  export type SaleItemListRelationFilter = {
+    every?: SaleItemWhereInput
+    some?: SaleItemWhereInput
+    none?: SaleItemWhereInput
+  }
+
+  export type SaleItemOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type SaleCountOrderByAggregateInput = {
     id?: SortOrder
     orderItemId?: SortOrder
@@ -24092,6 +28786,80 @@ export namespace Prisma {
     brandEarning?: SortOrder
     merchantEarning?: SortOrder
     platformEarning?: SortOrder
+  }
+
+  export type DecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  }
+
+  export type SaleScalarRelationFilter = {
+    is?: SaleWhereInput
+    isNot?: SaleWhereInput
+  }
+
+  export type SaleItemCountOrderByAggregateInput = {
+    id?: SortOrder
+    saleId?: SortOrder
+    productId?: SortOrder
+    quantity?: SortOrder
+    unitPrice?: SortOrder
+    total?: SortOrder
+    orderItemId?: SortOrder
+  }
+
+  export type SaleItemAvgOrderByAggregateInput = {
+    quantity?: SortOrder
+    unitPrice?: SortOrder
+    total?: SortOrder
+  }
+
+  export type SaleItemMaxOrderByAggregateInput = {
+    id?: SortOrder
+    saleId?: SortOrder
+    productId?: SortOrder
+    quantity?: SortOrder
+    unitPrice?: SortOrder
+    total?: SortOrder
+    orderItemId?: SortOrder
+  }
+
+  export type SaleItemMinOrderByAggregateInput = {
+    id?: SortOrder
+    saleId?: SortOrder
+    productId?: SortOrder
+    quantity?: SortOrder
+    unitPrice?: SortOrder
+    total?: SortOrder
+    orderItemId?: SortOrder
+  }
+
+  export type SaleItemSumOrderByAggregateInput = {
+    quantity?: SortOrder
+    unitPrice?: SortOrder
+    total?: SortOrder
+  }
+
+  export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedDecimalFilter<$PrismaModel>
+    _sum?: NestedDecimalFilter<$PrismaModel>
+    _min?: NestedDecimalFilter<$PrismaModel>
+    _max?: NestedDecimalFilter<$PrismaModel>
   }
 
   export type EnumFitTypeFilter<$PrismaModel = never> = {
@@ -24244,17 +29012,6 @@ export namespace Prisma {
     backImg?: SortOrder
   }
 
-  export type DecimalFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
-  }
-
   export type DecimalNullableFilter<$PrismaModel = never> = {
     equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
     in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
@@ -24370,22 +29127,6 @@ export namespace Prisma {
     shippingFee?: SortOrder
     grandTotal?: SortOrder
     couponRate?: SortOrder
-  }
-
-  export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedDecimalFilter<$PrismaModel>
-    _sum?: NestedDecimalFilter<$PrismaModel>
-    _min?: NestedDecimalFilter<$PrismaModel>
-    _max?: NestedDecimalFilter<$PrismaModel>
   }
 
   export type DecimalNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -24566,6 +29307,123 @@ export namespace Prisma {
     _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
+  export type UserNullableScalarRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
+  }
+
+  export type ProductNullableScalarRelationFilter = {
+    is?: ProductWhereInput | null
+    isNot?: ProductWhereInput | null
+  }
+
+  export type CommissionSettingCountOrderByAggregateInput = {
+    id?: SortOrder
+    brandId?: SortOrder
+    merchantId?: SortOrder
+    brandCommissionPct?: SortOrder
+    merchantCommissionPct?: SortOrder
+    productId?: SortOrder
+    effectiveFrom?: SortOrder
+    effectiveTo?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CommissionSettingAvgOrderByAggregateInput = {
+    brandCommissionPct?: SortOrder
+    merchantCommissionPct?: SortOrder
+  }
+
+  export type CommissionSettingMaxOrderByAggregateInput = {
+    id?: SortOrder
+    brandId?: SortOrder
+    merchantId?: SortOrder
+    brandCommissionPct?: SortOrder
+    merchantCommissionPct?: SortOrder
+    productId?: SortOrder
+    effectiveFrom?: SortOrder
+    effectiveTo?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CommissionSettingMinOrderByAggregateInput = {
+    id?: SortOrder
+    brandId?: SortOrder
+    merchantId?: SortOrder
+    brandCommissionPct?: SortOrder
+    merchantCommissionPct?: SortOrder
+    productId?: SortOrder
+    effectiveFrom?: SortOrder
+    effectiveTo?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CommissionSettingSumOrderByAggregateInput = {
+    brandCommissionPct?: SortOrder
+    merchantCommissionPct?: SortOrder
+  }
+
+  export type EnumPayoutActorFilter<$PrismaModel = never> = {
+    equals?: $Enums.PayoutActor | EnumPayoutActorFieldRefInput<$PrismaModel>
+    in?: $Enums.PayoutActor[] | ListEnumPayoutActorFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PayoutActor[] | ListEnumPayoutActorFieldRefInput<$PrismaModel>
+    not?: NestedEnumPayoutActorFilter<$PrismaModel> | $Enums.PayoutActor
+  }
+
+  export type PayoutCountOrderByAggregateInput = {
+    id?: SortOrder
+    actor?: SortOrder
+    brandId?: SortOrder
+    merchantId?: SortOrder
+    amount?: SortOrder
+    note?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PayoutAvgOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type PayoutMaxOrderByAggregateInput = {
+    id?: SortOrder
+    actor?: SortOrder
+    brandId?: SortOrder
+    merchantId?: SortOrder
+    amount?: SortOrder
+    note?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PayoutMinOrderByAggregateInput = {
+    id?: SortOrder
+    actor?: SortOrder
+    brandId?: SortOrder
+    merchantId?: SortOrder
+    amount?: SortOrder
+    note?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PayoutSumOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type EnumPayoutActorWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PayoutActor | EnumPayoutActorFieldRefInput<$PrismaModel>
+    in?: $Enums.PayoutActor[] | ListEnumPayoutActorFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PayoutActor[] | ListEnumPayoutActorFieldRefInput<$PrismaModel>
+    not?: NestedEnumPayoutActorWithAggregatesFilter<$PrismaModel> | $Enums.PayoutActor
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPayoutActorFilter<$PrismaModel>
+    _max?: NestedEnumPayoutActorFilter<$PrismaModel>
+  }
+
   export type BrandCreateNestedManyWithoutUserInput = {
     create?: XOR<BrandCreateWithoutUserInput, BrandUncheckedCreateWithoutUserInput> | BrandCreateWithoutUserInput[] | BrandUncheckedCreateWithoutUserInput[]
     connectOrCreate?: BrandCreateOrConnectWithoutUserInput | BrandCreateOrConnectWithoutUserInput[]
@@ -24607,6 +29465,20 @@ export namespace Prisma {
     connect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
   }
 
+  export type CommissionSettingCreateNestedManyWithoutMerchantInput = {
+    create?: XOR<CommissionSettingCreateWithoutMerchantInput, CommissionSettingUncheckedCreateWithoutMerchantInput> | CommissionSettingCreateWithoutMerchantInput[] | CommissionSettingUncheckedCreateWithoutMerchantInput[]
+    connectOrCreate?: CommissionSettingCreateOrConnectWithoutMerchantInput | CommissionSettingCreateOrConnectWithoutMerchantInput[]
+    createMany?: CommissionSettingCreateManyMerchantInputEnvelope
+    connect?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+  }
+
+  export type PayoutCreateNestedManyWithoutMerchantInput = {
+    create?: XOR<PayoutCreateWithoutMerchantInput, PayoutUncheckedCreateWithoutMerchantInput> | PayoutCreateWithoutMerchantInput[] | PayoutUncheckedCreateWithoutMerchantInput[]
+    connectOrCreate?: PayoutCreateOrConnectWithoutMerchantInput | PayoutCreateOrConnectWithoutMerchantInput[]
+    createMany?: PayoutCreateManyMerchantInputEnvelope
+    connect?: PayoutWhereUniqueInput | PayoutWhereUniqueInput[]
+  }
+
   export type BrandUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<BrandCreateWithoutUserInput, BrandUncheckedCreateWithoutUserInput> | BrandCreateWithoutUserInput[] | BrandUncheckedCreateWithoutUserInput[]
     connectOrCreate?: BrandCreateOrConnectWithoutUserInput | BrandCreateOrConnectWithoutUserInput[]
@@ -24646,6 +29518,20 @@ export namespace Prisma {
     connectOrCreate?: OrderCreateOrConnectWithoutUserInput | OrderCreateOrConnectWithoutUserInput[]
     createMany?: OrderCreateManyUserInputEnvelope
     connect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+  }
+
+  export type CommissionSettingUncheckedCreateNestedManyWithoutMerchantInput = {
+    create?: XOR<CommissionSettingCreateWithoutMerchantInput, CommissionSettingUncheckedCreateWithoutMerchantInput> | CommissionSettingCreateWithoutMerchantInput[] | CommissionSettingUncheckedCreateWithoutMerchantInput[]
+    connectOrCreate?: CommissionSettingCreateOrConnectWithoutMerchantInput | CommissionSettingCreateOrConnectWithoutMerchantInput[]
+    createMany?: CommissionSettingCreateManyMerchantInputEnvelope
+    connect?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+  }
+
+  export type PayoutUncheckedCreateNestedManyWithoutMerchantInput = {
+    create?: XOR<PayoutCreateWithoutMerchantInput, PayoutUncheckedCreateWithoutMerchantInput> | PayoutCreateWithoutMerchantInput[] | PayoutUncheckedCreateWithoutMerchantInput[]
+    connectOrCreate?: PayoutCreateOrConnectWithoutMerchantInput | PayoutCreateOrConnectWithoutMerchantInput[]
+    createMany?: PayoutCreateManyMerchantInputEnvelope
+    connect?: PayoutWhereUniqueInput | PayoutWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -24748,6 +29634,34 @@ export namespace Prisma {
     deleteMany?: OrderScalarWhereInput | OrderScalarWhereInput[]
   }
 
+  export type CommissionSettingUpdateManyWithoutMerchantNestedInput = {
+    create?: XOR<CommissionSettingCreateWithoutMerchantInput, CommissionSettingUncheckedCreateWithoutMerchantInput> | CommissionSettingCreateWithoutMerchantInput[] | CommissionSettingUncheckedCreateWithoutMerchantInput[]
+    connectOrCreate?: CommissionSettingCreateOrConnectWithoutMerchantInput | CommissionSettingCreateOrConnectWithoutMerchantInput[]
+    upsert?: CommissionSettingUpsertWithWhereUniqueWithoutMerchantInput | CommissionSettingUpsertWithWhereUniqueWithoutMerchantInput[]
+    createMany?: CommissionSettingCreateManyMerchantInputEnvelope
+    set?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+    disconnect?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+    delete?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+    connect?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+    update?: CommissionSettingUpdateWithWhereUniqueWithoutMerchantInput | CommissionSettingUpdateWithWhereUniqueWithoutMerchantInput[]
+    updateMany?: CommissionSettingUpdateManyWithWhereWithoutMerchantInput | CommissionSettingUpdateManyWithWhereWithoutMerchantInput[]
+    deleteMany?: CommissionSettingScalarWhereInput | CommissionSettingScalarWhereInput[]
+  }
+
+  export type PayoutUpdateManyWithoutMerchantNestedInput = {
+    create?: XOR<PayoutCreateWithoutMerchantInput, PayoutUncheckedCreateWithoutMerchantInput> | PayoutCreateWithoutMerchantInput[] | PayoutUncheckedCreateWithoutMerchantInput[]
+    connectOrCreate?: PayoutCreateOrConnectWithoutMerchantInput | PayoutCreateOrConnectWithoutMerchantInput[]
+    upsert?: PayoutUpsertWithWhereUniqueWithoutMerchantInput | PayoutUpsertWithWhereUniqueWithoutMerchantInput[]
+    createMany?: PayoutCreateManyMerchantInputEnvelope
+    set?: PayoutWhereUniqueInput | PayoutWhereUniqueInput[]
+    disconnect?: PayoutWhereUniqueInput | PayoutWhereUniqueInput[]
+    delete?: PayoutWhereUniqueInput | PayoutWhereUniqueInput[]
+    connect?: PayoutWhereUniqueInput | PayoutWhereUniqueInput[]
+    update?: PayoutUpdateWithWhereUniqueWithoutMerchantInput | PayoutUpdateWithWhereUniqueWithoutMerchantInput[]
+    updateMany?: PayoutUpdateManyWithWhereWithoutMerchantInput | PayoutUpdateManyWithWhereWithoutMerchantInput[]
+    deleteMany?: PayoutScalarWhereInput | PayoutScalarWhereInput[]
+  }
+
   export type BrandUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<BrandCreateWithoutUserInput, BrandUncheckedCreateWithoutUserInput> | BrandCreateWithoutUserInput[] | BrandUncheckedCreateWithoutUserInput[]
     connectOrCreate?: BrandCreateOrConnectWithoutUserInput | BrandCreateOrConnectWithoutUserInput[]
@@ -24826,6 +29740,34 @@ export namespace Prisma {
     update?: OrderUpdateWithWhereUniqueWithoutUserInput | OrderUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: OrderUpdateManyWithWhereWithoutUserInput | OrderUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: OrderScalarWhereInput | OrderScalarWhereInput[]
+  }
+
+  export type CommissionSettingUncheckedUpdateManyWithoutMerchantNestedInput = {
+    create?: XOR<CommissionSettingCreateWithoutMerchantInput, CommissionSettingUncheckedCreateWithoutMerchantInput> | CommissionSettingCreateWithoutMerchantInput[] | CommissionSettingUncheckedCreateWithoutMerchantInput[]
+    connectOrCreate?: CommissionSettingCreateOrConnectWithoutMerchantInput | CommissionSettingCreateOrConnectWithoutMerchantInput[]
+    upsert?: CommissionSettingUpsertWithWhereUniqueWithoutMerchantInput | CommissionSettingUpsertWithWhereUniqueWithoutMerchantInput[]
+    createMany?: CommissionSettingCreateManyMerchantInputEnvelope
+    set?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+    disconnect?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+    delete?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+    connect?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+    update?: CommissionSettingUpdateWithWhereUniqueWithoutMerchantInput | CommissionSettingUpdateWithWhereUniqueWithoutMerchantInput[]
+    updateMany?: CommissionSettingUpdateManyWithWhereWithoutMerchantInput | CommissionSettingUpdateManyWithWhereWithoutMerchantInput[]
+    deleteMany?: CommissionSettingScalarWhereInput | CommissionSettingScalarWhereInput[]
+  }
+
+  export type PayoutUncheckedUpdateManyWithoutMerchantNestedInput = {
+    create?: XOR<PayoutCreateWithoutMerchantInput, PayoutUncheckedCreateWithoutMerchantInput> | PayoutCreateWithoutMerchantInput[] | PayoutUncheckedCreateWithoutMerchantInput[]
+    connectOrCreate?: PayoutCreateOrConnectWithoutMerchantInput | PayoutCreateOrConnectWithoutMerchantInput[]
+    upsert?: PayoutUpsertWithWhereUniqueWithoutMerchantInput | PayoutUpsertWithWhereUniqueWithoutMerchantInput[]
+    createMany?: PayoutCreateManyMerchantInputEnvelope
+    set?: PayoutWhereUniqueInput | PayoutWhereUniqueInput[]
+    disconnect?: PayoutWhereUniqueInput | PayoutWhereUniqueInput[]
+    delete?: PayoutWhereUniqueInput | PayoutWhereUniqueInput[]
+    connect?: PayoutWhereUniqueInput | PayoutWhereUniqueInput[]
+    update?: PayoutUpdateWithWhereUniqueWithoutMerchantInput | PayoutUpdateWithWhereUniqueWithoutMerchantInput[]
+    updateMany?: PayoutUpdateManyWithWhereWithoutMerchantInput | PayoutUpdateManyWithWhereWithoutMerchantInput[]
+    deleteMany?: PayoutScalarWhereInput | PayoutScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutAddressesInput = {
@@ -24932,6 +29874,20 @@ export namespace Prisma {
     connect?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
   }
 
+  export type CommissionSettingCreateNestedManyWithoutBrandInput = {
+    create?: XOR<CommissionSettingCreateWithoutBrandInput, CommissionSettingUncheckedCreateWithoutBrandInput> | CommissionSettingCreateWithoutBrandInput[] | CommissionSettingUncheckedCreateWithoutBrandInput[]
+    connectOrCreate?: CommissionSettingCreateOrConnectWithoutBrandInput | CommissionSettingCreateOrConnectWithoutBrandInput[]
+    createMany?: CommissionSettingCreateManyBrandInputEnvelope
+    connect?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+  }
+
+  export type PayoutCreateNestedManyWithoutBrandInput = {
+    create?: XOR<PayoutCreateWithoutBrandInput, PayoutUncheckedCreateWithoutBrandInput> | PayoutCreateWithoutBrandInput[] | PayoutUncheckedCreateWithoutBrandInput[]
+    connectOrCreate?: PayoutCreateOrConnectWithoutBrandInput | PayoutCreateOrConnectWithoutBrandInput[]
+    createMany?: PayoutCreateManyBrandInputEnvelope
+    connect?: PayoutWhereUniqueInput | PayoutWhereUniqueInput[]
+  }
+
   export type ProductUncheckedCreateNestedManyWithoutBrandInput = {
     create?: XOR<ProductCreateWithoutBrandInput, ProductUncheckedCreateWithoutBrandInput> | ProductCreateWithoutBrandInput[] | ProductUncheckedCreateWithoutBrandInput[]
     connectOrCreate?: ProductCreateOrConnectWithoutBrandInput | ProductCreateOrConnectWithoutBrandInput[]
@@ -24944,6 +29900,20 @@ export namespace Prisma {
     connectOrCreate?: SaleCreateOrConnectWithoutBrandInput | SaleCreateOrConnectWithoutBrandInput[]
     createMany?: SaleCreateManyBrandInputEnvelope
     connect?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
+  }
+
+  export type CommissionSettingUncheckedCreateNestedManyWithoutBrandInput = {
+    create?: XOR<CommissionSettingCreateWithoutBrandInput, CommissionSettingUncheckedCreateWithoutBrandInput> | CommissionSettingCreateWithoutBrandInput[] | CommissionSettingUncheckedCreateWithoutBrandInput[]
+    connectOrCreate?: CommissionSettingCreateOrConnectWithoutBrandInput | CommissionSettingCreateOrConnectWithoutBrandInput[]
+    createMany?: CommissionSettingCreateManyBrandInputEnvelope
+    connect?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+  }
+
+  export type PayoutUncheckedCreateNestedManyWithoutBrandInput = {
+    create?: XOR<PayoutCreateWithoutBrandInput, PayoutUncheckedCreateWithoutBrandInput> | PayoutCreateWithoutBrandInput[] | PayoutUncheckedCreateWithoutBrandInput[]
+    connectOrCreate?: PayoutCreateOrConnectWithoutBrandInput | PayoutCreateOrConnectWithoutBrandInput[]
+    createMany?: PayoutCreateManyBrandInputEnvelope
+    connect?: PayoutWhereUniqueInput | PayoutWhereUniqueInput[]
   }
 
   export type FloatFieldUpdateOperationsInput = {
@@ -24998,6 +29968,34 @@ export namespace Prisma {
     deleteMany?: SaleScalarWhereInput | SaleScalarWhereInput[]
   }
 
+  export type CommissionSettingUpdateManyWithoutBrandNestedInput = {
+    create?: XOR<CommissionSettingCreateWithoutBrandInput, CommissionSettingUncheckedCreateWithoutBrandInput> | CommissionSettingCreateWithoutBrandInput[] | CommissionSettingUncheckedCreateWithoutBrandInput[]
+    connectOrCreate?: CommissionSettingCreateOrConnectWithoutBrandInput | CommissionSettingCreateOrConnectWithoutBrandInput[]
+    upsert?: CommissionSettingUpsertWithWhereUniqueWithoutBrandInput | CommissionSettingUpsertWithWhereUniqueWithoutBrandInput[]
+    createMany?: CommissionSettingCreateManyBrandInputEnvelope
+    set?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+    disconnect?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+    delete?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+    connect?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+    update?: CommissionSettingUpdateWithWhereUniqueWithoutBrandInput | CommissionSettingUpdateWithWhereUniqueWithoutBrandInput[]
+    updateMany?: CommissionSettingUpdateManyWithWhereWithoutBrandInput | CommissionSettingUpdateManyWithWhereWithoutBrandInput[]
+    deleteMany?: CommissionSettingScalarWhereInput | CommissionSettingScalarWhereInput[]
+  }
+
+  export type PayoutUpdateManyWithoutBrandNestedInput = {
+    create?: XOR<PayoutCreateWithoutBrandInput, PayoutUncheckedCreateWithoutBrandInput> | PayoutCreateWithoutBrandInput[] | PayoutUncheckedCreateWithoutBrandInput[]
+    connectOrCreate?: PayoutCreateOrConnectWithoutBrandInput | PayoutCreateOrConnectWithoutBrandInput[]
+    upsert?: PayoutUpsertWithWhereUniqueWithoutBrandInput | PayoutUpsertWithWhereUniqueWithoutBrandInput[]
+    createMany?: PayoutCreateManyBrandInputEnvelope
+    set?: PayoutWhereUniqueInput | PayoutWhereUniqueInput[]
+    disconnect?: PayoutWhereUniqueInput | PayoutWhereUniqueInput[]
+    delete?: PayoutWhereUniqueInput | PayoutWhereUniqueInput[]
+    connect?: PayoutWhereUniqueInput | PayoutWhereUniqueInput[]
+    update?: PayoutUpdateWithWhereUniqueWithoutBrandInput | PayoutUpdateWithWhereUniqueWithoutBrandInput[]
+    updateMany?: PayoutUpdateManyWithWhereWithoutBrandInput | PayoutUpdateManyWithWhereWithoutBrandInput[]
+    deleteMany?: PayoutScalarWhereInput | PayoutScalarWhereInput[]
+  }
+
   export type ProductUncheckedUpdateManyWithoutBrandNestedInput = {
     create?: XOR<ProductCreateWithoutBrandInput, ProductUncheckedCreateWithoutBrandInput> | ProductCreateWithoutBrandInput[] | ProductUncheckedCreateWithoutBrandInput[]
     connectOrCreate?: ProductCreateOrConnectWithoutBrandInput | ProductCreateOrConnectWithoutBrandInput[]
@@ -25024,6 +30022,34 @@ export namespace Prisma {
     update?: SaleUpdateWithWhereUniqueWithoutBrandInput | SaleUpdateWithWhereUniqueWithoutBrandInput[]
     updateMany?: SaleUpdateManyWithWhereWithoutBrandInput | SaleUpdateManyWithWhereWithoutBrandInput[]
     deleteMany?: SaleScalarWhereInput | SaleScalarWhereInput[]
+  }
+
+  export type CommissionSettingUncheckedUpdateManyWithoutBrandNestedInput = {
+    create?: XOR<CommissionSettingCreateWithoutBrandInput, CommissionSettingUncheckedCreateWithoutBrandInput> | CommissionSettingCreateWithoutBrandInput[] | CommissionSettingUncheckedCreateWithoutBrandInput[]
+    connectOrCreate?: CommissionSettingCreateOrConnectWithoutBrandInput | CommissionSettingCreateOrConnectWithoutBrandInput[]
+    upsert?: CommissionSettingUpsertWithWhereUniqueWithoutBrandInput | CommissionSettingUpsertWithWhereUniqueWithoutBrandInput[]
+    createMany?: CommissionSettingCreateManyBrandInputEnvelope
+    set?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+    disconnect?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+    delete?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+    connect?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+    update?: CommissionSettingUpdateWithWhereUniqueWithoutBrandInput | CommissionSettingUpdateWithWhereUniqueWithoutBrandInput[]
+    updateMany?: CommissionSettingUpdateManyWithWhereWithoutBrandInput | CommissionSettingUpdateManyWithWhereWithoutBrandInput[]
+    deleteMany?: CommissionSettingScalarWhereInput | CommissionSettingScalarWhereInput[]
+  }
+
+  export type PayoutUncheckedUpdateManyWithoutBrandNestedInput = {
+    create?: XOR<PayoutCreateWithoutBrandInput, PayoutUncheckedCreateWithoutBrandInput> | PayoutCreateWithoutBrandInput[] | PayoutUncheckedCreateWithoutBrandInput[]
+    connectOrCreate?: PayoutCreateOrConnectWithoutBrandInput | PayoutCreateOrConnectWithoutBrandInput[]
+    upsert?: PayoutUpsertWithWhereUniqueWithoutBrandInput | PayoutUpsertWithWhereUniqueWithoutBrandInput[]
+    createMany?: PayoutCreateManyBrandInputEnvelope
+    set?: PayoutWhereUniqueInput | PayoutWhereUniqueInput[]
+    disconnect?: PayoutWhereUniqueInput | PayoutWhereUniqueInput[]
+    delete?: PayoutWhereUniqueInput | PayoutWhereUniqueInput[]
+    connect?: PayoutWhereUniqueInput | PayoutWhereUniqueInput[]
+    update?: PayoutUpdateWithWhereUniqueWithoutBrandInput | PayoutUpdateWithWhereUniqueWithoutBrandInput[]
+    updateMany?: PayoutUpdateManyWithWhereWithoutBrandInput | PayoutUpdateManyWithWhereWithoutBrandInput[]
+    deleteMany?: PayoutScalarWhereInput | PayoutScalarWhereInput[]
   }
 
   export type BrandCreateNestedManyWithoutBrandCategoryInput = {
@@ -25114,6 +30140,13 @@ export namespace Prisma {
     connect?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
   }
 
+  export type CommissionSettingCreateNestedManyWithoutProductInput = {
+    create?: XOR<CommissionSettingCreateWithoutProductInput, CommissionSettingUncheckedCreateWithoutProductInput> | CommissionSettingCreateWithoutProductInput[] | CommissionSettingUncheckedCreateWithoutProductInput[]
+    connectOrCreate?: CommissionSettingCreateOrConnectWithoutProductInput | CommissionSettingCreateOrConnectWithoutProductInput[]
+    createMany?: CommissionSettingCreateManyProductInputEnvelope
+    connect?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+  }
+
   export type FeatureUncheckedCreateNestedManyWithoutProductInput = {
     create?: XOR<FeatureCreateWithoutProductInput, FeatureUncheckedCreateWithoutProductInput> | FeatureCreateWithoutProductInput[] | FeatureUncheckedCreateWithoutProductInput[]
     connectOrCreate?: FeatureCreateOrConnectWithoutProductInput | FeatureCreateOrConnectWithoutProductInput[]
@@ -25140,6 +30173,13 @@ export namespace Prisma {
     connectOrCreate?: SaleCreateOrConnectWithoutProductInput | SaleCreateOrConnectWithoutProductInput[]
     createMany?: SaleCreateManyProductInputEnvelope
     connect?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
+  }
+
+  export type CommissionSettingUncheckedCreateNestedManyWithoutProductInput = {
+    create?: XOR<CommissionSettingCreateWithoutProductInput, CommissionSettingUncheckedCreateWithoutProductInput> | CommissionSettingCreateWithoutProductInput[] | CommissionSettingUncheckedCreateWithoutProductInput[]
+    connectOrCreate?: CommissionSettingCreateOrConnectWithoutProductInput | CommissionSettingCreateOrConnectWithoutProductInput[]
+    createMany?: CommissionSettingCreateManyProductInputEnvelope
+    connect?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
   }
 
   export type NullableFloatFieldUpdateOperationsInput = {
@@ -25232,6 +30272,20 @@ export namespace Prisma {
     deleteMany?: SaleScalarWhereInput | SaleScalarWhereInput[]
   }
 
+  export type CommissionSettingUpdateManyWithoutProductNestedInput = {
+    create?: XOR<CommissionSettingCreateWithoutProductInput, CommissionSettingUncheckedCreateWithoutProductInput> | CommissionSettingCreateWithoutProductInput[] | CommissionSettingUncheckedCreateWithoutProductInput[]
+    connectOrCreate?: CommissionSettingCreateOrConnectWithoutProductInput | CommissionSettingCreateOrConnectWithoutProductInput[]
+    upsert?: CommissionSettingUpsertWithWhereUniqueWithoutProductInput | CommissionSettingUpsertWithWhereUniqueWithoutProductInput[]
+    createMany?: CommissionSettingCreateManyProductInputEnvelope
+    set?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+    disconnect?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+    delete?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+    connect?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+    update?: CommissionSettingUpdateWithWhereUniqueWithoutProductInput | CommissionSettingUpdateWithWhereUniqueWithoutProductInput[]
+    updateMany?: CommissionSettingUpdateManyWithWhereWithoutProductInput | CommissionSettingUpdateManyWithWhereWithoutProductInput[]
+    deleteMany?: CommissionSettingScalarWhereInput | CommissionSettingScalarWhereInput[]
+  }
+
   export type FeatureUncheckedUpdateManyWithoutProductNestedInput = {
     create?: XOR<FeatureCreateWithoutProductInput, FeatureUncheckedCreateWithoutProductInput> | FeatureCreateWithoutProductInput[] | FeatureUncheckedCreateWithoutProductInput[]
     connectOrCreate?: FeatureCreateOrConnectWithoutProductInput | FeatureCreateOrConnectWithoutProductInput[]
@@ -25288,6 +30342,20 @@ export namespace Prisma {
     deleteMany?: SaleScalarWhereInput | SaleScalarWhereInput[]
   }
 
+  export type CommissionSettingUncheckedUpdateManyWithoutProductNestedInput = {
+    create?: XOR<CommissionSettingCreateWithoutProductInput, CommissionSettingUncheckedCreateWithoutProductInput> | CommissionSettingCreateWithoutProductInput[] | CommissionSettingUncheckedCreateWithoutProductInput[]
+    connectOrCreate?: CommissionSettingCreateOrConnectWithoutProductInput | CommissionSettingCreateOrConnectWithoutProductInput[]
+    upsert?: CommissionSettingUpsertWithWhereUniqueWithoutProductInput | CommissionSettingUpsertWithWhereUniqueWithoutProductInput[]
+    createMany?: CommissionSettingCreateManyProductInputEnvelope
+    set?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+    disconnect?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+    delete?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+    connect?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
+    update?: CommissionSettingUpdateWithWhereUniqueWithoutProductInput | CommissionSettingUpdateWithWhereUniqueWithoutProductInput[]
+    updateMany?: CommissionSettingUpdateManyWithWhereWithoutProductInput | CommissionSettingUpdateManyWithWhereWithoutProductInput[]
+    deleteMany?: CommissionSettingScalarWhereInput | CommissionSettingScalarWhereInput[]
+  }
+
   export type OrderItemCreateNestedOneWithoutSaleInput = {
     create?: XOR<OrderItemCreateWithoutSaleInput, OrderItemUncheckedCreateWithoutSaleInput>
     connectOrCreate?: OrderItemCreateOrConnectWithoutSaleInput
@@ -25310,6 +30378,20 @@ export namespace Prisma {
     create?: XOR<BrandCreateWithoutSalesInput, BrandUncheckedCreateWithoutSalesInput>
     connectOrCreate?: BrandCreateOrConnectWithoutSalesInput
     connect?: BrandWhereUniqueInput
+  }
+
+  export type SaleItemCreateNestedManyWithoutSaleInput = {
+    create?: XOR<SaleItemCreateWithoutSaleInput, SaleItemUncheckedCreateWithoutSaleInput> | SaleItemCreateWithoutSaleInput[] | SaleItemUncheckedCreateWithoutSaleInput[]
+    connectOrCreate?: SaleItemCreateOrConnectWithoutSaleInput | SaleItemCreateOrConnectWithoutSaleInput[]
+    createMany?: SaleItemCreateManySaleInputEnvelope
+    connect?: SaleItemWhereUniqueInput | SaleItemWhereUniqueInput[]
+  }
+
+  export type SaleItemUncheckedCreateNestedManyWithoutSaleInput = {
+    create?: XOR<SaleItemCreateWithoutSaleInput, SaleItemUncheckedCreateWithoutSaleInput> | SaleItemCreateWithoutSaleInput[] | SaleItemUncheckedCreateWithoutSaleInput[]
+    connectOrCreate?: SaleItemCreateOrConnectWithoutSaleInput | SaleItemCreateOrConnectWithoutSaleInput[]
+    createMany?: SaleItemCreateManySaleInputEnvelope
+    connect?: SaleItemWhereUniqueInput | SaleItemWhereUniqueInput[]
   }
 
   export type OrderItemUpdateOneRequiredWithoutSaleNestedInput = {
@@ -25344,6 +30426,56 @@ export namespace Prisma {
     delete?: BrandWhereInput | boolean
     connect?: BrandWhereUniqueInput
     update?: XOR<XOR<BrandUpdateToOneWithWhereWithoutSalesInput, BrandUpdateWithoutSalesInput>, BrandUncheckedUpdateWithoutSalesInput>
+  }
+
+  export type SaleItemUpdateManyWithoutSaleNestedInput = {
+    create?: XOR<SaleItemCreateWithoutSaleInput, SaleItemUncheckedCreateWithoutSaleInput> | SaleItemCreateWithoutSaleInput[] | SaleItemUncheckedCreateWithoutSaleInput[]
+    connectOrCreate?: SaleItemCreateOrConnectWithoutSaleInput | SaleItemCreateOrConnectWithoutSaleInput[]
+    upsert?: SaleItemUpsertWithWhereUniqueWithoutSaleInput | SaleItemUpsertWithWhereUniqueWithoutSaleInput[]
+    createMany?: SaleItemCreateManySaleInputEnvelope
+    set?: SaleItemWhereUniqueInput | SaleItemWhereUniqueInput[]
+    disconnect?: SaleItemWhereUniqueInput | SaleItemWhereUniqueInput[]
+    delete?: SaleItemWhereUniqueInput | SaleItemWhereUniqueInput[]
+    connect?: SaleItemWhereUniqueInput | SaleItemWhereUniqueInput[]
+    update?: SaleItemUpdateWithWhereUniqueWithoutSaleInput | SaleItemUpdateWithWhereUniqueWithoutSaleInput[]
+    updateMany?: SaleItemUpdateManyWithWhereWithoutSaleInput | SaleItemUpdateManyWithWhereWithoutSaleInput[]
+    deleteMany?: SaleItemScalarWhereInput | SaleItemScalarWhereInput[]
+  }
+
+  export type SaleItemUncheckedUpdateManyWithoutSaleNestedInput = {
+    create?: XOR<SaleItemCreateWithoutSaleInput, SaleItemUncheckedCreateWithoutSaleInput> | SaleItemCreateWithoutSaleInput[] | SaleItemUncheckedCreateWithoutSaleInput[]
+    connectOrCreate?: SaleItemCreateOrConnectWithoutSaleInput | SaleItemCreateOrConnectWithoutSaleInput[]
+    upsert?: SaleItemUpsertWithWhereUniqueWithoutSaleInput | SaleItemUpsertWithWhereUniqueWithoutSaleInput[]
+    createMany?: SaleItemCreateManySaleInputEnvelope
+    set?: SaleItemWhereUniqueInput | SaleItemWhereUniqueInput[]
+    disconnect?: SaleItemWhereUniqueInput | SaleItemWhereUniqueInput[]
+    delete?: SaleItemWhereUniqueInput | SaleItemWhereUniqueInput[]
+    connect?: SaleItemWhereUniqueInput | SaleItemWhereUniqueInput[]
+    update?: SaleItemUpdateWithWhereUniqueWithoutSaleInput | SaleItemUpdateWithWhereUniqueWithoutSaleInput[]
+    updateMany?: SaleItemUpdateManyWithWhereWithoutSaleInput | SaleItemUpdateManyWithWhereWithoutSaleInput[]
+    deleteMany?: SaleItemScalarWhereInput | SaleItemScalarWhereInput[]
+  }
+
+  export type SaleCreateNestedOneWithoutSaleItemInput = {
+    create?: XOR<SaleCreateWithoutSaleItemInput, SaleUncheckedCreateWithoutSaleItemInput>
+    connectOrCreate?: SaleCreateOrConnectWithoutSaleItemInput
+    connect?: SaleWhereUniqueInput
+  }
+
+  export type DecimalFieldUpdateOperationsInput = {
+    set?: Decimal | DecimalJsLike | number | string
+    increment?: Decimal | DecimalJsLike | number | string
+    decrement?: Decimal | DecimalJsLike | number | string
+    multiply?: Decimal | DecimalJsLike | number | string
+    divide?: Decimal | DecimalJsLike | number | string
+  }
+
+  export type SaleUpdateOneRequiredWithoutSaleItemNestedInput = {
+    create?: XOR<SaleCreateWithoutSaleItemInput, SaleUncheckedCreateWithoutSaleItemInput>
+    connectOrCreate?: SaleCreateOrConnectWithoutSaleItemInput
+    upsert?: SaleUpsertWithoutSaleItemInput
+    connect?: SaleWhereUniqueInput
+    update?: XOR<XOR<SaleUpdateToOneWithWhereWithoutSaleItemInput, SaleUpdateWithoutSaleItemInput>, SaleUncheckedUpdateWithoutSaleItemInput>
   }
 
   export type ProductCreateNestedOneWithoutVariantsInput = {
@@ -25528,14 +30660,6 @@ export namespace Prisma {
     connect?: PaymentWhereUniqueInput
   }
 
-  export type DecimalFieldUpdateOperationsInput = {
-    set?: Decimal | DecimalJsLike | number | string
-    increment?: Decimal | DecimalJsLike | number | string
-    decrement?: Decimal | DecimalJsLike | number | string
-    multiply?: Decimal | DecimalJsLike | number | string
-    divide?: Decimal | DecimalJsLike | number | string
-  }
-
   export type NullableDecimalFieldUpdateOperationsInput = {
     set?: Decimal | DecimalJsLike | number | string | null
     increment?: Decimal | DecimalJsLike | number | string
@@ -25684,6 +30808,90 @@ export namespace Prisma {
     upsert?: OrderUpsertWithoutPaymentInput
     connect?: OrderWhereUniqueInput
     update?: XOR<XOR<OrderUpdateToOneWithWhereWithoutPaymentInput, OrderUpdateWithoutPaymentInput>, OrderUncheckedUpdateWithoutPaymentInput>
+  }
+
+  export type BrandCreateNestedOneWithoutCommissionSettingInput = {
+    create?: XOR<BrandCreateWithoutCommissionSettingInput, BrandUncheckedCreateWithoutCommissionSettingInput>
+    connectOrCreate?: BrandCreateOrConnectWithoutCommissionSettingInput
+    connect?: BrandWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutCommissionSettingInput = {
+    create?: XOR<UserCreateWithoutCommissionSettingInput, UserUncheckedCreateWithoutCommissionSettingInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCommissionSettingInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ProductCreateNestedOneWithoutCommissionSettingInput = {
+    create?: XOR<ProductCreateWithoutCommissionSettingInput, ProductUncheckedCreateWithoutCommissionSettingInput>
+    connectOrCreate?: ProductCreateOrConnectWithoutCommissionSettingInput
+    connect?: ProductWhereUniqueInput
+  }
+
+  export type BrandUpdateOneWithoutCommissionSettingNestedInput = {
+    create?: XOR<BrandCreateWithoutCommissionSettingInput, BrandUncheckedCreateWithoutCommissionSettingInput>
+    connectOrCreate?: BrandCreateOrConnectWithoutCommissionSettingInput
+    upsert?: BrandUpsertWithoutCommissionSettingInput
+    disconnect?: BrandWhereInput | boolean
+    delete?: BrandWhereInput | boolean
+    connect?: BrandWhereUniqueInput
+    update?: XOR<XOR<BrandUpdateToOneWithWhereWithoutCommissionSettingInput, BrandUpdateWithoutCommissionSettingInput>, BrandUncheckedUpdateWithoutCommissionSettingInput>
+  }
+
+  export type UserUpdateOneWithoutCommissionSettingNestedInput = {
+    create?: XOR<UserCreateWithoutCommissionSettingInput, UserUncheckedCreateWithoutCommissionSettingInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCommissionSettingInput
+    upsert?: UserUpsertWithoutCommissionSettingInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCommissionSettingInput, UserUpdateWithoutCommissionSettingInput>, UserUncheckedUpdateWithoutCommissionSettingInput>
+  }
+
+  export type ProductUpdateOneWithoutCommissionSettingNestedInput = {
+    create?: XOR<ProductCreateWithoutCommissionSettingInput, ProductUncheckedCreateWithoutCommissionSettingInput>
+    connectOrCreate?: ProductCreateOrConnectWithoutCommissionSettingInput
+    upsert?: ProductUpsertWithoutCommissionSettingInput
+    disconnect?: ProductWhereInput | boolean
+    delete?: ProductWhereInput | boolean
+    connect?: ProductWhereUniqueInput
+    update?: XOR<XOR<ProductUpdateToOneWithWhereWithoutCommissionSettingInput, ProductUpdateWithoutCommissionSettingInput>, ProductUncheckedUpdateWithoutCommissionSettingInput>
+  }
+
+  export type BrandCreateNestedOneWithoutPayoutInput = {
+    create?: XOR<BrandCreateWithoutPayoutInput, BrandUncheckedCreateWithoutPayoutInput>
+    connectOrCreate?: BrandCreateOrConnectWithoutPayoutInput
+    connect?: BrandWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutPayoutInput = {
+    create?: XOR<UserCreateWithoutPayoutInput, UserUncheckedCreateWithoutPayoutInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPayoutInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumPayoutActorFieldUpdateOperationsInput = {
+    set?: $Enums.PayoutActor
+  }
+
+  export type BrandUpdateOneWithoutPayoutNestedInput = {
+    create?: XOR<BrandCreateWithoutPayoutInput, BrandUncheckedCreateWithoutPayoutInput>
+    connectOrCreate?: BrandCreateOrConnectWithoutPayoutInput
+    upsert?: BrandUpsertWithoutPayoutInput
+    disconnect?: BrandWhereInput | boolean
+    delete?: BrandWhereInput | boolean
+    connect?: BrandWhereUniqueInput
+    update?: XOR<XOR<BrandUpdateToOneWithWhereWithoutPayoutInput, BrandUpdateWithoutPayoutInput>, BrandUncheckedUpdateWithoutPayoutInput>
+  }
+
+  export type UserUpdateOneWithoutPayoutNestedInput = {
+    create?: XOR<UserCreateWithoutPayoutInput, UserUncheckedCreateWithoutPayoutInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPayoutInput
+    upsert?: UserUpsertWithoutPayoutInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPayoutInput, UserUpdateWithoutPayoutInput>, UserUncheckedUpdateWithoutPayoutInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -25895,6 +31103,33 @@ export namespace Prisma {
     _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
+  export type NestedDecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  }
+
+  export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedDecimalFilter<$PrismaModel>
+    _sum?: NestedDecimalFilter<$PrismaModel>
+    _min?: NestedDecimalFilter<$PrismaModel>
+    _max?: NestedDecimalFilter<$PrismaModel>
+  }
+
   export type NestedEnumFitTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.FitType | EnumFitTypeFieldRefInput<$PrismaModel>
     in?: $Enums.FitType[] | ListEnumFitTypeFieldRefInput<$PrismaModel>
@@ -25910,17 +31145,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumFitTypeFilter<$PrismaModel>
     _max?: NestedEnumFitTypeFilter<$PrismaModel>
-  }
-
-  export type NestedDecimalFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
   }
 
   export type NestedDecimalNullableFilter<$PrismaModel = never> = {
@@ -25943,22 +31167,6 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedDecimalFilter<$PrismaModel>
-    _sum?: NestedDecimalFilter<$PrismaModel>
-    _min?: NestedDecimalFilter<$PrismaModel>
-    _max?: NestedDecimalFilter<$PrismaModel>
   }
 
   export type NestedDecimalNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -26031,6 +31239,23 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type NestedEnumPayoutActorFilter<$PrismaModel = never> = {
+    equals?: $Enums.PayoutActor | EnumPayoutActorFieldRefInput<$PrismaModel>
+    in?: $Enums.PayoutActor[] | ListEnumPayoutActorFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PayoutActor[] | ListEnumPayoutActorFieldRefInput<$PrismaModel>
+    not?: NestedEnumPayoutActorFilter<$PrismaModel> | $Enums.PayoutActor
+  }
+
+  export type NestedEnumPayoutActorWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PayoutActor | EnumPayoutActorFieldRefInput<$PrismaModel>
+    in?: $Enums.PayoutActor[] | ListEnumPayoutActorFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PayoutActor[] | ListEnumPayoutActorFieldRefInput<$PrismaModel>
+    not?: NestedEnumPayoutActorWithAggregatesFilter<$PrismaModel> | $Enums.PayoutActor
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPayoutActorFilter<$PrismaModel>
+    _max?: NestedEnumPayoutActorFilter<$PrismaModel>
+  }
+
   export type BrandCreateWithoutUserInput = {
     id?: string
     name: string
@@ -26058,6 +31283,8 @@ export namespace Prisma {
     brandCategory: BrandCategoryCreateNestedOneWithoutBrandInput
     Product?: ProductCreateNestedManyWithoutBrandInput
     Sales?: SaleCreateNestedManyWithoutBrandInput
+    CommissionSetting?: CommissionSettingCreateNestedManyWithoutBrandInput
+    Payout?: PayoutCreateNestedManyWithoutBrandInput
   }
 
   export type BrandUncheckedCreateWithoutUserInput = {
@@ -26087,6 +31314,8 @@ export namespace Prisma {
     socialProfile: string
     Product?: ProductUncheckedCreateNestedManyWithoutBrandInput
     Sales?: SaleUncheckedCreateNestedManyWithoutBrandInput
+    CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutBrandInput
+    Payout?: PayoutUncheckedCreateNestedManyWithoutBrandInput
   }
 
   export type BrandCreateOrConnectWithoutUserInput = {
@@ -26120,6 +31349,7 @@ export namespace Prisma {
     Mockup: MockupCreateNestedOneWithoutProductInput
     variants?: ProductVariantCreateNestedManyWithoutProductInput
     sales?: SaleCreateNestedManyWithoutProductInput
+    CommissionSetting?: CommissionSettingCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutUserInput = {
@@ -26143,6 +31373,7 @@ export namespace Prisma {
     tags?: TagUncheckedCreateNestedManyWithoutProductInput
     variants?: ProductVariantUncheckedCreateNestedManyWithoutProductInput
     sales?: SaleUncheckedCreateNestedManyWithoutProductInput
+    CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductCreateOrConnectWithoutUserInput = {
@@ -26166,6 +31397,7 @@ export namespace Prisma {
     orderItem: OrderItemCreateNestedOneWithoutSaleInput
     product: ProductCreateNestedOneWithoutSalesInput
     brand?: BrandCreateNestedOneWithoutSalesInput
+    SaleItem?: SaleItemCreateNestedManyWithoutSaleInput
   }
 
   export type SaleUncheckedCreateWithoutMerchantInput = {
@@ -26179,6 +31411,7 @@ export namespace Prisma {
     merchantEarning?: number
     platformEarning?: number
     createdAt?: Date | string
+    SaleItem?: SaleItemUncheckedCreateNestedManyWithoutSaleInput
   }
 
   export type SaleCreateOrConnectWithoutMerchantInput = {
@@ -26209,6 +31442,7 @@ export namespace Prisma {
     routingNumber: string
     message?: string | null
     tiar?: number
+    leftTiar?: number
     brandOption?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -26232,6 +31466,7 @@ export namespace Prisma {
     routingNumber: string
     message?: string | null
     tiar?: number
+    leftTiar?: number
     brandOption?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -26325,6 +31560,70 @@ export namespace Prisma {
 
   export type OrderCreateManyUserInputEnvelope = {
     data: OrderCreateManyUserInput | OrderCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CommissionSettingCreateWithoutMerchantInput = {
+    id?: string
+    brandCommissionPct?: number
+    merchantCommissionPct?: number
+    effectiveFrom?: Date | string
+    effectiveTo?: Date | string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    brand?: BrandCreateNestedOneWithoutCommissionSettingInput
+    product?: ProductCreateNestedOneWithoutCommissionSettingInput
+  }
+
+  export type CommissionSettingUncheckedCreateWithoutMerchantInput = {
+    id?: string
+    brandId?: string | null
+    brandCommissionPct?: number
+    merchantCommissionPct?: number
+    productId?: string | null
+    effectiveFrom?: Date | string
+    effectiveTo?: Date | string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CommissionSettingCreateOrConnectWithoutMerchantInput = {
+    where: CommissionSettingWhereUniqueInput
+    create: XOR<CommissionSettingCreateWithoutMerchantInput, CommissionSettingUncheckedCreateWithoutMerchantInput>
+  }
+
+  export type CommissionSettingCreateManyMerchantInputEnvelope = {
+    data: CommissionSettingCreateManyMerchantInput | CommissionSettingCreateManyMerchantInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PayoutCreateWithoutMerchantInput = {
+    id?: string
+    actor: $Enums.PayoutActor
+    amount: Decimal | DecimalJsLike | number | string
+    note?: string | null
+    createdAt?: Date | string
+    brand?: BrandCreateNestedOneWithoutPayoutInput
+  }
+
+  export type PayoutUncheckedCreateWithoutMerchantInput = {
+    id?: string
+    actor: $Enums.PayoutActor
+    brandId?: string | null
+    amount: Decimal | DecimalJsLike | number | string
+    note?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PayoutCreateOrConnectWithoutMerchantInput = {
+    where: PayoutWhereUniqueInput
+    create: XOR<PayoutCreateWithoutMerchantInput, PayoutUncheckedCreateWithoutMerchantInput>
+  }
+
+  export type PayoutCreateManyMerchantInputEnvelope = {
+    data: PayoutCreateManyMerchantInput | PayoutCreateManyMerchantInput[]
     skipDuplicates?: boolean
   }
 
@@ -26476,6 +31775,7 @@ export namespace Prisma {
     routingNumber?: StringFieldUpdateOperationsInput | string
     message?: NullableStringFieldUpdateOperationsInput | string | null
     tiar?: IntFieldUpdateOperationsInput | number
+    leftTiar?: IntFieldUpdateOperationsInput | number
     brandOption?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26499,6 +31799,7 @@ export namespace Prisma {
     routingNumber?: StringFieldUpdateOperationsInput | string
     message?: NullableStringFieldUpdateOperationsInput | string | null
     tiar?: IntFieldUpdateOperationsInput | number
+    leftTiar?: IntFieldUpdateOperationsInput | number
     brandOption?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26574,6 +31875,68 @@ export namespace Prisma {
     settledAt?: DateTimeNullableFilter<"Order"> | Date | string | null
   }
 
+  export type CommissionSettingUpsertWithWhereUniqueWithoutMerchantInput = {
+    where: CommissionSettingWhereUniqueInput
+    update: XOR<CommissionSettingUpdateWithoutMerchantInput, CommissionSettingUncheckedUpdateWithoutMerchantInput>
+    create: XOR<CommissionSettingCreateWithoutMerchantInput, CommissionSettingUncheckedCreateWithoutMerchantInput>
+  }
+
+  export type CommissionSettingUpdateWithWhereUniqueWithoutMerchantInput = {
+    where: CommissionSettingWhereUniqueInput
+    data: XOR<CommissionSettingUpdateWithoutMerchantInput, CommissionSettingUncheckedUpdateWithoutMerchantInput>
+  }
+
+  export type CommissionSettingUpdateManyWithWhereWithoutMerchantInput = {
+    where: CommissionSettingScalarWhereInput
+    data: XOR<CommissionSettingUpdateManyMutationInput, CommissionSettingUncheckedUpdateManyWithoutMerchantInput>
+  }
+
+  export type CommissionSettingScalarWhereInput = {
+    AND?: CommissionSettingScalarWhereInput | CommissionSettingScalarWhereInput[]
+    OR?: CommissionSettingScalarWhereInput[]
+    NOT?: CommissionSettingScalarWhereInput | CommissionSettingScalarWhereInput[]
+    id?: StringFilter<"CommissionSetting"> | string
+    brandId?: StringNullableFilter<"CommissionSetting"> | string | null
+    merchantId?: StringNullableFilter<"CommissionSetting"> | string | null
+    brandCommissionPct?: FloatFilter<"CommissionSetting"> | number
+    merchantCommissionPct?: FloatFilter<"CommissionSetting"> | number
+    productId?: StringNullableFilter<"CommissionSetting"> | string | null
+    effectiveFrom?: DateTimeFilter<"CommissionSetting"> | Date | string
+    effectiveTo?: DateTimeNullableFilter<"CommissionSetting"> | Date | string | null
+    isActive?: BoolFilter<"CommissionSetting"> | boolean
+    createdAt?: DateTimeFilter<"CommissionSetting"> | Date | string
+    updatedAt?: DateTimeFilter<"CommissionSetting"> | Date | string
+  }
+
+  export type PayoutUpsertWithWhereUniqueWithoutMerchantInput = {
+    where: PayoutWhereUniqueInput
+    update: XOR<PayoutUpdateWithoutMerchantInput, PayoutUncheckedUpdateWithoutMerchantInput>
+    create: XOR<PayoutCreateWithoutMerchantInput, PayoutUncheckedCreateWithoutMerchantInput>
+  }
+
+  export type PayoutUpdateWithWhereUniqueWithoutMerchantInput = {
+    where: PayoutWhereUniqueInput
+    data: XOR<PayoutUpdateWithoutMerchantInput, PayoutUncheckedUpdateWithoutMerchantInput>
+  }
+
+  export type PayoutUpdateManyWithWhereWithoutMerchantInput = {
+    where: PayoutScalarWhereInput
+    data: XOR<PayoutUpdateManyMutationInput, PayoutUncheckedUpdateManyWithoutMerchantInput>
+  }
+
+  export type PayoutScalarWhereInput = {
+    AND?: PayoutScalarWhereInput | PayoutScalarWhereInput[]
+    OR?: PayoutScalarWhereInput[]
+    NOT?: PayoutScalarWhereInput | PayoutScalarWhereInput[]
+    id?: StringFilter<"Payout"> | string
+    actor?: EnumPayoutActorFilter<"Payout"> | $Enums.PayoutActor
+    brandId?: StringNullableFilter<"Payout"> | string | null
+    merchantId?: StringNullableFilter<"Payout"> | string | null
+    amount?: DecimalFilter<"Payout"> | Decimal | DecimalJsLike | number | string
+    note?: StringNullableFilter<"Payout"> | string | null
+    createdAt?: DateTimeFilter<"Payout"> | Date | string
+  }
+
   export type UserCreateWithoutAddressesInput = {
     id?: string
     email?: string | null
@@ -26589,6 +31952,8 @@ export namespace Prisma {
     sales?: SaleCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileCreateNestedOneWithoutUserInput
     Order?: OrderCreateNestedManyWithoutUserInput
+    CommissionSetting?: CommissionSettingCreateNestedManyWithoutMerchantInput
+    Payout?: PayoutCreateNestedManyWithoutMerchantInput
   }
 
   export type UserUncheckedCreateWithoutAddressesInput = {
@@ -26606,6 +31971,8 @@ export namespace Prisma {
     sales?: SaleUncheckedCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileUncheckedCreateNestedOneWithoutUserInput
     Order?: OrderUncheckedCreateNestedManyWithoutUserInput
+    CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutMerchantInput
+    Payout?: PayoutUncheckedCreateNestedManyWithoutMerchantInput
   }
 
   export type UserCreateOrConnectWithoutAddressesInput = {
@@ -26689,6 +32056,8 @@ export namespace Prisma {
     sales?: SaleUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUpdateOneWithoutUserNestedInput
     Order?: OrderUpdateManyWithoutUserNestedInput
+    CommissionSetting?: CommissionSettingUpdateManyWithoutMerchantNestedInput
+    Payout?: PayoutUpdateManyWithoutMerchantNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAddressesInput = {
@@ -26706,6 +32075,8 @@ export namespace Prisma {
     sales?: SaleUncheckedUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUncheckedUpdateOneWithoutUserNestedInput
     Order?: OrderUncheckedUpdateManyWithoutUserNestedInput
+    CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutMerchantNestedInput
+    Payout?: PayoutUncheckedUpdateManyWithoutMerchantNestedInput
   }
 
   export type OrderUpsertWithWhereUniqueWithoutAddressInput = {
@@ -26739,6 +32110,8 @@ export namespace Prisma {
     sales?: SaleCreateNestedManyWithoutMerchantInput
     addresses?: UserAddressCreateNestedManyWithoutUserInput
     Order?: OrderCreateNestedManyWithoutUserInput
+    CommissionSetting?: CommissionSettingCreateNestedManyWithoutMerchantInput
+    Payout?: PayoutCreateNestedManyWithoutMerchantInput
   }
 
   export type UserUncheckedCreateWithoutMerchantProfileInput = {
@@ -26756,6 +32129,8 @@ export namespace Prisma {
     sales?: SaleUncheckedCreateNestedManyWithoutMerchantInput
     addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
     Order?: OrderUncheckedCreateNestedManyWithoutUserInput
+    CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutMerchantInput
+    Payout?: PayoutUncheckedCreateNestedManyWithoutMerchantInput
   }
 
   export type UserCreateOrConnectWithoutMerchantProfileInput = {
@@ -26789,6 +32164,8 @@ export namespace Prisma {
     sales?: SaleUpdateManyWithoutMerchantNestedInput
     addresses?: UserAddressUpdateManyWithoutUserNestedInput
     Order?: OrderUpdateManyWithoutUserNestedInput
+    CommissionSetting?: CommissionSettingUpdateManyWithoutMerchantNestedInput
+    Payout?: PayoutUpdateManyWithoutMerchantNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMerchantProfileInput = {
@@ -26806,6 +32183,8 @@ export namespace Prisma {
     sales?: SaleUncheckedUpdateManyWithoutMerchantNestedInput
     addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
     Order?: OrderUncheckedUpdateManyWithoutUserNestedInput
+    CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutMerchantNestedInput
+    Payout?: PayoutUncheckedUpdateManyWithoutMerchantNestedInput
   }
 
   export type BrandCategoryCreateWithoutBrandInput = {
@@ -26842,6 +32221,8 @@ export namespace Prisma {
     merchantProfile?: MerchantProfileCreateNestedOneWithoutUserInput
     addresses?: UserAddressCreateNestedManyWithoutUserInput
     Order?: OrderCreateNestedManyWithoutUserInput
+    CommissionSetting?: CommissionSettingCreateNestedManyWithoutMerchantInput
+    Payout?: PayoutCreateNestedManyWithoutMerchantInput
   }
 
   export type UserUncheckedCreateWithoutBrandsInput = {
@@ -26859,6 +32240,8 @@ export namespace Prisma {
     merchantProfile?: MerchantProfileUncheckedCreateNestedOneWithoutUserInput
     addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
     Order?: OrderUncheckedCreateNestedManyWithoutUserInput
+    CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutMerchantInput
+    Payout?: PayoutUncheckedCreateNestedManyWithoutMerchantInput
   }
 
   export type UserCreateOrConnectWithoutBrandsInput = {
@@ -26887,6 +32270,7 @@ export namespace Prisma {
     variants?: ProductVariantCreateNestedManyWithoutProductInput
     User: UserCreateNestedOneWithoutProductsInput
     sales?: SaleCreateNestedManyWithoutProductInput
+    CommissionSetting?: CommissionSettingCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutBrandInput = {
@@ -26910,6 +32294,7 @@ export namespace Prisma {
     tags?: TagUncheckedCreateNestedManyWithoutProductInput
     variants?: ProductVariantUncheckedCreateNestedManyWithoutProductInput
     sales?: SaleUncheckedCreateNestedManyWithoutProductInput
+    CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductCreateOrConnectWithoutBrandInput = {
@@ -26933,6 +32318,7 @@ export namespace Prisma {
     orderItem: OrderItemCreateNestedOneWithoutSaleInput
     product: ProductCreateNestedOneWithoutSalesInput
     merchant: UserCreateNestedOneWithoutSalesInput
+    SaleItem?: SaleItemCreateNestedManyWithoutSaleInput
   }
 
   export type SaleUncheckedCreateWithoutBrandInput = {
@@ -26946,6 +32332,7 @@ export namespace Prisma {
     merchantEarning?: number
     platformEarning?: number
     createdAt?: Date | string
+    SaleItem?: SaleItemUncheckedCreateNestedManyWithoutSaleInput
   }
 
   export type SaleCreateOrConnectWithoutBrandInput = {
@@ -26955,6 +32342,70 @@ export namespace Prisma {
 
   export type SaleCreateManyBrandInputEnvelope = {
     data: SaleCreateManyBrandInput | SaleCreateManyBrandInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CommissionSettingCreateWithoutBrandInput = {
+    id?: string
+    brandCommissionPct?: number
+    merchantCommissionPct?: number
+    effectiveFrom?: Date | string
+    effectiveTo?: Date | string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    merchant?: UserCreateNestedOneWithoutCommissionSettingInput
+    product?: ProductCreateNestedOneWithoutCommissionSettingInput
+  }
+
+  export type CommissionSettingUncheckedCreateWithoutBrandInput = {
+    id?: string
+    merchantId?: string | null
+    brandCommissionPct?: number
+    merchantCommissionPct?: number
+    productId?: string | null
+    effectiveFrom?: Date | string
+    effectiveTo?: Date | string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CommissionSettingCreateOrConnectWithoutBrandInput = {
+    where: CommissionSettingWhereUniqueInput
+    create: XOR<CommissionSettingCreateWithoutBrandInput, CommissionSettingUncheckedCreateWithoutBrandInput>
+  }
+
+  export type CommissionSettingCreateManyBrandInputEnvelope = {
+    data: CommissionSettingCreateManyBrandInput | CommissionSettingCreateManyBrandInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PayoutCreateWithoutBrandInput = {
+    id?: string
+    actor: $Enums.PayoutActor
+    amount: Decimal | DecimalJsLike | number | string
+    note?: string | null
+    createdAt?: Date | string
+    merchant?: UserCreateNestedOneWithoutPayoutInput
+  }
+
+  export type PayoutUncheckedCreateWithoutBrandInput = {
+    id?: string
+    actor: $Enums.PayoutActor
+    merchantId?: string | null
+    amount: Decimal | DecimalJsLike | number | string
+    note?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PayoutCreateOrConnectWithoutBrandInput = {
+    where: PayoutWhereUniqueInput
+    create: XOR<PayoutCreateWithoutBrandInput, PayoutUncheckedCreateWithoutBrandInput>
+  }
+
+  export type PayoutCreateManyBrandInputEnvelope = {
+    data: PayoutCreateManyBrandInput | PayoutCreateManyBrandInput[]
     skipDuplicates?: boolean
   }
 
@@ -27009,6 +32460,8 @@ export namespace Prisma {
     merchantProfile?: MerchantProfileUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUpdateManyWithoutUserNestedInput
     Order?: OrderUpdateManyWithoutUserNestedInput
+    CommissionSetting?: CommissionSettingUpdateManyWithoutMerchantNestedInput
+    Payout?: PayoutUpdateManyWithoutMerchantNestedInput
   }
 
   export type UserUncheckedUpdateWithoutBrandsInput = {
@@ -27026,6 +32479,8 @@ export namespace Prisma {
     merchantProfile?: MerchantProfileUncheckedUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
     Order?: OrderUncheckedUpdateManyWithoutUserNestedInput
+    CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutMerchantNestedInput
+    Payout?: PayoutUncheckedUpdateManyWithoutMerchantNestedInput
   }
 
   export type ProductUpsertWithWhereUniqueWithoutBrandInput = {
@@ -27060,6 +32515,38 @@ export namespace Prisma {
     data: XOR<SaleUpdateManyMutationInput, SaleUncheckedUpdateManyWithoutBrandInput>
   }
 
+  export type CommissionSettingUpsertWithWhereUniqueWithoutBrandInput = {
+    where: CommissionSettingWhereUniqueInput
+    update: XOR<CommissionSettingUpdateWithoutBrandInput, CommissionSettingUncheckedUpdateWithoutBrandInput>
+    create: XOR<CommissionSettingCreateWithoutBrandInput, CommissionSettingUncheckedCreateWithoutBrandInput>
+  }
+
+  export type CommissionSettingUpdateWithWhereUniqueWithoutBrandInput = {
+    where: CommissionSettingWhereUniqueInput
+    data: XOR<CommissionSettingUpdateWithoutBrandInput, CommissionSettingUncheckedUpdateWithoutBrandInput>
+  }
+
+  export type CommissionSettingUpdateManyWithWhereWithoutBrandInput = {
+    where: CommissionSettingScalarWhereInput
+    data: XOR<CommissionSettingUpdateManyMutationInput, CommissionSettingUncheckedUpdateManyWithoutBrandInput>
+  }
+
+  export type PayoutUpsertWithWhereUniqueWithoutBrandInput = {
+    where: PayoutWhereUniqueInput
+    update: XOR<PayoutUpdateWithoutBrandInput, PayoutUncheckedUpdateWithoutBrandInput>
+    create: XOR<PayoutCreateWithoutBrandInput, PayoutUncheckedCreateWithoutBrandInput>
+  }
+
+  export type PayoutUpdateWithWhereUniqueWithoutBrandInput = {
+    where: PayoutWhereUniqueInput
+    data: XOR<PayoutUpdateWithoutBrandInput, PayoutUncheckedUpdateWithoutBrandInput>
+  }
+
+  export type PayoutUpdateManyWithWhereWithoutBrandInput = {
+    where: PayoutScalarWhereInput
+    data: XOR<PayoutUpdateManyMutationInput, PayoutUncheckedUpdateManyWithoutBrandInput>
+  }
+
   export type BrandCreateWithoutBrandCategoryInput = {
     id?: string
     name: string
@@ -27087,6 +32574,8 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutBrandsInput
     Product?: ProductCreateNestedManyWithoutBrandInput
     Sales?: SaleCreateNestedManyWithoutBrandInput
+    CommissionSetting?: CommissionSettingCreateNestedManyWithoutBrandInput
+    Payout?: PayoutCreateNestedManyWithoutBrandInput
   }
 
   export type BrandUncheckedCreateWithoutBrandCategoryInput = {
@@ -27116,6 +32605,8 @@ export namespace Prisma {
     socialProfile: string
     Product?: ProductUncheckedCreateNestedManyWithoutBrandInput
     Sales?: SaleUncheckedCreateNestedManyWithoutBrandInput
+    CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutBrandInput
+    Payout?: PayoutUncheckedCreateNestedManyWithoutBrandInput
   }
 
   export type BrandCreateOrConnectWithoutBrandCategoryInput = {
@@ -27171,6 +32662,8 @@ export namespace Prisma {
     brandCategory: BrandCategoryCreateNestedOneWithoutBrandInput
     user: UserCreateNestedOneWithoutBrandsInput
     Sales?: SaleCreateNestedManyWithoutBrandInput
+    CommissionSetting?: CommissionSettingCreateNestedManyWithoutBrandInput
+    Payout?: PayoutCreateNestedManyWithoutBrandInput
   }
 
   export type BrandUncheckedCreateWithoutProductInput = {
@@ -27200,6 +32693,8 @@ export namespace Prisma {
     industryType: string
     socialProfile: string
     Sales?: SaleUncheckedCreateNestedManyWithoutBrandInput
+    CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutBrandInput
+    Payout?: PayoutUncheckedCreateNestedManyWithoutBrandInput
   }
 
   export type BrandCreateOrConnectWithoutProductInput = {
@@ -27309,6 +32804,8 @@ export namespace Prisma {
     merchantProfile?: MerchantProfileCreateNestedOneWithoutUserInput
     addresses?: UserAddressCreateNestedManyWithoutUserInput
     Order?: OrderCreateNestedManyWithoutUserInput
+    CommissionSetting?: CommissionSettingCreateNestedManyWithoutMerchantInput
+    Payout?: PayoutCreateNestedManyWithoutMerchantInput
   }
 
   export type UserUncheckedCreateWithoutProductsInput = {
@@ -27326,6 +32823,8 @@ export namespace Prisma {
     merchantProfile?: MerchantProfileUncheckedCreateNestedOneWithoutUserInput
     addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
     Order?: OrderUncheckedCreateNestedManyWithoutUserInput
+    CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutMerchantInput
+    Payout?: PayoutUncheckedCreateNestedManyWithoutMerchantInput
   }
 
   export type UserCreateOrConnectWithoutProductsInput = {
@@ -27344,6 +32843,7 @@ export namespace Prisma {
     orderItem: OrderItemCreateNestedOneWithoutSaleInput
     merchant: UserCreateNestedOneWithoutSalesInput
     brand?: BrandCreateNestedOneWithoutSalesInput
+    SaleItem?: SaleItemCreateNestedManyWithoutSaleInput
   }
 
   export type SaleUncheckedCreateWithoutProductInput = {
@@ -27357,6 +32857,7 @@ export namespace Prisma {
     merchantEarning?: number
     platformEarning?: number
     createdAt?: Date | string
+    SaleItem?: SaleItemUncheckedCreateNestedManyWithoutSaleInput
   }
 
   export type SaleCreateOrConnectWithoutProductInput = {
@@ -27366,6 +32867,42 @@ export namespace Prisma {
 
   export type SaleCreateManyProductInputEnvelope = {
     data: SaleCreateManyProductInput | SaleCreateManyProductInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CommissionSettingCreateWithoutProductInput = {
+    id?: string
+    brandCommissionPct?: number
+    merchantCommissionPct?: number
+    effectiveFrom?: Date | string
+    effectiveTo?: Date | string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    brand?: BrandCreateNestedOneWithoutCommissionSettingInput
+    merchant?: UserCreateNestedOneWithoutCommissionSettingInput
+  }
+
+  export type CommissionSettingUncheckedCreateWithoutProductInput = {
+    id?: string
+    brandId?: string | null
+    merchantId?: string | null
+    brandCommissionPct?: number
+    merchantCommissionPct?: number
+    effectiveFrom?: Date | string
+    effectiveTo?: Date | string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CommissionSettingCreateOrConnectWithoutProductInput = {
+    where: CommissionSettingWhereUniqueInput
+    create: XOR<CommissionSettingCreateWithoutProductInput, CommissionSettingUncheckedCreateWithoutProductInput>
+  }
+
+  export type CommissionSettingCreateManyProductInputEnvelope = {
+    data: CommissionSettingCreateManyProductInput | CommissionSettingCreateManyProductInput[]
     skipDuplicates?: boolean
   }
 
@@ -27407,6 +32944,8 @@ export namespace Prisma {
     brandCategory?: BrandCategoryUpdateOneRequiredWithoutBrandNestedInput
     user?: UserUpdateOneRequiredWithoutBrandsNestedInput
     Sales?: SaleUpdateManyWithoutBrandNestedInput
+    CommissionSetting?: CommissionSettingUpdateManyWithoutBrandNestedInput
+    Payout?: PayoutUpdateManyWithoutBrandNestedInput
   }
 
   export type BrandUncheckedUpdateWithoutProductInput = {
@@ -27436,6 +32975,8 @@ export namespace Prisma {
     industryType?: StringFieldUpdateOperationsInput | string
     socialProfile?: StringFieldUpdateOperationsInput | string
     Sales?: SaleUncheckedUpdateManyWithoutBrandNestedInput
+    CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutBrandNestedInput
+    Payout?: PayoutUncheckedUpdateManyWithoutBrandNestedInput
   }
 
   export type FeatureUpsertWithWhereUniqueWithoutProductInput = {
@@ -27569,6 +33110,8 @@ export namespace Prisma {
     merchantProfile?: MerchantProfileUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUpdateManyWithoutUserNestedInput
     Order?: OrderUpdateManyWithoutUserNestedInput
+    CommissionSetting?: CommissionSettingUpdateManyWithoutMerchantNestedInput
+    Payout?: PayoutUpdateManyWithoutMerchantNestedInput
   }
 
   export type UserUncheckedUpdateWithoutProductsInput = {
@@ -27586,6 +33129,8 @@ export namespace Prisma {
     merchantProfile?: MerchantProfileUncheckedUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
     Order?: OrderUncheckedUpdateManyWithoutUserNestedInput
+    CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutMerchantNestedInput
+    Payout?: PayoutUncheckedUpdateManyWithoutMerchantNestedInput
   }
 
   export type SaleUpsertWithWhereUniqueWithoutProductInput = {
@@ -27602,6 +33147,22 @@ export namespace Prisma {
   export type SaleUpdateManyWithWhereWithoutProductInput = {
     where: SaleScalarWhereInput
     data: XOR<SaleUpdateManyMutationInput, SaleUncheckedUpdateManyWithoutProductInput>
+  }
+
+  export type CommissionSettingUpsertWithWhereUniqueWithoutProductInput = {
+    where: CommissionSettingWhereUniqueInput
+    update: XOR<CommissionSettingUpdateWithoutProductInput, CommissionSettingUncheckedUpdateWithoutProductInput>
+    create: XOR<CommissionSettingCreateWithoutProductInput, CommissionSettingUncheckedCreateWithoutProductInput>
+  }
+
+  export type CommissionSettingUpdateWithWhereUniqueWithoutProductInput = {
+    where: CommissionSettingWhereUniqueInput
+    data: XOR<CommissionSettingUpdateWithoutProductInput, CommissionSettingUncheckedUpdateWithoutProductInput>
+  }
+
+  export type CommissionSettingUpdateManyWithWhereWithoutProductInput = {
+    where: CommissionSettingScalarWhereInput
+    data: XOR<CommissionSettingUpdateManyMutationInput, CommissionSettingUncheckedUpdateManyWithoutProductInput>
   }
 
   export type OrderItemCreateWithoutSaleInput = {
@@ -27654,6 +33215,7 @@ export namespace Prisma {
     Mockup: MockupCreateNestedOneWithoutProductInput
     variants?: ProductVariantCreateNestedManyWithoutProductInput
     User: UserCreateNestedOneWithoutProductsInput
+    CommissionSetting?: CommissionSettingCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutSalesInput = {
@@ -27677,6 +33239,7 @@ export namespace Prisma {
     features?: FeatureUncheckedCreateNestedManyWithoutProductInput
     tags?: TagUncheckedCreateNestedManyWithoutProductInput
     variants?: ProductVariantUncheckedCreateNestedManyWithoutProductInput
+    CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductCreateOrConnectWithoutSalesInput = {
@@ -27699,6 +33262,8 @@ export namespace Prisma {
     merchantProfile?: MerchantProfileCreateNestedOneWithoutUserInput
     addresses?: UserAddressCreateNestedManyWithoutUserInput
     Order?: OrderCreateNestedManyWithoutUserInput
+    CommissionSetting?: CommissionSettingCreateNestedManyWithoutMerchantInput
+    Payout?: PayoutCreateNestedManyWithoutMerchantInput
   }
 
   export type UserUncheckedCreateWithoutSalesInput = {
@@ -27716,6 +33281,8 @@ export namespace Prisma {
     merchantProfile?: MerchantProfileUncheckedCreateNestedOneWithoutUserInput
     addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
     Order?: OrderUncheckedCreateNestedManyWithoutUserInput
+    CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutMerchantInput
+    Payout?: PayoutUncheckedCreateNestedManyWithoutMerchantInput
   }
 
   export type UserCreateOrConnectWithoutSalesInput = {
@@ -27750,6 +33317,8 @@ export namespace Prisma {
     brandCategory: BrandCategoryCreateNestedOneWithoutBrandInput
     user: UserCreateNestedOneWithoutBrandsInput
     Product?: ProductCreateNestedManyWithoutBrandInput
+    CommissionSetting?: CommissionSettingCreateNestedManyWithoutBrandInput
+    Payout?: PayoutCreateNestedManyWithoutBrandInput
   }
 
   export type BrandUncheckedCreateWithoutSalesInput = {
@@ -27779,11 +33348,41 @@ export namespace Prisma {
     industryType: string
     socialProfile: string
     Product?: ProductUncheckedCreateNestedManyWithoutBrandInput
+    CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutBrandInput
+    Payout?: PayoutUncheckedCreateNestedManyWithoutBrandInput
   }
 
   export type BrandCreateOrConnectWithoutSalesInput = {
     where: BrandWhereUniqueInput
     create: XOR<BrandCreateWithoutSalesInput, BrandUncheckedCreateWithoutSalesInput>
+  }
+
+  export type SaleItemCreateWithoutSaleInput = {
+    id?: string
+    productId: string
+    quantity: number
+    unitPrice: Decimal | DecimalJsLike | number | string
+    total: Decimal | DecimalJsLike | number | string
+    orderItemId: string
+  }
+
+  export type SaleItemUncheckedCreateWithoutSaleInput = {
+    id?: string
+    productId: string
+    quantity: number
+    unitPrice: Decimal | DecimalJsLike | number | string
+    total: Decimal | DecimalJsLike | number | string
+    orderItemId: string
+  }
+
+  export type SaleItemCreateOrConnectWithoutSaleInput = {
+    where: SaleItemWhereUniqueInput
+    create: XOR<SaleItemCreateWithoutSaleInput, SaleItemUncheckedCreateWithoutSaleInput>
+  }
+
+  export type SaleItemCreateManySaleInputEnvelope = {
+    data: SaleItemCreateManySaleInput | SaleItemCreateManySaleInput[]
+    skipDuplicates?: boolean
   }
 
   export type OrderItemUpsertWithoutSaleInput = {
@@ -27853,6 +33452,7 @@ export namespace Prisma {
     Mockup?: MockupUpdateOneRequiredWithoutProductNestedInput
     variants?: ProductVariantUpdateManyWithoutProductNestedInput
     User?: UserUpdateOneRequiredWithoutProductsNestedInput
+    CommissionSetting?: CommissionSettingUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutSalesInput = {
@@ -27876,6 +33476,7 @@ export namespace Prisma {
     features?: FeatureUncheckedUpdateManyWithoutProductNestedInput
     tags?: TagUncheckedUpdateManyWithoutProductNestedInput
     variants?: ProductVariantUncheckedUpdateManyWithoutProductNestedInput
+    CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type UserUpsertWithoutSalesInput = {
@@ -27904,6 +33505,8 @@ export namespace Prisma {
     merchantProfile?: MerchantProfileUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUpdateManyWithoutUserNestedInput
     Order?: OrderUpdateManyWithoutUserNestedInput
+    CommissionSetting?: CommissionSettingUpdateManyWithoutMerchantNestedInput
+    Payout?: PayoutUpdateManyWithoutMerchantNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSalesInput = {
@@ -27921,6 +33524,8 @@ export namespace Prisma {
     merchantProfile?: MerchantProfileUncheckedUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
     Order?: OrderUncheckedUpdateManyWithoutUserNestedInput
+    CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutMerchantNestedInput
+    Payout?: PayoutUncheckedUpdateManyWithoutMerchantNestedInput
   }
 
   export type BrandUpsertWithoutSalesInput = {
@@ -27961,6 +33566,8 @@ export namespace Prisma {
     brandCategory?: BrandCategoryUpdateOneRequiredWithoutBrandNestedInput
     user?: UserUpdateOneRequiredWithoutBrandsNestedInput
     Product?: ProductUpdateManyWithoutBrandNestedInput
+    CommissionSetting?: CommissionSettingUpdateManyWithoutBrandNestedInput
+    Payout?: PayoutUpdateManyWithoutBrandNestedInput
   }
 
   export type BrandUncheckedUpdateWithoutSalesInput = {
@@ -27990,6 +33597,109 @@ export namespace Prisma {
     industryType?: StringFieldUpdateOperationsInput | string
     socialProfile?: StringFieldUpdateOperationsInput | string
     Product?: ProductUncheckedUpdateManyWithoutBrandNestedInput
+    CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutBrandNestedInput
+    Payout?: PayoutUncheckedUpdateManyWithoutBrandNestedInput
+  }
+
+  export type SaleItemUpsertWithWhereUniqueWithoutSaleInput = {
+    where: SaleItemWhereUniqueInput
+    update: XOR<SaleItemUpdateWithoutSaleInput, SaleItemUncheckedUpdateWithoutSaleInput>
+    create: XOR<SaleItemCreateWithoutSaleInput, SaleItemUncheckedCreateWithoutSaleInput>
+  }
+
+  export type SaleItemUpdateWithWhereUniqueWithoutSaleInput = {
+    where: SaleItemWhereUniqueInput
+    data: XOR<SaleItemUpdateWithoutSaleInput, SaleItemUncheckedUpdateWithoutSaleInput>
+  }
+
+  export type SaleItemUpdateManyWithWhereWithoutSaleInput = {
+    where: SaleItemScalarWhereInput
+    data: XOR<SaleItemUpdateManyMutationInput, SaleItemUncheckedUpdateManyWithoutSaleInput>
+  }
+
+  export type SaleItemScalarWhereInput = {
+    AND?: SaleItemScalarWhereInput | SaleItemScalarWhereInput[]
+    OR?: SaleItemScalarWhereInput[]
+    NOT?: SaleItemScalarWhereInput | SaleItemScalarWhereInput[]
+    id?: StringFilter<"SaleItem"> | string
+    saleId?: StringFilter<"SaleItem"> | string
+    productId?: StringFilter<"SaleItem"> | string
+    quantity?: IntFilter<"SaleItem"> | number
+    unitPrice?: DecimalFilter<"SaleItem"> | Decimal | DecimalJsLike | number | string
+    total?: DecimalFilter<"SaleItem"> | Decimal | DecimalJsLike | number | string
+    orderItemId?: StringFilter<"SaleItem"> | string
+  }
+
+  export type SaleCreateWithoutSaleItemInput = {
+    id?: string
+    quantity?: number
+    total: number
+    brandEarning?: number
+    merchantEarning?: number
+    platformEarning?: number
+    createdAt?: Date | string
+    orderItem: OrderItemCreateNestedOneWithoutSaleInput
+    product: ProductCreateNestedOneWithoutSalesInput
+    merchant: UserCreateNestedOneWithoutSalesInput
+    brand?: BrandCreateNestedOneWithoutSalesInput
+  }
+
+  export type SaleUncheckedCreateWithoutSaleItemInput = {
+    id?: string
+    orderItemId: string
+    productId: string
+    merchantId: string
+    brandId?: string | null
+    quantity?: number
+    total: number
+    brandEarning?: number
+    merchantEarning?: number
+    platformEarning?: number
+    createdAt?: Date | string
+  }
+
+  export type SaleCreateOrConnectWithoutSaleItemInput = {
+    where: SaleWhereUniqueInput
+    create: XOR<SaleCreateWithoutSaleItemInput, SaleUncheckedCreateWithoutSaleItemInput>
+  }
+
+  export type SaleUpsertWithoutSaleItemInput = {
+    update: XOR<SaleUpdateWithoutSaleItemInput, SaleUncheckedUpdateWithoutSaleItemInput>
+    create: XOR<SaleCreateWithoutSaleItemInput, SaleUncheckedCreateWithoutSaleItemInput>
+    where?: SaleWhereInput
+  }
+
+  export type SaleUpdateToOneWithWhereWithoutSaleItemInput = {
+    where?: SaleWhereInput
+    data: XOR<SaleUpdateWithoutSaleItemInput, SaleUncheckedUpdateWithoutSaleItemInput>
+  }
+
+  export type SaleUpdateWithoutSaleItemInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    total?: FloatFieldUpdateOperationsInput | number
+    brandEarning?: FloatFieldUpdateOperationsInput | number
+    merchantEarning?: FloatFieldUpdateOperationsInput | number
+    platformEarning?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderItem?: OrderItemUpdateOneRequiredWithoutSaleNestedInput
+    product?: ProductUpdateOneRequiredWithoutSalesNestedInput
+    merchant?: UserUpdateOneRequiredWithoutSalesNestedInput
+    brand?: BrandUpdateOneWithoutSalesNestedInput
+  }
+
+  export type SaleUncheckedUpdateWithoutSaleItemInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderItemId?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    merchantId?: StringFieldUpdateOperationsInput | string
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
+    quantity?: IntFieldUpdateOperationsInput | number
+    total?: FloatFieldUpdateOperationsInput | number
+    brandEarning?: FloatFieldUpdateOperationsInput | number
+    merchantEarning?: FloatFieldUpdateOperationsInput | number
+    platformEarning?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ProductCreateWithoutVariantsInput = {
@@ -28013,6 +33723,7 @@ export namespace Prisma {
     Mockup: MockupCreateNestedOneWithoutProductInput
     User: UserCreateNestedOneWithoutProductsInput
     sales?: SaleCreateNestedManyWithoutProductInput
+    CommissionSetting?: CommissionSettingCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutVariantsInput = {
@@ -28036,6 +33747,7 @@ export namespace Prisma {
     features?: FeatureUncheckedCreateNestedManyWithoutProductInput
     tags?: TagUncheckedCreateNestedManyWithoutProductInput
     sales?: SaleUncheckedCreateNestedManyWithoutProductInput
+    CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductCreateOrConnectWithoutVariantsInput = {
@@ -28075,6 +33787,7 @@ export namespace Prisma {
     Mockup?: MockupUpdateOneRequiredWithoutProductNestedInput
     User?: UserUpdateOneRequiredWithoutProductsNestedInput
     sales?: SaleUpdateManyWithoutProductNestedInput
+    CommissionSetting?: CommissionSettingUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutVariantsInput = {
@@ -28098,6 +33811,7 @@ export namespace Prisma {
     features?: FeatureUncheckedUpdateManyWithoutProductNestedInput
     tags?: TagUncheckedUpdateManyWithoutProductNestedInput
     sales?: SaleUncheckedUpdateManyWithoutProductNestedInput
+    CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type ProductCreateWithoutFeaturesInput = {
@@ -28121,6 +33835,7 @@ export namespace Prisma {
     variants?: ProductVariantCreateNestedManyWithoutProductInput
     User: UserCreateNestedOneWithoutProductsInput
     sales?: SaleCreateNestedManyWithoutProductInput
+    CommissionSetting?: CommissionSettingCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutFeaturesInput = {
@@ -28144,6 +33859,7 @@ export namespace Prisma {
     tags?: TagUncheckedCreateNestedManyWithoutProductInput
     variants?: ProductVariantUncheckedCreateNestedManyWithoutProductInput
     sales?: SaleUncheckedCreateNestedManyWithoutProductInput
+    CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductCreateOrConnectWithoutFeaturesInput = {
@@ -28183,6 +33899,7 @@ export namespace Prisma {
     variants?: ProductVariantUpdateManyWithoutProductNestedInput
     User?: UserUpdateOneRequiredWithoutProductsNestedInput
     sales?: SaleUpdateManyWithoutProductNestedInput
+    CommissionSetting?: CommissionSettingUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutFeaturesInput = {
@@ -28206,6 +33923,7 @@ export namespace Prisma {
     tags?: TagUncheckedUpdateManyWithoutProductNestedInput
     variants?: ProductVariantUncheckedUpdateManyWithoutProductNestedInput
     sales?: SaleUncheckedUpdateManyWithoutProductNestedInput
+    CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type ProductCreateWithoutTagsInput = {
@@ -28229,6 +33947,7 @@ export namespace Prisma {
     variants?: ProductVariantCreateNestedManyWithoutProductInput
     User: UserCreateNestedOneWithoutProductsInput
     sales?: SaleCreateNestedManyWithoutProductInput
+    CommissionSetting?: CommissionSettingCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutTagsInput = {
@@ -28252,6 +33971,7 @@ export namespace Prisma {
     features?: FeatureUncheckedCreateNestedManyWithoutProductInput
     variants?: ProductVariantUncheckedCreateNestedManyWithoutProductInput
     sales?: SaleUncheckedCreateNestedManyWithoutProductInput
+    CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductCreateOrConnectWithoutTagsInput = {
@@ -28291,6 +34011,7 @@ export namespace Prisma {
     variants?: ProductVariantUpdateManyWithoutProductNestedInput
     User?: UserUpdateOneRequiredWithoutProductsNestedInput
     sales?: SaleUpdateManyWithoutProductNestedInput
+    CommissionSetting?: CommissionSettingUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutTagsInput = {
@@ -28314,6 +34035,7 @@ export namespace Prisma {
     features?: FeatureUncheckedUpdateManyWithoutProductNestedInput
     variants?: ProductVariantUncheckedUpdateManyWithoutProductNestedInput
     sales?: SaleUncheckedUpdateManyWithoutProductNestedInput
+    CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type MockupVariantCreateWithoutMockupInput = {
@@ -28363,6 +34085,7 @@ export namespace Prisma {
     variants?: ProductVariantCreateNestedManyWithoutProductInput
     User: UserCreateNestedOneWithoutProductsInput
     sales?: SaleCreateNestedManyWithoutProductInput
+    CommissionSetting?: CommissionSettingCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutMockupInput = {
@@ -28386,6 +34109,7 @@ export namespace Prisma {
     tags?: TagUncheckedCreateNestedManyWithoutProductInput
     variants?: ProductVariantUncheckedCreateNestedManyWithoutProductInput
     sales?: SaleUncheckedCreateNestedManyWithoutProductInput
+    CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductCreateOrConnectWithoutMockupInput = {
@@ -28505,6 +34229,8 @@ export namespace Prisma {
     sales?: SaleCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileCreateNestedOneWithoutUserInput
     addresses?: UserAddressCreateNestedManyWithoutUserInput
+    CommissionSetting?: CommissionSettingCreateNestedManyWithoutMerchantInput
+    Payout?: PayoutCreateNestedManyWithoutMerchantInput
   }
 
   export type UserUncheckedCreateWithoutOrderInput = {
@@ -28522,6 +34248,8 @@ export namespace Prisma {
     sales?: SaleUncheckedCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileUncheckedCreateNestedOneWithoutUserInput
     addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
+    CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutMerchantInput
+    Payout?: PayoutUncheckedCreateNestedManyWithoutMerchantInput
   }
 
   export type UserCreateOrConnectWithoutOrderInput = {
@@ -28645,6 +34373,8 @@ export namespace Prisma {
     sales?: SaleUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUpdateManyWithoutUserNestedInput
+    CommissionSetting?: CommissionSettingUpdateManyWithoutMerchantNestedInput
+    Payout?: PayoutUpdateManyWithoutMerchantNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOrderInput = {
@@ -28662,6 +34392,8 @@ export namespace Prisma {
     sales?: SaleUncheckedUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUncheckedUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
+    CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutMerchantNestedInput
+    Payout?: PayoutUncheckedUpdateManyWithoutMerchantNestedInput
   }
 
   export type UserAddressUpsertWithoutOrderInput = {
@@ -28819,6 +34551,7 @@ export namespace Prisma {
     product: ProductCreateNestedOneWithoutSalesInput
     merchant: UserCreateNestedOneWithoutSalesInput
     brand?: BrandCreateNestedOneWithoutSalesInput
+    SaleItem?: SaleItemCreateNestedManyWithoutSaleInput
   }
 
   export type SaleUncheckedCreateWithoutOrderItemInput = {
@@ -28832,6 +34565,7 @@ export namespace Prisma {
     merchantEarning?: number
     platformEarning?: number
     createdAt?: Date | string
+    SaleItem?: SaleItemUncheckedCreateNestedManyWithoutSaleInput
   }
 
   export type SaleCreateOrConnectWithoutOrderItemInput = {
@@ -29007,6 +34741,582 @@ export namespace Prisma {
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
   }
 
+  export type BrandCreateWithoutCommissionSettingInput = {
+    id?: string
+    name: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    defaultBrandPct?: number
+    defaultMerchantPct?: number
+    dateOfBirth: Date | string
+    contactEmail: string
+    contactPhone: string
+    nidOrPassportNo: string
+    presentAddress: string
+    permanentAddress: string
+    portfolioUrl?: string | null
+    websiteUrl?: string | null
+    bankName: string
+    bankBranch: string
+    accountName: string
+    accountNumber: string
+    routingNumber: string
+    message?: string | null
+    industryType: string
+    socialProfile: string
+    brandCategory: BrandCategoryCreateNestedOneWithoutBrandInput
+    user: UserCreateNestedOneWithoutBrandsInput
+    Product?: ProductCreateNestedManyWithoutBrandInput
+    Sales?: SaleCreateNestedManyWithoutBrandInput
+    Payout?: PayoutCreateNestedManyWithoutBrandInput
+  }
+
+  export type BrandUncheckedCreateWithoutCommissionSettingInput = {
+    id?: string
+    name: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    brandCategoryId: string
+    userId: string
+    defaultBrandPct?: number
+    defaultMerchantPct?: number
+    dateOfBirth: Date | string
+    contactEmail: string
+    contactPhone: string
+    nidOrPassportNo: string
+    presentAddress: string
+    permanentAddress: string
+    portfolioUrl?: string | null
+    websiteUrl?: string | null
+    bankName: string
+    bankBranch: string
+    accountName: string
+    accountNumber: string
+    routingNumber: string
+    message?: string | null
+    industryType: string
+    socialProfile: string
+    Product?: ProductUncheckedCreateNestedManyWithoutBrandInput
+    Sales?: SaleUncheckedCreateNestedManyWithoutBrandInput
+    Payout?: PayoutUncheckedCreateNestedManyWithoutBrandInput
+  }
+
+  export type BrandCreateOrConnectWithoutCommissionSettingInput = {
+    where: BrandWhereUniqueInput
+    create: XOR<BrandCreateWithoutCommissionSettingInput, BrandUncheckedCreateWithoutCommissionSettingInput>
+  }
+
+  export type UserCreateWithoutCommissionSettingInput = {
+    id?: string
+    email?: string | null
+    phone?: string | null
+    name: string
+    password: string
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isActive?: boolean
+    brands?: BrandCreateNestedManyWithoutUserInput
+    products?: ProductCreateNestedManyWithoutUserInput
+    sales?: SaleCreateNestedManyWithoutMerchantInput
+    merchantProfile?: MerchantProfileCreateNestedOneWithoutUserInput
+    addresses?: UserAddressCreateNestedManyWithoutUserInput
+    Order?: OrderCreateNestedManyWithoutUserInput
+    Payout?: PayoutCreateNestedManyWithoutMerchantInput
+  }
+
+  export type UserUncheckedCreateWithoutCommissionSettingInput = {
+    id?: string
+    email?: string | null
+    phone?: string | null
+    name: string
+    password: string
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isActive?: boolean
+    brands?: BrandUncheckedCreateNestedManyWithoutUserInput
+    products?: ProductUncheckedCreateNestedManyWithoutUserInput
+    sales?: SaleUncheckedCreateNestedManyWithoutMerchantInput
+    merchantProfile?: MerchantProfileUncheckedCreateNestedOneWithoutUserInput
+    addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
+    Order?: OrderUncheckedCreateNestedManyWithoutUserInput
+    Payout?: PayoutUncheckedCreateNestedManyWithoutMerchantInput
+  }
+
+  export type UserCreateOrConnectWithoutCommissionSettingInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCommissionSettingInput, UserUncheckedCreateWithoutCommissionSettingInput>
+  }
+
+  export type ProductCreateWithoutCommissionSettingInput = {
+    id?: string
+    productId: string
+    title: string
+    description?: string | null
+    price: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isActive?: boolean
+    brandName?: string | null
+    visibility?: boolean
+    backDesign?: string | null
+    frontDesign: string
+    brandCommissionPct?: number | null
+    merchantCommissionPct?: number | null
+    Brand?: BrandCreateNestedOneWithoutProductInput
+    features?: FeatureCreateNestedManyWithoutProductInput
+    tags?: TagCreateNestedManyWithoutProductInput
+    Mockup: MockupCreateNestedOneWithoutProductInput
+    variants?: ProductVariantCreateNestedManyWithoutProductInput
+    User: UserCreateNestedOneWithoutProductsInput
+    sales?: SaleCreateNestedManyWithoutProductInput
+  }
+
+  export type ProductUncheckedCreateWithoutCommissionSettingInput = {
+    id?: string
+    productId: string
+    title: string
+    description?: string | null
+    price: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isActive?: boolean
+    brandName?: string | null
+    brandId?: string | null
+    mockupId: string
+    userId: string
+    visibility?: boolean
+    backDesign?: string | null
+    frontDesign: string
+    brandCommissionPct?: number | null
+    merchantCommissionPct?: number | null
+    features?: FeatureUncheckedCreateNestedManyWithoutProductInput
+    tags?: TagUncheckedCreateNestedManyWithoutProductInput
+    variants?: ProductVariantUncheckedCreateNestedManyWithoutProductInput
+    sales?: SaleUncheckedCreateNestedManyWithoutProductInput
+  }
+
+  export type ProductCreateOrConnectWithoutCommissionSettingInput = {
+    where: ProductWhereUniqueInput
+    create: XOR<ProductCreateWithoutCommissionSettingInput, ProductUncheckedCreateWithoutCommissionSettingInput>
+  }
+
+  export type BrandUpsertWithoutCommissionSettingInput = {
+    update: XOR<BrandUpdateWithoutCommissionSettingInput, BrandUncheckedUpdateWithoutCommissionSettingInput>
+    create: XOR<BrandCreateWithoutCommissionSettingInput, BrandUncheckedCreateWithoutCommissionSettingInput>
+    where?: BrandWhereInput
+  }
+
+  export type BrandUpdateToOneWithWhereWithoutCommissionSettingInput = {
+    where?: BrandWhereInput
+    data: XOR<BrandUpdateWithoutCommissionSettingInput, BrandUncheckedUpdateWithoutCommissionSettingInput>
+  }
+
+  export type BrandUpdateWithoutCommissionSettingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    defaultBrandPct?: FloatFieldUpdateOperationsInput | number
+    defaultMerchantPct?: FloatFieldUpdateOperationsInput | number
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    contactEmail?: StringFieldUpdateOperationsInput | string
+    contactPhone?: StringFieldUpdateOperationsInput | string
+    nidOrPassportNo?: StringFieldUpdateOperationsInput | string
+    presentAddress?: StringFieldUpdateOperationsInput | string
+    permanentAddress?: StringFieldUpdateOperationsInput | string
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankBranch?: StringFieldUpdateOperationsInput | string
+    accountName?: StringFieldUpdateOperationsInput | string
+    accountNumber?: StringFieldUpdateOperationsInput | string
+    routingNumber?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    industryType?: StringFieldUpdateOperationsInput | string
+    socialProfile?: StringFieldUpdateOperationsInput | string
+    brandCategory?: BrandCategoryUpdateOneRequiredWithoutBrandNestedInput
+    user?: UserUpdateOneRequiredWithoutBrandsNestedInput
+    Product?: ProductUpdateManyWithoutBrandNestedInput
+    Sales?: SaleUpdateManyWithoutBrandNestedInput
+    Payout?: PayoutUpdateManyWithoutBrandNestedInput
+  }
+
+  export type BrandUncheckedUpdateWithoutCommissionSettingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    brandCategoryId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    defaultBrandPct?: FloatFieldUpdateOperationsInput | number
+    defaultMerchantPct?: FloatFieldUpdateOperationsInput | number
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    contactEmail?: StringFieldUpdateOperationsInput | string
+    contactPhone?: StringFieldUpdateOperationsInput | string
+    nidOrPassportNo?: StringFieldUpdateOperationsInput | string
+    presentAddress?: StringFieldUpdateOperationsInput | string
+    permanentAddress?: StringFieldUpdateOperationsInput | string
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankBranch?: StringFieldUpdateOperationsInput | string
+    accountName?: StringFieldUpdateOperationsInput | string
+    accountNumber?: StringFieldUpdateOperationsInput | string
+    routingNumber?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    industryType?: StringFieldUpdateOperationsInput | string
+    socialProfile?: StringFieldUpdateOperationsInput | string
+    Product?: ProductUncheckedUpdateManyWithoutBrandNestedInput
+    Sales?: SaleUncheckedUpdateManyWithoutBrandNestedInput
+    Payout?: PayoutUncheckedUpdateManyWithoutBrandNestedInput
+  }
+
+  export type UserUpsertWithoutCommissionSettingInput = {
+    update: XOR<UserUpdateWithoutCommissionSettingInput, UserUncheckedUpdateWithoutCommissionSettingInput>
+    create: XOR<UserCreateWithoutCommissionSettingInput, UserUncheckedCreateWithoutCommissionSettingInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCommissionSettingInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCommissionSettingInput, UserUncheckedUpdateWithoutCommissionSettingInput>
+  }
+
+  export type UserUpdateWithoutCommissionSettingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    brands?: BrandUpdateManyWithoutUserNestedInput
+    products?: ProductUpdateManyWithoutUserNestedInput
+    sales?: SaleUpdateManyWithoutMerchantNestedInput
+    merchantProfile?: MerchantProfileUpdateOneWithoutUserNestedInput
+    addresses?: UserAddressUpdateManyWithoutUserNestedInput
+    Order?: OrderUpdateManyWithoutUserNestedInput
+    Payout?: PayoutUpdateManyWithoutMerchantNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCommissionSettingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    brands?: BrandUncheckedUpdateManyWithoutUserNestedInput
+    products?: ProductUncheckedUpdateManyWithoutUserNestedInput
+    sales?: SaleUncheckedUpdateManyWithoutMerchantNestedInput
+    merchantProfile?: MerchantProfileUncheckedUpdateOneWithoutUserNestedInput
+    addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
+    Order?: OrderUncheckedUpdateManyWithoutUserNestedInput
+    Payout?: PayoutUncheckedUpdateManyWithoutMerchantNestedInput
+  }
+
+  export type ProductUpsertWithoutCommissionSettingInput = {
+    update: XOR<ProductUpdateWithoutCommissionSettingInput, ProductUncheckedUpdateWithoutCommissionSettingInput>
+    create: XOR<ProductCreateWithoutCommissionSettingInput, ProductUncheckedCreateWithoutCommissionSettingInput>
+    where?: ProductWhereInput
+  }
+
+  export type ProductUpdateToOneWithWhereWithoutCommissionSettingInput = {
+    where?: ProductWhereInput
+    data: XOR<ProductUpdateWithoutCommissionSettingInput, ProductUncheckedUpdateWithoutCommissionSettingInput>
+  }
+
+  export type ProductUpdateWithoutCommissionSettingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    brandName?: NullableStringFieldUpdateOperationsInput | string | null
+    visibility?: BoolFieldUpdateOperationsInput | boolean
+    backDesign?: NullableStringFieldUpdateOperationsInput | string | null
+    frontDesign?: StringFieldUpdateOperationsInput | string
+    brandCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
+    merchantCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
+    Brand?: BrandUpdateOneWithoutProductNestedInput
+    features?: FeatureUpdateManyWithoutProductNestedInput
+    tags?: TagUpdateManyWithoutProductNestedInput
+    Mockup?: MockupUpdateOneRequiredWithoutProductNestedInput
+    variants?: ProductVariantUpdateManyWithoutProductNestedInput
+    User?: UserUpdateOneRequiredWithoutProductsNestedInput
+    sales?: SaleUpdateManyWithoutProductNestedInput
+  }
+
+  export type ProductUncheckedUpdateWithoutCommissionSettingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    brandName?: NullableStringFieldUpdateOperationsInput | string | null
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
+    mockupId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    visibility?: BoolFieldUpdateOperationsInput | boolean
+    backDesign?: NullableStringFieldUpdateOperationsInput | string | null
+    frontDesign?: StringFieldUpdateOperationsInput | string
+    brandCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
+    merchantCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
+    features?: FeatureUncheckedUpdateManyWithoutProductNestedInput
+    tags?: TagUncheckedUpdateManyWithoutProductNestedInput
+    variants?: ProductVariantUncheckedUpdateManyWithoutProductNestedInput
+    sales?: SaleUncheckedUpdateManyWithoutProductNestedInput
+  }
+
+  export type BrandCreateWithoutPayoutInput = {
+    id?: string
+    name: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    defaultBrandPct?: number
+    defaultMerchantPct?: number
+    dateOfBirth: Date | string
+    contactEmail: string
+    contactPhone: string
+    nidOrPassportNo: string
+    presentAddress: string
+    permanentAddress: string
+    portfolioUrl?: string | null
+    websiteUrl?: string | null
+    bankName: string
+    bankBranch: string
+    accountName: string
+    accountNumber: string
+    routingNumber: string
+    message?: string | null
+    industryType: string
+    socialProfile: string
+    brandCategory: BrandCategoryCreateNestedOneWithoutBrandInput
+    user: UserCreateNestedOneWithoutBrandsInput
+    Product?: ProductCreateNestedManyWithoutBrandInput
+    Sales?: SaleCreateNestedManyWithoutBrandInput
+    CommissionSetting?: CommissionSettingCreateNestedManyWithoutBrandInput
+  }
+
+  export type BrandUncheckedCreateWithoutPayoutInput = {
+    id?: string
+    name: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    brandCategoryId: string
+    userId: string
+    defaultBrandPct?: number
+    defaultMerchantPct?: number
+    dateOfBirth: Date | string
+    contactEmail: string
+    contactPhone: string
+    nidOrPassportNo: string
+    presentAddress: string
+    permanentAddress: string
+    portfolioUrl?: string | null
+    websiteUrl?: string | null
+    bankName: string
+    bankBranch: string
+    accountName: string
+    accountNumber: string
+    routingNumber: string
+    message?: string | null
+    industryType: string
+    socialProfile: string
+    Product?: ProductUncheckedCreateNestedManyWithoutBrandInput
+    Sales?: SaleUncheckedCreateNestedManyWithoutBrandInput
+    CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutBrandInput
+  }
+
+  export type BrandCreateOrConnectWithoutPayoutInput = {
+    where: BrandWhereUniqueInput
+    create: XOR<BrandCreateWithoutPayoutInput, BrandUncheckedCreateWithoutPayoutInput>
+  }
+
+  export type UserCreateWithoutPayoutInput = {
+    id?: string
+    email?: string | null
+    phone?: string | null
+    name: string
+    password: string
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isActive?: boolean
+    brands?: BrandCreateNestedManyWithoutUserInput
+    products?: ProductCreateNestedManyWithoutUserInput
+    sales?: SaleCreateNestedManyWithoutMerchantInput
+    merchantProfile?: MerchantProfileCreateNestedOneWithoutUserInput
+    addresses?: UserAddressCreateNestedManyWithoutUserInput
+    Order?: OrderCreateNestedManyWithoutUserInput
+    CommissionSetting?: CommissionSettingCreateNestedManyWithoutMerchantInput
+  }
+
+  export type UserUncheckedCreateWithoutPayoutInput = {
+    id?: string
+    email?: string | null
+    phone?: string | null
+    name: string
+    password: string
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isActive?: boolean
+    brands?: BrandUncheckedCreateNestedManyWithoutUserInput
+    products?: ProductUncheckedCreateNestedManyWithoutUserInput
+    sales?: SaleUncheckedCreateNestedManyWithoutMerchantInput
+    merchantProfile?: MerchantProfileUncheckedCreateNestedOneWithoutUserInput
+    addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
+    Order?: OrderUncheckedCreateNestedManyWithoutUserInput
+    CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutMerchantInput
+  }
+
+  export type UserCreateOrConnectWithoutPayoutInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutPayoutInput, UserUncheckedCreateWithoutPayoutInput>
+  }
+
+  export type BrandUpsertWithoutPayoutInput = {
+    update: XOR<BrandUpdateWithoutPayoutInput, BrandUncheckedUpdateWithoutPayoutInput>
+    create: XOR<BrandCreateWithoutPayoutInput, BrandUncheckedCreateWithoutPayoutInput>
+    where?: BrandWhereInput
+  }
+
+  export type BrandUpdateToOneWithWhereWithoutPayoutInput = {
+    where?: BrandWhereInput
+    data: XOR<BrandUpdateWithoutPayoutInput, BrandUncheckedUpdateWithoutPayoutInput>
+  }
+
+  export type BrandUpdateWithoutPayoutInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    defaultBrandPct?: FloatFieldUpdateOperationsInput | number
+    defaultMerchantPct?: FloatFieldUpdateOperationsInput | number
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    contactEmail?: StringFieldUpdateOperationsInput | string
+    contactPhone?: StringFieldUpdateOperationsInput | string
+    nidOrPassportNo?: StringFieldUpdateOperationsInput | string
+    presentAddress?: StringFieldUpdateOperationsInput | string
+    permanentAddress?: StringFieldUpdateOperationsInput | string
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankBranch?: StringFieldUpdateOperationsInput | string
+    accountName?: StringFieldUpdateOperationsInput | string
+    accountNumber?: StringFieldUpdateOperationsInput | string
+    routingNumber?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    industryType?: StringFieldUpdateOperationsInput | string
+    socialProfile?: StringFieldUpdateOperationsInput | string
+    brandCategory?: BrandCategoryUpdateOneRequiredWithoutBrandNestedInput
+    user?: UserUpdateOneRequiredWithoutBrandsNestedInput
+    Product?: ProductUpdateManyWithoutBrandNestedInput
+    Sales?: SaleUpdateManyWithoutBrandNestedInput
+    CommissionSetting?: CommissionSettingUpdateManyWithoutBrandNestedInput
+  }
+
+  export type BrandUncheckedUpdateWithoutPayoutInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    brandCategoryId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    defaultBrandPct?: FloatFieldUpdateOperationsInput | number
+    defaultMerchantPct?: FloatFieldUpdateOperationsInput | number
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    contactEmail?: StringFieldUpdateOperationsInput | string
+    contactPhone?: StringFieldUpdateOperationsInput | string
+    nidOrPassportNo?: StringFieldUpdateOperationsInput | string
+    presentAddress?: StringFieldUpdateOperationsInput | string
+    permanentAddress?: StringFieldUpdateOperationsInput | string
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankBranch?: StringFieldUpdateOperationsInput | string
+    accountName?: StringFieldUpdateOperationsInput | string
+    accountNumber?: StringFieldUpdateOperationsInput | string
+    routingNumber?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    industryType?: StringFieldUpdateOperationsInput | string
+    socialProfile?: StringFieldUpdateOperationsInput | string
+    Product?: ProductUncheckedUpdateManyWithoutBrandNestedInput
+    Sales?: SaleUncheckedUpdateManyWithoutBrandNestedInput
+    CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutBrandNestedInput
+  }
+
+  export type UserUpsertWithoutPayoutInput = {
+    update: XOR<UserUpdateWithoutPayoutInput, UserUncheckedUpdateWithoutPayoutInput>
+    create: XOR<UserCreateWithoutPayoutInput, UserUncheckedCreateWithoutPayoutInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutPayoutInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutPayoutInput, UserUncheckedUpdateWithoutPayoutInput>
+  }
+
+  export type UserUpdateWithoutPayoutInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    brands?: BrandUpdateManyWithoutUserNestedInput
+    products?: ProductUpdateManyWithoutUserNestedInput
+    sales?: SaleUpdateManyWithoutMerchantNestedInput
+    merchantProfile?: MerchantProfileUpdateOneWithoutUserNestedInput
+    addresses?: UserAddressUpdateManyWithoutUserNestedInput
+    Order?: OrderUpdateManyWithoutUserNestedInput
+    CommissionSetting?: CommissionSettingUpdateManyWithoutMerchantNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutPayoutInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    brands?: BrandUncheckedUpdateManyWithoutUserNestedInput
+    products?: ProductUncheckedUpdateManyWithoutUserNestedInput
+    sales?: SaleUncheckedUpdateManyWithoutMerchantNestedInput
+    merchantProfile?: MerchantProfileUncheckedUpdateOneWithoutUserNestedInput
+    addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
+    Order?: OrderUncheckedUpdateManyWithoutUserNestedInput
+    CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutMerchantNestedInput
+  }
+
   export type BrandCreateManyUserInput = {
     id?: string
     name: string
@@ -29096,6 +35406,28 @@ export namespace Prisma {
     settledAt?: Date | string | null
   }
 
+  export type CommissionSettingCreateManyMerchantInput = {
+    id?: string
+    brandId?: string | null
+    brandCommissionPct?: number
+    merchantCommissionPct?: number
+    productId?: string | null
+    effectiveFrom?: Date | string
+    effectiveTo?: Date | string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PayoutCreateManyMerchantInput = {
+    id?: string
+    actor: $Enums.PayoutActor
+    brandId?: string | null
+    amount: Decimal | DecimalJsLike | number | string
+    note?: string | null
+    createdAt?: Date | string
+  }
+
   export type BrandUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
@@ -29123,6 +35455,8 @@ export namespace Prisma {
     brandCategory?: BrandCategoryUpdateOneRequiredWithoutBrandNestedInput
     Product?: ProductUpdateManyWithoutBrandNestedInput
     Sales?: SaleUpdateManyWithoutBrandNestedInput
+    CommissionSetting?: CommissionSettingUpdateManyWithoutBrandNestedInput
+    Payout?: PayoutUpdateManyWithoutBrandNestedInput
   }
 
   export type BrandUncheckedUpdateWithoutUserInput = {
@@ -29152,6 +35486,8 @@ export namespace Prisma {
     socialProfile?: StringFieldUpdateOperationsInput | string
     Product?: ProductUncheckedUpdateManyWithoutBrandNestedInput
     Sales?: SaleUncheckedUpdateManyWithoutBrandNestedInput
+    CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutBrandNestedInput
+    Payout?: PayoutUncheckedUpdateManyWithoutBrandNestedInput
   }
 
   export type BrandUncheckedUpdateManyWithoutUserInput = {
@@ -29202,6 +35538,7 @@ export namespace Prisma {
     Mockup?: MockupUpdateOneRequiredWithoutProductNestedInput
     variants?: ProductVariantUpdateManyWithoutProductNestedInput
     sales?: SaleUpdateManyWithoutProductNestedInput
+    CommissionSetting?: CommissionSettingUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutUserInput = {
@@ -29225,6 +35562,7 @@ export namespace Prisma {
     tags?: TagUncheckedUpdateManyWithoutProductNestedInput
     variants?: ProductVariantUncheckedUpdateManyWithoutProductNestedInput
     sales?: SaleUncheckedUpdateManyWithoutProductNestedInput
+    CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateManyWithoutUserInput = {
@@ -29257,6 +35595,7 @@ export namespace Prisma {
     orderItem?: OrderItemUpdateOneRequiredWithoutSaleNestedInput
     product?: ProductUpdateOneRequiredWithoutSalesNestedInput
     brand?: BrandUpdateOneWithoutSalesNestedInput
+    SaleItem?: SaleItemUpdateManyWithoutSaleNestedInput
   }
 
   export type SaleUncheckedUpdateWithoutMerchantInput = {
@@ -29270,6 +35609,7 @@ export namespace Prisma {
     merchantEarning?: FloatFieldUpdateOperationsInput | number
     platformEarning?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    SaleItem?: SaleItemUncheckedUpdateManyWithoutSaleNestedInput
   }
 
   export type SaleUncheckedUpdateManyWithoutMerchantInput = {
@@ -29381,6 +35721,72 @@ export namespace Prisma {
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type CommissionSettingUpdateWithoutMerchantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    brandCommissionPct?: FloatFieldUpdateOperationsInput | number
+    merchantCommissionPct?: FloatFieldUpdateOperationsInput | number
+    effectiveFrom?: DateTimeFieldUpdateOperationsInput | Date | string
+    effectiveTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    brand?: BrandUpdateOneWithoutCommissionSettingNestedInput
+    product?: ProductUpdateOneWithoutCommissionSettingNestedInput
+  }
+
+  export type CommissionSettingUncheckedUpdateWithoutMerchantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
+    brandCommissionPct?: FloatFieldUpdateOperationsInput | number
+    merchantCommissionPct?: FloatFieldUpdateOperationsInput | number
+    productId?: NullableStringFieldUpdateOperationsInput | string | null
+    effectiveFrom?: DateTimeFieldUpdateOperationsInput | Date | string
+    effectiveTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CommissionSettingUncheckedUpdateManyWithoutMerchantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
+    brandCommissionPct?: FloatFieldUpdateOperationsInput | number
+    merchantCommissionPct?: FloatFieldUpdateOperationsInput | number
+    productId?: NullableStringFieldUpdateOperationsInput | string | null
+    effectiveFrom?: DateTimeFieldUpdateOperationsInput | Date | string
+    effectiveTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PayoutUpdateWithoutMerchantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    actor?: EnumPayoutActorFieldUpdateOperationsInput | $Enums.PayoutActor
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    brand?: BrandUpdateOneWithoutPayoutNestedInput
+  }
+
+  export type PayoutUncheckedUpdateWithoutMerchantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    actor?: EnumPayoutActorFieldUpdateOperationsInput | $Enums.PayoutActor
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PayoutUncheckedUpdateManyWithoutMerchantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    actor?: EnumPayoutActorFieldUpdateOperationsInput | $Enums.PayoutActor
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type OrderCreateManyAddressInput = {
     id?: string
     userId: string
@@ -29489,6 +35895,28 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type CommissionSettingCreateManyBrandInput = {
+    id?: string
+    merchantId?: string | null
+    brandCommissionPct?: number
+    merchantCommissionPct?: number
+    productId?: string | null
+    effectiveFrom?: Date | string
+    effectiveTo?: Date | string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PayoutCreateManyBrandInput = {
+    id?: string
+    actor: $Enums.PayoutActor
+    merchantId?: string | null
+    amount: Decimal | DecimalJsLike | number | string
+    note?: string | null
+    createdAt?: Date | string
+  }
+
   export type ProductUpdateWithoutBrandInput = {
     id?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
@@ -29510,6 +35938,7 @@ export namespace Prisma {
     variants?: ProductVariantUpdateManyWithoutProductNestedInput
     User?: UserUpdateOneRequiredWithoutProductsNestedInput
     sales?: SaleUpdateManyWithoutProductNestedInput
+    CommissionSetting?: CommissionSettingUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutBrandInput = {
@@ -29533,6 +35962,7 @@ export namespace Prisma {
     tags?: TagUncheckedUpdateManyWithoutProductNestedInput
     variants?: ProductVariantUncheckedUpdateManyWithoutProductNestedInput
     sales?: SaleUncheckedUpdateManyWithoutProductNestedInput
+    CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateManyWithoutBrandInput = {
@@ -29565,6 +35995,7 @@ export namespace Prisma {
     orderItem?: OrderItemUpdateOneRequiredWithoutSaleNestedInput
     product?: ProductUpdateOneRequiredWithoutSalesNestedInput
     merchant?: UserUpdateOneRequiredWithoutSalesNestedInput
+    SaleItem?: SaleItemUpdateManyWithoutSaleNestedInput
   }
 
   export type SaleUncheckedUpdateWithoutBrandInput = {
@@ -29578,6 +36009,7 @@ export namespace Prisma {
     merchantEarning?: FloatFieldUpdateOperationsInput | number
     platformEarning?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    SaleItem?: SaleItemUncheckedUpdateManyWithoutSaleNestedInput
   }
 
   export type SaleUncheckedUpdateManyWithoutBrandInput = {
@@ -29590,6 +36022,72 @@ export namespace Prisma {
     brandEarning?: FloatFieldUpdateOperationsInput | number
     merchantEarning?: FloatFieldUpdateOperationsInput | number
     platformEarning?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CommissionSettingUpdateWithoutBrandInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    brandCommissionPct?: FloatFieldUpdateOperationsInput | number
+    merchantCommissionPct?: FloatFieldUpdateOperationsInput | number
+    effectiveFrom?: DateTimeFieldUpdateOperationsInput | Date | string
+    effectiveTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    merchant?: UserUpdateOneWithoutCommissionSettingNestedInput
+    product?: ProductUpdateOneWithoutCommissionSettingNestedInput
+  }
+
+  export type CommissionSettingUncheckedUpdateWithoutBrandInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    merchantId?: NullableStringFieldUpdateOperationsInput | string | null
+    brandCommissionPct?: FloatFieldUpdateOperationsInput | number
+    merchantCommissionPct?: FloatFieldUpdateOperationsInput | number
+    productId?: NullableStringFieldUpdateOperationsInput | string | null
+    effectiveFrom?: DateTimeFieldUpdateOperationsInput | Date | string
+    effectiveTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CommissionSettingUncheckedUpdateManyWithoutBrandInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    merchantId?: NullableStringFieldUpdateOperationsInput | string | null
+    brandCommissionPct?: FloatFieldUpdateOperationsInput | number
+    merchantCommissionPct?: FloatFieldUpdateOperationsInput | number
+    productId?: NullableStringFieldUpdateOperationsInput | string | null
+    effectiveFrom?: DateTimeFieldUpdateOperationsInput | Date | string
+    effectiveTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PayoutUpdateWithoutBrandInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    actor?: EnumPayoutActorFieldUpdateOperationsInput | $Enums.PayoutActor
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    merchant?: UserUpdateOneWithoutPayoutNestedInput
+  }
+
+  export type PayoutUncheckedUpdateWithoutBrandInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    actor?: EnumPayoutActorFieldUpdateOperationsInput | $Enums.PayoutActor
+    merchantId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PayoutUncheckedUpdateManyWithoutBrandInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    actor?: EnumPayoutActorFieldUpdateOperationsInput | $Enums.PayoutActor
+    merchantId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -29647,6 +36145,8 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutBrandsNestedInput
     Product?: ProductUpdateManyWithoutBrandNestedInput
     Sales?: SaleUpdateManyWithoutBrandNestedInput
+    CommissionSetting?: CommissionSettingUpdateManyWithoutBrandNestedInput
+    Payout?: PayoutUpdateManyWithoutBrandNestedInput
   }
 
   export type BrandUncheckedUpdateWithoutBrandCategoryInput = {
@@ -29676,6 +36176,8 @@ export namespace Prisma {
     socialProfile?: StringFieldUpdateOperationsInput | string
     Product?: ProductUncheckedUpdateManyWithoutBrandNestedInput
     Sales?: SaleUncheckedUpdateManyWithoutBrandNestedInput
+    CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutBrandNestedInput
+    Payout?: PayoutUncheckedUpdateManyWithoutBrandNestedInput
   }
 
   export type BrandUncheckedUpdateManyWithoutBrandCategoryInput = {
@@ -29734,6 +36236,19 @@ export namespace Prisma {
     merchantEarning?: number
     platformEarning?: number
     createdAt?: Date | string
+  }
+
+  export type CommissionSettingCreateManyProductInput = {
+    id?: string
+    brandId?: string | null
+    merchantId?: string | null
+    brandCommissionPct?: number
+    merchantCommissionPct?: number
+    effectiveFrom?: Date | string
+    effectiveTo?: Date | string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type FeatureUpdateWithoutProductInput = {
@@ -29801,6 +36316,7 @@ export namespace Prisma {
     orderItem?: OrderItemUpdateOneRequiredWithoutSaleNestedInput
     merchant?: UserUpdateOneRequiredWithoutSalesNestedInput
     brand?: BrandUpdateOneWithoutSalesNestedInput
+    SaleItem?: SaleItemUpdateManyWithoutSaleNestedInput
   }
 
   export type SaleUncheckedUpdateWithoutProductInput = {
@@ -29814,6 +36330,7 @@ export namespace Prisma {
     merchantEarning?: FloatFieldUpdateOperationsInput | number
     platformEarning?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    SaleItem?: SaleItemUncheckedUpdateManyWithoutSaleNestedInput
   }
 
   export type SaleUncheckedUpdateManyWithoutProductInput = {
@@ -29827,6 +36344,81 @@ export namespace Prisma {
     merchantEarning?: FloatFieldUpdateOperationsInput | number
     platformEarning?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CommissionSettingUpdateWithoutProductInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    brandCommissionPct?: FloatFieldUpdateOperationsInput | number
+    merchantCommissionPct?: FloatFieldUpdateOperationsInput | number
+    effectiveFrom?: DateTimeFieldUpdateOperationsInput | Date | string
+    effectiveTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    brand?: BrandUpdateOneWithoutCommissionSettingNestedInput
+    merchant?: UserUpdateOneWithoutCommissionSettingNestedInput
+  }
+
+  export type CommissionSettingUncheckedUpdateWithoutProductInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
+    merchantId?: NullableStringFieldUpdateOperationsInput | string | null
+    brandCommissionPct?: FloatFieldUpdateOperationsInput | number
+    merchantCommissionPct?: FloatFieldUpdateOperationsInput | number
+    effectiveFrom?: DateTimeFieldUpdateOperationsInput | Date | string
+    effectiveTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CommissionSettingUncheckedUpdateManyWithoutProductInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
+    merchantId?: NullableStringFieldUpdateOperationsInput | string | null
+    brandCommissionPct?: FloatFieldUpdateOperationsInput | number
+    merchantCommissionPct?: FloatFieldUpdateOperationsInput | number
+    effectiveFrom?: DateTimeFieldUpdateOperationsInput | Date | string
+    effectiveTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SaleItemCreateManySaleInput = {
+    id?: string
+    productId: string
+    quantity: number
+    unitPrice: Decimal | DecimalJsLike | number | string
+    total: Decimal | DecimalJsLike | number | string
+    orderItemId: string
+  }
+
+  export type SaleItemUpdateWithoutSaleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    unitPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    orderItemId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type SaleItemUncheckedUpdateWithoutSaleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    unitPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    orderItemId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type SaleItemUncheckedUpdateManyWithoutSaleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    unitPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    orderItemId?: StringFieldUpdateOperationsInput | string
   }
 
   export type MockupVariantCreateManyMockupInput = {
@@ -29901,6 +36493,7 @@ export namespace Prisma {
     variants?: ProductVariantUpdateManyWithoutProductNestedInput
     User?: UserUpdateOneRequiredWithoutProductsNestedInput
     sales?: SaleUpdateManyWithoutProductNestedInput
+    CommissionSetting?: CommissionSettingUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutMockupInput = {
@@ -29924,6 +36517,7 @@ export namespace Prisma {
     tags?: TagUncheckedUpdateManyWithoutProductNestedInput
     variants?: ProductVariantUncheckedUpdateManyWithoutProductNestedInput
     sales?: SaleUncheckedUpdateManyWithoutProductNestedInput
+    CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateManyWithoutMockupInput = {
@@ -30015,6 +36609,7 @@ export namespace Prisma {
     product?: ProductUpdateOneRequiredWithoutSalesNestedInput
     merchant?: UserUpdateOneRequiredWithoutSalesNestedInput
     brand?: BrandUpdateOneWithoutSalesNestedInput
+    SaleItem?: SaleItemUpdateManyWithoutSaleNestedInput
   }
 
   export type SaleUncheckedUpdateWithoutOrderItemInput = {
@@ -30028,6 +36623,7 @@ export namespace Prisma {
     merchantEarning?: FloatFieldUpdateOperationsInput | number
     platformEarning?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    SaleItem?: SaleItemUncheckedUpdateManyWithoutSaleNestedInput
   }
 
   export type SaleUncheckedUpdateManyWithoutOrderItemInput = {

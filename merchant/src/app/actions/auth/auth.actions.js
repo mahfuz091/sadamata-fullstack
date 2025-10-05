@@ -9,7 +9,8 @@ import { revalidatePath } from "next/cache";
 
 // helpers
 function pick(...vals) {
-  for (const v of vals) if (v != null && String(v).trim() !== "") return String(v).trim();
+  for (const v of vals)
+    if (v != null && String(v).trim() !== "") return String(v).trim();
   return "";
 }
 const opt = (v) => (v && v.length ? v : null);
@@ -18,7 +19,7 @@ const toLower = (v) => (v ? v.toLowerCase() : null);
 
 export async function registerUser(formData) {
   try {
-    // ---- core auth fields (accept multiple input-name variants) ----
+    // ---- core auth fields ----
     const name = pick(formData.get("name"), formData.get("full-name"));
     const emailRaw = pick(formData.get("email"));
     const phoneRaw = pick(formData.get("phone"), formData.get("call"));
@@ -43,14 +44,9 @@ export async function registerUser(formData) {
     const email = toLower(emailRaw);
     const phone = phoneRaw || null;
 
-    // ---- uniqueness check (email OR phone) ----
+    // ---- uniqueness ----
     const existing = await prisma.user.findFirst({
-      where: {
-        OR: [
-          ...(email ? [{ email }] : []),
-          ...(phone ? [{ phone }] : []),
-        ],
-      },
+      where: { OR: [...(email ? [{ email }] : []), ...(phone ? [{ phone }] : [])] },
       select: { id: true },
     });
     if (existing) {
@@ -58,54 +54,42 @@ export async function registerUser(formData) {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const isActive = !(role === "BRAND" || role === "MERCH"); // merch/brand require review
+    const isActive = !(role === "BRAND" || role === "MERCH");
 
-    // ---- collect ALL MerchantProfile fields (from your form names) ----
+    // ---- defaults for commissions (tweak as needed or load from env/config) ----
+    const DEFAULT_BRAND_PCT = 10.0;
+    const DEFAULT_MERCHANT_PCT = 10.0;
+
+    // ---- merchant profile fields ----
     const fullName = name;
     const dateOfBirth = toDate(pick(formData.get("birth-yard"), formData.get("dateOfBirth")));
     const contactEmail = email;
     const contactPhone = phone;
 
     const nidOrPassportNo = opt(pick(formData.get("nid-number"), formData.get("nidOrPassportNo")));
-    const presentAddress = opt(
-      pick(formData.get("present-address"), formData.get("address"), formData.get("presentAddress"))
-    );
-    const permanentAddress = opt(
-      pick(formData.get("permanent-address"), formData.get("permanet-address"), formData.get("permanentAddress"))
-    );
-
+    const presentAddress = opt(pick(formData.get("present-address"), formData.get("address"), formData.get("presentAddress")));
+    const permanentAddress = opt(pick(formData.get("permanent-address"), formData.get("permanet-address"), formData.get("permanentAddress")));
     const portfolioUrl = opt(pick(formData.get("portfolio-link"), formData.get("portfolioUrl")));
     const websiteUrl = opt(pick(formData.get("web-link"), formData.get("websiteUrl")));
-
     const bankName = opt(pick(formData.get("bank-name"), formData.get("bankName")));
     const bankBranch = opt(pick(formData.get("branch-name"), formData.get("bankBranch")));
-    const accountName = opt(
-      pick(formData.get("account-name"), formData.get("accountName"), formData.get("full-name"))
-    );
+    const accountName = opt(pick(formData.get("account-name"), formData.get("accountName"), formData.get("full-name")));
     const accountNumber = opt(pick(formData.get("account-number"), formData.get("accountNumber")));
     const routingNumber = opt(pick(formData.get("routing-number"), formData.get("routingNumber")));
+    const message = opt(pick(formData.get("message"), formData.get("massage")));
 
-    const message = opt(pick(formData.get("message"), formData.get("massage"))); // textarea id was "massage"
-
-    // ---- create user (+ merchant profile if role is MERCH) ----
     const result = await prisma.$transaction(async (tx) => {
       const user = await tx.user.create({
-        data: {
-          email,
-          phone,
-          name,
-          password: hashedPassword,
-          role,
-          isActive,
-        },
+        data: { email, phone, name, password: hashedPassword, role, isActive },
       });
 
       let merchantProfile = null;
+      let merchantCommissionPctNew = null; // <-- declare it
 
       if (role === "MERCH") {
         merchantProfile = await tx.merchantProfile.create({
           data: {
-            userId: user.id,
+            user: { connect: { id: user.id } }, // use relation, not raw userId
             fullName,
             dateOfBirth,
             contactEmail,
@@ -123,9 +107,22 @@ export async function registerUser(formData) {
             message,
           },
         });
+
+        // CommissionSetting.merchantId must reference User.id (not MerchantProfile.id)
+        merchantCommissionPctNew = await tx.commissionSetting.create({
+          data: {
+            brandId: null,
+            merchantId: user.id,
+            productId: null,
+            brandCommissionPct: DEFAULT_BRAND_PCT,
+            merchantCommissionPct: DEFAULT_MERCHANT_PCT,
+            effectiveFrom: new Date(),
+            isActive: true,
+          },
+        });
       }
 
-      return { user, merchantProfile };
+      return { user, merchantProfile, merchantCommissionPctNew };
     });
 
     return {
@@ -144,6 +141,7 @@ export async function registerUser(formData) {
     return { success: false, message: (error && error.message) || "Something went wrong." };
   }
 }
+
 // export async function registerUser(formData) {
 //   try {
 //     // Extract form data from the FormData object

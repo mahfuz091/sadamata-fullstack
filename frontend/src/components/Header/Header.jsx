@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import logo from "@/assets/images/logo-light.png";
+import logo from "@/assets/images/logo-sadamata.svg";
 import Image from "next/image";
 import avatar from "@/assets/images/shapes/aveter.png";
 import Select from "react-select";
@@ -41,7 +41,7 @@ const Header = () => {
           <div className="main-header__inner">
             <div className="main-header__logo">
               <a href="index">
-                <Image src={logo} alt="sadamata" />
+                <Image src={logo} alt="sadamata" width={200} height={40} />
               </a>
             </div>
             <div className="main-header__search-box">

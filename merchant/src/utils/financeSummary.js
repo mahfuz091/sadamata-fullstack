@@ -82,7 +82,7 @@ export async function getMerchantFinancialSummary(merchantId) {
     select: { id: true },
   });
   const paidOrderItemIds = paidOrderItems.map((x) => x.id);
-
+                  
   // 2️⃣ Only match sales for this merchant + paid order items
   const saleWhere =
     paidOrderItemIds.length > 0

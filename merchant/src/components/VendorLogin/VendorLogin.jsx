@@ -19,9 +19,16 @@ const VendorLogin = () => {
 
   console.log(state);
   useEffect(() => {
-    if (!state?.success) {
-      toast.warning(state?.message);
+    if(state.message){
+      if (!state?.success) {
+        toast.warning(state?.message);
+      }
+      else if(state?.success){
+        toast.success(state?.message);
+        console.log(state, "state");
+      }
     }
+    
   }, [state]);
 
   // console.log(state?.msg, state?.success);

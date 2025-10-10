@@ -1,4 +1,5 @@
-import React from "react";
+'use client'
+import React, { useTransition, useState } from "react";
 import DashSidebar from "../DashSidebar/DashSidebar";
 import cartImg from "@/assets/images/products/cart.png";
 import Image from "next/image";
@@ -10,7 +11,26 @@ const options = [
   { value: "vanilla", label: "Marketplace: All" },
 ];
 
-const Analyze = () => {
+const Analyze = ({ initialItems, initialPage = 1, totalPages, loadMoreAction}) => {
+
+  const [items, setItems] = useState(initialItems);
+const [page, setPage] = useState(initialPage);
+const [isPending, startTransition] = useTransition();
+
+
+const hasMore = page < totalPages;
+
+
+async function onLoadMore() {
+if (!hasMore) return;
+const fd = new FormData();
+fd.set("nextPage", String(page + 1));
+startTransition(async () => {
+const res = await loadMoreAction(undefined, fd);
+setItems((prev) => [...prev, ...res.items]);
+setPage(res.page);
+});
+}
   return (
     <section className='dashboard-area section-space'>
       <div className='container'>
@@ -153,6 +173,18 @@ const Analyze = () => {
                       </tr>
                     </thead>
                     <tbody>
+                      {items.map((item) => (
+                        <tr key={item.id}>
+                          <td>{item.market}</td>
+                          <td>{item.title}</td>
+                          <td>{item.brand}</td>
+                          <td>{item.purchased}</td>
+                          <td>{item.cancelled}</td>
+                          <td>{item.returned}</td>
+                          <td>{item.revenue}</td>
+                          <td>{item.royalties}</td>
+                        </tr>
+                      ))}
                       <tr>
                         <td>.com</td>
                         <td>

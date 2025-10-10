@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import logo from "@/assets/images/logo-light.png";
+import logo from "@/assets/images/logo-sadamata.svg";
 
 export default function HeaderTwo() {
   return (
@@ -12,7 +12,7 @@ export default function HeaderTwo() {
           <div className='main-header__inner'>
             <div className='main-header__logo'>
               <Link href='/'>
-                <Image src={logo} alt='commerce HTML' />
+                <Image src={logo} alt='commerce HTML' width={160} height={40}/>
               </Link>
             </div>
             <div className='main-header__right'>

@@ -38,6 +38,7 @@ const page = async () => {
       initialPage={firstPage.page}
       totalPages={firstPage.totalPages}
       loadMoreAction={loadMoreSales}
+      summery={summery}
     />
   );
 };

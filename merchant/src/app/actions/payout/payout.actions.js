@@ -1,7 +1,10 @@
 // payoutActions.js
-import { PrismaClient, PayoutActor } from '@prisma/client';
+// import { PrismaClient, PayoutActor } from '@prisma/client';
 
-const prisma = new PrismaClient();
+import { PayoutActor } from "@/generated/prisma";
+import { prisma } from "@/lib/prisma";
+
+// const prisma = new PrismaClient();
 
 // Count only sales from PAID orders
 const paidSaleWhere = {

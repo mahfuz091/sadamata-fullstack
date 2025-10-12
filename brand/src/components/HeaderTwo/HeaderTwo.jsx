@@ -4,7 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import logo from "@/assets/images/logo-sadamata.svg";
 
-export default function HeaderTwo() {
+import { logOut } from "@/app/actions/auth/auth.actions";
+
+const HeaderTwo = ({ session }) => {
+  // const session = await auth();
+  console.log(session, "session in header");
+
   return (
     <header className='main-header main-header--two sticky-header sticky-header--normal'>
       <div className='main-header__top'>
@@ -12,17 +17,25 @@ export default function HeaderTwo() {
           <div className='main-header__inner'>
             <div className='main-header__logo'>
               <Link href='/'>
-                <Image src={logo} alt='commerce HTML' width={160} height={40}/>
+                <Image src={logo} alt='commerce HTML' />
               </Link>
             </div>
             <div className='main-header__right'>
               <div className='mobile-nav__info'>
-                <Link href='/login' className='commerce-btn login'>
-                  Login
-                </Link>
-                <Link href='/signup' className='commerce-btn'>
-                  Register <i className='icon-right-arrow' />
-                </Link>
+                {session?.user ? (
+                  <button onClick={logOut} className='commerce-btn'>
+                    Logout {session.user.name}
+                  </button>
+                ) : (
+                  <>
+                    <Link href='/login' className='commerce-btn login'>
+                      Login
+                    </Link>
+                    <Link href='/signup' className='commerce-btn'>
+                      Register <i className='icon-right-arrow' />
+                    </Link>
+                  </>
+                )}
               </div>
               <div className='mobile-nav__btn mobile-nav__toggler'>
                 <span></span>
@@ -35,4 +48,6 @@ export default function HeaderTwo() {
       </div>
     </header>
   );
-}
+};
+
+export default HeaderTwo;

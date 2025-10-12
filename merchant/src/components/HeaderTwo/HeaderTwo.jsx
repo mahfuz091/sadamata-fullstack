@@ -8,7 +8,7 @@ import { logOut } from "@/app/actions/auth/auth.actions";
 
 const HeaderTwo = ({ session }) => {
   // const session = await auth();
-  console.log(session, "session in header");
+  // console.log(session, "session in header");
 
   return (
     <header className='main-header main-header--two sticky-header sticky-header--normal'>

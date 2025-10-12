@@ -9,9 +9,9 @@ const DashSidebar = () => {
 
   const links = [
     { href: "/dashboard", label: "Dashboard" },
-    { href: "/dashboard-brand", label: "Brand" },
-    { href: "/dashboard-manage", label: "Manage" },
-    { href: "/dashboard-analyze", label: "Analyze" },
+    { href: "/dashboard/brand", label: "Brand" },
+    { href: "/dashboard/manage", label: "Manage" },
+    { href: "/dashboard/analyze", label: "Analyze" },
   ];
 
   return (

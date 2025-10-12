@@ -2,158 +2,38 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import image from "@/assets/images/products/cart.png";
 import CustomSelect from "../CustomSelect/CustomSelect";
 import DashSidebar from "../DashSidebar/DashSidebar";
+const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE_URL ;
+export default function DashboardManage({initialItems,
+totalPages,
+initialPage = 1,
+loadMoreAction, // server action passed down
 
-export default function DashboardManage() {
-  const [products, setProducts] = useState([
-    {
-      id: 1,
-      marketplace: ".com",
-      title: "Fathers day shirt funny its",
-      brand: "Husband and dad last minute father's day gift",
-      type: "Standard T-shirt",
-      modified: "2/3/25",
-      price: "$14.00",
-      status: "Live",
-      image: image,
-    },
-    {
-      id: 2,
-      marketplace: ".com",
-      title: "Fathers day shirt funny its",
-      brand: "Husband and dad last minute father's day gift",
-      type: "Standard T-shirt",
-      modified: "2/3/25",
-      price: "$14.00",
-      status: "Live",
-      image: image,
-    },
-    {
-      id: 3,
-      marketplace: ".com",
-      title: "Fathers day shirt funny its",
-      brand: "Husband and dad last minute father's day gift",
-      type: "Standard T-shirt",
-      modified: "2/3/25",
-      price: "$14.00",
-      status: "Live",
-      image: image,
-    },
-    {
-      id: 4,
-      marketplace: ".com",
-      title: "Fathers day shirt funny its",
-      brand: "Husband and dad last minute father's day gift",
-      type: "Standard T-shirt",
-      modified: "2/3/25",
-      price: "$14.00",
-      status: "Live",
-      image: image,
-    },
-    {
-      id: 5,
-      marketplace: ".com",
-      title: "Fathers day shirt funny its",
-      brand: "Husband and dad last minute father's day gift",
-      type: "Standard T-shirt",
-      modified: "2/3/25",
-      price: "$14.00",
-      status: "Live",
-      image: image,
-    },
-    {
-      id: 6,
-      marketplace: ".com",
-      title: "Fathers day shirt funny its",
-      brand: "Husband and dad last minute father's day gift",
-      type: "Standard T-shirt",
-      modified: "2/3/25",
-      price: "$14.00",
-      status: "Live",
-      image: image,
-    },
-    {
-      id: 7,
-      marketplace: ".com",
-      title: "Fathers day shirt funny its",
-      brand: "Husband and dad last minute father's day gift",
-      type: "Standard T-shirt",
-      modified: "2/3/25",
-      price: "$14.00",
-      status: "Live",
-      image: image,
-    },
-    {
-      id: 8,
-      marketplace: ".com",
-      title: "Fathers day shirt funny its",
-      brand: "Husband and dad last minute father's day gift",
-      type: "Standard T-shirt",
-      modified: "2/3/25",
-      price: "$14.00",
-      status: "Live",
-      image: image,
-    },
-    {
-      id: 9,
-      marketplace: ".com",
-      title: "Fathers day shirt funny its",
-      brand: "Husband and dad last minute father's day gift",
-      type: "Standard T-shirt",
-      modified: "2/3/25",
-      price: "$14.00",
-      status: "Live",
-      image: image,
-    },
-    {
-      id: 1,
-      marketplace: ".com",
-      title: "Fathers day shirt funny its",
-      brand: "Husband and dad last minute father's day gift",
-      type: "Standard T-shirt",
-      modified: "2/3/25",
-      price: "$14.00",
-      status: "Live",
-      image: image,
-    },
-    {
-      id: 1,
-      marketplace: ".com",
-      title: "Fathers day shirt funny its",
-      brand: "Husband and dad last minute father's day gift",
-      type: "Standard T-shirt",
-      modified: "2/3/25",
-      price: "$14.00",
-      status: "Live",
-      image: image,
-    },
-    {
-      id: 1,
-      marketplace: ".com",
-      title: "Fathers day shirt funny its",
-      brand: "Husband and dad last minute father's day gift",
-      type: "Standard T-shirt",
-      modified: "2/3/25",
-      price: "$14.00",
-      status: "Live",
-      image: image,
-    },
-    {
-      id: 1,
-      marketplace: ".com",
-      title: "Fathers day shirt funny its",
-      brand: "Husband and dad last minute father's day gift",
-      type: "Standard T-shirt",
-      modified: "2/3/25",
-      price: "$14.00",
-      status: "Live",
-      image: image,
-    },
-    // Add more products here
-  ]);
+}) {
+ const [items, setItems] = useState(initialItems);
+const [page, setPage] = useState(initialPage);
+const [isPending, startTransition] = useTransition();
+console.log(items, "items");
+
+
+const hasMore = page < totalPages;
+
+
+async function onLoadMore() {
+if (!hasMore) return;
+const formData = new FormData();
+formData.set("nextPage", String(page + 1));
+
+
+startTransition(async () => {
+const res = await loadMoreAction(undefined, formData);
+setItems((prev) => [...prev, ...res.items]);
+setPage(res.page);
+});
+}
 
   const handleSelect = (selected) => {
     console.log("Selected:", selected);
@@ -245,7 +125,7 @@ export default function DashboardManage() {
                     <thead>
                       <tr>
                         {[
-                          "Mkt",
+                          "Sl",
                           "Title",
                           "Brand",
                           "Product Type",
@@ -271,24 +151,26 @@ export default function DashboardManage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {products.map((product) => (
+                      {items.map((product, index) => (
                         <tr key={product.id}>
-                          <td>{product.marketplace}</td>
+                          <td>{index+1}</td>
                           <td>
                             <div className='d-flex align-items-center'>
                               <Image
-                                src={product.image}
+                                src={`${ASSET_BASE}${product.previewImg}`}
                                 alt='Product Image'
                                 className='product-image me-2'
+                                width={80}
+                                height={80}
                               />
                               <span>{product.title}</span>
                             </div>
                           </td>
-                          <td>{product.brand}</td>
-                          <td>{product.type}</td>
-                          <td>{product.modified}</td>
+                          <td>{product.brandName !==null ? product.brandName: product?.brand?.name}</td>
+                          <td>{product.mockupName}</td>
+                          <td>{new Date(product.updatedAt).toLocaleDateString("en-GB")}</td>
                           <td>{product.price}</td>
-                          <td>{product.status}</td>
+                           <td>{product.isActive ? "Live" : "Inactive"}</td>
                           <td>
                             <button className='action-buttons'>
                               {/* You can replace with a component or an icon library */}

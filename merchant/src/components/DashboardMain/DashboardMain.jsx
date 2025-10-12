@@ -24,7 +24,7 @@ const options2 = [
   { value: "vanilla", label: "3 Month" },
 ];
 
-const DashboardMain = ({ report, session, salesReport }) => {
+const DashboardMain = ({ report, session, salesReport, stats, today }) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -84,6 +84,48 @@ const DashboardMain = ({ report, session, salesReport }) => {
     ];
     setData(mapped);
   }, [salesReport]);
+
+  const [metrics, setMetrics] = useState([]);
+
+  useEffect(() => {
+    if (!stats || !today) return;
+
+    // Create dynamic metrics
+    const data = [
+      {
+        label: "Uploader Today",
+        value: today.totalTodayUploaded || 0,
+        total: stats.totalProducts || 0,
+      },
+      {
+        label: "Live Designs",
+        value: stats.totalLiveProducts || 0,
+        total: stats.totalProducts || 0,
+      },
+      {
+        label: "Live Products",
+        value: stats.totalLiveProducts || 0,
+        total: stats.totalProducts || 0,
+      },
+      {
+        label: "Products with Sales",
+        value: stats.totalProductsWithSales || 0,
+        total: stats.totalProducts || 0,
+      },
+    ];
+
+    const withPercent = data.map((item) => {
+      const percent =
+        item.total && item.total > 0
+          ? Math.round((item.value / item.total) * 100)
+          : 0;
+      return { ...item, percent };
+    });
+
+    setMetrics(withPercent);
+  }, [stats, today]);
+  console.log(metrics, "metrics");
+  
   return (
     <section className="dashboard-area section-space">
       <div className="container">
@@ -132,7 +174,7 @@ const DashboardMain = ({ report, session, salesReport }) => {
                   </Link>
                 </div>
               </div>
-              <div className="dashboard__metrics">
+              {/* <div className="dashboard__metrics">
                 {[
                   "Uploader Today",
                   "Live Designs",
@@ -169,7 +211,38 @@ const DashboardMain = ({ report, session, salesReport }) => {
                     0.0 from 0 reviews
                   </p>
                 </div>
+              </div> */}
+              <div className="dashboard__metrics">
+      {metrics.map((item, i) => (
+        <div className="dashboard__metrics__item" key={i}>
+          <h4 className="dashboard__metrics__text">{item.label}</h4>
+          <div className="dashboard__metrics__progess-box">
+            <div className="dashboard__metrics__progess__inner">
+              <div className="progess__left">
+                {item.value} <span>of</span> {item.total}
               </div>
+              <div className="progess__persent">{item.percent}%</div>
+            </div>
+            <div className="progess-box">
+              <div
+                className="progess-box__inner"
+                style={{ width: `${item.percent}%` }}
+              ></div>
+            </div>
+          </div>
+        </div>
+      ))}
+
+      <div className="dashboard__metrics__item dashboard__star">
+        <h4 className="dashboard__metrics__text">Reviews</h4>
+        <div className="dashboard__star__inner">
+          {[...Array(5)].map((_, i) => (
+            <i className="fas fa-star" key={i}></i>
+          ))}
+        </div>
+        <p className="dashboard__metrics__text-two">0.0 from 0 reviews</p>
+      </div>
+    </div>
               <div className="dashboard-dverview">
                 <div className="row gutter-x-10 gutter-y-20">
                   <div className="col-xl-6 col-lg-12 col-md-6 col-sm-12">

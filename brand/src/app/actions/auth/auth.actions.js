@@ -380,7 +380,11 @@ export const loginUser = async (prevState, formData) => {
     password,
   });
 };
-
+export const logOut = async () => {
+  await signOut();
+  // redirect("/login");
+  revalidatePath("/dashboard/*");
+};
 export async function logoutUser() {
   try {
     // Remove JWT token from the cookie

@@ -1,4 +1,5 @@
-import React from "react";
+'use client'
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
 // Image imports from @assets/images
@@ -13,14 +14,118 @@ import saleAvatar from "@/assets/images/resources/salse-avater.png";
 import Link from "next/link";
 import DashSidebar from "../DashSidebar/DashSidebar";
 import CustomSelect from "../CustomSelect/CustomSelect";
-
-const DashboardMain = () => {
+const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE_URL ;
+const DashboardMain = ({report, today, stats, salesReport, salesData}) => {
   const options2 = [
-    { value: "chocolate", label: "Today" },
-    { value: "strawberry", label: "Week" },
-    { value: "vanilla", label: "Month" },
-    { value: "vanilla", label: "3 Month" },
-  ];
+  { label: 'Today', value: 'today' },
+  { label: 'Last 7 days', value: 'last7d' },
+  { label: 'Last 30 days', value: 'last30d' },
+  { label: 'Last 90 days', value: 'last90d' },
+];
+  const [data, setData] = useState([]);
+  const [selected, setSelected] = useState(options2[0]); // default: today
+
+  const rangeKey = selected?.value ?? 'today';
+  const current = salesData?.ranges?.[rangeKey] ?? { items: [], totalQty: 0 };
+  const hasSales = (current.items?.length ?? 0) > 0;
+
+  useEffect(() => {
+    if (!salesReport) return;
+    // convert server data to UI structure
+    const mapped = [
+      {
+        label: "Yesterday",
+        date: salesReport.yesterday?.label || "",
+        count: salesReport.yesterday?.soldOrders || 0,
+        money: `৳${(salesReport.yesterday?.merchantRoyalty || 0).toFixed(2)}`,
+        orders: `${salesReport.yesterday?.soldOrders || 0}-${
+          salesReport.yesterday?.canceledOrders || 0
+        } (${salesReport.yesterday?.refundedUnits || 0})`,
+        col: "6",
+      },
+      {
+        label: "Last 7 Days",
+        date: salesReport.last7?.label || "",
+        count: salesReport.last7?.soldOrders || 0,
+        money: `৳${(salesReport.last7?.gmerchantRoyalty || 0).toFixed(2)}`,
+        orders: `${salesReport.last7?.soldOrders || 0}-${
+          salesReport.last7?.canceledOrders || 0
+        } (${salesReport.last7?.refundedUnits || 0})`,
+        col: "6",
+      },
+      {
+        label: "This Month",
+        date: salesReport.thisMonth?.label || "",
+        count: salesReport.thisMonth?.soldOrders || 0,
+        money: `৳${(salesReport.thisMonth?.merchantRoyalty || 0).toFixed(2)}`,
+        orders: `${salesReport.thisMonth?.soldOrders || 0}-${
+          salesReport.thisMonth?.canceledOrders || 0
+        } (${salesReport.thisMonth?.refundedUnits || 0})`,
+        col: "6",
+      },
+      {
+        label: "Previous Month",
+        date: salesReport.prevMonth?.label || "",
+        count: salesReport.prevMonth?.soldOrders || 0,
+        money: `৳${(salesReport.prevMonth?.merchantRoyalty || 0).toFixed(2)}`,
+        orders: `${salesReport.prevMonth?.soldOrders || 0}-${
+          salesReport.prevMonth?.canceledOrders || 0
+        } (${salesReport.prevMonth?.refundedUnits || 0})`,
+        col: "6",
+      },
+      {
+        label: "All Time",
+        date: salesReport.allTime?.label || "",
+        count: salesReport.allTime?.soldOrders || 0,
+        money: `৳${(salesReport.allTime?.merchantRoyalty || 0).toFixed(2)}`,
+        orders: `${salesReport.allTime?.soldOrders || 0}-${
+          salesReport.allTime?.canceledOrders || 0
+        } (${salesReport.allTime?.refundedUnits || 0})`,
+        col: "12",
+      },
+    ];
+    setData(mapped);
+  }, [salesReport]);
+  const [metrics, setMetrics] = useState([]);
+
+  useEffect(() => {
+    if (!stats || !today) return;
+
+    // Create dynamic metrics
+    const data = [
+      {
+        label: "Uploader Today",
+        value: today.totalTodayUploaded || 0,
+        total: stats.totalProducts || 0,
+      },
+      {
+        label: "Live Designs",
+        value: stats.totalLiveProducts || 0,
+        total: stats.totalProducts || 0,
+      },
+      {
+        label: "Live Products",
+        value: stats.totalLiveProducts || 0,
+        total: stats.totalProducts || 0,
+      },
+      {
+        label: "Products with Sales",
+        value: stats.totalProductsWithSales || 0,
+        total: stats.totalProducts || 0,
+      },
+    ];
+
+    const withPercent = data.map((item) => {
+      const percent =
+        item.total && item.total > 0
+          ? Math.round((item.value / item.total) * 100)
+          : 0;
+      return { ...item, percent };
+    });
+
+    setMetrics(withPercent);
+  }, [stats, today]);
+  console.log(metrics, "metrics");
   return (
     <section className='dashboard-area section-space'>
       <div className='container'>
@@ -31,30 +136,25 @@ const DashboardMain = () => {
           <div className='col-lg-9'>
             <div className='dashboard-area__content'>
               <div className='dashboard__metrics'>
-                {[
-                  "Uploader Today",
-                  "Live Designs",
-                  "Live Products",
-                  "Products with Sales",
-                ].map((title, i) => (
-                  <div className='dashboard__metrics__item' key={i}>
-                    <h4 className='dashboard__metrics__text'>{title}</h4>
-                    <div className='dashboard__metrics__progess-box'>
-                      <div className='dashboard__metrics__progess__inner'>
-                        <div className='progess__left'>
-                          4 <span>of</span> 1
-                        </div>
-                        <div className='progess__persent'>23%</div>
-                      </div>
-                      <div className='progess-box'>
-                        <div
-                          className='progess-box__inner'
-                          style={{ width: "70%" }}
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                {metrics.map((item, i) => (
+        <div className="dashboard__metrics__item" key={i}>
+          <h4 className="dashboard__metrics__text">{item.label}</h4>
+          <div className="dashboard__metrics__progess-box">
+            <div className="dashboard__metrics__progess__inner">
+              <div className="progess__left">
+                {item.value} <span>of</span> {item.total}
+              </div>
+              <div className="progess__persent">{item.percent}%</div>
+            </div>
+            <div className="progess-box">
+              <div
+                className="progess-box__inner"
+                style={{ width: `${item.percent}%` }}
+              ></div>
+            </div>
+          </div>
+        </div>
+      ))}
 
                 <div className='dashboard__metrics__item dashboard__star'>
                   <h4 className='dashboard__metrics__text'>Reviews</h4>
@@ -109,10 +209,10 @@ const DashboardMain = () => {
                       <div className='dashboard-dverview__top'>
                         <h3 className='dashboard-dverview__title'>Sales</h3>
                         <div className='dashboard-dverview__right'>
-                          <CustomSelect options={options2} />
+                          <CustomSelect options={options2} value={selected}  onChange={(opt) => setSelected(opt)}/>
                         </div>
                       </div>
-                      <div className='dashboard-dverview__salse-box'>
+                      {/* <div className='dashboard-dverview__salse-box'>
                         <h3 className='dashboard-dverview__salse-title'>
                           No Sales Yet
                         </h3>
@@ -123,7 +223,62 @@ const DashboardMain = () => {
                         <div className='dashboard-dverview__salse-thumb'>
                           <Image src={saleAvatar} alt='sales avatar' />
                         </div>
-                      </div>
+                      </div> */}
+                      {!hasSales ? (
+        // ===== Empty state (No Sales Yet) =====
+        <div className="dashboard-dverview__salse-box">
+          <h3 className="dashboard-dverview__salse-title">No Sales Yet</h3>
+          <p className="dashboard-dverview__salse-text">
+            Hang in there... We’ll notify you the moment you make a sale!
+          </p>
+          <div className="dashboard-dverview__salse-thumb">
+            {saleAvatar && (
+              <Image src={saleAvatar} alt="sales avatar" />
+            )}
+          </div>
+        </div>
+      ) : (
+        // ===== Has data =====
+        <div className="dashboard-dverview__salse-list">
+          <div className="dashboard-dverview__salse-summary">
+            <span className="dashboard-dverview__salse-total-label">Total Qty</span>
+            <span className="dashboard-dverview__salse-total-value">
+              {current.totalQty}
+            </span>
+          </div>
+
+          <ul className="dashboard-dverview__salse-ul">
+            {current.items.map((item) => (
+              <li key={item.productId} className="dashboard-dverview__salse-li">
+                <div className="dashboard-dverview__salse-li-left">
+                  <div className="dashboard-dverview__salse-li-thumb">
+                    {item.image ? (
+                      <Image
+                        src={`${ASSET_BASE}${item.image}`}
+                        alt={item.productName || 'Product'}
+                        width={64}
+                        height={64}
+                      />
+                    ) : (
+                      <div className="dashboard-dverview__salse-li-fallback" />
+                    )}
+                  </div>
+                  <div className="dashboard-dverview__salse-li-meta">
+                    <h4 className="dashboard-dverview__salse-li-title">
+                      {item.productName || 'Unknown Product'}
+                    </h4>
+                   
+                  </div>
+                </div>
+
+                <div className="dashboard-dverview__salse-li-right">
+                  <span className="dashboard-dverview__salse-li-qty">{item.qty}</span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
                     </div>
                   </div>
                   <div className='col-xl-6 col-lg-12 col-md-6 col-sm-12'>
@@ -135,63 +290,22 @@ const DashboardMain = () => {
                       </div>
                       <div className='dashboard-dverview__receved'>
                         <div className='row gutter-y-9 gutter-x-20'>
-                          {[
-                            {
-                              label: "Yesterday",
-                              date: "7/4",
-                              count: 0,
-                              money: "৳0.00",
-                              orders: "1-0 (0)",
-                              col: "6",
-                            },
-                            {
-                              label: "Last 7 Days",
-                              date: "6/28-7/5",
-                              count: 1,
-                              money: "৳0.00",
-                              orders: "1-0 (0)",
-                              col: "6",
-                            },
-                            {
-                              label: "This Month",
-                              date: "7/1-7/5",
-                              count: 1,
-                              money: "৳0.00",
-                              orders: "1-0 (0)",
-                              col: "6",
-                            },
-                            {
-                              label: "Previous Month",
-                              date: "Jun 25",
-                              count: 8,
-                              money: "৳0.00",
-                              orders: "7-0 (1)",
-                              col: "6",
-                            },
-                            {
-                              label: "All Time",
-                              date: "",
-                              count: 1,
-                              money: "৳47.00",
-                              orders: "23-0 (4)",
-                              col: "12",
-                            },
-                          ].map((item, i) => (
+                          {data.map((item, i) => (
                             <div className={`col-sm-${item.col}`} key={i}>
-                              <div className='receved__item'>
-                                <h5 className='receved__title'>
+                              <div className="receved__item">
+                                <h5 className="receved__title">
                                   {item.label}
                                   {item.date && <span> {item.date}</span>}
                                 </h5>
-                                <div className='receved__item__box'>
-                                  <h3 className='receved__item__number'>
+                                <div className="receved__item__box">
+                                  <h3 className="receved__item__number">
                                     {item.count}
                                   </h3>
-                                  <div className='receved__item__right'>
-                                    <span className='receved__item__money'>
+                                  <div className="receved__item__right">
+                                    <span className="receved__item__money">
                                       {item.money}
                                     </span>
-                                    <span className='receved__item__order'>
+                                    <span className="receved__item__order">
                                       {item.orders}
                                     </span>
                                   </div>

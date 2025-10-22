@@ -60,6 +60,7 @@ setPage(res.page);
     { value: "vanilla", label: "Availability: All" },
   ];
 
+
   return (
     <section className='dashboard-area section-space'>
       <div className='container'>

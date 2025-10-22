@@ -18,15 +18,19 @@ import DashSidebar from "../DashSidebar/DashSidebar";
 import CustomSelect from "../CustomSelect/CustomSelect";
 
 const options2 = [
-  { value: "chocolate", label: "Today" },
-  { value: "strawberry", label: "Week" },
-  { value: "vanilla", label: "Month" },
-  { value: "vanilla", label: "3 Month" },
+  { label: 'Today', value: 'today' },
+  { label: 'Last 7 days', value: 'last7d' },
+  { label: 'Last 30 days', value: 'last30d' },
+  { label: 'Last 90 days', value: 'last90d' },
 ];
 
-const DashboardMain = ({ report, session, salesReport, stats, today }) => {
+const DashboardMain = ({ report, session, salesReport, stats, today, salesData }) => {
   const [data, setData] = useState([]);
+const [selected, setSelected] = useState(options2[0]); // default: today
 
+  const rangeKey = selected?.value ?? 'today';
+  const current = salesData?.ranges?.[rangeKey] ?? { items: [], totalQty: 0 };
+  const hasSales = (current.items?.length ?? 0) > 0;
   useEffect(() => {
     if (!salesReport) return;
     // convert server data to UI structure
@@ -315,10 +319,10 @@ const DashboardMain = ({ report, session, salesReport, stats, today }) => {
                       <div className="dashboard-dverview__top">
                         <h3 className="dashboard-dverview__title">Sales</h3>
                         <div className="dashboard-dverview__right">
-                          <CustomSelect options={options2} />
+                          <CustomSelect options={options2} value={selected}  onChange={(opt) => setSelected(opt)}/>
                         </div>
                       </div>
-                      <div className="dashboard-dverview__salse-box">
+                      {/* <div className="dashboard-dverview__salse-box">
                         <h3 className="dashboard-dverview__salse-title">
                           No Sales Yet
                         </h3>
@@ -329,7 +333,62 @@ const DashboardMain = ({ report, session, salesReport, stats, today }) => {
                         <div className="dashboard-dverview__salse-thumb">
                           <Image src={saleAvatar} alt="sales avatar" />
                         </div>
-                      </div>
+                      </div> */}
+                       {!hasSales ? (
+        // ===== Empty state (No Sales Yet) =====
+        <div className="dashboard-dverview__salse-box">
+          <h3 className="dashboard-dverview__salse-title">No Sales Yet</h3>
+          <p className="dashboard-dverview__salse-text">
+            Hang in there... We’ll notify you the moment you make a sale!
+          </p>
+          <div className="dashboard-dverview__salse-thumb">
+            {saleAvatar && (
+              <Image src={saleAvatar} alt="sales avatar" />
+            )}
+          </div>
+        </div>
+      ) : (
+        // ===== Has data =====
+        <div className="dashboard-dverview__salse-list">
+          <div className="dashboard-dverview__salse-summary">
+            <span className="dashboard-dverview__salse-total-label">Total Qty</span>
+            <span className="dashboard-dverview__salse-total-value">
+              {current.totalQty}
+            </span>
+          </div>
+
+          <ul className="dashboard-dverview__salse-ul">
+            {current.items.map((item) => (
+              <li key={item.productId} className="dashboard-dverview__salse-li">
+                <div className="dashboard-dverview__salse-li-left">
+                  <div className="dashboard-dverview__salse-li-thumb">
+                    {item.image ? (
+                      <Image
+                        src={item.image}
+                        alt={item.productName || 'Product'}
+                        width={64}
+                        height={64}
+                      />
+                    ) : (
+                      <div className="dashboard-dverview__salse-li-fallback" />
+                    )}
+                  </div>
+                  <div className="dashboard-dverview__salse-li-meta">
+                    <h4 className="dashboard-dverview__salse-li-title">
+                      {item.productName || 'Unknown Product'}
+                    </h4>
+                   
+                  </div>
+                </div>
+
+                <div className="dashboard-dverview__salse-li-right">
+                  <span className="dashboard-dverview__salse-li-qty">{item.qty}</span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
                     </div>
                   </div>
                   <div className="col-xl-6 col-lg-12 col-md-6 col-sm-12">

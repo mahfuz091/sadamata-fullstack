@@ -11,30 +11,44 @@ const paidSaleWhere = {
 
 // BRAND total income, withdrawals, and remaining balance
 export async function getBrandFinancialSummary(brandId) {
-  const [sales, payouts] = await Promise.all([
+    const paidOrderItems = await prisma.orderItem.findMany({
+    where: { order: { status: 'PAID' } },
+    select: { id: true },
+  });
+  const paidOrderItemIds = paidOrderItems.map((x) => x.id);
+  // 2️⃣ Only match sales for this merchant + paid order items
+  const saleWhere =
+    paidOrderItemIds.length > 0
+      ? { brandId, orderItemId: { in: paidOrderItemIds } }
+      : { brandId, id: { in: [] } }; // no matches → 0 results
+  const [salesAgg, payoutsAgg] = await Promise.all([
     prisma.sale.aggregate({
-      where: { ...paidSaleWhere, brandId },
-      _sum: { total: true, brandEarning: true },
+       where: saleWhere,
+      _sum: { total: true, brandEarning: true, quantity: true },
     }),
     prisma.payout.aggregate({
-      where: { actor: PayoutActor.BRAND, brandId },
+      where: { actor: 'BRAND', brandId },
       _sum: { amount: true },
     }),
   ]);
 
-  const totalSell = sales._sum.total || 0;
-  const brandTotalIncome = sales._sum.brandEarning || 0;
-  const withdrawAmount = payouts._sum.amount || 0;
-   const totalProductsSold = Number(salesAgg._sum.quantity ?? 0);
+  console.log(salesAgg, payoutsAgg, "mahfuz");
+  
+
+  // 4️⃣ Compute final values
+  const totalSell = Number(salesAgg._sum.total ?? 0);
+  const brandTotalIncome = Number(salesAgg._sum.brandEarning ?? 0);
+  const totalProductsSold = Number(salesAgg._sum.quantity ?? 0);
+  const withdrawAmount = Number(payoutsAgg._sum.amount ?? 0);
   const totalAfterWithdraw = brandTotalIncome - withdrawAmount;
 
   return {
     brandId,
     totalSell,
-    brandTotalIncome,
+  brandTotalIncome,
     withdrawAmount,
     totalAfterWithdraw,
-    totalProductsSold
+    totalProductsSold,
   };
 }
 

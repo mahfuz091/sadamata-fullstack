@@ -295,5 +295,30 @@ input[type="radio"]:checked + .color-circle {
   height: 32px;
 }
 
+.dashboard-dverview__salse-ul{
+  padding-left: 0 ;
+  list-style: none;
+  margin-top: 20px;
+}
+.dashboard-dverview__salse-li{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+.dashboard-dverview__salse-li{
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e2e8f0;
+}
+.dashboard-dverview__salse-li-left{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+.dashboard-dverview__salse-li-title{
+  font-size: 18px;
+}
 
 

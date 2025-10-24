@@ -3,6 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import { prisma } from "./lib/prisma";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+   trustHost: true, 
   secret: process.env.AUTH_SECRET,
   providers: [
     Credentials({

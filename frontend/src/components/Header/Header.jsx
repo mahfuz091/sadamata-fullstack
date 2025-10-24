@@ -1,9 +1,10 @@
 "use client";
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import logo from "@/assets/images/logo-sadamata.svg";
 import Image from "next/image";
 import avatar from "@/assets/images/shapes/aveter.png";
 import Select from "react-select";
+import { searchRedirect } from "@/app/actions/search.actions";
 const options = [
   { value: "chocolate", label: "All Categories" },
   { value: "strawberry", label: "All Categories" },
@@ -34,6 +35,28 @@ const customStyles = {
   }),
 };
 const Header = () => {
+  const [options, setOptions] = useState([]);
+  const [selected, setSelected] = useState(null);
+  const [text, setText] = useState('');
+
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await fetch('/api/mockups', { cache: 'no-store' });
+        const data = await res.json();
+        console.log(data, 'data');
+        
+        if (mounted) setOptions(data?.options ?? []);
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
+
+  const placeholder = useMemo(() => 'All Mockups', []);
   return (
     <header className="main-header main-header--one sticky-header sticky-header--normal">
       <div className="main-header__top">
@@ -45,25 +68,28 @@ const Header = () => {
               </a>
             </div>
             <div className="main-header__search-box">
-              <form action="#" className="main-header__search">
+              <form action={searchRedirect} className="main-header__search">
                 <div className="main-header__search__input-box">
-                  <Select
-                    options={options}
-                    styles={customStyles}
-                    components={{
-                      IndicatorSeparator: () => null,
-                    }}
-                    defaultValue={options[0]}
-                    isClearable={false}
-                    isSearchable={false}
-                    placeholder="All Categories"
-                  />
+                    <Select
+            options={options}
+            value={selected}                 // ❌ no default
+            onChange={(opt) => setSelected(opt)}
+            styles={customStyles}
+            components={{ IndicatorSeparator: () => null }}
+            isClearable={true}
+            isSearchable={true}
+            placeholder={placeholder}
+          />
+          {/* hidden input: server action এ slug যাবে */}
+          <input type="hidden" name="slug" value={selected?.value || ''} />
                 </div>
                 <div className="main-header__search__input-box">
                   <input
                     type="text"
                     name="text"
                     placeholder="Search your products"
+                    value={text}
+            onChange={(e) => setText(e.target.value)}
                   />
                   <button type="submit" className="main-header__search__button">
                     <i className="fas fa-search"></i>

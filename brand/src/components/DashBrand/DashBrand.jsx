@@ -1,161 +1,48 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import image from "@/assets/images/products/product-d-4-1.png";
-import itemImage from "@/assets/images/products/item-1-1.png";
-
+import DashSidebar from "../DashSidebar/DashSidebar";
 import bgImage from "@/assets/images/backgrounds/admin-bg-home.jpg";
 import userImage from "@/assets/images/resources/user-1-1.png";
-
-import item1 from "@/assets/images/products/product-4-1.png";
-import item2 from "@/assets/images/products/product-4-1.png";
-import item3 from "@/assets/images/products/product-4-1.png";
-import item4 from "@/assets/images/products/product-4-1.png";
-import item5 from "@/assets/images/products/product-4-1.png";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import Responsive from "./responsive";
-import CustomSelect from "../CustomSelect/CustomSelect";
-import DashSidebar from "../DashSidebar/DashSidebar";
-
-var settings = {
-  dots: true,
-  infinite: false,
-  speed: 300,
-  slidesToShow: 4,
-  slidesToScroll: 4,
-  initialSlide: 0,
-  responsive: [
-    {
-      breakpoint: 1024,
-      settings: {
-        slidesToShow: 3,
-        slidesToScroll: 3,
-        dots: true,
-      },
-    },
-    {
-      breakpoint: 600,
-      settings: {
-        slidesToShow: 2,
-        slidesToScroll: 2,
-        dots: true,
-      },
-    },
-    {
-      breakpoint: 480,
-      settings: {
-        slidesToShow: 1,
-        slidesToScroll: 1,
-      },
-    },
-  ],
-};
-
-const items = [
-  {
-    brand: "Disney",
-    title: "Disney The Lion King Scar I'm Surrounded T‑Shirt",
-    price: "17.95",
-    rating: 4.9,
-    reviews: 65,
-  },
-  {
-    brand: "Disney",
-    title: "Disney The Lion King Scar I'm Surrounded T‑Shirt",
-    price: "17.95",
-    rating: 4.9,
-    reviews: 65,
-  },
-  {
-    brand: "Disney",
-    title: "Disney The Lion King Scar I'm Surrounded T‑Shirt",
-    price: "17.95",
-    rating: 4.9,
-    reviews: 65,
-  },
-  ,
-  {
-    brand: "Disney",
-    title: "Disney The Lion King Scar I'm Surrounded T‑Shirt",
-    price: "17.95",
-    rating: 4.9,
-    reviews: 65,
-  },
-  ,
-  {
-    brand: "Disney",
-    title: "Disney The Lion King Scar I'm Surrounded T‑Shirt",
-    price: "17.95",
-    rating: 4.9,
-    reviews: 65,
-  },
-  ,
-  {
-    brand: "Disney",
-    title: "Disney The Lion King Scar I'm Surrounded T‑Shirt",
-    price: "17.95",
-    rating: 4.9,
-    reviews: 65,
-  },
-];
-
-export default function DashBrand() {
-  const [fileName, setFileName] = useState("");
-  const [charCount, setCharCount] = useState(200);
-
-  const handleFileChange = (e) => {
-    if (e.target.files[0]) {
-      setFileName(e.target.files[0].name);
-    }
-  };
-
-  const handleKeywordChange = (e) => {
-    setCharCount(200 - e.target.value.length);
-  };
-  const options = [
-    { value: "chocolate", label: "Marketplace: All" },
-    { value: "strawberry", label: "Marketplace: All" },
-    { value: "vanilla", label: "Marketplace: All" },
-  ];
+const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE_URL ;
+export default function DashBrand({ data = [] , brandName}) {
+  const [activeIdx, setActiveIdx] = useState(0);
+  const activeMockup = useMemo(() => data[activeIdx], [data, activeIdx]);
 
   return (
-    <section className='dashboard-area section-space'>
-      <div className='container'>
-        <div className='row gutter-x-40'>
-          <div className='col-lg-3'>
+    <section className="dashboard-area section-space">
+      <div className="container">
+        <div className="row gutter-x-40">
+          <div className="col-lg-3">
             <DashSidebar />
           </div>
 
-          <div className='col-lg-9'>
-            <div class='dashboard-area__content'>
-              <div className='brand-profile-top'>
+          <div className="col-lg-9">
+            <div className="dashboard-area__content">
+              <div className="brand-profile-top">
                 <div
-                  className='brand-profile-top__bg'
+                  className="brand-profile-top__bg"
                   style={{
                     backgroundImage: `url(${bgImage.src})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                   }}
-                ></div>
-
-                <div className='brand-profile-top__inner'>
-                  <div className='brand-profile-top__profile'>
-                    <div className='brand-profile-top__left'>
-                      <div className='brand-profile-top__image'>
-                        <Image src={userImage} alt='user image' />
+                />
+                <div className="brand-profile-top__inner">
+                  <div className="brand-profile-top__profile">
+                    <div className="brand-profile-top__left">
+                      <div className="brand-profile-top__image">
+                        <Image src={userImage} alt="user image" />
                       </div>
-                      <div className='brand-profile-top__content'>
-                        <h4 className='brand-profile-top__name'>Disney</h4>
-                        <span className='brand-profile-top__followers'>
+                      <div className="brand-profile-top__content">
+                        <h4 className="brand-profile-top__name">{brandName}</h4>
+
+                         <span className='brand-profile-top__followers'>
                           5.8K Followers
                         </span>
                       </div>
                     </div>
-
                     <div className='brand-profile-top__right'>
                       <div className='brand-profile-top__btn'>
                         <a href='#' className='commerce-btn'>
@@ -165,92 +52,102 @@ export default function DashBrand() {
                     </div>
                   </div>
 
-                  <ul className='brand-profile-top__list list-unstyled'>
-                    {Array.from({ length: 8 }).map((_, idx) => (
-                      <li key={idx} className={idx === 0 ? "active" : ""}>
-                        <a href='#'>Brand Name</a>
+                  {/* Tabs: all mockup names */}
+                  <ul className="brand-profile-top__list list-unstyled">
+                    {data.map((m, idx) => (
+                      <li key={m.id} className={idx === activeIdx ? "active" : ""}>
+                        <a
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setActiveIdx(idx);
+                          }}
+                          title={`${m.name} • ${m.productCount} products`}
+                        >
+                          {m.name}
+                        </a>
                       </li>
                     ))}
                   </ul>
                 </div>
               </div>
-              <div className='brand-item-area'>
-                <div className='row gutter-x-51 gutter-y-20'>
-                  {items.map((item, idx) => (
-                    <div key={idx} className='col-lg-4 col-md-6 col-sm-6'>
-                      <div className='brand-item'>
-                        <div className='brand-item__img'>
-                          <a href='#' className='brand-item__img__item'>
-                            <Image
-                              src={itemImage}
-                              alt='product image'
-                              width={300}
-                              height={300}
-                            />
-                          </a>
-                          <div className='brand-item__dropdown'>
-                            <a
-                              className='dropdown-toggle'
-                              href='#'
-                              role='button'
-                              id={`dropdownMenuLink-${idx}`}
-                              data-bs-toggle='dropdown'
-                              aria-expanded='false'
-                            >
-                              <i className='fas fa-ellipsis-h'></i>
-                            </a>
-                            <ul
-                              className='dropdown-menu'
-                              aria-labelledby={`dropdownMenuLink-${idx}`}
-                            >
-                              <li>
-                                <a className='dropdown-item' href='#'>
-                                  Edit
-                                  {/* SVG omitted for brevity */}
+
+              {/* Products for the active mockup */}
+              <div className="brand-item-area">
+                <div className="row gutter-x-51 gutter-y-20">
+                  {activeMockup?.products?.length ? (
+                    activeMockup.products.map((item) => {
+                      const img = item?.variant?.frontImg || "/placeholder-300x300.png";
+                      return (
+                        <div key={item.id} className="col-lg-4 col-md-6 col-sm-6">
+                          <div className="brand-item">
+                            <div className="brand-item__img">
+                              <a href={`/products/${item.id}`} className="brand-item__img__item">
+                                <Image  src={`${ASSET_BASE}${img}`} alt={item.title} width={300} height={300} />
+                              </a>
+                              <div className="brand-item__dropdown">
+                                <a
+                                  className="dropdown-toggle"
+                                  href="#"
+                                  role="button"
+                                  data-bs-toggle="dropdown"
+                                  aria-expanded="false"
+                                >
+                                  <i className="fas fa-ellipsis-h" />
                                 </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='#'>
-                                  Delete
-                                  {/* SVG omitted for brevity */}
-                                </a>
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                        <div className='brand-item__content'>
-                          <p className='brand-item__brand'>
-                            Brand: <a href='#'>{item.brand}</a>
-                          </p>
-                          <h4 className='brand-item__title'>
-                            <a href='product-details.html'>{item.title}</a>
-                          </h4>
-                          <div className='brand-item__box'>
-                            <div className='brand-item__price'>
-                              ${item.price}
+                                <ul className="dropdown-menu">
+                                  <li>
+                                    <a className="dropdown-item" href={`/dashboard/products/${item.id}/edit`}>
+                                      Edit
+                                    </a>
+                                  </li>
+                                  <li>
+                                    <a className="dropdown-item" href={`/dashboard/products/${item.id}/delete`}>
+                                      Delete
+                                    </a>
+                                  </li>
+                                </ul>
+                              </div>
                             </div>
-                            <div className='brand-item__ratings'>
-                              {Array.from({ length: 5 }).map((_, starIdx) => (
-                                <i
-                                  key={starIdx}
-                                  className={`fas fa-star${
-                                    starIdx + 1 <= Math.floor(item.rating)
-                                      ? ""
-                                      : "-half"
-                                  }`}
-                                ></i>
-                              ))}
-                              <span>
-                                {item.rating} ({item.reviews})
-                              </span>
+
+                            <div className="brand-item__content">
+                              <p className="brand-item__brand">
+                                Brand:{" "}
+                                <a href={item.brand?.id ? `/brands/${item.brand.id}` : "#"}>
+                                  {item.brand?.name || item.brandName || "—"}
+                                </a>
+                              </p>
+                              <h4 className="brand-item__title">
+                                <a href={`/products/${item.id}`}>{item.title}</a>
+                              </h4>
+                              <div className="brand-item__box">
+                                <div className="brand-item__price">
+                                  ${Number(item.price).toFixed(2)}
+                                </div>
+                                <div className="brand-item__ratings">
+                                  <i className="fas fa-star" />
+                                  <i className="fas fa-star" />
+                                  <i className="fas fa-star" />
+                                  <i className="fas fa-star" />
+                                  <i className="fas fa-star" />
+                                  <span> 5.0</span>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
+                      );
+                    })
+                  ) : (
+                    <div className="col-12">
+                      <div className="alert alert-info">
+                        এই mockup-এর অধীনে কোনো active product পাওয়া যায়নি।
                       </div>
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
+              {/* end products */}
             </div>
           </div>
         </div>

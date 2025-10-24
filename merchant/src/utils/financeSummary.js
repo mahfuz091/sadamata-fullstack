@@ -25,7 +25,7 @@ export async function getBrandFinancialSummary(brandId) {
   const totalSell = sales._sum.total || 0;
   const brandTotalIncome = sales._sum.brandEarning || 0;
   const withdrawAmount = payouts._sum.amount || 0;
-   const totalProductsSold = Number(salesAgg._sum.quantity ?? 0);
+   const totalProductsSold = Number(sales._sum.quantity ?? 0);
   const totalAfterWithdraw = brandTotalIncome - withdrawAmount;
 
   return {

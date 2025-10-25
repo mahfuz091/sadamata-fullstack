@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Canvas, FabricImage, FabricText } from "fabric"; // Fabric.js v6
+import { Canvas, FabricImage, } from "fabric"; // Fabric.js v6
 import DashSidebar from "../DashSidebar/DashSidebar";
 import Tag from "./Tag";
 import { toast } from "sonner";
@@ -9,7 +9,7 @@ import { createProduct } from "@/app/actions/product/product.actions";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import BrandDropdown from "./BrandDropDown";
-import { prisma } from "@/lib/prisma";
+
 
 const SPINNER_SVG_DATAURI =
   "data:image/svg+xml;utf8," +
@@ -21,7 +21,7 @@ const SPINNER_SVG_DATAURI =
 </svg>`);
 
 export default function AddDesignFitNew({ allMockup, currentUserId, brands , user}) {
-console.log(user);
+
 
 
   const [activeProductIndex, setActiveProductIndex] = useState(null);

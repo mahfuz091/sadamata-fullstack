@@ -3,6 +3,7 @@ import { getAllMockups } from "@/app/actions/mockup/mockup.actions";
 import { auth } from "@/auth";
 
 import AddDesignFitNew from "@/components/AddDesign/AddDesignFitNew";
+import { prisma } from "@/lib/prisma";
 
 
 import React from "react";

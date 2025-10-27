@@ -20,8 +20,13 @@ const nextConfig = {
         pathname: "/**", // or "/uploads/**" if you want to restrict
       },
       {
-        protocol: "http",
+        protocol: "https",
         hostname: "merch.sadamata.com",
+        pathname: "/**", // or "/uploads/**" if you want to restrict
+      },
+      {
+        protocol: "https",
+        hostname: "www.merch.sadamata.com",
         pathname: "/**", // or "/uploads/**" if you want to restrict
       },
     ],

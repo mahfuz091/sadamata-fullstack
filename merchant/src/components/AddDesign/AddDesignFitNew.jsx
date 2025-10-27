@@ -211,6 +211,7 @@ const [designImageFile, setDesignImageFile] = useState(null);
   const addSpinnerToCanvas = (fabricCanvas) => {
     if (!fabricCanvas || spinnerObj) return;
     const img = new Image();
+    img.crossOrigin = "anonymous"; 
     img.src = SPINNER_SVG_DATAURI;
     img.onload = () => {
       const spin = new FabricImage(img, {
@@ -279,6 +280,7 @@ const [designImageFile, setDesignImageFile] = useState(null);
   const addDesignToCanvas = (fabricCanvas) => {
     if (!fabricCanvas || !designImage) return;
     const designImg = new Image();
+    designImg.crossOrigin = "anonymous"; 
     designImg.src = designImage;
     designImg.onload = () => {
       const fabricImg = new FabricImage(designImg);
@@ -299,6 +301,7 @@ const [designImageFile, setDesignImageFile] = useState(null);
   const addDesignToBackCanvas = (fabricCanvas) => {
     if (!fabricCanvas || !designBack) return;
     const designImg = new Image();
+    designImg.crossOrigin = "anonymous"; 
     designImg.src = designBack;
     designImg.onload = () => {
       const fabricImg = new FabricImage(designImg);
@@ -319,6 +322,7 @@ const [designImageFile, setDesignImageFile] = useState(null);
   const addDesignToSmallCanvas = (fabricCanvas) => {
     if (!fabricCanvas || !designImage) return;
     const designImg = new Image();
+    designImg.crossOrigin = "anonymous"; 
     designImg.src = designImage;
     designImg.onload = () => {
       const targetWidth = 80;
@@ -391,6 +395,7 @@ const [designImageFile, setDesignImageFile] = useState(null);
     if (!src) return;
 
     const img = new Image();
+    img.crossOrigin = "anonymous"; 
     img.src = src;
     img.onload = () => {
       const base = new FabricImage(img);
@@ -437,6 +442,7 @@ const [designImageFile, setDesignImageFile] = useState(null);
     if (!src) return;
 
     const img = new Image();
+    img.crossOrigin = "anonymous"; 
     img.src = src;
     img.onload = () => {
       const base = new FabricImage(img);

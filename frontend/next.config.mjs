@@ -19,6 +19,11 @@ const nextConfig = {
         hostname: "merchant-chi.vercel.app",
         pathname: "/**", // or "/uploads/**" if you want to restrict
       },
+      {
+        protocol: "https",
+        hostname: "merch.sadamata.com",
+        pathname: "/**", // or "/uploads/**" if you want to restrict
+      },
     ],
   },
     experimental: {

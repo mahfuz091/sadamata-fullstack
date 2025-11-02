@@ -3,6 +3,8 @@ import { getAllMockups } from "@/app/actions/mockup/mockup.actions";
 import { auth } from "@/auth";
 
 import AddDesignFitNew from "@/components/AddDesign/AddDesignFitNew";
+import AddDesignFitNew2 from "@/components/AddDesign/AddDesignFitNew2";
+import AddDesignFitNewN from "@/components/AddDesign/AddDesignFitNewN";
 import { prisma } from "@/lib/prisma";
 
 
@@ -23,7 +25,7 @@ const page =async () => {
   },
 });
 console.log(brands, "mockup");
-  return <AddDesignFitNew allMockup={allMockup} currentUserId={currentUserId} brands={brands}  user={user}/>;
+  return <AddDesignFitNew2 allMockup={allMockup} currentUserId={currentUserId} brands={brands}  user={user}/>;
 };
 
 export default page;

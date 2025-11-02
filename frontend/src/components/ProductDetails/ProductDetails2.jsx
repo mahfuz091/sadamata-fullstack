@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
+import Select from "react-select";
 import { Container, Row, Col } from "react-bootstrap";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Thumbs } from "swiper/modules";
@@ -68,10 +69,20 @@ export default function ProductDetails2({ product }) {
     () => groupByFit(product?.variants || []),
     [product?.variants]
   );
+  const availableFits = useMemo(
+  () => ["MEN", "WOMEN", "YOUTH"].filter((k) => (grouped[k] || []).length > 0),
+  [grouped]
+);
 
-  const initialFit = product?.variants?.[0]?.fitType || "MEN";
-  const [fit, setFit] = useState(initialFit);
+  // const initialFit = product?.variants?.[0]?.fitType || "MEN";
+  // const [fit, setFit] = useState(initialFit);
+  const initialFit = availableFits[0] || "MEN";
+const [fit, setFit] = useState(initialFit);
   const [size, setSize] = useState("S");
+  useEffect(() => {
+  if (!availableFits.length) return;
+  setFit((prev) => (availableFits.includes(prev) ? prev : availableFits[0]));
+}, [availableFits]);
 
   const fitVariants = grouped[fit] || [];
   const fitColors = useMemo(() => colorsForFit(fitVariants), [fitVariants]);
@@ -184,8 +195,15 @@ const addToCart = (product, options) => {
 };
 
 
+const fitOptions = useMemo(
+  () => availableFits.map((f) => ({ value: f, label: f })),
+  [availableFits]
+);
 
-
+// keep it controlled (same as your native select)
+const selectedFitOption =
+  fitOptions.find((o) => o.value === fit) ?? null;
+console.log(fit, 'fit')
   return (
     <>
       <section className="product-details py-5">
@@ -390,17 +408,59 @@ const addToCart = (product, options) => {
                   </div>
                   <div className="product-details__size">
                     <h4 className="product-details__box__title">Fit Type:</h4>
-                    <select
-                      className="form-select"
-                      value={fit}
-                      onChange={(e) => setFit(e.target.value)}
-                    >
-                      {["MEN", "WOMEN", "YOUTH"].map((ft) => (
-                        <option key={ft} value={ft}>
-                          {ft}
-                        </option>
-                      ))}
-                    </select>
+                    
+                   
+    {/* <select
+      className="form-select"
+      value={fit}
+      onChange={(e) => setFit(e.target.value)}
+    >
+      {availableFits.map((ft) => (
+        <option key={ft} value={ft}>
+          {ft}
+        </option>
+      ))}
+    </select> */}
+    <Select
+  className="fit-select"
+  classNamePrefix="fit"
+  options={fitOptions}
+  value={selectedFitOption}
+  onChange={(opt) => setFit(opt?.value ?? fitOptions[0]?.value ?? "")}
+  isSearchable={false}
+  // orange theming for hover/selected states
+  styles={{
+    control: (base, state) => ({
+      ...base,
+      minHeight: 38,
+      borderColor: state.isFocused ? "#ff8a00" : base.borderColor,
+      boxShadow: state.isFocused ? "0 0 0 1px #ff8a00" : "none",
+      ":hover": { borderColor: "#ff8a00" }
+    }),
+    option: (base, state) => ({
+      ...base,
+      backgroundColor: state.isSelected
+        ? "#ff8a00" // selected bg
+        : state.isFocused
+        ? "rgba(255,138,0,0.15)" // hover bg
+        : "transparent",
+      color: state.isSelected ? "#fff" : "#111",
+      ":active": {
+        backgroundColor: state.isSelected
+          ? "#ff8a00"
+          : "rgba(255,138,0,0.25)"
+      }
+    }),
+    menu: (base) => ({ ...base, zIndex: 10 }),
+    singleValue: (base) => ({ ...base, color: "#111" }),
+    dropdownIndicator: (base, state) => ({
+      ...base,
+      color: state.isFocused ? "#ff8a00" : base.color,
+      ":hover": { color: "#ff8a00" }
+    })
+  }}
+/>
+  
                   </div>
 
                   {/* Color swatches */}

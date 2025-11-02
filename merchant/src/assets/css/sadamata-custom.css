@@ -321,4 +321,49 @@ input[type="radio"]:checked + .color-circle {
   font-size: 18px;
 }
 
+.color-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.color-circle:hover {
+  transform: scale(1.1);
+}
+
+/* .color-circle.is-checked {
+  box-shadow: 0 0 0 4px orange inset;
+} */
+
+.color-circle.is-checked::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #F37927;
+  font-size: 18px;
+  font-weight: bold;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+.product-details__form .form-control-two label {
+    
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.product-details__form .form-control-two input[type="radio"] {
+    height: 25px !important;
+    width: 25px !important;
+    flex: 1;
+}
+.product-details__form .form-control-two input[type="radio"]:checked {
+    accent-color: #d55500;
+}
 

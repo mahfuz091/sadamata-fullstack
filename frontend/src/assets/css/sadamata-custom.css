@@ -349,3 +349,22 @@ ul.populer-feature__list.list-unstyled li i {
 :where(.css-dev-only-do-not-override-ac2jek).ant-space-gap-col-small {
   column-gap: 15px !important;
 }
+
+.product__item__img__item {
+   background: none !important;
+ 
+}
+.stdropdown-container{
+  height: 100%;
+  min-height: 64px;
+    border-radius: 10px;
+    border: 1px solid #dedef5;
+}
+.stsearch-box{
+  height: 100%;
+}
+.stsearch-box input {
+   border: none;
+   outline: none;
+}
+ 

@@ -4205,6 +4205,7 @@ export namespace Prisma {
   export type UserAddressMinAggregateOutputType = {
     id: string | null
     userId: string | null
+    profileImage: string | null
     firstName: string | null
     lastName: string | null
     phone: string | null
@@ -4218,6 +4219,7 @@ export namespace Prisma {
   export type UserAddressMaxAggregateOutputType = {
     id: string | null
     userId: string | null
+    profileImage: string | null
     firstName: string | null
     lastName: string | null
     phone: string | null
@@ -4231,6 +4233,7 @@ export namespace Prisma {
   export type UserAddressCountAggregateOutputType = {
     id: number
     userId: number
+    profileImage: number
     firstName: number
     lastName: number
     phone: number
@@ -4246,6 +4249,7 @@ export namespace Prisma {
   export type UserAddressMinAggregateInputType = {
     id?: true
     userId?: true
+    profileImage?: true
     firstName?: true
     lastName?: true
     phone?: true
@@ -4259,6 +4263,7 @@ export namespace Prisma {
   export type UserAddressMaxAggregateInputType = {
     id?: true
     userId?: true
+    profileImage?: true
     firstName?: true
     lastName?: true
     phone?: true
@@ -4272,6 +4277,7 @@ export namespace Prisma {
   export type UserAddressCountAggregateInputType = {
     id?: true
     userId?: true
+    profileImage?: true
     firstName?: true
     lastName?: true
     phone?: true
@@ -4358,6 +4364,7 @@ export namespace Prisma {
   export type UserAddressGroupByOutputType = {
     id: string
     userId: string
+    profileImage: string | null
     firstName: string
     lastName: string
     phone: string
@@ -4388,6 +4395,7 @@ export namespace Prisma {
   export type UserAddressSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
+    profileImage?: boolean
     firstName?: boolean
     lastName?: boolean
     phone?: boolean
@@ -4404,6 +4412,7 @@ export namespace Prisma {
   export type UserAddressSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
+    profileImage?: boolean
     firstName?: boolean
     lastName?: boolean
     phone?: boolean
@@ -4418,6 +4427,7 @@ export namespace Prisma {
   export type UserAddressSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
+    profileImage?: boolean
     firstName?: boolean
     lastName?: boolean
     phone?: boolean
@@ -4432,6 +4442,7 @@ export namespace Prisma {
   export type UserAddressSelectScalar = {
     id?: boolean
     userId?: boolean
+    profileImage?: boolean
     firstName?: boolean
     lastName?: boolean
     phone?: boolean
@@ -4442,7 +4453,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type UserAddressOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "firstName" | "lastName" | "phone" | "email" | "address" | "isDefault" | "createdAt" | "updatedAt", ExtArgs["result"]["userAddress"]>
+  export type UserAddressOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "profileImage" | "firstName" | "lastName" | "phone" | "email" | "address" | "isDefault" | "createdAt" | "updatedAt", ExtArgs["result"]["userAddress"]>
   export type UserAddressInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     Order?: boolean | UserAddress$OrderArgs<ExtArgs>
@@ -4464,6 +4475,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       userId: string
+      profileImage: string | null
       firstName: string
       lastName: string
       phone: string
@@ -4899,6 +4911,7 @@ export namespace Prisma {
   interface UserAddressFieldRefs {
     readonly id: FieldRef<"UserAddress", 'String'>
     readonly userId: FieldRef<"UserAddress", 'String'>
+    readonly profileImage: FieldRef<"UserAddress", 'String'>
     readonly firstName: FieldRef<"UserAddress", 'String'>
     readonly lastName: FieldRef<"UserAddress", 'String'>
     readonly phone: FieldRef<"UserAddress", 'String'>
@@ -24336,6 +24349,7 @@ export namespace Prisma {
   export const UserAddressScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
+    profileImage: 'profileImage',
     firstName: 'firstName',
     lastName: 'lastName',
     phone: 'phone',
@@ -24888,6 +24902,7 @@ export namespace Prisma {
     NOT?: UserAddressWhereInput | UserAddressWhereInput[]
     id?: StringFilter<"UserAddress"> | string
     userId?: StringFilter<"UserAddress"> | string
+    profileImage?: StringNullableFilter<"UserAddress"> | string | null
     firstName?: StringFilter<"UserAddress"> | string
     lastName?: StringFilter<"UserAddress"> | string
     phone?: StringFilter<"UserAddress"> | string
@@ -24903,6 +24918,7 @@ export namespace Prisma {
   export type UserAddressOrderByWithRelationInput = {
     id?: SortOrder
     userId?: SortOrder
+    profileImage?: SortOrderInput | SortOrder
     firstName?: SortOrder
     lastName?: SortOrder
     phone?: SortOrder
@@ -24921,6 +24937,7 @@ export namespace Prisma {
     OR?: UserAddressWhereInput[]
     NOT?: UserAddressWhereInput | UserAddressWhereInput[]
     userId?: StringFilter<"UserAddress"> | string
+    profileImage?: StringNullableFilter<"UserAddress"> | string | null
     firstName?: StringFilter<"UserAddress"> | string
     lastName?: StringFilter<"UserAddress"> | string
     phone?: StringFilter<"UserAddress"> | string
@@ -24936,6 +24953,7 @@ export namespace Prisma {
   export type UserAddressOrderByWithAggregationInput = {
     id?: SortOrder
     userId?: SortOrder
+    profileImage?: SortOrderInput | SortOrder
     firstName?: SortOrder
     lastName?: SortOrder
     phone?: SortOrder
@@ -24955,6 +24973,7 @@ export namespace Prisma {
     NOT?: UserAddressScalarWhereWithAggregatesInput | UserAddressScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"UserAddress"> | string
     userId?: StringWithAggregatesFilter<"UserAddress"> | string
+    profileImage?: StringNullableWithAggregatesFilter<"UserAddress"> | string | null
     firstName?: StringWithAggregatesFilter<"UserAddress"> | string
     lastName?: StringWithAggregatesFilter<"UserAddress"> | string
     phone?: StringWithAggregatesFilter<"UserAddress"> | string
@@ -26450,6 +26469,7 @@ export namespace Prisma {
 
   export type UserAddressCreateInput = {
     id?: string
+    profileImage?: string | null
     firstName: string
     lastName: string
     phone: string
@@ -26465,6 +26485,7 @@ export namespace Prisma {
   export type UserAddressUncheckedCreateInput = {
     id?: string
     userId: string
+    profileImage?: string | null
     firstName: string
     lastName: string
     phone: string
@@ -26478,6 +26499,7 @@ export namespace Prisma {
 
   export type UserAddressUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -26493,6 +26515,7 @@ export namespace Prisma {
   export type UserAddressUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -26507,6 +26530,7 @@ export namespace Prisma {
   export type UserAddressCreateManyInput = {
     id?: string
     userId: string
+    profileImage?: string | null
     firstName: string
     lastName: string
     phone: string
@@ -26519,6 +26543,7 @@ export namespace Prisma {
 
   export type UserAddressUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -26532,6 +26557,7 @@ export namespace Prisma {
   export type UserAddressUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -28276,6 +28302,7 @@ export namespace Prisma {
   export type UserAddressCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    profileImage?: SortOrder
     firstName?: SortOrder
     lastName?: SortOrder
     phone?: SortOrder
@@ -28289,6 +28316,7 @@ export namespace Prisma {
   export type UserAddressMaxOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    profileImage?: SortOrder
     firstName?: SortOrder
     lastName?: SortOrder
     phone?: SortOrder
@@ -28302,6 +28330,7 @@ export namespace Prisma {
   export type UserAddressMinOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    profileImage?: SortOrder
     firstName?: SortOrder
     lastName?: SortOrder
     phone?: SortOrder
@@ -31479,6 +31508,7 @@ export namespace Prisma {
 
   export type UserAddressCreateWithoutUserInput = {
     id?: string
+    profileImage?: string | null
     firstName: string
     lastName: string
     phone: string
@@ -31492,6 +31522,7 @@ export namespace Prisma {
 
   export type UserAddressUncheckedCreateWithoutUserInput = {
     id?: string
+    profileImage?: string | null
     firstName: string
     lastName: string
     phone: string
@@ -31827,6 +31858,7 @@ export namespace Prisma {
     NOT?: UserAddressScalarWhereInput | UserAddressScalarWhereInput[]
     id?: StringFilter<"UserAddress"> | string
     userId?: StringFilter<"UserAddress"> | string
+    profileImage?: StringNullableFilter<"UserAddress"> | string | null
     firstName?: StringFilter<"UserAddress"> | string
     lastName?: StringFilter<"UserAddress"> | string
     phone?: StringFilter<"UserAddress"> | string
@@ -34259,6 +34291,7 @@ export namespace Prisma {
 
   export type UserAddressCreateWithoutOrderInput = {
     id?: string
+    profileImage?: string | null
     firstName: string
     lastName: string
     phone: string
@@ -34273,6 +34306,7 @@ export namespace Prisma {
   export type UserAddressUncheckedCreateWithoutOrderInput = {
     id?: string
     userId: string
+    profileImage?: string | null
     firstName: string
     lastName: string
     phone: string
@@ -34409,6 +34443,7 @@ export namespace Prisma {
 
   export type UserAddressUpdateWithoutOrderInput = {
     id?: StringFieldUpdateOperationsInput | string
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -34423,6 +34458,7 @@ export namespace Prisma {
   export type UserAddressUncheckedUpdateWithoutOrderInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -35378,6 +35414,7 @@ export namespace Prisma {
 
   export type UserAddressCreateManyUserInput = {
     id?: string
+    profileImage?: string | null
     firstName: string
     lastName: string
     phone: string
@@ -35627,6 +35664,7 @@ export namespace Prisma {
 
   export type UserAddressUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -35640,6 +35678,7 @@ export namespace Prisma {
 
   export type UserAddressUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -35653,6 +35692,7 @@ export namespace Prisma {
 
   export type UserAddressUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string

@@ -17,7 +17,7 @@ const HeaderTwo = ({ session }) => {
           <div className='main-header__inner'>
             <div className='main-header__logo'>
               <Link href='/'>
-                <Image src={logo} alt='commerce HTML' />
+                <Image src='/logo-sadamata.svg' alt='commerce HTML' width={200} height={50} />
               </Link>
             </div>
             <div className='main-header__right'>

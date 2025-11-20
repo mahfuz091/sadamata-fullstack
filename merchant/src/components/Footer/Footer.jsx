@@ -19,9 +19,8 @@ const Footer = () => {
                   <div className='footer-widget__logo'>
                     <a href='#' className='logo'>
                       <Image
-                        src={logoFooter}
-                        width={177}
-                        height='auto'
+                        src="/logo-sadamata.svg"
+                       width={200} height={50}
                         alt='logo'
                       />
                     </a>

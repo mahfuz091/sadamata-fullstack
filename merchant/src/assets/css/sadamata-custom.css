@@ -367,3 +367,7 @@ input[type="radio"]:checked + .color-circle {
     accent-color: #d55500;
 }
 
+.feature-area__list__item:hover .feature-area__list__item__icon {
+  background-color: #b2c0e3;
+  color: var(--commerce-white);
+}

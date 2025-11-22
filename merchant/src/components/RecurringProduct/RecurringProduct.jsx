@@ -8,6 +8,7 @@ import img3 from "@/assets/images/blog/recurring-1-3.jpg";
 import img4 from "@/assets/images/blog/recurring-1-4.jpg";
 import img5 from "@/assets/images/blog/recurring-1-5.jpg";
 
+
 export default function RecurringProduct() {
   const items = [
     {
@@ -17,23 +18,28 @@ export default function RecurringProduct() {
     },
     {
       title: "No inventory risk",
-      text: "Don't worry about unsold stock. We'll print your product after each sale using world-class print technology.",
+      text: "Don’t worry about unsold stock. We print your products only after each sale using top-quality print technology, so there’s no risk of excess inventory.",
       image: img2,
     },
     {
-      title: "Prime Shipping",
-      text: "All of our products are eligible for Prime Shipping so your customers can receive orders quickly.",
+      title: "Free Shipping",
+      text: "Enjoy free shipping on orders over 2,000 BDT within Dhaka and over 5,000 BDT nationwide.",
       image: img3,
     },
     {
       title: "Reach new customers",
-      text: "Your products will be available to hundreds of millions of customers.",
+      text: "Your products will be exposed to a wide audience, thanks to the brands partnered with us and our dedicated marketing team.",
       image: img4,
     },
     {
       title: "Track your success",
-      text: "Use our analysis tools for insights on your best-selling designs and watch your revenue grow.",
+      text: "Use our analytics tools to gain insights on your best-selling designs and monitor your revenue growth. Create more designs for the brands you work with to maximize your earnings.",
       image: img5,
+    },
+    {
+      title: "Need Help?",
+      text: "We’ve got you covered with dedicated email support to answer your questions and resolve any issues.",
+      image: "/images/print.png",
     },
   ];
 
@@ -48,9 +54,9 @@ export default function RecurringProduct() {
                   <Image
                     src={item.image}
                     alt={item.title}
-                    width={600}
-                    height={400}
-                    style={{ width: "100%", height: "auto" }}
+                    width={460}
+                    height={300}
+                    style={{ width: "100%", height: "auto", maxHeight: "300px" }}
                   />
                 </div>
                 <div className='recurring-product__item__content'>

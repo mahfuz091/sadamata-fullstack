@@ -10,10 +10,8 @@ export default function DoesWork() {
         <div className='does-work-one__top'>
           <h2 className='section-title'>How does it work?</h2>
           <p className='section-text'>
-            Simply upload your artwork, choose a product type and color, and add
-            a product description. We'll create a product page on Amazon and
-            when customers buy your product, we'll handle production, shipping,
-            and customer service — all with no upfront costs.
+            Simply upload your artwork, select a product type and color, and add a product description. We’ll create a product page on Sadamata.com. When customers buy your product, we take care of production, shipping, and customer service, all with no upfront costs.
+
           </p>
         </div>
 

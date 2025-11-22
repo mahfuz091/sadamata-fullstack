@@ -9,11 +9,10 @@ export default function AboutCta() {
             Want to join our community of content creators?
           </h2>
           <p className='about-cta__text'>
-            Sign up with your existing Amazon account to get started. New to
-            Amazon? Create an account during the sign up process.
+            Click on “Register” and provide the required information. We will verify your details and notify you via email within 9 days. You can also log in to your merch portal anytime to check your application status.
           </p>
-          <Link href='/login' className='commerce-btn'>
-            Sign Up <i className='icon-right-arrow'></i>
+          <Link href='/signup' className='commerce-btn'>
+            Register <i className='icon-right-arrow'></i>
           </Link>
         </div>
       </div>

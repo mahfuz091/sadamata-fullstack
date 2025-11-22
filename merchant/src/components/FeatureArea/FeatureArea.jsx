@@ -1,12 +1,13 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function FeatureArea() {
   const features = [
-    { icon: "icon-downlode", title: "Upload your artwork" },
-    { icon: "icon-doller", title: "Suggest a list price" },
-    { icon: "icon-prient", title: "We print what’s sold" },
-    { icon: "icon-delefery", title: "Fast shipping with Prime" },
-    { icon: "icon-save-doller", title: "Earn monthly royalties" },
+    { icon: "/images/Upload.svg", title: "Upload your artwork" },
+    { icon: "/images/Upload.svg", title: "Suggest a list price" },
+    { icon: "/images/sold.svg", title: "We print what’s sold" },
+    { icon: "/images/shipping.svg", title: "Fast shipping with Free" },
+    { icon: "/images/Upload.svg", title: "Earn monthly royalties" },
   ];
 
   return (
@@ -16,7 +17,7 @@ export default function FeatureArea() {
           {features.map((feature, index) => (
             <li className='feature-area__list__item' key={index}>
               <div className='feature-area__list__item__icon'>
-                <i className={feature.icon}></i>
+                <Image src={feature.icon} alt={feature.title} width={80} height={80}/>
               </div>
               <h4 className='feature-area__list__title'>
                 <Link href='#'>{feature.title}</Link>

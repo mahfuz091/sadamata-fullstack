@@ -34,7 +34,7 @@ export default function ContentCreator() {
           <div className='col-lg-6'>
             <div className='content-creator-one__thumb'>
               <Image
-                src={aboutImg}
+                src='/images/print.png'
                 alt='commerce image'
                 width={600}
                 height={400}

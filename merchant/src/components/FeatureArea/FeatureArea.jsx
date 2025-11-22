@@ -4,10 +4,10 @@ import Link from "next/link";
 export default function FeatureArea() {
   const features = [
     { icon: "/images/Upload.svg", title: "Upload your artwork" },
-    { icon: "/images/Upload.svg", title: "Suggest a list price" },
+    // { icon: "/images/Upload.svg", title: "Suggest a list price" },
     { icon: "/images/sold.svg", title: "We print what’s sold" },
     { icon: "/images/shipping.svg", title: "Fast shipping with Free" },
-    { icon: "/images/Upload.svg", title: "Earn monthly royalties" },
+    // { icon: "/images/Upload.svg", title: "Earn monthly royalties" },
   ];
 
   return (

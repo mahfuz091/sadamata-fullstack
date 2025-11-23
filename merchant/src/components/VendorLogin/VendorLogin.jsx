@@ -5,12 +5,30 @@ import Link from "next/link";
 import { loginUser } from "@/app/actions/auth/auth.actions";
 import { isValidEmail, isValidBDPhone } from "@/utils/validation"; // 👈 re-use our validators
 import { toast } from "sonner";
+import { sendResetLink } from "@/app/actions/auth/sendResetLink";
 
 const VendorLogin = () => {
   const initialState = {
     msg: "",
     success: false,
   };
+
+ /* ---------------- RESET PASSWORD ACTION ---------------- */
+  const resetInitial = { success: false, message: "" };
+
+  const [resetState, resetAction] = useActionState(sendResetLink, resetInitial);
+
+  useEffect(() => {
+    if (resetState?.message) {
+      resetState.success
+        ? toast.success(resetState.message)
+        : toast.error(resetState.message);
+    }
+  }, [resetState]);
+
+   /* ---------------- FORGOT PASSWORD MODAL ---------------- */
+  const [showForgot, setShowForgot] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
 
   const [state, formAction, isPending] = useActionState(
     loginUser,
@@ -38,24 +56,28 @@ const VendorLogin = () => {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ identifier: "", password: "" });
 
-  const handleIdentifierChange = (e) => {
-    const value = e.target.value;
-    setIdentifier(value);
+ const handleIdentifierChange = (e) => {
+  const value = e.target.value;
+  setIdentifier(value);
 
-    if (!value) {
-      setErrors((prev) => ({
-        ...prev,
-        identifier: "Email or phone is required",
-      }));
-    } else if (!isValidEmail(value) && !isValidBDPhone(value)) {
-      setErrors((prev) => ({
-        ...prev,
-        identifier: "Enter a valid email or BD phone",
-      }));
-    } else {
-      setErrors((prev) => ({ ...prev, identifier: "" }));
-    }
-  };
+  if (!value) {
+    setErrors((prev) => ({
+      ...prev,
+      identifier: "Email or phone is required",
+    }));
+  } else if (!isValidEmail(value) && !isValidBDPhone(value)) {
+    setErrors((prev) => ({
+      ...prev,
+      identifier: "Enter a valid email or BD phone",
+    }));
+  } else {
+    setErrors((prev) => ({
+      ...prev,
+      identifier: "",   // 👈 CLEAR error on valid input
+    }));
+  }
+};
+
 
   const handlePasswordChange = (e) => {
     const value = e.target.value;
@@ -66,15 +88,63 @@ const VendorLogin = () => {
     } else if (value.length < 6) {
       setErrors((prev) => ({
         ...prev,
-        password: "Password must be at least 6 characters",
+         password: "Password must be at least 6 characters",
       }));
     } else {
       setErrors((prev) => ({ ...prev, password: "" }));
     }
   };
 
+  /* ---------------- HANDLE RESET REQUEST ---------------- */
+  const submitReset = (e) => {
+    e.preventDefault();
+
+    if (!isValidEmail(resetEmail)) {
+      toast.error("Enter a valid email");
+      return;
+    }
+
+    const form = new FormData();
+    form.append("email", resetEmail);
+
+    resetAction(form);
+    setShowForgot(false);
+  };
+
   return (
-    <section className='user-login section-space'>
+    <>
+    {/* ---------------- FORGOT PASSWORD MODAL ---------------- */}
+      {showForgot && (
+        <div className="forgot-modal">
+          <div className="modal-content">
+            <h3>Reset Password</h3>
+
+            <form onSubmit={submitReset}>
+              <label>Email address</label>
+              <input
+                type="email"
+                placeholder="Enter your email"
+                value={resetEmail}
+                onChange={(e) => setResetEmail(e.target.value)}
+                required
+              />
+
+              <button type="submit" className="commerce-btn">
+                Send Reset Link
+              </button>
+
+              <button
+                type="button"
+                className="close-btn"
+                onClick={() => setShowForgot(false)}
+              >
+                x
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+     <section className='user-login section-space'>
       <div className='container'>
         <div className='user-login__inner'>
           <div className='user-login__top'>
@@ -95,7 +165,7 @@ const VendorLogin = () => {
                 required
               />
               {errors.identifier && (
-                <p className='text-red-500 text-sm mt-1'>{errors.identifier}</p>
+                <p className='form-error'>{errors.identifier}</p>
               )}
             </div>
 
@@ -112,7 +182,7 @@ const VendorLogin = () => {
                 required
               />
               {errors.password && (
-                <p className='text-red-500 text-sm mt-1'>{errors.password}</p>
+                <p className='form-error'>{errors.password}</p>
               )}
 
               <p>
@@ -125,20 +195,25 @@ const VendorLogin = () => {
             {/* Submit */}
             <div className='user-login__form-input-box'>
               <button
-                type='submit'
-                className='commerce-btn'
-                disabled={!!errors.identifier || !!errors.password || isPending}
-              >
-                {isPending ? "Login..." : "Login"}
-                <i className='icon-right-arrow' />
-              </button>
+  type="submit"
+  className={`commerce-btn ${isPending ? "loading" : ""}`}
+ disabled={!!errors.identifier || !!errors.password || isPending}
+>
+  {isPending ? (
+   <> <span className="spinner"></span> <span>Logging in...</span></>
+  ) : (
+   <> Login <i className="icon-right-arrow" /> </>
+  )}
+  
+</button>
+
             </div>
           </form>
 
           <div className='user-login__bottom'>
             <div className='user-login__bottom__top'>
-              <Link href='#'>Forgot your password?</Link>
-              <Link href='#'>Other issues with Sign-In</Link>
+              <Link href=''  onClick={() => setShowForgot(true)}>Forgot your password?</Link>
+              
             </div>
             <Link href='/signup'>
               New to here? <span>Create Account</span>
@@ -147,6 +222,9 @@ const VendorLogin = () => {
         </div>
       </div>
     </section>
+    
+    </>
+   
   );
 };
 

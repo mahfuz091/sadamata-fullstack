@@ -73,12 +73,34 @@ profileImage String?
   email     String? // optional if you prefer to use User.email
   address   String // full free-form address line
   isDefault Boolean @default(false)
-
+zipCode String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   Order     Order[]
 
   @@index([userId, isDefault])
+}
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  email     String
+  tokenHash String   @unique
+  expires   DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([email])
+}
+
+model PhoneResetOtp {
+  id        String   @id @default(cuid())
+  phone     String
+  codeHash  String
+  expires   DateTime
+  used      Boolean  @default(false)
+  attempts  Int      @default(0) // track verify attempts
+  createdAt DateTime @default(now())
+
+  @@index([phone])
 }
 
 model MerchantProfile {
@@ -113,7 +135,8 @@ model MerchantProfile {
   brandOption Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
+zipCode String?
+country String?
   @@index([bankName, bankBranch])
 }
 

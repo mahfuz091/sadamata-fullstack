@@ -37,7 +37,7 @@ const VendorLogin = () => {
     initialState
   );
 
-  // console.log(state);
+  console.log(state);
   useEffect(() => {
     if(state.message){
       if (!state?.success) {
@@ -45,7 +45,7 @@ const VendorLogin = () => {
       }
       else if(state?.success){
         toast.success(state?.message);
-        // console.log(state, "state");
+        console.log(state, "state");
         router.push('/dashboard')
       }
     }

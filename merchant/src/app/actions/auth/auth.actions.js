@@ -272,12 +272,19 @@ export const loginUser = async (prevState, formData) => {
     return { success: false, message: "Invalid password" };
   }
 
+  
+
   // NextAuth signIn
   const response = await signIn("credentials", {
-    redirect: "/dashboard",
+    redirect: false,
     identifier,
     password,
   });
+  return {
+    success: true,
+    message: "Login successful",
+    user,
+  };
 };
 
 // log out

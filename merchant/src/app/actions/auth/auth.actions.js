@@ -249,7 +249,7 @@ export const loginUser = async (prevState, formData) => {
     },
   });
 
-  console.log(user, "user");
+  // console.log(user, "user");
 
   if (!user) {
     return { success: false, message: "User not found" };

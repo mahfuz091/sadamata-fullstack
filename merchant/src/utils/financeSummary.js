@@ -103,7 +103,7 @@ export async function getMerchantFinancialSummary(merchantId) {
     }),
   ]);
 
-  console.log(salesAgg, payoutsAgg, "mahfuz");
+  // console.log(salesAgg, payoutsAgg, "mahfuz");
   
 
   // 4️⃣ Compute final values
@@ -155,9 +155,9 @@ async function main() {
   const merchantSummary = await getMerchantFinancialSummary('MERCHANT_ID_HERE');
   const platformTotals = await getPlatformTotals();
 
-  console.log('Brand Summary:', brandSummary);
-  console.log('Merchant Summary:', merchantSummary);
-  console.log('Platform Totals:', platformTotals);
+  // console.log('Brand Summary:', brandSummary);
+  // console.log('Merchant Summary:', merchantSummary);
+  // console.log('Platform Totals:', platformTotals);
 }
 
 main()

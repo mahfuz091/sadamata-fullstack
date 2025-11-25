@@ -16,7 +16,7 @@ placeholderSrc,
  const [items, setItems] = useState(initialItems);
 const [page, setPage] = useState(initialPage);
 const [isPending, startTransition] = useTransition();
-console.log(items, "items");
+// console.log(items, "items");
 
 
 const hasMore = page < totalPages;
@@ -36,7 +36,7 @@ setPage(res.page);
 }
 
   const handleSelect = (selected) => {
-    console.log("Selected:", selected);
+    // console.log("Selected:", selected);
   };
 
   const options = [

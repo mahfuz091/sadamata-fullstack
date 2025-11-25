@@ -9,7 +9,7 @@ const page = async () => {
   const session = await auth();
   const userId = session?.user?.id;
   const summery = await getMerchantFinancialSummary(userId);
-  console.log(summery);
+  // console.log(summery);
   const merchantId = session?.user?.id;
   if (!merchantId) return <div className="container py-5">Please sign in.</div>;
 

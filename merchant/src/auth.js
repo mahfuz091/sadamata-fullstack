@@ -21,14 +21,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             ],
           },
           include: {
-            addresses: {
-              where: { isDefault: true },
-              take: 1,
-            },
+            addresses: true,
           },
         });
 
         if (!user) return null;
+        console.log(user, "user authjs");
+        
 
         const defaultAddress = user.addresses[0];
 

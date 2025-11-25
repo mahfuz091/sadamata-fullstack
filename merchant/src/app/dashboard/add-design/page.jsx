@@ -24,7 +24,7 @@ const page =async () => {
     merchantProfile: true, // must match your relation field name in schema
   },
 });
-console.log(brands, "mockup");
+// console.log(brands, "mockup");
   return <AddDesignFitNew2 allMockup={allMockup} currentUserId={currentUserId} brands={brands}  user={user}/>;
 };
 

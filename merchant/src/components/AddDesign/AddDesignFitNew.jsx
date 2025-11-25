@@ -622,7 +622,7 @@ const [designImageFile, setDesignImageFile] = useState(null);
   });
 
   const [brandId , setBrandId] = useState(null);
-console.log(brandId, "brandId");
+// console.log(brandId, "brandId");
 
   // Generic handler for input and textarea fields
   const handleFeatureChange = (e) => {
@@ -633,7 +633,7 @@ console.log(brandId, "brandId");
     }));
   };
 
-  console.log(features, "features");
+  // console.log(features, "features");
 
   /** নিরাপদে ইমেজ লোড (CORS সহ) */
   const loadHTMLImage = (src) =>
@@ -1096,9 +1096,9 @@ formData.append('backDesign', designBackFile, "designback");}
 
   const handleCreateProduct = async () => {
     try {
-      console.log("Creating product...");
+      // console.log("Creating product...");
       const formData = await prepareMockupFiles();
-      console.log(formData, "formdata");
+      // console.log(formData, "formdata");
 
       if (!formData) {
         console.warn("No form data available.");
@@ -1108,7 +1108,7 @@ formData.append('backDesign', designBackFile, "designback");}
       const product = await createProduct(formData);
 
       if (product.success) {
-        console.log("Created product:", product.product);
+        // console.log("Created product:", product.product);
         toast.success("Product created!");
       } else {
         console.error("Failed to create product:", product.message);

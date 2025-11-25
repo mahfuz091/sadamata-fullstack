@@ -21,7 +21,7 @@ const page = async() => {
             addresses: true
         },
     })
-    console.log(user, 'user');
+    // console.log(user, 'user');
     
     return (
        <Profile user={user}  countries={countries}/>

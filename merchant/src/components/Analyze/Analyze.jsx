@@ -22,7 +22,7 @@ const Analyze = ({
   const [page, setPage] = useState(initialPage);
   const [isPending, startTransition] = useTransition();
 
-  console.log(initialItems, "initialItems");
+  // console.log(initialItems, "initialItems");
 
   const hasMore = page < totalPages;
 

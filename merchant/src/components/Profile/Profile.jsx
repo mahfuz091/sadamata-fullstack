@@ -8,7 +8,7 @@ const Profile = ({ user, countries }) => {
   const [editMode, setEditMode] = useState(false);
   const [phoneValue, setPhoneValue] = useState(user?.merchantProfile?.contactPhone || '');
   const [country, setCountry] = useState(null);
-console.log(country, 'country');
+// console.log(country, 'country');
 
 useEffect(() => {
   
@@ -18,7 +18,7 @@ useEffect(() => {
     const matched = countries.find(
       (c) => c.name === user.merchantProfile.country
     );
-    console.log(matched, 'matched');
+    // console.log(matched, 'matched');
     
     setCountry(matched);
   }
@@ -114,7 +114,7 @@ useEffect(() => {
               </div>
               <ul className="user-profile__info__menu list-unstyled">
                 <li className="user-profile__info__menu__item">User Profile information</li>
-                <li className="user-profile__info__menu__item">Change password</li>
+                <li className="user-profile__info__menu__item d-none">Change password</li>
                 <li className="user-profile__info__menu__item">Delete your account</li>
               </ul>
             </aside>

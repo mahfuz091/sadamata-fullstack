@@ -280,11 +280,12 @@ export const loginUser = async (prevState, formData) => {
     identifier,
     password,
   });
-  return {
-    success: true,
-    message: "Login successful",
-    user,
-  };
+  redirect("/dashboard");
+  // return {
+  //   success: true,
+  //   message: "Login successful",
+  //   user,
+  // };
 };
 
 // log out

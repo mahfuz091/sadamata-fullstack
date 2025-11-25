@@ -6,8 +6,10 @@ import { loginUser } from "@/app/actions/auth/auth.actions";
 import { isValidEmail, isValidBDPhone } from "@/utils/validation"; // 👈 re-use our validators
 import { toast } from "sonner";
 import { sendResetLink } from "@/app/actions/auth/sendResetLink";
+import { useRouter } from "next/navigation";
 
 const VendorLogin = () => {
+  const router = useRouter();
   const initialState = {
     msg: "",
     success: false,
@@ -44,6 +46,7 @@ const VendorLogin = () => {
       else if(state?.success){
         toast.success(state?.message);
         // console.log(state, "state");
+        router.push('/dashboard')
       }
     }
     

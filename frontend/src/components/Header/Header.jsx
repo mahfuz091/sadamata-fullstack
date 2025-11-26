@@ -5,6 +5,8 @@ import Image from "next/image";
 import avatar from "@/assets/images/shapes/aveter.png";
 import Select from "react-select";
 import { searchRedirect } from "@/app/actions/search.actions";
+import Link from "next/link";
+import { logOut } from "@/app/actions/auth.actions";
 const options = [
   { value: "chocolate", label: "All Categories" },
   { value: "strawberry", label: "All Categories" },
@@ -34,11 +36,11 @@ const customStyles = {
     borderBottom: "1px solid grey",
   }),
 };
-const Header = () => {
+const Header = ({ session }) => {
   const [options, setOptions] = useState([]);
   const [selected, setSelected] = useState(null);
   const [text, setText] = useState('');
-
+const [open, setOpen] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -63,9 +65,9 @@ const Header = () => {
         <div className="container-fluid">
           <div className="main-header__inner">
             <div className="main-header__logo">
-              <a href="index">
+              <Link href="/">
                 <Image src={logo} alt="sadamata" width={200} height={40} />
-              </a>
+              </Link>
             </div>
             <div className="main-header__search-box">
               <form action={searchRedirect} className="main-header__search">
@@ -116,9 +118,53 @@ const Header = () => {
                 </a>
               </div>
               <div className="main-header__author">
-                <a href="#">
+                {/* <a href="#">
                   <Image src={avatar} alt="author" />
-                </a>
+                </a> */}
+                {session?.user ? (
+    <div className="relative">
+      {/* Profile Image Button */}
+      <button
+        className="profileImageButton"
+        onClick={() => setOpen((prev) => !prev)}
+      >
+        <Image
+          src={
+            session.user.profileImage
+              ? session.user.profileImage
+              : "/avatar.png" // fallback image
+          }
+          width={40}
+          height={40}
+          alt="User Avatar"
+        style={
+          {
+            objectFit: "cover"
+          }
+        }
+        />
+      </button>
+
+      {/* Dropdown */}
+      {open && (
+      <div className="profile-dropdown">
+      <Link href="/profile" className="dropdown-item">
+        My Account
+      </Link>
+
+      <button onClick={logOut} className="dropdown-item logout-btn">
+        Logout
+      </button>
+    </div>
+      )}
+    </div>
+  ) : (
+    <>
+      <Link href="/login" className="commerce-btn login">
+        Login
+      </Link>
+    </>
+  )}
               </div>
               <div className="mobile-nav__btn mobile-nav__toggler">
                 <span></span>

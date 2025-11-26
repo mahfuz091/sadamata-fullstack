@@ -19,10 +19,25 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type User = $Result.DefaultSelection<Prisma.$UserPayload>
 /**
+ * Model UserProfile
+ * 
+ */
+export type UserProfile = $Result.DefaultSelection<Prisma.$UserProfilePayload>
+/**
  * Model UserAddress
  * 
  */
 export type UserAddress = $Result.DefaultSelection<Prisma.$UserAddressPayload>
+/**
+ * Model PasswordResetToken
+ * 
+ */
+export type PasswordResetToken = $Result.DefaultSelection<Prisma.$PasswordResetTokenPayload>
+/**
+ * Model PhoneResetOtp
+ * 
+ */
+export type PhoneResetOtp = $Result.DefaultSelection<Prisma.$PhoneResetOtpPayload>
 /**
  * Model MerchantProfile
  * 
@@ -98,6 +113,11 @@ export type Payment = $Result.DefaultSelection<Prisma.$PaymentPayload>
  * 
  */
 export type CommissionSetting = $Result.DefaultSelection<Prisma.$CommissionSettingPayload>
+/**
+ * Model Refund
+ * 
+ */
+export type Refund = $Result.DefaultSelection<Prisma.$RefundPayload>
 /**
  * Model Payout
  * 
@@ -301,6 +321,16 @@ export class PrismaClient<
   get user(): Prisma.UserDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.userProfile`: Exposes CRUD operations for the **UserProfile** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more UserProfiles
+    * const userProfiles = await prisma.userProfile.findMany()
+    * ```
+    */
+  get userProfile(): Prisma.UserProfileDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.userAddress`: Exposes CRUD operations for the **UserAddress** model.
     * Example usage:
     * ```ts
@@ -309,6 +339,26 @@ export class PrismaClient<
     * ```
     */
   get userAddress(): Prisma.UserAddressDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.passwordResetToken`: Exposes CRUD operations for the **PasswordResetToken** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PasswordResetTokens
+    * const passwordResetTokens = await prisma.passwordResetToken.findMany()
+    * ```
+    */
+  get passwordResetToken(): Prisma.PasswordResetTokenDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.phoneResetOtp`: Exposes CRUD operations for the **PhoneResetOtp** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PhoneResetOtps
+    * const phoneResetOtps = await prisma.phoneResetOtp.findMany()
+    * ```
+    */
+  get phoneResetOtp(): Prisma.PhoneResetOtpDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.merchantProfile`: Exposes CRUD operations for the **MerchantProfile** model.
@@ -459,6 +509,16 @@ export class PrismaClient<
     * ```
     */
   get commissionSetting(): Prisma.CommissionSettingDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.refund`: Exposes CRUD operations for the **Refund** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Refunds
+    * const refunds = await prisma.refund.findMany()
+    * ```
+    */
+  get refund(): Prisma.RefundDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.payout`: Exposes CRUD operations for the **Payout** model.
@@ -910,7 +970,10 @@ export namespace Prisma {
 
   export const ModelName: {
     User: 'User',
+    UserProfile: 'UserProfile',
     UserAddress: 'UserAddress',
+    PasswordResetToken: 'PasswordResetToken',
+    PhoneResetOtp: 'PhoneResetOtp',
     MerchantProfile: 'MerchantProfile',
     Brand: 'Brand',
     BrandCategory: 'BrandCategory',
@@ -926,6 +989,7 @@ export namespace Prisma {
     OrderItem: 'OrderItem',
     Payment: 'Payment',
     CommissionSetting: 'CommissionSetting',
+    Refund: 'Refund',
     Payout: 'Payout'
   };
 
@@ -945,7 +1009,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "userAddress" | "merchantProfile" | "brand" | "brandCategory" | "product" | "sale" | "saleItem" | "productVariant" | "feature" | "tag" | "mockup" | "mockupVariant" | "order" | "orderItem" | "payment" | "commissionSetting" | "payout"
+      modelProps: "user" | "userProfile" | "userAddress" | "passwordResetToken" | "phoneResetOtp" | "merchantProfile" | "brand" | "brandCategory" | "product" | "sale" | "saleItem" | "productVariant" | "feature" | "tag" | "mockup" | "mockupVariant" | "order" | "orderItem" | "payment" | "commissionSetting" | "refund" | "payout"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1023,6 +1087,80 @@ export namespace Prisma {
           }
         }
       }
+      UserProfile: {
+        payload: Prisma.$UserProfilePayload<ExtArgs>
+        fields: Prisma.UserProfileFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UserProfileFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UserProfileFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilePayload>
+          }
+          findFirst: {
+            args: Prisma.UserProfileFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UserProfileFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilePayload>
+          }
+          findMany: {
+            args: Prisma.UserProfileFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilePayload>[]
+          }
+          create: {
+            args: Prisma.UserProfileCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilePayload>
+          }
+          createMany: {
+            args: Prisma.UserProfileCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.UserProfileCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilePayload>[]
+          }
+          delete: {
+            args: Prisma.UserProfileDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilePayload>
+          }
+          update: {
+            args: Prisma.UserProfileUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilePayload>
+          }
+          deleteMany: {
+            args: Prisma.UserProfileDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UserProfileUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.UserProfileUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilePayload>[]
+          }
+          upsert: {
+            args: Prisma.UserProfileUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilePayload>
+          }
+          aggregate: {
+            args: Prisma.UserProfileAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUserProfile>
+          }
+          groupBy: {
+            args: Prisma.UserProfileGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UserProfileGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UserProfileCountArgs<ExtArgs>
+            result: $Utils.Optional<UserProfileCountAggregateOutputType> | number
+          }
+        }
+      }
       UserAddress: {
         payload: Prisma.$UserAddressPayload<ExtArgs>
         fields: Prisma.UserAddressFieldRefs
@@ -1094,6 +1232,154 @@ export namespace Prisma {
           count: {
             args: Prisma.UserAddressCountArgs<ExtArgs>
             result: $Utils.Optional<UserAddressCountAggregateOutputType> | number
+          }
+        }
+      }
+      PasswordResetToken: {
+        payload: Prisma.$PasswordResetTokenPayload<ExtArgs>
+        fields: Prisma.PasswordResetTokenFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PasswordResetTokenFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PasswordResetTokenFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+          }
+          findFirst: {
+            args: Prisma.PasswordResetTokenFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PasswordResetTokenFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+          }
+          findMany: {
+            args: Prisma.PasswordResetTokenFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>[]
+          }
+          create: {
+            args: Prisma.PasswordResetTokenCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+          }
+          createMany: {
+            args: Prisma.PasswordResetTokenCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PasswordResetTokenCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>[]
+          }
+          delete: {
+            args: Prisma.PasswordResetTokenDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+          }
+          update: {
+            args: Prisma.PasswordResetTokenUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+          }
+          deleteMany: {
+            args: Prisma.PasswordResetTokenDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PasswordResetTokenUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PasswordResetTokenUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>[]
+          }
+          upsert: {
+            args: Prisma.PasswordResetTokenUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+          }
+          aggregate: {
+            args: Prisma.PasswordResetTokenAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePasswordResetToken>
+          }
+          groupBy: {
+            args: Prisma.PasswordResetTokenGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PasswordResetTokenGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PasswordResetTokenCountArgs<ExtArgs>
+            result: $Utils.Optional<PasswordResetTokenCountAggregateOutputType> | number
+          }
+        }
+      }
+      PhoneResetOtp: {
+        payload: Prisma.$PhoneResetOtpPayload<ExtArgs>
+        fields: Prisma.PhoneResetOtpFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PhoneResetOtpFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneResetOtpPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PhoneResetOtpFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneResetOtpPayload>
+          }
+          findFirst: {
+            args: Prisma.PhoneResetOtpFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneResetOtpPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PhoneResetOtpFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneResetOtpPayload>
+          }
+          findMany: {
+            args: Prisma.PhoneResetOtpFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneResetOtpPayload>[]
+          }
+          create: {
+            args: Prisma.PhoneResetOtpCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneResetOtpPayload>
+          }
+          createMany: {
+            args: Prisma.PhoneResetOtpCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PhoneResetOtpCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneResetOtpPayload>[]
+          }
+          delete: {
+            args: Prisma.PhoneResetOtpDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneResetOtpPayload>
+          }
+          update: {
+            args: Prisma.PhoneResetOtpUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneResetOtpPayload>
+          }
+          deleteMany: {
+            args: Prisma.PhoneResetOtpDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PhoneResetOtpUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PhoneResetOtpUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneResetOtpPayload>[]
+          }
+          upsert: {
+            args: Prisma.PhoneResetOtpUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneResetOtpPayload>
+          }
+          aggregate: {
+            args: Prisma.PhoneResetOtpAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePhoneResetOtp>
+          }
+          groupBy: {
+            args: Prisma.PhoneResetOtpGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PhoneResetOtpGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PhoneResetOtpCountArgs<ExtArgs>
+            result: $Utils.Optional<PhoneResetOtpCountAggregateOutputType> | number
           }
         }
       }
@@ -2207,6 +2493,80 @@ export namespace Prisma {
           }
         }
       }
+      Refund: {
+        payload: Prisma.$RefundPayload<ExtArgs>
+        fields: Prisma.RefundFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RefundFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RefundPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RefundFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RefundPayload>
+          }
+          findFirst: {
+            args: Prisma.RefundFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RefundPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RefundFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RefundPayload>
+          }
+          findMany: {
+            args: Prisma.RefundFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RefundPayload>[]
+          }
+          create: {
+            args: Prisma.RefundCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RefundPayload>
+          }
+          createMany: {
+            args: Prisma.RefundCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RefundCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RefundPayload>[]
+          }
+          delete: {
+            args: Prisma.RefundDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RefundPayload>
+          }
+          update: {
+            args: Prisma.RefundUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RefundPayload>
+          }
+          deleteMany: {
+            args: Prisma.RefundDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RefundUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RefundUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RefundPayload>[]
+          }
+          upsert: {
+            args: Prisma.RefundUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RefundPayload>
+          }
+          aggregate: {
+            args: Prisma.RefundAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRefund>
+          }
+          groupBy: {
+            args: Prisma.RefundGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RefundGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RefundCountArgs<ExtArgs>
+            result: $Utils.Optional<RefundCountAggregateOutputType> | number
+          }
+        }
+      }
       Payout: {
         payload: Prisma.$PayoutPayload<ExtArgs>
         fields: Prisma.PayoutFieldRefs
@@ -2378,7 +2738,10 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     user?: UserOmit
+    userProfile?: UserProfileOmit
     userAddress?: UserAddressOmit
+    passwordResetToken?: PasswordResetTokenOmit
+    phoneResetOtp?: PhoneResetOtpOmit
     merchantProfile?: MerchantProfileOmit
     brand?: BrandOmit
     brandCategory?: BrandCategoryOmit
@@ -2394,6 +2757,7 @@ export namespace Prisma {
     orderItem?: OrderItemOmit
     payment?: PaymentOmit
     commissionSetting?: CommissionSettingOmit
+    refund?: RefundOmit
     payout?: PayoutOmit
   }
 
@@ -2748,10 +3112,12 @@ export namespace Prisma {
 
   export type SaleCountOutputType = {
     SaleItem: number
+    Refund: number
   }
 
   export type SaleCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     SaleItem?: boolean | SaleCountOutputTypeCountSaleItemArgs
+    Refund?: boolean | SaleCountOutputTypeCountRefundArgs
   }
 
   // Custom InputTypes
@@ -2770,6 +3136,13 @@ export namespace Prisma {
    */
   export type SaleCountOutputTypeCountSaleItemArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SaleItemWhereInput
+  }
+
+  /**
+   * SaleCountOutputType without action
+   */
+  export type SaleCountOutputTypeCountRefundArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RefundWhereInput
   }
 
 
@@ -2850,10 +3223,12 @@ export namespace Prisma {
 
   export type OrderItemCountOutputType = {
     Sale: number
+    Refund: number
   }
 
   export type OrderItemCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Sale?: boolean | OrderItemCountOutputTypeCountSaleArgs
+    Refund?: boolean | OrderItemCountOutputTypeCountRefundArgs
   }
 
   // Custom InputTypes
@@ -2872,6 +3247,13 @@ export namespace Prisma {
    */
   export type OrderItemCountOutputTypeCountSaleArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SaleWhereInput
+  }
+
+  /**
+   * OrderItemCountOutputType without action
+   */
+  export type OrderItemCountOutputTypeCountRefundArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RefundWhereInput
   }
 
 
@@ -3080,6 +3462,7 @@ export namespace Prisma {
     sales?: boolean | User$salesArgs<ExtArgs>
     merchantProfile?: boolean | User$merchantProfileArgs<ExtArgs>
     addresses?: boolean | User$addressesArgs<ExtArgs>
+    userprofile?: boolean | User$userprofileArgs<ExtArgs>
     Order?: boolean | User$OrderArgs<ExtArgs>
     CommissionSetting?: boolean | User$CommissionSettingArgs<ExtArgs>
     Payout?: boolean | User$PayoutArgs<ExtArgs>
@@ -3129,6 +3512,7 @@ export namespace Prisma {
     sales?: boolean | User$salesArgs<ExtArgs>
     merchantProfile?: boolean | User$merchantProfileArgs<ExtArgs>
     addresses?: boolean | User$addressesArgs<ExtArgs>
+    userprofile?: boolean | User$userprofileArgs<ExtArgs>
     Order?: boolean | User$OrderArgs<ExtArgs>
     CommissionSetting?: boolean | User$CommissionSettingArgs<ExtArgs>
     Payout?: boolean | User$PayoutArgs<ExtArgs>
@@ -3145,6 +3529,7 @@ export namespace Prisma {
       sales: Prisma.$SalePayload<ExtArgs>[]
       merchantProfile: Prisma.$MerchantProfilePayload<ExtArgs> | null
       addresses: Prisma.$UserAddressPayload<ExtArgs>[]
+      userprofile: Prisma.$UserProfilePayload<ExtArgs> | null
       Order: Prisma.$OrderPayload<ExtArgs>[]
       CommissionSetting: Prisma.$CommissionSettingPayload<ExtArgs>[]
       Payout: Prisma.$PayoutPayload<ExtArgs>[]
@@ -3558,6 +3943,7 @@ export namespace Prisma {
     sales<T extends User$salesArgs<ExtArgs> = {}>(args?: Subset<T, User$salesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     merchantProfile<T extends User$merchantProfileArgs<ExtArgs> = {}>(args?: Subset<T, User$merchantProfileArgs<ExtArgs>>): Prisma__MerchantProfileClient<$Result.GetResult<Prisma.$MerchantProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     addresses<T extends User$addressesArgs<ExtArgs> = {}>(args?: Subset<T, User$addressesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserAddressPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    userprofile<T extends User$userprofileArgs<ExtArgs> = {}>(args?: Subset<T, User$userprofileArgs<ExtArgs>>): Prisma__UserProfileClient<$Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     Order<T extends User$OrderArgs<ExtArgs> = {}>(args?: Subset<T, User$OrderArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     CommissionSetting<T extends User$CommissionSettingArgs<ExtArgs> = {}>(args?: Subset<T, User$CommissionSettingArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommissionSettingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     Payout<T extends User$PayoutArgs<ExtArgs> = {}>(args?: Subset<T, User$PayoutArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PayoutPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -4102,6 +4488,25 @@ export namespace Prisma {
   }
 
   /**
+   * User.userprofile
+   */
+  export type User$userprofileArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfile
+     */
+    select?: UserProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfile
+     */
+    omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserProfileInclude<ExtArgs> | null
+    where?: UserProfileWhereInput
+  }
+
+  /**
    * User.Order
    */
   export type User$OrderArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4193,6 +4598,1129 @@ export namespace Prisma {
 
 
   /**
+   * Model UserProfile
+   */
+
+  export type AggregateUserProfile = {
+    _count: UserProfileCountAggregateOutputType | null
+    _min: UserProfileMinAggregateOutputType | null
+    _max: UserProfileMaxAggregateOutputType | null
+  }
+
+  export type UserProfileMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    firstName: string | null
+    lastName: string | null
+    dateOfBirth: Date | null
+    email: string | null
+    phone: string | null
+    country: string | null
+    address: string | null
+    zipCode: string | null
+  }
+
+  export type UserProfileMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    firstName: string | null
+    lastName: string | null
+    dateOfBirth: Date | null
+    email: string | null
+    phone: string | null
+    country: string | null
+    address: string | null
+    zipCode: string | null
+  }
+
+  export type UserProfileCountAggregateOutputType = {
+    id: number
+    userId: number
+    firstName: number
+    lastName: number
+    dateOfBirth: number
+    email: number
+    phone: number
+    country: number
+    address: number
+    zipCode: number
+    _all: number
+  }
+
+
+  export type UserProfileMinAggregateInputType = {
+    id?: true
+    userId?: true
+    firstName?: true
+    lastName?: true
+    dateOfBirth?: true
+    email?: true
+    phone?: true
+    country?: true
+    address?: true
+    zipCode?: true
+  }
+
+  export type UserProfileMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    firstName?: true
+    lastName?: true
+    dateOfBirth?: true
+    email?: true
+    phone?: true
+    country?: true
+    address?: true
+    zipCode?: true
+  }
+
+  export type UserProfileCountAggregateInputType = {
+    id?: true
+    userId?: true
+    firstName?: true
+    lastName?: true
+    dateOfBirth?: true
+    email?: true
+    phone?: true
+    country?: true
+    address?: true
+    zipCode?: true
+    _all?: true
+  }
+
+  export type UserProfileAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserProfile to aggregate.
+     */
+    where?: UserProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserProfiles to fetch.
+     */
+    orderBy?: UserProfileOrderByWithRelationInput | UserProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UserProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserProfiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned UserProfiles
+    **/
+    _count?: true | UserProfileCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UserProfileMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UserProfileMaxAggregateInputType
+  }
+
+  export type GetUserProfileAggregateType<T extends UserProfileAggregateArgs> = {
+        [P in keyof T & keyof AggregateUserProfile]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUserProfile[P]>
+      : GetScalarType<T[P], AggregateUserProfile[P]>
+  }
+
+
+
+
+  export type UserProfileGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserProfileWhereInput
+    orderBy?: UserProfileOrderByWithAggregationInput | UserProfileOrderByWithAggregationInput[]
+    by: UserProfileScalarFieldEnum[] | UserProfileScalarFieldEnum
+    having?: UserProfileScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UserProfileCountAggregateInputType | true
+    _min?: UserProfileMinAggregateInputType
+    _max?: UserProfileMaxAggregateInputType
+  }
+
+  export type UserProfileGroupByOutputType = {
+    id: string
+    userId: string
+    firstName: string
+    lastName: string
+    dateOfBirth: Date
+    email: string
+    phone: string
+    country: string
+    address: string
+    zipCode: string
+    _count: UserProfileCountAggregateOutputType | null
+    _min: UserProfileMinAggregateOutputType | null
+    _max: UserProfileMaxAggregateOutputType | null
+  }
+
+  type GetUserProfileGroupByPayload<T extends UserProfileGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UserProfileGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UserProfileGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UserProfileGroupByOutputType[P]>
+            : GetScalarType<T[P], UserProfileGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UserProfileSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    firstName?: boolean
+    lastName?: boolean
+    dateOfBirth?: boolean
+    email?: boolean
+    phone?: boolean
+    country?: boolean
+    address?: boolean
+    zipCode?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userProfile"]>
+
+  export type UserProfileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    firstName?: boolean
+    lastName?: boolean
+    dateOfBirth?: boolean
+    email?: boolean
+    phone?: boolean
+    country?: boolean
+    address?: boolean
+    zipCode?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userProfile"]>
+
+  export type UserProfileSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    firstName?: boolean
+    lastName?: boolean
+    dateOfBirth?: boolean
+    email?: boolean
+    phone?: boolean
+    country?: boolean
+    address?: boolean
+    zipCode?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userProfile"]>
+
+  export type UserProfileSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    firstName?: boolean
+    lastName?: boolean
+    dateOfBirth?: boolean
+    email?: boolean
+    phone?: boolean
+    country?: boolean
+    address?: boolean
+    zipCode?: boolean
+  }
+
+  export type UserProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "firstName" | "lastName" | "dateOfBirth" | "email" | "phone" | "country" | "address" | "zipCode", ExtArgs["result"]["userProfile"]>
+  export type UserProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type UserProfileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type UserProfileIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $UserProfilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "UserProfile"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      firstName: string
+      lastName: string
+      dateOfBirth: Date
+      email: string
+      phone: string
+      country: string
+      address: string
+      zipCode: string
+    }, ExtArgs["result"]["userProfile"]>
+    composites: {}
+  }
+
+  type UserProfileGetPayload<S extends boolean | null | undefined | UserProfileDefaultArgs> = $Result.GetResult<Prisma.$UserProfilePayload, S>
+
+  type UserProfileCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<UserProfileFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: UserProfileCountAggregateInputType | true
+    }
+
+  export interface UserProfileDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UserProfile'], meta: { name: 'UserProfile' } }
+    /**
+     * Find zero or one UserProfile that matches the filter.
+     * @param {UserProfileFindUniqueArgs} args - Arguments to find a UserProfile
+     * @example
+     * // Get one UserProfile
+     * const userProfile = await prisma.userProfile.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UserProfileFindUniqueArgs>(args: SelectSubset<T, UserProfileFindUniqueArgs<ExtArgs>>): Prisma__UserProfileClient<$Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one UserProfile that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {UserProfileFindUniqueOrThrowArgs} args - Arguments to find a UserProfile
+     * @example
+     * // Get one UserProfile
+     * const userProfile = await prisma.userProfile.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UserProfileFindUniqueOrThrowArgs>(args: SelectSubset<T, UserProfileFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UserProfileClient<$Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserProfile that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserProfileFindFirstArgs} args - Arguments to find a UserProfile
+     * @example
+     * // Get one UserProfile
+     * const userProfile = await prisma.userProfile.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UserProfileFindFirstArgs>(args?: SelectSubset<T, UserProfileFindFirstArgs<ExtArgs>>): Prisma__UserProfileClient<$Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserProfile that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserProfileFindFirstOrThrowArgs} args - Arguments to find a UserProfile
+     * @example
+     * // Get one UserProfile
+     * const userProfile = await prisma.userProfile.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UserProfileFindFirstOrThrowArgs>(args?: SelectSubset<T, UserProfileFindFirstOrThrowArgs<ExtArgs>>): Prisma__UserProfileClient<$Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more UserProfiles that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserProfileFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all UserProfiles
+     * const userProfiles = await prisma.userProfile.findMany()
+     * 
+     * // Get first 10 UserProfiles
+     * const userProfiles = await prisma.userProfile.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const userProfileWithIdOnly = await prisma.userProfile.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends UserProfileFindManyArgs>(args?: SelectSubset<T, UserProfileFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a UserProfile.
+     * @param {UserProfileCreateArgs} args - Arguments to create a UserProfile.
+     * @example
+     * // Create one UserProfile
+     * const UserProfile = await prisma.userProfile.create({
+     *   data: {
+     *     // ... data to create a UserProfile
+     *   }
+     * })
+     * 
+     */
+    create<T extends UserProfileCreateArgs>(args: SelectSubset<T, UserProfileCreateArgs<ExtArgs>>): Prisma__UserProfileClient<$Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many UserProfiles.
+     * @param {UserProfileCreateManyArgs} args - Arguments to create many UserProfiles.
+     * @example
+     * // Create many UserProfiles
+     * const userProfile = await prisma.userProfile.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends UserProfileCreateManyArgs>(args?: SelectSubset<T, UserProfileCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many UserProfiles and returns the data saved in the database.
+     * @param {UserProfileCreateManyAndReturnArgs} args - Arguments to create many UserProfiles.
+     * @example
+     * // Create many UserProfiles
+     * const userProfile = await prisma.userProfile.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many UserProfiles and only return the `id`
+     * const userProfileWithIdOnly = await prisma.userProfile.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends UserProfileCreateManyAndReturnArgs>(args?: SelectSubset<T, UserProfileCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a UserProfile.
+     * @param {UserProfileDeleteArgs} args - Arguments to delete one UserProfile.
+     * @example
+     * // Delete one UserProfile
+     * const UserProfile = await prisma.userProfile.delete({
+     *   where: {
+     *     // ... filter to delete one UserProfile
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UserProfileDeleteArgs>(args: SelectSubset<T, UserProfileDeleteArgs<ExtArgs>>): Prisma__UserProfileClient<$Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one UserProfile.
+     * @param {UserProfileUpdateArgs} args - Arguments to update one UserProfile.
+     * @example
+     * // Update one UserProfile
+     * const userProfile = await prisma.userProfile.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UserProfileUpdateArgs>(args: SelectSubset<T, UserProfileUpdateArgs<ExtArgs>>): Prisma__UserProfileClient<$Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more UserProfiles.
+     * @param {UserProfileDeleteManyArgs} args - Arguments to filter UserProfiles to delete.
+     * @example
+     * // Delete a few UserProfiles
+     * const { count } = await prisma.userProfile.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UserProfileDeleteManyArgs>(args?: SelectSubset<T, UserProfileDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserProfiles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserProfileUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many UserProfiles
+     * const userProfile = await prisma.userProfile.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UserProfileUpdateManyArgs>(args: SelectSubset<T, UserProfileUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserProfiles and returns the data updated in the database.
+     * @param {UserProfileUpdateManyAndReturnArgs} args - Arguments to update many UserProfiles.
+     * @example
+     * // Update many UserProfiles
+     * const userProfile = await prisma.userProfile.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more UserProfiles and only return the `id`
+     * const userProfileWithIdOnly = await prisma.userProfile.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends UserProfileUpdateManyAndReturnArgs>(args: SelectSubset<T, UserProfileUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one UserProfile.
+     * @param {UserProfileUpsertArgs} args - Arguments to update or create a UserProfile.
+     * @example
+     * // Update or create a UserProfile
+     * const userProfile = await prisma.userProfile.upsert({
+     *   create: {
+     *     // ... data to create a UserProfile
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the UserProfile we want to update
+     *   }
+     * })
+     */
+    upsert<T extends UserProfileUpsertArgs>(args: SelectSubset<T, UserProfileUpsertArgs<ExtArgs>>): Prisma__UserProfileClient<$Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of UserProfiles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserProfileCountArgs} args - Arguments to filter UserProfiles to count.
+     * @example
+     * // Count the number of UserProfiles
+     * const count = await prisma.userProfile.count({
+     *   where: {
+     *     // ... the filter for the UserProfiles we want to count
+     *   }
+     * })
+    **/
+    count<T extends UserProfileCountArgs>(
+      args?: Subset<T, UserProfileCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UserProfileCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a UserProfile.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserProfileAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UserProfileAggregateArgs>(args: Subset<T, UserProfileAggregateArgs>): Prisma.PrismaPromise<GetUserProfileAggregateType<T>>
+
+    /**
+     * Group by UserProfile.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserProfileGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UserProfileGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UserProfileGroupByArgs['orderBy'] }
+        : { orderBy?: UserProfileGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UserProfileGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserProfileGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the UserProfile model
+   */
+  readonly fields: UserProfileFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for UserProfile.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UserProfileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the UserProfile model
+   */
+  interface UserProfileFieldRefs {
+    readonly id: FieldRef<"UserProfile", 'String'>
+    readonly userId: FieldRef<"UserProfile", 'String'>
+    readonly firstName: FieldRef<"UserProfile", 'String'>
+    readonly lastName: FieldRef<"UserProfile", 'String'>
+    readonly dateOfBirth: FieldRef<"UserProfile", 'DateTime'>
+    readonly email: FieldRef<"UserProfile", 'String'>
+    readonly phone: FieldRef<"UserProfile", 'String'>
+    readonly country: FieldRef<"UserProfile", 'String'>
+    readonly address: FieldRef<"UserProfile", 'String'>
+    readonly zipCode: FieldRef<"UserProfile", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * UserProfile findUnique
+   */
+  export type UserProfileFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfile
+     */
+    select?: UserProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfile
+     */
+    omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which UserProfile to fetch.
+     */
+    where: UserProfileWhereUniqueInput
+  }
+
+  /**
+   * UserProfile findUniqueOrThrow
+   */
+  export type UserProfileFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfile
+     */
+    select?: UserProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfile
+     */
+    omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which UserProfile to fetch.
+     */
+    where: UserProfileWhereUniqueInput
+  }
+
+  /**
+   * UserProfile findFirst
+   */
+  export type UserProfileFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfile
+     */
+    select?: UserProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfile
+     */
+    omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which UserProfile to fetch.
+     */
+    where?: UserProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserProfiles to fetch.
+     */
+    orderBy?: UserProfileOrderByWithRelationInput | UserProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserProfiles.
+     */
+    cursor?: UserProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserProfiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserProfiles.
+     */
+    distinct?: UserProfileScalarFieldEnum | UserProfileScalarFieldEnum[]
+  }
+
+  /**
+   * UserProfile findFirstOrThrow
+   */
+  export type UserProfileFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfile
+     */
+    select?: UserProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfile
+     */
+    omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which UserProfile to fetch.
+     */
+    where?: UserProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserProfiles to fetch.
+     */
+    orderBy?: UserProfileOrderByWithRelationInput | UserProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserProfiles.
+     */
+    cursor?: UserProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserProfiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserProfiles.
+     */
+    distinct?: UserProfileScalarFieldEnum | UserProfileScalarFieldEnum[]
+  }
+
+  /**
+   * UserProfile findMany
+   */
+  export type UserProfileFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfile
+     */
+    select?: UserProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfile
+     */
+    omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which UserProfiles to fetch.
+     */
+    where?: UserProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserProfiles to fetch.
+     */
+    orderBy?: UserProfileOrderByWithRelationInput | UserProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing UserProfiles.
+     */
+    cursor?: UserProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserProfiles.
+     */
+    skip?: number
+    distinct?: UserProfileScalarFieldEnum | UserProfileScalarFieldEnum[]
+  }
+
+  /**
+   * UserProfile create
+   */
+  export type UserProfileCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfile
+     */
+    select?: UserProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfile
+     */
+    omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserProfileInclude<ExtArgs> | null
+    /**
+     * The data needed to create a UserProfile.
+     */
+    data: XOR<UserProfileCreateInput, UserProfileUncheckedCreateInput>
+  }
+
+  /**
+   * UserProfile createMany
+   */
+  export type UserProfileCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many UserProfiles.
+     */
+    data: UserProfileCreateManyInput | UserProfileCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * UserProfile createManyAndReturn
+   */
+  export type UserProfileCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfile
+     */
+    select?: UserProfileSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfile
+     */
+    omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * The data used to create many UserProfiles.
+     */
+    data: UserProfileCreateManyInput | UserProfileCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserProfileIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserProfile update
+   */
+  export type UserProfileUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfile
+     */
+    select?: UserProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfile
+     */
+    omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserProfileInclude<ExtArgs> | null
+    /**
+     * The data needed to update a UserProfile.
+     */
+    data: XOR<UserProfileUpdateInput, UserProfileUncheckedUpdateInput>
+    /**
+     * Choose, which UserProfile to update.
+     */
+    where: UserProfileWhereUniqueInput
+  }
+
+  /**
+   * UserProfile updateMany
+   */
+  export type UserProfileUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update UserProfiles.
+     */
+    data: XOR<UserProfileUpdateManyMutationInput, UserProfileUncheckedUpdateManyInput>
+    /**
+     * Filter which UserProfiles to update
+     */
+    where?: UserProfileWhereInput
+    /**
+     * Limit how many UserProfiles to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserProfile updateManyAndReturn
+   */
+  export type UserProfileUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfile
+     */
+    select?: UserProfileSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfile
+     */
+    omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * The data used to update UserProfiles.
+     */
+    data: XOR<UserProfileUpdateManyMutationInput, UserProfileUncheckedUpdateManyInput>
+    /**
+     * Filter which UserProfiles to update
+     */
+    where?: UserProfileWhereInput
+    /**
+     * Limit how many UserProfiles to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserProfileIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserProfile upsert
+   */
+  export type UserProfileUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfile
+     */
+    select?: UserProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfile
+     */
+    omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserProfileInclude<ExtArgs> | null
+    /**
+     * The filter to search for the UserProfile to update in case it exists.
+     */
+    where: UserProfileWhereUniqueInput
+    /**
+     * In case the UserProfile found by the `where` argument doesn't exist, create a new UserProfile with this data.
+     */
+    create: XOR<UserProfileCreateInput, UserProfileUncheckedCreateInput>
+    /**
+     * In case the UserProfile was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<UserProfileUpdateInput, UserProfileUncheckedUpdateInput>
+  }
+
+  /**
+   * UserProfile delete
+   */
+  export type UserProfileDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfile
+     */
+    select?: UserProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfile
+     */
+    omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserProfileInclude<ExtArgs> | null
+    /**
+     * Filter which UserProfile to delete.
+     */
+    where: UserProfileWhereUniqueInput
+  }
+
+  /**
+   * UserProfile deleteMany
+   */
+  export type UserProfileDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserProfiles to delete
+     */
+    where?: UserProfileWhereInput
+    /**
+     * Limit how many UserProfiles to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserProfile without action
+   */
+  export type UserProfileDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfile
+     */
+    select?: UserProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfile
+     */
+    omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserProfileInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model UserAddress
    */
 
@@ -4212,6 +5740,7 @@ export namespace Prisma {
     email: string | null
     address: string | null
     isDefault: boolean | null
+    zipCode: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -4226,6 +5755,7 @@ export namespace Prisma {
     email: string | null
     address: string | null
     isDefault: boolean | null
+    zipCode: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -4240,6 +5770,7 @@ export namespace Prisma {
     email: number
     address: number
     isDefault: number
+    zipCode: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -4256,6 +5787,7 @@ export namespace Prisma {
     email?: true
     address?: true
     isDefault?: true
+    zipCode?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -4270,6 +5802,7 @@ export namespace Prisma {
     email?: true
     address?: true
     isDefault?: true
+    zipCode?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -4284,6 +5817,7 @@ export namespace Prisma {
     email?: true
     address?: true
     isDefault?: true
+    zipCode?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -4371,6 +5905,7 @@ export namespace Prisma {
     email: string | null
     address: string
     isDefault: boolean
+    zipCode: string | null
     createdAt: Date
     updatedAt: Date
     _count: UserAddressCountAggregateOutputType | null
@@ -4402,6 +5937,7 @@ export namespace Prisma {
     email?: boolean
     address?: boolean
     isDefault?: boolean
+    zipCode?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -4419,6 +5955,7 @@ export namespace Prisma {
     email?: boolean
     address?: boolean
     isDefault?: boolean
+    zipCode?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -4434,6 +5971,7 @@ export namespace Prisma {
     email?: boolean
     address?: boolean
     isDefault?: boolean
+    zipCode?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -4449,11 +5987,12 @@ export namespace Prisma {
     email?: boolean
     address?: boolean
     isDefault?: boolean
+    zipCode?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserAddressOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "profileImage" | "firstName" | "lastName" | "phone" | "email" | "address" | "isDefault" | "createdAt" | "updatedAt", ExtArgs["result"]["userAddress"]>
+  export type UserAddressOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "profileImage" | "firstName" | "lastName" | "phone" | "email" | "address" | "isDefault" | "zipCode" | "createdAt" | "updatedAt", ExtArgs["result"]["userAddress"]>
   export type UserAddressInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     Order?: boolean | UserAddress$OrderArgs<ExtArgs>
@@ -4482,6 +6021,7 @@ export namespace Prisma {
       email: string | null
       address: string
       isDefault: boolean
+      zipCode: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["userAddress"]>
@@ -4918,6 +6458,7 @@ export namespace Prisma {
     readonly email: FieldRef<"UserAddress", 'String'>
     readonly address: FieldRef<"UserAddress", 'String'>
     readonly isDefault: FieldRef<"UserAddress", 'Boolean'>
+    readonly zipCode: FieldRef<"UserAddress", 'String'>
     readonly createdAt: FieldRef<"UserAddress", 'DateTime'>
     readonly updatedAt: FieldRef<"UserAddress", 'DateTime'>
   }
@@ -5359,6 +6900,2069 @@ export namespace Prisma {
 
 
   /**
+   * Model PasswordResetToken
+   */
+
+  export type AggregatePasswordResetToken = {
+    _count: PasswordResetTokenCountAggregateOutputType | null
+    _min: PasswordResetTokenMinAggregateOutputType | null
+    _max: PasswordResetTokenMaxAggregateOutputType | null
+  }
+
+  export type PasswordResetTokenMinAggregateOutputType = {
+    id: string | null
+    email: string | null
+    tokenHash: string | null
+    expires: Date | null
+    used: boolean | null
+    createdAt: Date | null
+  }
+
+  export type PasswordResetTokenMaxAggregateOutputType = {
+    id: string | null
+    email: string | null
+    tokenHash: string | null
+    expires: Date | null
+    used: boolean | null
+    createdAt: Date | null
+  }
+
+  export type PasswordResetTokenCountAggregateOutputType = {
+    id: number
+    email: number
+    tokenHash: number
+    expires: number
+    used: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type PasswordResetTokenMinAggregateInputType = {
+    id?: true
+    email?: true
+    tokenHash?: true
+    expires?: true
+    used?: true
+    createdAt?: true
+  }
+
+  export type PasswordResetTokenMaxAggregateInputType = {
+    id?: true
+    email?: true
+    tokenHash?: true
+    expires?: true
+    used?: true
+    createdAt?: true
+  }
+
+  export type PasswordResetTokenCountAggregateInputType = {
+    id?: true
+    email?: true
+    tokenHash?: true
+    expires?: true
+    used?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type PasswordResetTokenAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PasswordResetToken to aggregate.
+     */
+    where?: PasswordResetTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PasswordResetTokens to fetch.
+     */
+    orderBy?: PasswordResetTokenOrderByWithRelationInput | PasswordResetTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PasswordResetTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PasswordResetTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PasswordResetTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PasswordResetTokens
+    **/
+    _count?: true | PasswordResetTokenCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PasswordResetTokenMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PasswordResetTokenMaxAggregateInputType
+  }
+
+  export type GetPasswordResetTokenAggregateType<T extends PasswordResetTokenAggregateArgs> = {
+        [P in keyof T & keyof AggregatePasswordResetToken]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePasswordResetToken[P]>
+      : GetScalarType<T[P], AggregatePasswordResetToken[P]>
+  }
+
+
+
+
+  export type PasswordResetTokenGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PasswordResetTokenWhereInput
+    orderBy?: PasswordResetTokenOrderByWithAggregationInput | PasswordResetTokenOrderByWithAggregationInput[]
+    by: PasswordResetTokenScalarFieldEnum[] | PasswordResetTokenScalarFieldEnum
+    having?: PasswordResetTokenScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PasswordResetTokenCountAggregateInputType | true
+    _min?: PasswordResetTokenMinAggregateInputType
+    _max?: PasswordResetTokenMaxAggregateInputType
+  }
+
+  export type PasswordResetTokenGroupByOutputType = {
+    id: string
+    email: string
+    tokenHash: string
+    expires: Date
+    used: boolean
+    createdAt: Date
+    _count: PasswordResetTokenCountAggregateOutputType | null
+    _min: PasswordResetTokenMinAggregateOutputType | null
+    _max: PasswordResetTokenMaxAggregateOutputType | null
+  }
+
+  type GetPasswordResetTokenGroupByPayload<T extends PasswordResetTokenGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PasswordResetTokenGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PasswordResetTokenGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PasswordResetTokenGroupByOutputType[P]>
+            : GetScalarType<T[P], PasswordResetTokenGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PasswordResetTokenSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    email?: boolean
+    tokenHash?: boolean
+    expires?: boolean
+    used?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["passwordResetToken"]>
+
+  export type PasswordResetTokenSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    email?: boolean
+    tokenHash?: boolean
+    expires?: boolean
+    used?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["passwordResetToken"]>
+
+  export type PasswordResetTokenSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    email?: boolean
+    tokenHash?: boolean
+    expires?: boolean
+    used?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["passwordResetToken"]>
+
+  export type PasswordResetTokenSelectScalar = {
+    id?: boolean
+    email?: boolean
+    tokenHash?: boolean
+    expires?: boolean
+    used?: boolean
+    createdAt?: boolean
+  }
+
+  export type PasswordResetTokenOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "tokenHash" | "expires" | "used" | "createdAt", ExtArgs["result"]["passwordResetToken"]>
+
+  export type $PasswordResetTokenPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PasswordResetToken"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      email: string
+      tokenHash: string
+      expires: Date
+      used: boolean
+      createdAt: Date
+    }, ExtArgs["result"]["passwordResetToken"]>
+    composites: {}
+  }
+
+  type PasswordResetTokenGetPayload<S extends boolean | null | undefined | PasswordResetTokenDefaultArgs> = $Result.GetResult<Prisma.$PasswordResetTokenPayload, S>
+
+  type PasswordResetTokenCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PasswordResetTokenFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PasswordResetTokenCountAggregateInputType | true
+    }
+
+  export interface PasswordResetTokenDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PasswordResetToken'], meta: { name: 'PasswordResetToken' } }
+    /**
+     * Find zero or one PasswordResetToken that matches the filter.
+     * @param {PasswordResetTokenFindUniqueArgs} args - Arguments to find a PasswordResetToken
+     * @example
+     * // Get one PasswordResetToken
+     * const passwordResetToken = await prisma.passwordResetToken.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PasswordResetTokenFindUniqueArgs>(args: SelectSubset<T, PasswordResetTokenFindUniqueArgs<ExtArgs>>): Prisma__PasswordResetTokenClient<$Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PasswordResetToken that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PasswordResetTokenFindUniqueOrThrowArgs} args - Arguments to find a PasswordResetToken
+     * @example
+     * // Get one PasswordResetToken
+     * const passwordResetToken = await prisma.passwordResetToken.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PasswordResetTokenFindUniqueOrThrowArgs>(args: SelectSubset<T, PasswordResetTokenFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PasswordResetTokenClient<$Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PasswordResetToken that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PasswordResetTokenFindFirstArgs} args - Arguments to find a PasswordResetToken
+     * @example
+     * // Get one PasswordResetToken
+     * const passwordResetToken = await prisma.passwordResetToken.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PasswordResetTokenFindFirstArgs>(args?: SelectSubset<T, PasswordResetTokenFindFirstArgs<ExtArgs>>): Prisma__PasswordResetTokenClient<$Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PasswordResetToken that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PasswordResetTokenFindFirstOrThrowArgs} args - Arguments to find a PasswordResetToken
+     * @example
+     * // Get one PasswordResetToken
+     * const passwordResetToken = await prisma.passwordResetToken.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PasswordResetTokenFindFirstOrThrowArgs>(args?: SelectSubset<T, PasswordResetTokenFindFirstOrThrowArgs<ExtArgs>>): Prisma__PasswordResetTokenClient<$Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PasswordResetTokens that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PasswordResetTokenFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PasswordResetTokens
+     * const passwordResetTokens = await prisma.passwordResetToken.findMany()
+     * 
+     * // Get first 10 PasswordResetTokens
+     * const passwordResetTokens = await prisma.passwordResetToken.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const passwordResetTokenWithIdOnly = await prisma.passwordResetToken.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PasswordResetTokenFindManyArgs>(args?: SelectSubset<T, PasswordResetTokenFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PasswordResetToken.
+     * @param {PasswordResetTokenCreateArgs} args - Arguments to create a PasswordResetToken.
+     * @example
+     * // Create one PasswordResetToken
+     * const PasswordResetToken = await prisma.passwordResetToken.create({
+     *   data: {
+     *     // ... data to create a PasswordResetToken
+     *   }
+     * })
+     * 
+     */
+    create<T extends PasswordResetTokenCreateArgs>(args: SelectSubset<T, PasswordResetTokenCreateArgs<ExtArgs>>): Prisma__PasswordResetTokenClient<$Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PasswordResetTokens.
+     * @param {PasswordResetTokenCreateManyArgs} args - Arguments to create many PasswordResetTokens.
+     * @example
+     * // Create many PasswordResetTokens
+     * const passwordResetToken = await prisma.passwordResetToken.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PasswordResetTokenCreateManyArgs>(args?: SelectSubset<T, PasswordResetTokenCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PasswordResetTokens and returns the data saved in the database.
+     * @param {PasswordResetTokenCreateManyAndReturnArgs} args - Arguments to create many PasswordResetTokens.
+     * @example
+     * // Create many PasswordResetTokens
+     * const passwordResetToken = await prisma.passwordResetToken.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PasswordResetTokens and only return the `id`
+     * const passwordResetTokenWithIdOnly = await prisma.passwordResetToken.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PasswordResetTokenCreateManyAndReturnArgs>(args?: SelectSubset<T, PasswordResetTokenCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PasswordResetToken.
+     * @param {PasswordResetTokenDeleteArgs} args - Arguments to delete one PasswordResetToken.
+     * @example
+     * // Delete one PasswordResetToken
+     * const PasswordResetToken = await prisma.passwordResetToken.delete({
+     *   where: {
+     *     // ... filter to delete one PasswordResetToken
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PasswordResetTokenDeleteArgs>(args: SelectSubset<T, PasswordResetTokenDeleteArgs<ExtArgs>>): Prisma__PasswordResetTokenClient<$Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PasswordResetToken.
+     * @param {PasswordResetTokenUpdateArgs} args - Arguments to update one PasswordResetToken.
+     * @example
+     * // Update one PasswordResetToken
+     * const passwordResetToken = await prisma.passwordResetToken.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PasswordResetTokenUpdateArgs>(args: SelectSubset<T, PasswordResetTokenUpdateArgs<ExtArgs>>): Prisma__PasswordResetTokenClient<$Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PasswordResetTokens.
+     * @param {PasswordResetTokenDeleteManyArgs} args - Arguments to filter PasswordResetTokens to delete.
+     * @example
+     * // Delete a few PasswordResetTokens
+     * const { count } = await prisma.passwordResetToken.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PasswordResetTokenDeleteManyArgs>(args?: SelectSubset<T, PasswordResetTokenDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PasswordResetTokens.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PasswordResetTokenUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PasswordResetTokens
+     * const passwordResetToken = await prisma.passwordResetToken.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PasswordResetTokenUpdateManyArgs>(args: SelectSubset<T, PasswordResetTokenUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PasswordResetTokens and returns the data updated in the database.
+     * @param {PasswordResetTokenUpdateManyAndReturnArgs} args - Arguments to update many PasswordResetTokens.
+     * @example
+     * // Update many PasswordResetTokens
+     * const passwordResetToken = await prisma.passwordResetToken.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PasswordResetTokens and only return the `id`
+     * const passwordResetTokenWithIdOnly = await prisma.passwordResetToken.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PasswordResetTokenUpdateManyAndReturnArgs>(args: SelectSubset<T, PasswordResetTokenUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PasswordResetToken.
+     * @param {PasswordResetTokenUpsertArgs} args - Arguments to update or create a PasswordResetToken.
+     * @example
+     * // Update or create a PasswordResetToken
+     * const passwordResetToken = await prisma.passwordResetToken.upsert({
+     *   create: {
+     *     // ... data to create a PasswordResetToken
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PasswordResetToken we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PasswordResetTokenUpsertArgs>(args: SelectSubset<T, PasswordResetTokenUpsertArgs<ExtArgs>>): Prisma__PasswordResetTokenClient<$Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PasswordResetTokens.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PasswordResetTokenCountArgs} args - Arguments to filter PasswordResetTokens to count.
+     * @example
+     * // Count the number of PasswordResetTokens
+     * const count = await prisma.passwordResetToken.count({
+     *   where: {
+     *     // ... the filter for the PasswordResetTokens we want to count
+     *   }
+     * })
+    **/
+    count<T extends PasswordResetTokenCountArgs>(
+      args?: Subset<T, PasswordResetTokenCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PasswordResetTokenCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PasswordResetToken.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PasswordResetTokenAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PasswordResetTokenAggregateArgs>(args: Subset<T, PasswordResetTokenAggregateArgs>): Prisma.PrismaPromise<GetPasswordResetTokenAggregateType<T>>
+
+    /**
+     * Group by PasswordResetToken.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PasswordResetTokenGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PasswordResetTokenGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PasswordResetTokenGroupByArgs['orderBy'] }
+        : { orderBy?: PasswordResetTokenGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PasswordResetTokenGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPasswordResetTokenGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PasswordResetToken model
+   */
+  readonly fields: PasswordResetTokenFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PasswordResetToken.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PasswordResetTokenClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PasswordResetToken model
+   */
+  interface PasswordResetTokenFieldRefs {
+    readonly id: FieldRef<"PasswordResetToken", 'String'>
+    readonly email: FieldRef<"PasswordResetToken", 'String'>
+    readonly tokenHash: FieldRef<"PasswordResetToken", 'String'>
+    readonly expires: FieldRef<"PasswordResetToken", 'DateTime'>
+    readonly used: FieldRef<"PasswordResetToken", 'Boolean'>
+    readonly createdAt: FieldRef<"PasswordResetToken", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PasswordResetToken findUnique
+   */
+  export type PasswordResetTokenFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PasswordResetToken
+     */
+    select?: PasswordResetTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PasswordResetToken
+     */
+    omit?: PasswordResetTokenOmit<ExtArgs> | null
+    /**
+     * Filter, which PasswordResetToken to fetch.
+     */
+    where: PasswordResetTokenWhereUniqueInput
+  }
+
+  /**
+   * PasswordResetToken findUniqueOrThrow
+   */
+  export type PasswordResetTokenFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PasswordResetToken
+     */
+    select?: PasswordResetTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PasswordResetToken
+     */
+    omit?: PasswordResetTokenOmit<ExtArgs> | null
+    /**
+     * Filter, which PasswordResetToken to fetch.
+     */
+    where: PasswordResetTokenWhereUniqueInput
+  }
+
+  /**
+   * PasswordResetToken findFirst
+   */
+  export type PasswordResetTokenFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PasswordResetToken
+     */
+    select?: PasswordResetTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PasswordResetToken
+     */
+    omit?: PasswordResetTokenOmit<ExtArgs> | null
+    /**
+     * Filter, which PasswordResetToken to fetch.
+     */
+    where?: PasswordResetTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PasswordResetTokens to fetch.
+     */
+    orderBy?: PasswordResetTokenOrderByWithRelationInput | PasswordResetTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PasswordResetTokens.
+     */
+    cursor?: PasswordResetTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PasswordResetTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PasswordResetTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PasswordResetTokens.
+     */
+    distinct?: PasswordResetTokenScalarFieldEnum | PasswordResetTokenScalarFieldEnum[]
+  }
+
+  /**
+   * PasswordResetToken findFirstOrThrow
+   */
+  export type PasswordResetTokenFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PasswordResetToken
+     */
+    select?: PasswordResetTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PasswordResetToken
+     */
+    omit?: PasswordResetTokenOmit<ExtArgs> | null
+    /**
+     * Filter, which PasswordResetToken to fetch.
+     */
+    where?: PasswordResetTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PasswordResetTokens to fetch.
+     */
+    orderBy?: PasswordResetTokenOrderByWithRelationInput | PasswordResetTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PasswordResetTokens.
+     */
+    cursor?: PasswordResetTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PasswordResetTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PasswordResetTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PasswordResetTokens.
+     */
+    distinct?: PasswordResetTokenScalarFieldEnum | PasswordResetTokenScalarFieldEnum[]
+  }
+
+  /**
+   * PasswordResetToken findMany
+   */
+  export type PasswordResetTokenFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PasswordResetToken
+     */
+    select?: PasswordResetTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PasswordResetToken
+     */
+    omit?: PasswordResetTokenOmit<ExtArgs> | null
+    /**
+     * Filter, which PasswordResetTokens to fetch.
+     */
+    where?: PasswordResetTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PasswordResetTokens to fetch.
+     */
+    orderBy?: PasswordResetTokenOrderByWithRelationInput | PasswordResetTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PasswordResetTokens.
+     */
+    cursor?: PasswordResetTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PasswordResetTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PasswordResetTokens.
+     */
+    skip?: number
+    distinct?: PasswordResetTokenScalarFieldEnum | PasswordResetTokenScalarFieldEnum[]
+  }
+
+  /**
+   * PasswordResetToken create
+   */
+  export type PasswordResetTokenCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PasswordResetToken
+     */
+    select?: PasswordResetTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PasswordResetToken
+     */
+    omit?: PasswordResetTokenOmit<ExtArgs> | null
+    /**
+     * The data needed to create a PasswordResetToken.
+     */
+    data: XOR<PasswordResetTokenCreateInput, PasswordResetTokenUncheckedCreateInput>
+  }
+
+  /**
+   * PasswordResetToken createMany
+   */
+  export type PasswordResetTokenCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PasswordResetTokens.
+     */
+    data: PasswordResetTokenCreateManyInput | PasswordResetTokenCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PasswordResetToken createManyAndReturn
+   */
+  export type PasswordResetTokenCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PasswordResetToken
+     */
+    select?: PasswordResetTokenSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PasswordResetToken
+     */
+    omit?: PasswordResetTokenOmit<ExtArgs> | null
+    /**
+     * The data used to create many PasswordResetTokens.
+     */
+    data: PasswordResetTokenCreateManyInput | PasswordResetTokenCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PasswordResetToken update
+   */
+  export type PasswordResetTokenUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PasswordResetToken
+     */
+    select?: PasswordResetTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PasswordResetToken
+     */
+    omit?: PasswordResetTokenOmit<ExtArgs> | null
+    /**
+     * The data needed to update a PasswordResetToken.
+     */
+    data: XOR<PasswordResetTokenUpdateInput, PasswordResetTokenUncheckedUpdateInput>
+    /**
+     * Choose, which PasswordResetToken to update.
+     */
+    where: PasswordResetTokenWhereUniqueInput
+  }
+
+  /**
+   * PasswordResetToken updateMany
+   */
+  export type PasswordResetTokenUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PasswordResetTokens.
+     */
+    data: XOR<PasswordResetTokenUpdateManyMutationInput, PasswordResetTokenUncheckedUpdateManyInput>
+    /**
+     * Filter which PasswordResetTokens to update
+     */
+    where?: PasswordResetTokenWhereInput
+    /**
+     * Limit how many PasswordResetTokens to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PasswordResetToken updateManyAndReturn
+   */
+  export type PasswordResetTokenUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PasswordResetToken
+     */
+    select?: PasswordResetTokenSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PasswordResetToken
+     */
+    omit?: PasswordResetTokenOmit<ExtArgs> | null
+    /**
+     * The data used to update PasswordResetTokens.
+     */
+    data: XOR<PasswordResetTokenUpdateManyMutationInput, PasswordResetTokenUncheckedUpdateManyInput>
+    /**
+     * Filter which PasswordResetTokens to update
+     */
+    where?: PasswordResetTokenWhereInput
+    /**
+     * Limit how many PasswordResetTokens to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PasswordResetToken upsert
+   */
+  export type PasswordResetTokenUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PasswordResetToken
+     */
+    select?: PasswordResetTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PasswordResetToken
+     */
+    omit?: PasswordResetTokenOmit<ExtArgs> | null
+    /**
+     * The filter to search for the PasswordResetToken to update in case it exists.
+     */
+    where: PasswordResetTokenWhereUniqueInput
+    /**
+     * In case the PasswordResetToken found by the `where` argument doesn't exist, create a new PasswordResetToken with this data.
+     */
+    create: XOR<PasswordResetTokenCreateInput, PasswordResetTokenUncheckedCreateInput>
+    /**
+     * In case the PasswordResetToken was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PasswordResetTokenUpdateInput, PasswordResetTokenUncheckedUpdateInput>
+  }
+
+  /**
+   * PasswordResetToken delete
+   */
+  export type PasswordResetTokenDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PasswordResetToken
+     */
+    select?: PasswordResetTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PasswordResetToken
+     */
+    omit?: PasswordResetTokenOmit<ExtArgs> | null
+    /**
+     * Filter which PasswordResetToken to delete.
+     */
+    where: PasswordResetTokenWhereUniqueInput
+  }
+
+  /**
+   * PasswordResetToken deleteMany
+   */
+  export type PasswordResetTokenDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PasswordResetTokens to delete
+     */
+    where?: PasswordResetTokenWhereInput
+    /**
+     * Limit how many PasswordResetTokens to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PasswordResetToken without action
+   */
+  export type PasswordResetTokenDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PasswordResetToken
+     */
+    select?: PasswordResetTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PasswordResetToken
+     */
+    omit?: PasswordResetTokenOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PhoneResetOtp
+   */
+
+  export type AggregatePhoneResetOtp = {
+    _count: PhoneResetOtpCountAggregateOutputType | null
+    _avg: PhoneResetOtpAvgAggregateOutputType | null
+    _sum: PhoneResetOtpSumAggregateOutputType | null
+    _min: PhoneResetOtpMinAggregateOutputType | null
+    _max: PhoneResetOtpMaxAggregateOutputType | null
+  }
+
+  export type PhoneResetOtpAvgAggregateOutputType = {
+    attempts: number | null
+  }
+
+  export type PhoneResetOtpSumAggregateOutputType = {
+    attempts: number | null
+  }
+
+  export type PhoneResetOtpMinAggregateOutputType = {
+    id: string | null
+    phone: string | null
+    codeHash: string | null
+    expires: Date | null
+    used: boolean | null
+    attempts: number | null
+    createdAt: Date | null
+  }
+
+  export type PhoneResetOtpMaxAggregateOutputType = {
+    id: string | null
+    phone: string | null
+    codeHash: string | null
+    expires: Date | null
+    used: boolean | null
+    attempts: number | null
+    createdAt: Date | null
+  }
+
+  export type PhoneResetOtpCountAggregateOutputType = {
+    id: number
+    phone: number
+    codeHash: number
+    expires: number
+    used: number
+    attempts: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type PhoneResetOtpAvgAggregateInputType = {
+    attempts?: true
+  }
+
+  export type PhoneResetOtpSumAggregateInputType = {
+    attempts?: true
+  }
+
+  export type PhoneResetOtpMinAggregateInputType = {
+    id?: true
+    phone?: true
+    codeHash?: true
+    expires?: true
+    used?: true
+    attempts?: true
+    createdAt?: true
+  }
+
+  export type PhoneResetOtpMaxAggregateInputType = {
+    id?: true
+    phone?: true
+    codeHash?: true
+    expires?: true
+    used?: true
+    attempts?: true
+    createdAt?: true
+  }
+
+  export type PhoneResetOtpCountAggregateInputType = {
+    id?: true
+    phone?: true
+    codeHash?: true
+    expires?: true
+    used?: true
+    attempts?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type PhoneResetOtpAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PhoneResetOtp to aggregate.
+     */
+    where?: PhoneResetOtpWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PhoneResetOtps to fetch.
+     */
+    orderBy?: PhoneResetOtpOrderByWithRelationInput | PhoneResetOtpOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PhoneResetOtpWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PhoneResetOtps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PhoneResetOtps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PhoneResetOtps
+    **/
+    _count?: true | PhoneResetOtpCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PhoneResetOtpAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PhoneResetOtpSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PhoneResetOtpMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PhoneResetOtpMaxAggregateInputType
+  }
+
+  export type GetPhoneResetOtpAggregateType<T extends PhoneResetOtpAggregateArgs> = {
+        [P in keyof T & keyof AggregatePhoneResetOtp]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePhoneResetOtp[P]>
+      : GetScalarType<T[P], AggregatePhoneResetOtp[P]>
+  }
+
+
+
+
+  export type PhoneResetOtpGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PhoneResetOtpWhereInput
+    orderBy?: PhoneResetOtpOrderByWithAggregationInput | PhoneResetOtpOrderByWithAggregationInput[]
+    by: PhoneResetOtpScalarFieldEnum[] | PhoneResetOtpScalarFieldEnum
+    having?: PhoneResetOtpScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PhoneResetOtpCountAggregateInputType | true
+    _avg?: PhoneResetOtpAvgAggregateInputType
+    _sum?: PhoneResetOtpSumAggregateInputType
+    _min?: PhoneResetOtpMinAggregateInputType
+    _max?: PhoneResetOtpMaxAggregateInputType
+  }
+
+  export type PhoneResetOtpGroupByOutputType = {
+    id: string
+    phone: string
+    codeHash: string
+    expires: Date
+    used: boolean
+    attempts: number
+    createdAt: Date
+    _count: PhoneResetOtpCountAggregateOutputType | null
+    _avg: PhoneResetOtpAvgAggregateOutputType | null
+    _sum: PhoneResetOtpSumAggregateOutputType | null
+    _min: PhoneResetOtpMinAggregateOutputType | null
+    _max: PhoneResetOtpMaxAggregateOutputType | null
+  }
+
+  type GetPhoneResetOtpGroupByPayload<T extends PhoneResetOtpGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PhoneResetOtpGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PhoneResetOtpGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PhoneResetOtpGroupByOutputType[P]>
+            : GetScalarType<T[P], PhoneResetOtpGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PhoneResetOtpSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    phone?: boolean
+    codeHash?: boolean
+    expires?: boolean
+    used?: boolean
+    attempts?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["phoneResetOtp"]>
+
+  export type PhoneResetOtpSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    phone?: boolean
+    codeHash?: boolean
+    expires?: boolean
+    used?: boolean
+    attempts?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["phoneResetOtp"]>
+
+  export type PhoneResetOtpSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    phone?: boolean
+    codeHash?: boolean
+    expires?: boolean
+    used?: boolean
+    attempts?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["phoneResetOtp"]>
+
+  export type PhoneResetOtpSelectScalar = {
+    id?: boolean
+    phone?: boolean
+    codeHash?: boolean
+    expires?: boolean
+    used?: boolean
+    attempts?: boolean
+    createdAt?: boolean
+  }
+
+  export type PhoneResetOtpOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "phone" | "codeHash" | "expires" | "used" | "attempts" | "createdAt", ExtArgs["result"]["phoneResetOtp"]>
+
+  export type $PhoneResetOtpPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PhoneResetOtp"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      phone: string
+      codeHash: string
+      expires: Date
+      used: boolean
+      attempts: number
+      createdAt: Date
+    }, ExtArgs["result"]["phoneResetOtp"]>
+    composites: {}
+  }
+
+  type PhoneResetOtpGetPayload<S extends boolean | null | undefined | PhoneResetOtpDefaultArgs> = $Result.GetResult<Prisma.$PhoneResetOtpPayload, S>
+
+  type PhoneResetOtpCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PhoneResetOtpFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PhoneResetOtpCountAggregateInputType | true
+    }
+
+  export interface PhoneResetOtpDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PhoneResetOtp'], meta: { name: 'PhoneResetOtp' } }
+    /**
+     * Find zero or one PhoneResetOtp that matches the filter.
+     * @param {PhoneResetOtpFindUniqueArgs} args - Arguments to find a PhoneResetOtp
+     * @example
+     * // Get one PhoneResetOtp
+     * const phoneResetOtp = await prisma.phoneResetOtp.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PhoneResetOtpFindUniqueArgs>(args: SelectSubset<T, PhoneResetOtpFindUniqueArgs<ExtArgs>>): Prisma__PhoneResetOtpClient<$Result.GetResult<Prisma.$PhoneResetOtpPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PhoneResetOtp that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PhoneResetOtpFindUniqueOrThrowArgs} args - Arguments to find a PhoneResetOtp
+     * @example
+     * // Get one PhoneResetOtp
+     * const phoneResetOtp = await prisma.phoneResetOtp.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PhoneResetOtpFindUniqueOrThrowArgs>(args: SelectSubset<T, PhoneResetOtpFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PhoneResetOtpClient<$Result.GetResult<Prisma.$PhoneResetOtpPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PhoneResetOtp that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhoneResetOtpFindFirstArgs} args - Arguments to find a PhoneResetOtp
+     * @example
+     * // Get one PhoneResetOtp
+     * const phoneResetOtp = await prisma.phoneResetOtp.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PhoneResetOtpFindFirstArgs>(args?: SelectSubset<T, PhoneResetOtpFindFirstArgs<ExtArgs>>): Prisma__PhoneResetOtpClient<$Result.GetResult<Prisma.$PhoneResetOtpPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PhoneResetOtp that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhoneResetOtpFindFirstOrThrowArgs} args - Arguments to find a PhoneResetOtp
+     * @example
+     * // Get one PhoneResetOtp
+     * const phoneResetOtp = await prisma.phoneResetOtp.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PhoneResetOtpFindFirstOrThrowArgs>(args?: SelectSubset<T, PhoneResetOtpFindFirstOrThrowArgs<ExtArgs>>): Prisma__PhoneResetOtpClient<$Result.GetResult<Prisma.$PhoneResetOtpPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PhoneResetOtps that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhoneResetOtpFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PhoneResetOtps
+     * const phoneResetOtps = await prisma.phoneResetOtp.findMany()
+     * 
+     * // Get first 10 PhoneResetOtps
+     * const phoneResetOtps = await prisma.phoneResetOtp.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const phoneResetOtpWithIdOnly = await prisma.phoneResetOtp.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PhoneResetOtpFindManyArgs>(args?: SelectSubset<T, PhoneResetOtpFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PhoneResetOtpPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PhoneResetOtp.
+     * @param {PhoneResetOtpCreateArgs} args - Arguments to create a PhoneResetOtp.
+     * @example
+     * // Create one PhoneResetOtp
+     * const PhoneResetOtp = await prisma.phoneResetOtp.create({
+     *   data: {
+     *     // ... data to create a PhoneResetOtp
+     *   }
+     * })
+     * 
+     */
+    create<T extends PhoneResetOtpCreateArgs>(args: SelectSubset<T, PhoneResetOtpCreateArgs<ExtArgs>>): Prisma__PhoneResetOtpClient<$Result.GetResult<Prisma.$PhoneResetOtpPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PhoneResetOtps.
+     * @param {PhoneResetOtpCreateManyArgs} args - Arguments to create many PhoneResetOtps.
+     * @example
+     * // Create many PhoneResetOtps
+     * const phoneResetOtp = await prisma.phoneResetOtp.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PhoneResetOtpCreateManyArgs>(args?: SelectSubset<T, PhoneResetOtpCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PhoneResetOtps and returns the data saved in the database.
+     * @param {PhoneResetOtpCreateManyAndReturnArgs} args - Arguments to create many PhoneResetOtps.
+     * @example
+     * // Create many PhoneResetOtps
+     * const phoneResetOtp = await prisma.phoneResetOtp.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PhoneResetOtps and only return the `id`
+     * const phoneResetOtpWithIdOnly = await prisma.phoneResetOtp.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PhoneResetOtpCreateManyAndReturnArgs>(args?: SelectSubset<T, PhoneResetOtpCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PhoneResetOtpPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PhoneResetOtp.
+     * @param {PhoneResetOtpDeleteArgs} args - Arguments to delete one PhoneResetOtp.
+     * @example
+     * // Delete one PhoneResetOtp
+     * const PhoneResetOtp = await prisma.phoneResetOtp.delete({
+     *   where: {
+     *     // ... filter to delete one PhoneResetOtp
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PhoneResetOtpDeleteArgs>(args: SelectSubset<T, PhoneResetOtpDeleteArgs<ExtArgs>>): Prisma__PhoneResetOtpClient<$Result.GetResult<Prisma.$PhoneResetOtpPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PhoneResetOtp.
+     * @param {PhoneResetOtpUpdateArgs} args - Arguments to update one PhoneResetOtp.
+     * @example
+     * // Update one PhoneResetOtp
+     * const phoneResetOtp = await prisma.phoneResetOtp.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PhoneResetOtpUpdateArgs>(args: SelectSubset<T, PhoneResetOtpUpdateArgs<ExtArgs>>): Prisma__PhoneResetOtpClient<$Result.GetResult<Prisma.$PhoneResetOtpPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PhoneResetOtps.
+     * @param {PhoneResetOtpDeleteManyArgs} args - Arguments to filter PhoneResetOtps to delete.
+     * @example
+     * // Delete a few PhoneResetOtps
+     * const { count } = await prisma.phoneResetOtp.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PhoneResetOtpDeleteManyArgs>(args?: SelectSubset<T, PhoneResetOtpDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PhoneResetOtps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhoneResetOtpUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PhoneResetOtps
+     * const phoneResetOtp = await prisma.phoneResetOtp.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PhoneResetOtpUpdateManyArgs>(args: SelectSubset<T, PhoneResetOtpUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PhoneResetOtps and returns the data updated in the database.
+     * @param {PhoneResetOtpUpdateManyAndReturnArgs} args - Arguments to update many PhoneResetOtps.
+     * @example
+     * // Update many PhoneResetOtps
+     * const phoneResetOtp = await prisma.phoneResetOtp.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PhoneResetOtps and only return the `id`
+     * const phoneResetOtpWithIdOnly = await prisma.phoneResetOtp.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PhoneResetOtpUpdateManyAndReturnArgs>(args: SelectSubset<T, PhoneResetOtpUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PhoneResetOtpPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PhoneResetOtp.
+     * @param {PhoneResetOtpUpsertArgs} args - Arguments to update or create a PhoneResetOtp.
+     * @example
+     * // Update or create a PhoneResetOtp
+     * const phoneResetOtp = await prisma.phoneResetOtp.upsert({
+     *   create: {
+     *     // ... data to create a PhoneResetOtp
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PhoneResetOtp we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PhoneResetOtpUpsertArgs>(args: SelectSubset<T, PhoneResetOtpUpsertArgs<ExtArgs>>): Prisma__PhoneResetOtpClient<$Result.GetResult<Prisma.$PhoneResetOtpPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PhoneResetOtps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhoneResetOtpCountArgs} args - Arguments to filter PhoneResetOtps to count.
+     * @example
+     * // Count the number of PhoneResetOtps
+     * const count = await prisma.phoneResetOtp.count({
+     *   where: {
+     *     // ... the filter for the PhoneResetOtps we want to count
+     *   }
+     * })
+    **/
+    count<T extends PhoneResetOtpCountArgs>(
+      args?: Subset<T, PhoneResetOtpCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PhoneResetOtpCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PhoneResetOtp.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhoneResetOtpAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PhoneResetOtpAggregateArgs>(args: Subset<T, PhoneResetOtpAggregateArgs>): Prisma.PrismaPromise<GetPhoneResetOtpAggregateType<T>>
+
+    /**
+     * Group by PhoneResetOtp.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhoneResetOtpGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PhoneResetOtpGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PhoneResetOtpGroupByArgs['orderBy'] }
+        : { orderBy?: PhoneResetOtpGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PhoneResetOtpGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPhoneResetOtpGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PhoneResetOtp model
+   */
+  readonly fields: PhoneResetOtpFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PhoneResetOtp.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PhoneResetOtpClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PhoneResetOtp model
+   */
+  interface PhoneResetOtpFieldRefs {
+    readonly id: FieldRef<"PhoneResetOtp", 'String'>
+    readonly phone: FieldRef<"PhoneResetOtp", 'String'>
+    readonly codeHash: FieldRef<"PhoneResetOtp", 'String'>
+    readonly expires: FieldRef<"PhoneResetOtp", 'DateTime'>
+    readonly used: FieldRef<"PhoneResetOtp", 'Boolean'>
+    readonly attempts: FieldRef<"PhoneResetOtp", 'Int'>
+    readonly createdAt: FieldRef<"PhoneResetOtp", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PhoneResetOtp findUnique
+   */
+  export type PhoneResetOtpFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneResetOtp
+     */
+    select?: PhoneResetOtpSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneResetOtp
+     */
+    omit?: PhoneResetOtpOmit<ExtArgs> | null
+    /**
+     * Filter, which PhoneResetOtp to fetch.
+     */
+    where: PhoneResetOtpWhereUniqueInput
+  }
+
+  /**
+   * PhoneResetOtp findUniqueOrThrow
+   */
+  export type PhoneResetOtpFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneResetOtp
+     */
+    select?: PhoneResetOtpSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneResetOtp
+     */
+    omit?: PhoneResetOtpOmit<ExtArgs> | null
+    /**
+     * Filter, which PhoneResetOtp to fetch.
+     */
+    where: PhoneResetOtpWhereUniqueInput
+  }
+
+  /**
+   * PhoneResetOtp findFirst
+   */
+  export type PhoneResetOtpFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneResetOtp
+     */
+    select?: PhoneResetOtpSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneResetOtp
+     */
+    omit?: PhoneResetOtpOmit<ExtArgs> | null
+    /**
+     * Filter, which PhoneResetOtp to fetch.
+     */
+    where?: PhoneResetOtpWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PhoneResetOtps to fetch.
+     */
+    orderBy?: PhoneResetOtpOrderByWithRelationInput | PhoneResetOtpOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PhoneResetOtps.
+     */
+    cursor?: PhoneResetOtpWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PhoneResetOtps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PhoneResetOtps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PhoneResetOtps.
+     */
+    distinct?: PhoneResetOtpScalarFieldEnum | PhoneResetOtpScalarFieldEnum[]
+  }
+
+  /**
+   * PhoneResetOtp findFirstOrThrow
+   */
+  export type PhoneResetOtpFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneResetOtp
+     */
+    select?: PhoneResetOtpSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneResetOtp
+     */
+    omit?: PhoneResetOtpOmit<ExtArgs> | null
+    /**
+     * Filter, which PhoneResetOtp to fetch.
+     */
+    where?: PhoneResetOtpWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PhoneResetOtps to fetch.
+     */
+    orderBy?: PhoneResetOtpOrderByWithRelationInput | PhoneResetOtpOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PhoneResetOtps.
+     */
+    cursor?: PhoneResetOtpWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PhoneResetOtps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PhoneResetOtps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PhoneResetOtps.
+     */
+    distinct?: PhoneResetOtpScalarFieldEnum | PhoneResetOtpScalarFieldEnum[]
+  }
+
+  /**
+   * PhoneResetOtp findMany
+   */
+  export type PhoneResetOtpFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneResetOtp
+     */
+    select?: PhoneResetOtpSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneResetOtp
+     */
+    omit?: PhoneResetOtpOmit<ExtArgs> | null
+    /**
+     * Filter, which PhoneResetOtps to fetch.
+     */
+    where?: PhoneResetOtpWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PhoneResetOtps to fetch.
+     */
+    orderBy?: PhoneResetOtpOrderByWithRelationInput | PhoneResetOtpOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PhoneResetOtps.
+     */
+    cursor?: PhoneResetOtpWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PhoneResetOtps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PhoneResetOtps.
+     */
+    skip?: number
+    distinct?: PhoneResetOtpScalarFieldEnum | PhoneResetOtpScalarFieldEnum[]
+  }
+
+  /**
+   * PhoneResetOtp create
+   */
+  export type PhoneResetOtpCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneResetOtp
+     */
+    select?: PhoneResetOtpSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneResetOtp
+     */
+    omit?: PhoneResetOtpOmit<ExtArgs> | null
+    /**
+     * The data needed to create a PhoneResetOtp.
+     */
+    data: XOR<PhoneResetOtpCreateInput, PhoneResetOtpUncheckedCreateInput>
+  }
+
+  /**
+   * PhoneResetOtp createMany
+   */
+  export type PhoneResetOtpCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PhoneResetOtps.
+     */
+    data: PhoneResetOtpCreateManyInput | PhoneResetOtpCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PhoneResetOtp createManyAndReturn
+   */
+  export type PhoneResetOtpCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneResetOtp
+     */
+    select?: PhoneResetOtpSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneResetOtp
+     */
+    omit?: PhoneResetOtpOmit<ExtArgs> | null
+    /**
+     * The data used to create many PhoneResetOtps.
+     */
+    data: PhoneResetOtpCreateManyInput | PhoneResetOtpCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PhoneResetOtp update
+   */
+  export type PhoneResetOtpUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneResetOtp
+     */
+    select?: PhoneResetOtpSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneResetOtp
+     */
+    omit?: PhoneResetOtpOmit<ExtArgs> | null
+    /**
+     * The data needed to update a PhoneResetOtp.
+     */
+    data: XOR<PhoneResetOtpUpdateInput, PhoneResetOtpUncheckedUpdateInput>
+    /**
+     * Choose, which PhoneResetOtp to update.
+     */
+    where: PhoneResetOtpWhereUniqueInput
+  }
+
+  /**
+   * PhoneResetOtp updateMany
+   */
+  export type PhoneResetOtpUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PhoneResetOtps.
+     */
+    data: XOR<PhoneResetOtpUpdateManyMutationInput, PhoneResetOtpUncheckedUpdateManyInput>
+    /**
+     * Filter which PhoneResetOtps to update
+     */
+    where?: PhoneResetOtpWhereInput
+    /**
+     * Limit how many PhoneResetOtps to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PhoneResetOtp updateManyAndReturn
+   */
+  export type PhoneResetOtpUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneResetOtp
+     */
+    select?: PhoneResetOtpSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneResetOtp
+     */
+    omit?: PhoneResetOtpOmit<ExtArgs> | null
+    /**
+     * The data used to update PhoneResetOtps.
+     */
+    data: XOR<PhoneResetOtpUpdateManyMutationInput, PhoneResetOtpUncheckedUpdateManyInput>
+    /**
+     * Filter which PhoneResetOtps to update
+     */
+    where?: PhoneResetOtpWhereInput
+    /**
+     * Limit how many PhoneResetOtps to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PhoneResetOtp upsert
+   */
+  export type PhoneResetOtpUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneResetOtp
+     */
+    select?: PhoneResetOtpSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneResetOtp
+     */
+    omit?: PhoneResetOtpOmit<ExtArgs> | null
+    /**
+     * The filter to search for the PhoneResetOtp to update in case it exists.
+     */
+    where: PhoneResetOtpWhereUniqueInput
+    /**
+     * In case the PhoneResetOtp found by the `where` argument doesn't exist, create a new PhoneResetOtp with this data.
+     */
+    create: XOR<PhoneResetOtpCreateInput, PhoneResetOtpUncheckedCreateInput>
+    /**
+     * In case the PhoneResetOtp was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PhoneResetOtpUpdateInput, PhoneResetOtpUncheckedUpdateInput>
+  }
+
+  /**
+   * PhoneResetOtp delete
+   */
+  export type PhoneResetOtpDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneResetOtp
+     */
+    select?: PhoneResetOtpSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneResetOtp
+     */
+    omit?: PhoneResetOtpOmit<ExtArgs> | null
+    /**
+     * Filter which PhoneResetOtp to delete.
+     */
+    where: PhoneResetOtpWhereUniqueInput
+  }
+
+  /**
+   * PhoneResetOtp deleteMany
+   */
+  export type PhoneResetOtpDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PhoneResetOtps to delete
+     */
+    where?: PhoneResetOtpWhereInput
+    /**
+     * Limit how many PhoneResetOtps to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PhoneResetOtp without action
+   */
+  export type PhoneResetOtpDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneResetOtp
+     */
+    select?: PhoneResetOtpSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneResetOtp
+     */
+    omit?: PhoneResetOtpOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Model MerchantProfile
    */
 
@@ -5403,6 +9007,8 @@ export namespace Prisma {
     brandOption: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
+    zipCode: string | null
+    country: string | null
   }
 
   export type MerchantProfileMaxAggregateOutputType = {
@@ -5428,6 +9034,8 @@ export namespace Prisma {
     brandOption: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
+    zipCode: string | null
+    country: string | null
   }
 
   export type MerchantProfileCountAggregateOutputType = {
@@ -5453,6 +9061,8 @@ export namespace Prisma {
     brandOption: number
     createdAt: number
     updatedAt: number
+    zipCode: number
+    country: number
     _all: number
   }
 
@@ -5490,6 +9100,8 @@ export namespace Prisma {
     brandOption?: true
     createdAt?: true
     updatedAt?: true
+    zipCode?: true
+    country?: true
   }
 
   export type MerchantProfileMaxAggregateInputType = {
@@ -5515,6 +9127,8 @@ export namespace Prisma {
     brandOption?: true
     createdAt?: true
     updatedAt?: true
+    zipCode?: true
+    country?: true
   }
 
   export type MerchantProfileCountAggregateInputType = {
@@ -5540,6 +9154,8 @@ export namespace Prisma {
     brandOption?: true
     createdAt?: true
     updatedAt?: true
+    zipCode?: true
+    country?: true
     _all?: true
   }
 
@@ -5652,6 +9268,8 @@ export namespace Prisma {
     brandOption: boolean
     createdAt: Date
     updatedAt: Date
+    zipCode: string | null
+    country: string | null
     _count: MerchantProfileCountAggregateOutputType | null
     _avg: MerchantProfileAvgAggregateOutputType | null
     _sum: MerchantProfileSumAggregateOutputType | null
@@ -5696,6 +9314,8 @@ export namespace Prisma {
     brandOption?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    zipCode?: boolean
+    country?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["merchantProfile"]>
 
@@ -5722,6 +9342,8 @@ export namespace Prisma {
     brandOption?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    zipCode?: boolean
+    country?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["merchantProfile"]>
 
@@ -5748,6 +9370,8 @@ export namespace Prisma {
     brandOption?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    zipCode?: boolean
+    country?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["merchantProfile"]>
 
@@ -5774,9 +9398,11 @@ export namespace Prisma {
     brandOption?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    zipCode?: boolean
+    country?: boolean
   }
 
-  export type MerchantProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "fullName" | "dateOfBirth" | "contactEmail" | "contactPhone" | "nidOrPassportNo" | "presentAddress" | "permanentAddress" | "portfolioUrl" | "websiteUrl" | "bankName" | "bankBranch" | "accountName" | "accountNumber" | "routingNumber" | "message" | "tiar" | "leftTiar" | "brandOption" | "createdAt" | "updatedAt", ExtArgs["result"]["merchantProfile"]>
+  export type MerchantProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "fullName" | "dateOfBirth" | "contactEmail" | "contactPhone" | "nidOrPassportNo" | "presentAddress" | "permanentAddress" | "portfolioUrl" | "websiteUrl" | "bankName" | "bankBranch" | "accountName" | "accountNumber" | "routingNumber" | "message" | "tiar" | "leftTiar" | "brandOption" | "createdAt" | "updatedAt" | "zipCode" | "country", ExtArgs["result"]["merchantProfile"]>
   export type MerchantProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -5815,6 +9441,8 @@ export namespace Prisma {
       brandOption: boolean
       createdAt: Date
       updatedAt: Date
+      zipCode: string | null
+      country: string | null
     }, ExtArgs["result"]["merchantProfile"]>
     composites: {}
   }
@@ -6261,6 +9889,8 @@ export namespace Prisma {
     readonly brandOption: FieldRef<"MerchantProfile", 'Boolean'>
     readonly createdAt: FieldRef<"MerchantProfile", 'DateTime'>
     readonly updatedAt: FieldRef<"MerchantProfile", 'DateTime'>
+    readonly zipCode: FieldRef<"MerchantProfile", 'String'>
+    readonly country: FieldRef<"MerchantProfile", 'String'>
   }
     
 
@@ -10910,6 +14540,7 @@ export namespace Prisma {
     merchant?: boolean | UserDefaultArgs<ExtArgs>
     brand?: boolean | Sale$brandArgs<ExtArgs>
     SaleItem?: boolean | Sale$SaleItemArgs<ExtArgs>
+    Refund?: boolean | Sale$RefundArgs<ExtArgs>
     _count?: boolean | SaleCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["sale"]>
 
@@ -10970,6 +14601,7 @@ export namespace Prisma {
     merchant?: boolean | UserDefaultArgs<ExtArgs>
     brand?: boolean | Sale$brandArgs<ExtArgs>
     SaleItem?: boolean | Sale$SaleItemArgs<ExtArgs>
+    Refund?: boolean | Sale$RefundArgs<ExtArgs>
     _count?: boolean | SaleCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type SaleIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10993,6 +14625,7 @@ export namespace Prisma {
       merchant: Prisma.$UserPayload<ExtArgs>
       brand: Prisma.$BrandPayload<ExtArgs> | null
       SaleItem: Prisma.$SaleItemPayload<ExtArgs>[]
+      Refund: Prisma.$RefundPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -11405,6 +15038,7 @@ export namespace Prisma {
     merchant<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     brand<T extends Sale$brandArgs<ExtArgs> = {}>(args?: Subset<T, Sale$brandArgs<ExtArgs>>): Prisma__BrandClient<$Result.GetResult<Prisma.$BrandPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     SaleItem<T extends Sale$SaleItemArgs<ExtArgs> = {}>(args?: Subset<T, Sale$SaleItemArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SaleItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    Refund<T extends Sale$RefundArgs<ExtArgs> = {}>(args?: Subset<T, Sale$RefundArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RefundPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11881,6 +15515,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: SaleItemScalarFieldEnum | SaleItemScalarFieldEnum[]
+  }
+
+  /**
+   * Sale.Refund
+   */
+  export type Sale$RefundArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Refund
+     */
+    select?: RefundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Refund
+     */
+    omit?: RefundOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RefundInclude<ExtArgs> | null
+    where?: RefundWhereInput
+    orderBy?: RefundOrderByWithRelationInput | RefundOrderByWithRelationInput[]
+    cursor?: RefundWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RefundScalarFieldEnum | RefundScalarFieldEnum[]
   }
 
   /**
@@ -19871,6 +23529,7 @@ export namespace Prisma {
     size?: boolean
     order?: boolean | OrderDefaultArgs<ExtArgs>
     Sale?: boolean | OrderItem$SaleArgs<ExtArgs>
+    Refund?: boolean | OrderItem$RefundArgs<ExtArgs>
     _count?: boolean | OrderItemCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["orderItem"]>
 
@@ -19916,6 +23575,7 @@ export namespace Prisma {
   export type OrderItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     order?: boolean | OrderDefaultArgs<ExtArgs>
     Sale?: boolean | OrderItem$SaleArgs<ExtArgs>
+    Refund?: boolean | OrderItem$RefundArgs<ExtArgs>
     _count?: boolean | OrderItemCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OrderItemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -19930,6 +23590,7 @@ export namespace Prisma {
     objects: {
       order: Prisma.$OrderPayload<ExtArgs>
       Sale: Prisma.$SalePayload<ExtArgs>[]
+      Refund: Prisma.$RefundPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -20337,6 +23998,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     order<T extends OrderDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrderDefaultArgs<ExtArgs>>): Prisma__OrderClient<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     Sale<T extends OrderItem$SaleArgs<ExtArgs> = {}>(args?: Subset<T, OrderItem$SaleArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    Refund<T extends OrderItem$RefundArgs<ExtArgs> = {}>(args?: Subset<T, OrderItem$RefundArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RefundPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -20792,6 +24454,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: SaleScalarFieldEnum | SaleScalarFieldEnum[]
+  }
+
+  /**
+   * OrderItem.Refund
+   */
+  export type OrderItem$RefundArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Refund
+     */
+    select?: RefundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Refund
+     */
+    omit?: RefundOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RefundInclude<ExtArgs> | null
+    where?: RefundWhereInput
+    orderBy?: RefundOrderByWithRelationInput | RefundOrderByWithRelationInput[]
+    cursor?: RefundWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RefundScalarFieldEnum | RefundScalarFieldEnum[]
   }
 
   /**
@@ -23154,6 +26840,1206 @@ export namespace Prisma {
 
 
   /**
+   * Model Refund
+   */
+
+  export type AggregateRefund = {
+    _count: RefundCountAggregateOutputType | null
+    _avg: RefundAvgAggregateOutputType | null
+    _sum: RefundSumAggregateOutputType | null
+    _min: RefundMinAggregateOutputType | null
+    _max: RefundMaxAggregateOutputType | null
+  }
+
+  export type RefundAvgAggregateOutputType = {
+    quantity: number | null
+    amount: Decimal | null
+    brandEarning: Decimal | null
+    merchantEarning: Decimal | null
+    platformEarning: Decimal | null
+  }
+
+  export type RefundSumAggregateOutputType = {
+    quantity: number | null
+    amount: Decimal | null
+    brandEarning: Decimal | null
+    merchantEarning: Decimal | null
+    platformEarning: Decimal | null
+  }
+
+  export type RefundMinAggregateOutputType = {
+    id: string | null
+    orderItemId: string | null
+    saleId: string | null
+    quantity: number | null
+    amount: Decimal | null
+    brandEarning: Decimal | null
+    merchantEarning: Decimal | null
+    platformEarning: Decimal | null
+    reason: string | null
+    createdAt: Date | null
+  }
+
+  export type RefundMaxAggregateOutputType = {
+    id: string | null
+    orderItemId: string | null
+    saleId: string | null
+    quantity: number | null
+    amount: Decimal | null
+    brandEarning: Decimal | null
+    merchantEarning: Decimal | null
+    platformEarning: Decimal | null
+    reason: string | null
+    createdAt: Date | null
+  }
+
+  export type RefundCountAggregateOutputType = {
+    id: number
+    orderItemId: number
+    saleId: number
+    quantity: number
+    amount: number
+    brandEarning: number
+    merchantEarning: number
+    platformEarning: number
+    reason: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type RefundAvgAggregateInputType = {
+    quantity?: true
+    amount?: true
+    brandEarning?: true
+    merchantEarning?: true
+    platformEarning?: true
+  }
+
+  export type RefundSumAggregateInputType = {
+    quantity?: true
+    amount?: true
+    brandEarning?: true
+    merchantEarning?: true
+    platformEarning?: true
+  }
+
+  export type RefundMinAggregateInputType = {
+    id?: true
+    orderItemId?: true
+    saleId?: true
+    quantity?: true
+    amount?: true
+    brandEarning?: true
+    merchantEarning?: true
+    platformEarning?: true
+    reason?: true
+    createdAt?: true
+  }
+
+  export type RefundMaxAggregateInputType = {
+    id?: true
+    orderItemId?: true
+    saleId?: true
+    quantity?: true
+    amount?: true
+    brandEarning?: true
+    merchantEarning?: true
+    platformEarning?: true
+    reason?: true
+    createdAt?: true
+  }
+
+  export type RefundCountAggregateInputType = {
+    id?: true
+    orderItemId?: true
+    saleId?: true
+    quantity?: true
+    amount?: true
+    brandEarning?: true
+    merchantEarning?: true
+    platformEarning?: true
+    reason?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type RefundAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Refund to aggregate.
+     */
+    where?: RefundWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Refunds to fetch.
+     */
+    orderBy?: RefundOrderByWithRelationInput | RefundOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RefundWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Refunds from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Refunds.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Refunds
+    **/
+    _count?: true | RefundCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: RefundAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RefundSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RefundMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RefundMaxAggregateInputType
+  }
+
+  export type GetRefundAggregateType<T extends RefundAggregateArgs> = {
+        [P in keyof T & keyof AggregateRefund]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRefund[P]>
+      : GetScalarType<T[P], AggregateRefund[P]>
+  }
+
+
+
+
+  export type RefundGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RefundWhereInput
+    orderBy?: RefundOrderByWithAggregationInput | RefundOrderByWithAggregationInput[]
+    by: RefundScalarFieldEnum[] | RefundScalarFieldEnum
+    having?: RefundScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RefundCountAggregateInputType | true
+    _avg?: RefundAvgAggregateInputType
+    _sum?: RefundSumAggregateInputType
+    _min?: RefundMinAggregateInputType
+    _max?: RefundMaxAggregateInputType
+  }
+
+  export type RefundGroupByOutputType = {
+    id: string
+    orderItemId: string
+    saleId: string | null
+    quantity: number
+    amount: Decimal
+    brandEarning: Decimal
+    merchantEarning: Decimal
+    platformEarning: Decimal
+    reason: string | null
+    createdAt: Date
+    _count: RefundCountAggregateOutputType | null
+    _avg: RefundAvgAggregateOutputType | null
+    _sum: RefundSumAggregateOutputType | null
+    _min: RefundMinAggregateOutputType | null
+    _max: RefundMaxAggregateOutputType | null
+  }
+
+  type GetRefundGroupByPayload<T extends RefundGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RefundGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RefundGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RefundGroupByOutputType[P]>
+            : GetScalarType<T[P], RefundGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RefundSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orderItemId?: boolean
+    saleId?: boolean
+    quantity?: boolean
+    amount?: boolean
+    brandEarning?: boolean
+    merchantEarning?: boolean
+    platformEarning?: boolean
+    reason?: boolean
+    createdAt?: boolean
+    orderItem?: boolean | OrderItemDefaultArgs<ExtArgs>
+    sale?: boolean | Refund$saleArgs<ExtArgs>
+  }, ExtArgs["result"]["refund"]>
+
+  export type RefundSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orderItemId?: boolean
+    saleId?: boolean
+    quantity?: boolean
+    amount?: boolean
+    brandEarning?: boolean
+    merchantEarning?: boolean
+    platformEarning?: boolean
+    reason?: boolean
+    createdAt?: boolean
+    orderItem?: boolean | OrderItemDefaultArgs<ExtArgs>
+    sale?: boolean | Refund$saleArgs<ExtArgs>
+  }, ExtArgs["result"]["refund"]>
+
+  export type RefundSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orderItemId?: boolean
+    saleId?: boolean
+    quantity?: boolean
+    amount?: boolean
+    brandEarning?: boolean
+    merchantEarning?: boolean
+    platformEarning?: boolean
+    reason?: boolean
+    createdAt?: boolean
+    orderItem?: boolean | OrderItemDefaultArgs<ExtArgs>
+    sale?: boolean | Refund$saleArgs<ExtArgs>
+  }, ExtArgs["result"]["refund"]>
+
+  export type RefundSelectScalar = {
+    id?: boolean
+    orderItemId?: boolean
+    saleId?: boolean
+    quantity?: boolean
+    amount?: boolean
+    brandEarning?: boolean
+    merchantEarning?: boolean
+    platformEarning?: boolean
+    reason?: boolean
+    createdAt?: boolean
+  }
+
+  export type RefundOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orderItemId" | "saleId" | "quantity" | "amount" | "brandEarning" | "merchantEarning" | "platformEarning" | "reason" | "createdAt", ExtArgs["result"]["refund"]>
+  export type RefundInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    orderItem?: boolean | OrderItemDefaultArgs<ExtArgs>
+    sale?: boolean | Refund$saleArgs<ExtArgs>
+  }
+  export type RefundIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    orderItem?: boolean | OrderItemDefaultArgs<ExtArgs>
+    sale?: boolean | Refund$saleArgs<ExtArgs>
+  }
+  export type RefundIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    orderItem?: boolean | OrderItemDefaultArgs<ExtArgs>
+    sale?: boolean | Refund$saleArgs<ExtArgs>
+  }
+
+  export type $RefundPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Refund"
+    objects: {
+      orderItem: Prisma.$OrderItemPayload<ExtArgs>
+      sale: Prisma.$SalePayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      orderItemId: string
+      saleId: string | null
+      quantity: number
+      amount: Prisma.Decimal
+      brandEarning: Prisma.Decimal
+      merchantEarning: Prisma.Decimal
+      platformEarning: Prisma.Decimal
+      reason: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["refund"]>
+    composites: {}
+  }
+
+  type RefundGetPayload<S extends boolean | null | undefined | RefundDefaultArgs> = $Result.GetResult<Prisma.$RefundPayload, S>
+
+  type RefundCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RefundFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RefundCountAggregateInputType | true
+    }
+
+  export interface RefundDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Refund'], meta: { name: 'Refund' } }
+    /**
+     * Find zero or one Refund that matches the filter.
+     * @param {RefundFindUniqueArgs} args - Arguments to find a Refund
+     * @example
+     * // Get one Refund
+     * const refund = await prisma.refund.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RefundFindUniqueArgs>(args: SelectSubset<T, RefundFindUniqueArgs<ExtArgs>>): Prisma__RefundClient<$Result.GetResult<Prisma.$RefundPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Refund that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RefundFindUniqueOrThrowArgs} args - Arguments to find a Refund
+     * @example
+     * // Get one Refund
+     * const refund = await prisma.refund.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RefundFindUniqueOrThrowArgs>(args: SelectSubset<T, RefundFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RefundClient<$Result.GetResult<Prisma.$RefundPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Refund that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RefundFindFirstArgs} args - Arguments to find a Refund
+     * @example
+     * // Get one Refund
+     * const refund = await prisma.refund.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RefundFindFirstArgs>(args?: SelectSubset<T, RefundFindFirstArgs<ExtArgs>>): Prisma__RefundClient<$Result.GetResult<Prisma.$RefundPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Refund that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RefundFindFirstOrThrowArgs} args - Arguments to find a Refund
+     * @example
+     * // Get one Refund
+     * const refund = await prisma.refund.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RefundFindFirstOrThrowArgs>(args?: SelectSubset<T, RefundFindFirstOrThrowArgs<ExtArgs>>): Prisma__RefundClient<$Result.GetResult<Prisma.$RefundPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Refunds that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RefundFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Refunds
+     * const refunds = await prisma.refund.findMany()
+     * 
+     * // Get first 10 Refunds
+     * const refunds = await prisma.refund.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const refundWithIdOnly = await prisma.refund.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RefundFindManyArgs>(args?: SelectSubset<T, RefundFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RefundPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Refund.
+     * @param {RefundCreateArgs} args - Arguments to create a Refund.
+     * @example
+     * // Create one Refund
+     * const Refund = await prisma.refund.create({
+     *   data: {
+     *     // ... data to create a Refund
+     *   }
+     * })
+     * 
+     */
+    create<T extends RefundCreateArgs>(args: SelectSubset<T, RefundCreateArgs<ExtArgs>>): Prisma__RefundClient<$Result.GetResult<Prisma.$RefundPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Refunds.
+     * @param {RefundCreateManyArgs} args - Arguments to create many Refunds.
+     * @example
+     * // Create many Refunds
+     * const refund = await prisma.refund.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RefundCreateManyArgs>(args?: SelectSubset<T, RefundCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Refunds and returns the data saved in the database.
+     * @param {RefundCreateManyAndReturnArgs} args - Arguments to create many Refunds.
+     * @example
+     * // Create many Refunds
+     * const refund = await prisma.refund.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Refunds and only return the `id`
+     * const refundWithIdOnly = await prisma.refund.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RefundCreateManyAndReturnArgs>(args?: SelectSubset<T, RefundCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RefundPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Refund.
+     * @param {RefundDeleteArgs} args - Arguments to delete one Refund.
+     * @example
+     * // Delete one Refund
+     * const Refund = await prisma.refund.delete({
+     *   where: {
+     *     // ... filter to delete one Refund
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RefundDeleteArgs>(args: SelectSubset<T, RefundDeleteArgs<ExtArgs>>): Prisma__RefundClient<$Result.GetResult<Prisma.$RefundPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Refund.
+     * @param {RefundUpdateArgs} args - Arguments to update one Refund.
+     * @example
+     * // Update one Refund
+     * const refund = await prisma.refund.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RefundUpdateArgs>(args: SelectSubset<T, RefundUpdateArgs<ExtArgs>>): Prisma__RefundClient<$Result.GetResult<Prisma.$RefundPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Refunds.
+     * @param {RefundDeleteManyArgs} args - Arguments to filter Refunds to delete.
+     * @example
+     * // Delete a few Refunds
+     * const { count } = await prisma.refund.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RefundDeleteManyArgs>(args?: SelectSubset<T, RefundDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Refunds.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RefundUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Refunds
+     * const refund = await prisma.refund.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RefundUpdateManyArgs>(args: SelectSubset<T, RefundUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Refunds and returns the data updated in the database.
+     * @param {RefundUpdateManyAndReturnArgs} args - Arguments to update many Refunds.
+     * @example
+     * // Update many Refunds
+     * const refund = await prisma.refund.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Refunds and only return the `id`
+     * const refundWithIdOnly = await prisma.refund.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RefundUpdateManyAndReturnArgs>(args: SelectSubset<T, RefundUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RefundPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Refund.
+     * @param {RefundUpsertArgs} args - Arguments to update or create a Refund.
+     * @example
+     * // Update or create a Refund
+     * const refund = await prisma.refund.upsert({
+     *   create: {
+     *     // ... data to create a Refund
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Refund we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RefundUpsertArgs>(args: SelectSubset<T, RefundUpsertArgs<ExtArgs>>): Prisma__RefundClient<$Result.GetResult<Prisma.$RefundPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Refunds.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RefundCountArgs} args - Arguments to filter Refunds to count.
+     * @example
+     * // Count the number of Refunds
+     * const count = await prisma.refund.count({
+     *   where: {
+     *     // ... the filter for the Refunds we want to count
+     *   }
+     * })
+    **/
+    count<T extends RefundCountArgs>(
+      args?: Subset<T, RefundCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RefundCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Refund.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RefundAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RefundAggregateArgs>(args: Subset<T, RefundAggregateArgs>): Prisma.PrismaPromise<GetRefundAggregateType<T>>
+
+    /**
+     * Group by Refund.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RefundGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RefundGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RefundGroupByArgs['orderBy'] }
+        : { orderBy?: RefundGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RefundGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRefundGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Refund model
+   */
+  readonly fields: RefundFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Refund.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RefundClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    orderItem<T extends OrderItemDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrderItemDefaultArgs<ExtArgs>>): Prisma__OrderItemClient<$Result.GetResult<Prisma.$OrderItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    sale<T extends Refund$saleArgs<ExtArgs> = {}>(args?: Subset<T, Refund$saleArgs<ExtArgs>>): Prisma__SaleClient<$Result.GetResult<Prisma.$SalePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Refund model
+   */
+  interface RefundFieldRefs {
+    readonly id: FieldRef<"Refund", 'String'>
+    readonly orderItemId: FieldRef<"Refund", 'String'>
+    readonly saleId: FieldRef<"Refund", 'String'>
+    readonly quantity: FieldRef<"Refund", 'Int'>
+    readonly amount: FieldRef<"Refund", 'Decimal'>
+    readonly brandEarning: FieldRef<"Refund", 'Decimal'>
+    readonly merchantEarning: FieldRef<"Refund", 'Decimal'>
+    readonly platformEarning: FieldRef<"Refund", 'Decimal'>
+    readonly reason: FieldRef<"Refund", 'String'>
+    readonly createdAt: FieldRef<"Refund", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Refund findUnique
+   */
+  export type RefundFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Refund
+     */
+    select?: RefundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Refund
+     */
+    omit?: RefundOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RefundInclude<ExtArgs> | null
+    /**
+     * Filter, which Refund to fetch.
+     */
+    where: RefundWhereUniqueInput
+  }
+
+  /**
+   * Refund findUniqueOrThrow
+   */
+  export type RefundFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Refund
+     */
+    select?: RefundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Refund
+     */
+    omit?: RefundOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RefundInclude<ExtArgs> | null
+    /**
+     * Filter, which Refund to fetch.
+     */
+    where: RefundWhereUniqueInput
+  }
+
+  /**
+   * Refund findFirst
+   */
+  export type RefundFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Refund
+     */
+    select?: RefundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Refund
+     */
+    omit?: RefundOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RefundInclude<ExtArgs> | null
+    /**
+     * Filter, which Refund to fetch.
+     */
+    where?: RefundWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Refunds to fetch.
+     */
+    orderBy?: RefundOrderByWithRelationInput | RefundOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Refunds.
+     */
+    cursor?: RefundWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Refunds from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Refunds.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Refunds.
+     */
+    distinct?: RefundScalarFieldEnum | RefundScalarFieldEnum[]
+  }
+
+  /**
+   * Refund findFirstOrThrow
+   */
+  export type RefundFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Refund
+     */
+    select?: RefundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Refund
+     */
+    omit?: RefundOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RefundInclude<ExtArgs> | null
+    /**
+     * Filter, which Refund to fetch.
+     */
+    where?: RefundWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Refunds to fetch.
+     */
+    orderBy?: RefundOrderByWithRelationInput | RefundOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Refunds.
+     */
+    cursor?: RefundWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Refunds from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Refunds.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Refunds.
+     */
+    distinct?: RefundScalarFieldEnum | RefundScalarFieldEnum[]
+  }
+
+  /**
+   * Refund findMany
+   */
+  export type RefundFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Refund
+     */
+    select?: RefundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Refund
+     */
+    omit?: RefundOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RefundInclude<ExtArgs> | null
+    /**
+     * Filter, which Refunds to fetch.
+     */
+    where?: RefundWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Refunds to fetch.
+     */
+    orderBy?: RefundOrderByWithRelationInput | RefundOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Refunds.
+     */
+    cursor?: RefundWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Refunds from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Refunds.
+     */
+    skip?: number
+    distinct?: RefundScalarFieldEnum | RefundScalarFieldEnum[]
+  }
+
+  /**
+   * Refund create
+   */
+  export type RefundCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Refund
+     */
+    select?: RefundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Refund
+     */
+    omit?: RefundOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RefundInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Refund.
+     */
+    data: XOR<RefundCreateInput, RefundUncheckedCreateInput>
+  }
+
+  /**
+   * Refund createMany
+   */
+  export type RefundCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Refunds.
+     */
+    data: RefundCreateManyInput | RefundCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Refund createManyAndReturn
+   */
+  export type RefundCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Refund
+     */
+    select?: RefundSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Refund
+     */
+    omit?: RefundOmit<ExtArgs> | null
+    /**
+     * The data used to create many Refunds.
+     */
+    data: RefundCreateManyInput | RefundCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RefundIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Refund update
+   */
+  export type RefundUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Refund
+     */
+    select?: RefundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Refund
+     */
+    omit?: RefundOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RefundInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Refund.
+     */
+    data: XOR<RefundUpdateInput, RefundUncheckedUpdateInput>
+    /**
+     * Choose, which Refund to update.
+     */
+    where: RefundWhereUniqueInput
+  }
+
+  /**
+   * Refund updateMany
+   */
+  export type RefundUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Refunds.
+     */
+    data: XOR<RefundUpdateManyMutationInput, RefundUncheckedUpdateManyInput>
+    /**
+     * Filter which Refunds to update
+     */
+    where?: RefundWhereInput
+    /**
+     * Limit how many Refunds to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Refund updateManyAndReturn
+   */
+  export type RefundUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Refund
+     */
+    select?: RefundSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Refund
+     */
+    omit?: RefundOmit<ExtArgs> | null
+    /**
+     * The data used to update Refunds.
+     */
+    data: XOR<RefundUpdateManyMutationInput, RefundUncheckedUpdateManyInput>
+    /**
+     * Filter which Refunds to update
+     */
+    where?: RefundWhereInput
+    /**
+     * Limit how many Refunds to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RefundIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Refund upsert
+   */
+  export type RefundUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Refund
+     */
+    select?: RefundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Refund
+     */
+    omit?: RefundOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RefundInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Refund to update in case it exists.
+     */
+    where: RefundWhereUniqueInput
+    /**
+     * In case the Refund found by the `where` argument doesn't exist, create a new Refund with this data.
+     */
+    create: XOR<RefundCreateInput, RefundUncheckedCreateInput>
+    /**
+     * In case the Refund was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RefundUpdateInput, RefundUncheckedUpdateInput>
+  }
+
+  /**
+   * Refund delete
+   */
+  export type RefundDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Refund
+     */
+    select?: RefundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Refund
+     */
+    omit?: RefundOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RefundInclude<ExtArgs> | null
+    /**
+     * Filter which Refund to delete.
+     */
+    where: RefundWhereUniqueInput
+  }
+
+  /**
+   * Refund deleteMany
+   */
+  export type RefundDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Refunds to delete
+     */
+    where?: RefundWhereInput
+    /**
+     * Limit how many Refunds to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Refund.sale
+   */
+  export type Refund$saleArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Sale
+     */
+    select?: SaleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Sale
+     */
+    omit?: SaleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SaleInclude<ExtArgs> | null
+    where?: SaleWhereInput
+  }
+
+  /**
+   * Refund without action
+   */
+  export type RefundDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Refund
+     */
+    select?: RefundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Refund
+     */
+    omit?: RefundOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RefundInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Payout
    */
 
@@ -24346,6 +29232,22 @@ export namespace Prisma {
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+  export const UserProfileScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    firstName: 'firstName',
+    lastName: 'lastName',
+    dateOfBirth: 'dateOfBirth',
+    email: 'email',
+    phone: 'phone',
+    country: 'country',
+    address: 'address',
+    zipCode: 'zipCode'
+  };
+
+  export type UserProfileScalarFieldEnum = (typeof UserProfileScalarFieldEnum)[keyof typeof UserProfileScalarFieldEnum]
+
+
   export const UserAddressScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
@@ -24356,11 +29258,37 @@ export namespace Prisma {
     email: 'email',
     address: 'address',
     isDefault: 'isDefault',
+    zipCode: 'zipCode',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type UserAddressScalarFieldEnum = (typeof UserAddressScalarFieldEnum)[keyof typeof UserAddressScalarFieldEnum]
+
+
+  export const PasswordResetTokenScalarFieldEnum: {
+    id: 'id',
+    email: 'email',
+    tokenHash: 'tokenHash',
+    expires: 'expires',
+    used: 'used',
+    createdAt: 'createdAt'
+  };
+
+  export type PasswordResetTokenScalarFieldEnum = (typeof PasswordResetTokenScalarFieldEnum)[keyof typeof PasswordResetTokenScalarFieldEnum]
+
+
+  export const PhoneResetOtpScalarFieldEnum: {
+    id: 'id',
+    phone: 'phone',
+    codeHash: 'codeHash',
+    expires: 'expires',
+    used: 'used',
+    attempts: 'attempts',
+    createdAt: 'createdAt'
+  };
+
+  export type PhoneResetOtpScalarFieldEnum = (typeof PhoneResetOtpScalarFieldEnum)[keyof typeof PhoneResetOtpScalarFieldEnum]
 
 
   export const MerchantProfileScalarFieldEnum: {
@@ -24385,7 +29313,9 @@ export namespace Prisma {
     leftTiar: 'leftTiar',
     brandOption: 'brandOption',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    zipCode: 'zipCode',
+    country: 'country'
   };
 
   export type MerchantProfileScalarFieldEnum = (typeof MerchantProfileScalarFieldEnum)[keyof typeof MerchantProfileScalarFieldEnum]
@@ -24605,6 +29535,22 @@ export namespace Prisma {
   export type CommissionSettingScalarFieldEnum = (typeof CommissionSettingScalarFieldEnum)[keyof typeof CommissionSettingScalarFieldEnum]
 
 
+  export const RefundScalarFieldEnum: {
+    id: 'id',
+    orderItemId: 'orderItemId',
+    saleId: 'saleId',
+    quantity: 'quantity',
+    amount: 'amount',
+    brandEarning: 'brandEarning',
+    merchantEarning: 'merchantEarning',
+    platformEarning: 'platformEarning',
+    reason: 'reason',
+    createdAt: 'createdAt'
+  };
+
+  export type RefundScalarFieldEnum = (typeof RefundScalarFieldEnum)[keyof typeof RefundScalarFieldEnum]
+
+
   export const PayoutScalarFieldEnum: {
     id: 'id',
     actor: 'actor',
@@ -24818,6 +29764,7 @@ export namespace Prisma {
     sales?: SaleListRelationFilter
     merchantProfile?: XOR<MerchantProfileNullableScalarRelationFilter, MerchantProfileWhereInput> | null
     addresses?: UserAddressListRelationFilter
+    userprofile?: XOR<UserProfileNullableScalarRelationFilter, UserProfileWhereInput> | null
     Order?: OrderListRelationFilter
     CommissionSetting?: CommissionSettingListRelationFilter
     Payout?: PayoutListRelationFilter
@@ -24838,6 +29785,7 @@ export namespace Prisma {
     sales?: SaleOrderByRelationAggregateInput
     merchantProfile?: MerchantProfileOrderByWithRelationInput
     addresses?: UserAddressOrderByRelationAggregateInput
+    userprofile?: UserProfileOrderByWithRelationInput
     Order?: OrderOrderByRelationAggregateInput
     CommissionSetting?: CommissionSettingOrderByRelationAggregateInput
     Payout?: PayoutOrderByRelationAggregateInput
@@ -24861,6 +29809,7 @@ export namespace Prisma {
     sales?: SaleListRelationFilter
     merchantProfile?: XOR<MerchantProfileNullableScalarRelationFilter, MerchantProfileWhereInput> | null
     addresses?: UserAddressListRelationFilter
+    userprofile?: XOR<UserProfileNullableScalarRelationFilter, UserProfileWhereInput> | null
     Order?: OrderListRelationFilter
     CommissionSetting?: CommissionSettingListRelationFilter
     Payout?: PayoutListRelationFilter
@@ -24896,6 +29845,86 @@ export namespace Prisma {
     isActive?: BoolWithAggregatesFilter<"User"> | boolean
   }
 
+  export type UserProfileWhereInput = {
+    AND?: UserProfileWhereInput | UserProfileWhereInput[]
+    OR?: UserProfileWhereInput[]
+    NOT?: UserProfileWhereInput | UserProfileWhereInput[]
+    id?: StringFilter<"UserProfile"> | string
+    userId?: StringFilter<"UserProfile"> | string
+    firstName?: StringFilter<"UserProfile"> | string
+    lastName?: StringFilter<"UserProfile"> | string
+    dateOfBirth?: DateTimeFilter<"UserProfile"> | Date | string
+    email?: StringFilter<"UserProfile"> | string
+    phone?: StringFilter<"UserProfile"> | string
+    country?: StringFilter<"UserProfile"> | string
+    address?: StringFilter<"UserProfile"> | string
+    zipCode?: StringFilter<"UserProfile"> | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type UserProfileOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    firstName?: SortOrder
+    lastName?: SortOrder
+    dateOfBirth?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    country?: SortOrder
+    address?: SortOrder
+    zipCode?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type UserProfileWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId?: string
+    AND?: UserProfileWhereInput | UserProfileWhereInput[]
+    OR?: UserProfileWhereInput[]
+    NOT?: UserProfileWhereInput | UserProfileWhereInput[]
+    firstName?: StringFilter<"UserProfile"> | string
+    lastName?: StringFilter<"UserProfile"> | string
+    dateOfBirth?: DateTimeFilter<"UserProfile"> | Date | string
+    email?: StringFilter<"UserProfile"> | string
+    phone?: StringFilter<"UserProfile"> | string
+    country?: StringFilter<"UserProfile"> | string
+    address?: StringFilter<"UserProfile"> | string
+    zipCode?: StringFilter<"UserProfile"> | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "userId">
+
+  export type UserProfileOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    firstName?: SortOrder
+    lastName?: SortOrder
+    dateOfBirth?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    country?: SortOrder
+    address?: SortOrder
+    zipCode?: SortOrder
+    _count?: UserProfileCountOrderByAggregateInput
+    _max?: UserProfileMaxOrderByAggregateInput
+    _min?: UserProfileMinOrderByAggregateInput
+  }
+
+  export type UserProfileScalarWhereWithAggregatesInput = {
+    AND?: UserProfileScalarWhereWithAggregatesInput | UserProfileScalarWhereWithAggregatesInput[]
+    OR?: UserProfileScalarWhereWithAggregatesInput[]
+    NOT?: UserProfileScalarWhereWithAggregatesInput | UserProfileScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"UserProfile"> | string
+    userId?: StringWithAggregatesFilter<"UserProfile"> | string
+    firstName?: StringWithAggregatesFilter<"UserProfile"> | string
+    lastName?: StringWithAggregatesFilter<"UserProfile"> | string
+    dateOfBirth?: DateTimeWithAggregatesFilter<"UserProfile"> | Date | string
+    email?: StringWithAggregatesFilter<"UserProfile"> | string
+    phone?: StringWithAggregatesFilter<"UserProfile"> | string
+    country?: StringWithAggregatesFilter<"UserProfile"> | string
+    address?: StringWithAggregatesFilter<"UserProfile"> | string
+    zipCode?: StringWithAggregatesFilter<"UserProfile"> | string
+  }
+
   export type UserAddressWhereInput = {
     AND?: UserAddressWhereInput | UserAddressWhereInput[]
     OR?: UserAddressWhereInput[]
@@ -24909,6 +29938,7 @@ export namespace Prisma {
     email?: StringNullableFilter<"UserAddress"> | string | null
     address?: StringFilter<"UserAddress"> | string
     isDefault?: BoolFilter<"UserAddress"> | boolean
+    zipCode?: StringNullableFilter<"UserAddress"> | string | null
     createdAt?: DateTimeFilter<"UserAddress"> | Date | string
     updatedAt?: DateTimeFilter<"UserAddress"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -24925,6 +29955,7 @@ export namespace Prisma {
     email?: SortOrderInput | SortOrder
     address?: SortOrder
     isDefault?: SortOrder
+    zipCode?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -24944,6 +29975,7 @@ export namespace Prisma {
     email?: StringNullableFilter<"UserAddress"> | string | null
     address?: StringFilter<"UserAddress"> | string
     isDefault?: BoolFilter<"UserAddress"> | boolean
+    zipCode?: StringNullableFilter<"UserAddress"> | string | null
     createdAt?: DateTimeFilter<"UserAddress"> | Date | string
     updatedAt?: DateTimeFilter<"UserAddress"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -24960,6 +29992,7 @@ export namespace Prisma {
     email?: SortOrderInput | SortOrder
     address?: SortOrder
     isDefault?: SortOrder
+    zipCode?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserAddressCountOrderByAggregateInput
@@ -24980,8 +30013,130 @@ export namespace Prisma {
     email?: StringNullableWithAggregatesFilter<"UserAddress"> | string | null
     address?: StringWithAggregatesFilter<"UserAddress"> | string
     isDefault?: BoolWithAggregatesFilter<"UserAddress"> | boolean
+    zipCode?: StringNullableWithAggregatesFilter<"UserAddress"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"UserAddress"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"UserAddress"> | Date | string
+  }
+
+  export type PasswordResetTokenWhereInput = {
+    AND?: PasswordResetTokenWhereInput | PasswordResetTokenWhereInput[]
+    OR?: PasswordResetTokenWhereInput[]
+    NOT?: PasswordResetTokenWhereInput | PasswordResetTokenWhereInput[]
+    id?: StringFilter<"PasswordResetToken"> | string
+    email?: StringFilter<"PasswordResetToken"> | string
+    tokenHash?: StringFilter<"PasswordResetToken"> | string
+    expires?: DateTimeFilter<"PasswordResetToken"> | Date | string
+    used?: BoolFilter<"PasswordResetToken"> | boolean
+    createdAt?: DateTimeFilter<"PasswordResetToken"> | Date | string
+  }
+
+  export type PasswordResetTokenOrderByWithRelationInput = {
+    id?: SortOrder
+    email?: SortOrder
+    tokenHash?: SortOrder
+    expires?: SortOrder
+    used?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PasswordResetTokenWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    tokenHash?: string
+    AND?: PasswordResetTokenWhereInput | PasswordResetTokenWhereInput[]
+    OR?: PasswordResetTokenWhereInput[]
+    NOT?: PasswordResetTokenWhereInput | PasswordResetTokenWhereInput[]
+    email?: StringFilter<"PasswordResetToken"> | string
+    expires?: DateTimeFilter<"PasswordResetToken"> | Date | string
+    used?: BoolFilter<"PasswordResetToken"> | boolean
+    createdAt?: DateTimeFilter<"PasswordResetToken"> | Date | string
+  }, "id" | "tokenHash">
+
+  export type PasswordResetTokenOrderByWithAggregationInput = {
+    id?: SortOrder
+    email?: SortOrder
+    tokenHash?: SortOrder
+    expires?: SortOrder
+    used?: SortOrder
+    createdAt?: SortOrder
+    _count?: PasswordResetTokenCountOrderByAggregateInput
+    _max?: PasswordResetTokenMaxOrderByAggregateInput
+    _min?: PasswordResetTokenMinOrderByAggregateInput
+  }
+
+  export type PasswordResetTokenScalarWhereWithAggregatesInput = {
+    AND?: PasswordResetTokenScalarWhereWithAggregatesInput | PasswordResetTokenScalarWhereWithAggregatesInput[]
+    OR?: PasswordResetTokenScalarWhereWithAggregatesInput[]
+    NOT?: PasswordResetTokenScalarWhereWithAggregatesInput | PasswordResetTokenScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PasswordResetToken"> | string
+    email?: StringWithAggregatesFilter<"PasswordResetToken"> | string
+    tokenHash?: StringWithAggregatesFilter<"PasswordResetToken"> | string
+    expires?: DateTimeWithAggregatesFilter<"PasswordResetToken"> | Date | string
+    used?: BoolWithAggregatesFilter<"PasswordResetToken"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"PasswordResetToken"> | Date | string
+  }
+
+  export type PhoneResetOtpWhereInput = {
+    AND?: PhoneResetOtpWhereInput | PhoneResetOtpWhereInput[]
+    OR?: PhoneResetOtpWhereInput[]
+    NOT?: PhoneResetOtpWhereInput | PhoneResetOtpWhereInput[]
+    id?: StringFilter<"PhoneResetOtp"> | string
+    phone?: StringFilter<"PhoneResetOtp"> | string
+    codeHash?: StringFilter<"PhoneResetOtp"> | string
+    expires?: DateTimeFilter<"PhoneResetOtp"> | Date | string
+    used?: BoolFilter<"PhoneResetOtp"> | boolean
+    attempts?: IntFilter<"PhoneResetOtp"> | number
+    createdAt?: DateTimeFilter<"PhoneResetOtp"> | Date | string
+  }
+
+  export type PhoneResetOtpOrderByWithRelationInput = {
+    id?: SortOrder
+    phone?: SortOrder
+    codeHash?: SortOrder
+    expires?: SortOrder
+    used?: SortOrder
+    attempts?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PhoneResetOtpWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: PhoneResetOtpWhereInput | PhoneResetOtpWhereInput[]
+    OR?: PhoneResetOtpWhereInput[]
+    NOT?: PhoneResetOtpWhereInput | PhoneResetOtpWhereInput[]
+    phone?: StringFilter<"PhoneResetOtp"> | string
+    codeHash?: StringFilter<"PhoneResetOtp"> | string
+    expires?: DateTimeFilter<"PhoneResetOtp"> | Date | string
+    used?: BoolFilter<"PhoneResetOtp"> | boolean
+    attempts?: IntFilter<"PhoneResetOtp"> | number
+    createdAt?: DateTimeFilter<"PhoneResetOtp"> | Date | string
+  }, "id">
+
+  export type PhoneResetOtpOrderByWithAggregationInput = {
+    id?: SortOrder
+    phone?: SortOrder
+    codeHash?: SortOrder
+    expires?: SortOrder
+    used?: SortOrder
+    attempts?: SortOrder
+    createdAt?: SortOrder
+    _count?: PhoneResetOtpCountOrderByAggregateInput
+    _avg?: PhoneResetOtpAvgOrderByAggregateInput
+    _max?: PhoneResetOtpMaxOrderByAggregateInput
+    _min?: PhoneResetOtpMinOrderByAggregateInput
+    _sum?: PhoneResetOtpSumOrderByAggregateInput
+  }
+
+  export type PhoneResetOtpScalarWhereWithAggregatesInput = {
+    AND?: PhoneResetOtpScalarWhereWithAggregatesInput | PhoneResetOtpScalarWhereWithAggregatesInput[]
+    OR?: PhoneResetOtpScalarWhereWithAggregatesInput[]
+    NOT?: PhoneResetOtpScalarWhereWithAggregatesInput | PhoneResetOtpScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PhoneResetOtp"> | string
+    phone?: StringWithAggregatesFilter<"PhoneResetOtp"> | string
+    codeHash?: StringWithAggregatesFilter<"PhoneResetOtp"> | string
+    expires?: DateTimeWithAggregatesFilter<"PhoneResetOtp"> | Date | string
+    used?: BoolWithAggregatesFilter<"PhoneResetOtp"> | boolean
+    attempts?: IntWithAggregatesFilter<"PhoneResetOtp"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"PhoneResetOtp"> | Date | string
   }
 
   export type MerchantProfileWhereInput = {
@@ -25010,6 +30165,8 @@ export namespace Prisma {
     brandOption?: BoolFilter<"MerchantProfile"> | boolean
     createdAt?: DateTimeFilter<"MerchantProfile"> | Date | string
     updatedAt?: DateTimeFilter<"MerchantProfile"> | Date | string
+    zipCode?: StringNullableFilter<"MerchantProfile"> | string | null
+    country?: StringNullableFilter<"MerchantProfile"> | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
@@ -25036,6 +30193,8 @@ export namespace Prisma {
     brandOption?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    zipCode?: SortOrderInput | SortOrder
+    country?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
   }
 
@@ -25065,6 +30224,8 @@ export namespace Prisma {
     brandOption?: BoolFilter<"MerchantProfile"> | boolean
     createdAt?: DateTimeFilter<"MerchantProfile"> | Date | string
     updatedAt?: DateTimeFilter<"MerchantProfile"> | Date | string
+    zipCode?: StringNullableFilter<"MerchantProfile"> | string | null
+    country?: StringNullableFilter<"MerchantProfile"> | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id" | "userId">
 
@@ -25091,6 +30252,8 @@ export namespace Prisma {
     brandOption?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    zipCode?: SortOrderInput | SortOrder
+    country?: SortOrderInput | SortOrder
     _count?: MerchantProfileCountOrderByAggregateInput
     _avg?: MerchantProfileAvgOrderByAggregateInput
     _max?: MerchantProfileMaxOrderByAggregateInput
@@ -25124,6 +30287,8 @@ export namespace Prisma {
     brandOption?: BoolWithAggregatesFilter<"MerchantProfile"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"MerchantProfile"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"MerchantProfile"> | Date | string
+    zipCode?: StringNullableWithAggregatesFilter<"MerchantProfile"> | string | null
+    country?: StringNullableWithAggregatesFilter<"MerchantProfile"> | string | null
   }
 
   export type BrandWhereInput = {
@@ -25506,6 +30671,7 @@ export namespace Prisma {
     merchant?: XOR<UserScalarRelationFilter, UserWhereInput>
     brand?: XOR<BrandNullableScalarRelationFilter, BrandWhereInput> | null
     SaleItem?: SaleItemListRelationFilter
+    Refund?: RefundListRelationFilter
   }
 
   export type SaleOrderByWithRelationInput = {
@@ -25525,6 +30691,7 @@ export namespace Prisma {
     merchant?: UserOrderByWithRelationInput
     brand?: BrandOrderByWithRelationInput
     SaleItem?: SaleItemOrderByRelationAggregateInput
+    Refund?: RefundOrderByRelationAggregateInput
   }
 
   export type SaleWhereUniqueInput = Prisma.AtLeast<{
@@ -25547,6 +30714,7 @@ export namespace Prisma {
     merchant?: XOR<UserScalarRelationFilter, UserWhereInput>
     brand?: XOR<BrandNullableScalarRelationFilter, BrandWhereInput> | null
     SaleItem?: SaleItemListRelationFilter
+    Refund?: RefundListRelationFilter
   }, "id" | "orderItemId">
 
   export type SaleOrderByWithAggregationInput = {
@@ -26053,6 +31221,7 @@ export namespace Prisma {
     size?: StringNullableFilter<"OrderItem"> | string | null
     order?: XOR<OrderScalarRelationFilter, OrderWhereInput>
     Sale?: SaleListRelationFilter
+    Refund?: RefundListRelationFilter
   }
 
   export type OrderItemOrderByWithRelationInput = {
@@ -26067,6 +31236,7 @@ export namespace Prisma {
     size?: SortOrderInput | SortOrder
     order?: OrderOrderByWithRelationInput
     Sale?: SaleOrderByRelationAggregateInput
+    Refund?: RefundOrderByRelationAggregateInput
   }
 
   export type OrderItemWhereUniqueInput = Prisma.AtLeast<{
@@ -26084,6 +31254,7 @@ export namespace Prisma {
     size?: StringNullableFilter<"OrderItem"> | string | null
     order?: XOR<OrderScalarRelationFilter, OrderWhereInput>
     Sale?: SaleListRelationFilter
+    Refund?: RefundListRelationFilter
   }, "id">
 
   export type OrderItemOrderByWithAggregationInput = {
@@ -26281,6 +31452,91 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"CommissionSetting"> | Date | string
   }
 
+  export type RefundWhereInput = {
+    AND?: RefundWhereInput | RefundWhereInput[]
+    OR?: RefundWhereInput[]
+    NOT?: RefundWhereInput | RefundWhereInput[]
+    id?: StringFilter<"Refund"> | string
+    orderItemId?: StringFilter<"Refund"> | string
+    saleId?: StringNullableFilter<"Refund"> | string | null
+    quantity?: IntFilter<"Refund"> | number
+    amount?: DecimalFilter<"Refund"> | Decimal | DecimalJsLike | number | string
+    brandEarning?: DecimalFilter<"Refund"> | Decimal | DecimalJsLike | number | string
+    merchantEarning?: DecimalFilter<"Refund"> | Decimal | DecimalJsLike | number | string
+    platformEarning?: DecimalFilter<"Refund"> | Decimal | DecimalJsLike | number | string
+    reason?: StringNullableFilter<"Refund"> | string | null
+    createdAt?: DateTimeFilter<"Refund"> | Date | string
+    orderItem?: XOR<OrderItemScalarRelationFilter, OrderItemWhereInput>
+    sale?: XOR<SaleNullableScalarRelationFilter, SaleWhereInput> | null
+  }
+
+  export type RefundOrderByWithRelationInput = {
+    id?: SortOrder
+    orderItemId?: SortOrder
+    saleId?: SortOrderInput | SortOrder
+    quantity?: SortOrder
+    amount?: SortOrder
+    brandEarning?: SortOrder
+    merchantEarning?: SortOrder
+    platformEarning?: SortOrder
+    reason?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    orderItem?: OrderItemOrderByWithRelationInput
+    sale?: SaleOrderByWithRelationInput
+  }
+
+  export type RefundWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    orderItemId?: string
+    AND?: RefundWhereInput | RefundWhereInput[]
+    OR?: RefundWhereInput[]
+    NOT?: RefundWhereInput | RefundWhereInput[]
+    saleId?: StringNullableFilter<"Refund"> | string | null
+    quantity?: IntFilter<"Refund"> | number
+    amount?: DecimalFilter<"Refund"> | Decimal | DecimalJsLike | number | string
+    brandEarning?: DecimalFilter<"Refund"> | Decimal | DecimalJsLike | number | string
+    merchantEarning?: DecimalFilter<"Refund"> | Decimal | DecimalJsLike | number | string
+    platformEarning?: DecimalFilter<"Refund"> | Decimal | DecimalJsLike | number | string
+    reason?: StringNullableFilter<"Refund"> | string | null
+    createdAt?: DateTimeFilter<"Refund"> | Date | string
+    orderItem?: XOR<OrderItemScalarRelationFilter, OrderItemWhereInput>
+    sale?: XOR<SaleNullableScalarRelationFilter, SaleWhereInput> | null
+  }, "id" | "orderItemId">
+
+  export type RefundOrderByWithAggregationInput = {
+    id?: SortOrder
+    orderItemId?: SortOrder
+    saleId?: SortOrderInput | SortOrder
+    quantity?: SortOrder
+    amount?: SortOrder
+    brandEarning?: SortOrder
+    merchantEarning?: SortOrder
+    platformEarning?: SortOrder
+    reason?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: RefundCountOrderByAggregateInput
+    _avg?: RefundAvgOrderByAggregateInput
+    _max?: RefundMaxOrderByAggregateInput
+    _min?: RefundMinOrderByAggregateInput
+    _sum?: RefundSumOrderByAggregateInput
+  }
+
+  export type RefundScalarWhereWithAggregatesInput = {
+    AND?: RefundScalarWhereWithAggregatesInput | RefundScalarWhereWithAggregatesInput[]
+    OR?: RefundScalarWhereWithAggregatesInput[]
+    NOT?: RefundScalarWhereWithAggregatesInput | RefundScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Refund"> | string
+    orderItemId?: StringWithAggregatesFilter<"Refund"> | string
+    saleId?: StringNullableWithAggregatesFilter<"Refund"> | string | null
+    quantity?: IntWithAggregatesFilter<"Refund"> | number
+    amount?: DecimalWithAggregatesFilter<"Refund"> | Decimal | DecimalJsLike | number | string
+    brandEarning?: DecimalWithAggregatesFilter<"Refund"> | Decimal | DecimalJsLike | number | string
+    merchantEarning?: DecimalWithAggregatesFilter<"Refund"> | Decimal | DecimalJsLike | number | string
+    platformEarning?: DecimalWithAggregatesFilter<"Refund"> | Decimal | DecimalJsLike | number | string
+    reason?: StringNullableWithAggregatesFilter<"Refund"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Refund"> | Date | string
+  }
+
   export type PayoutWhereInput = {
     AND?: PayoutWhereInput | PayoutWhereInput[]
     OR?: PayoutWhereInput[]
@@ -26366,6 +31622,7 @@ export namespace Prisma {
     sales?: SaleCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileCreateNestedOneWithoutUserInput
     addresses?: UserAddressCreateNestedManyWithoutUserInput
+    userprofile?: UserProfileCreateNestedOneWithoutUserInput
     Order?: OrderCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingCreateNestedManyWithoutMerchantInput
     Payout?: PayoutCreateNestedManyWithoutMerchantInput
@@ -26386,6 +31643,7 @@ export namespace Prisma {
     sales?: SaleUncheckedCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileUncheckedCreateNestedOneWithoutUserInput
     addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
+    userprofile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
     Order?: OrderUncheckedCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutMerchantInput
     Payout?: PayoutUncheckedCreateNestedManyWithoutMerchantInput
@@ -26406,6 +31664,7 @@ export namespace Prisma {
     sales?: SaleUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUpdateManyWithoutUserNestedInput
+    userprofile?: UserProfileUpdateOneWithoutUserNestedInput
     Order?: OrderUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUpdateManyWithoutMerchantNestedInput
@@ -26426,6 +31685,7 @@ export namespace Prisma {
     sales?: SaleUncheckedUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUncheckedUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
+    userprofile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
     Order?: OrderUncheckedUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUncheckedUpdateManyWithoutMerchantNestedInput
@@ -26467,6 +31727,96 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
+  export type UserProfileCreateInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    dateOfBirth: Date | string
+    email: string
+    phone: string
+    country: string
+    address: string
+    zipCode: string
+    user: UserCreateNestedOneWithoutUserprofileInput
+  }
+
+  export type UserProfileUncheckedCreateInput = {
+    id?: string
+    userId: string
+    firstName: string
+    lastName: string
+    dateOfBirth: Date | string
+    email: string
+    phone: string
+    country: string
+    address: string
+    zipCode: string
+  }
+
+  export type UserProfileUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    user?: UserUpdateOneRequiredWithoutUserprofileNestedInput
+  }
+
+  export type UserProfileUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type UserProfileCreateManyInput = {
+    id?: string
+    userId: string
+    firstName: string
+    lastName: string
+    dateOfBirth: Date | string
+    email: string
+    phone: string
+    country: string
+    address: string
+    zipCode: string
+  }
+
+  export type UserProfileUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type UserProfileUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+  }
+
   export type UserAddressCreateInput = {
     id?: string
     profileImage?: string | null
@@ -26476,6 +31826,7 @@ export namespace Prisma {
     email?: string | null
     address: string
     isDefault?: boolean
+    zipCode?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutAddressesInput
@@ -26492,6 +31843,7 @@ export namespace Prisma {
     email?: string | null
     address: string
     isDefault?: boolean
+    zipCode?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     Order?: OrderUncheckedCreateNestedManyWithoutAddressInput
@@ -26506,6 +31858,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     address?: StringFieldUpdateOperationsInput | string
     isDefault?: BoolFieldUpdateOperationsInput | boolean
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutAddressesNestedInput
@@ -26522,6 +31875,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     address?: StringFieldUpdateOperationsInput | string
     isDefault?: BoolFieldUpdateOperationsInput | boolean
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     Order?: OrderUncheckedUpdateManyWithoutAddressNestedInput
@@ -26537,6 +31891,7 @@ export namespace Prisma {
     email?: string | null
     address: string
     isDefault?: boolean
+    zipCode?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -26550,6 +31905,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     address?: StringFieldUpdateOperationsInput | string
     isDefault?: BoolFieldUpdateOperationsInput | boolean
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -26564,8 +31920,142 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     address?: StringFieldUpdateOperationsInput | string
     isDefault?: BoolFieldUpdateOperationsInput | boolean
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PasswordResetTokenCreateInput = {
+    id?: string
+    email: string
+    tokenHash: string
+    expires: Date | string
+    used?: boolean
+    createdAt?: Date | string
+  }
+
+  export type PasswordResetTokenUncheckedCreateInput = {
+    id?: string
+    email: string
+    tokenHash: string
+    expires: Date | string
+    used?: boolean
+    createdAt?: Date | string
+  }
+
+  export type PasswordResetTokenUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    tokenHash?: StringFieldUpdateOperationsInput | string
+    expires?: DateTimeFieldUpdateOperationsInput | Date | string
+    used?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PasswordResetTokenUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    tokenHash?: StringFieldUpdateOperationsInput | string
+    expires?: DateTimeFieldUpdateOperationsInput | Date | string
+    used?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PasswordResetTokenCreateManyInput = {
+    id?: string
+    email: string
+    tokenHash: string
+    expires: Date | string
+    used?: boolean
+    createdAt?: Date | string
+  }
+
+  export type PasswordResetTokenUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    tokenHash?: StringFieldUpdateOperationsInput | string
+    expires?: DateTimeFieldUpdateOperationsInput | Date | string
+    used?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PasswordResetTokenUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    tokenHash?: StringFieldUpdateOperationsInput | string
+    expires?: DateTimeFieldUpdateOperationsInput | Date | string
+    used?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PhoneResetOtpCreateInput = {
+    id?: string
+    phone: string
+    codeHash: string
+    expires: Date | string
+    used?: boolean
+    attempts?: number
+    createdAt?: Date | string
+  }
+
+  export type PhoneResetOtpUncheckedCreateInput = {
+    id?: string
+    phone: string
+    codeHash: string
+    expires: Date | string
+    used?: boolean
+    attempts?: number
+    createdAt?: Date | string
+  }
+
+  export type PhoneResetOtpUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    codeHash?: StringFieldUpdateOperationsInput | string
+    expires?: DateTimeFieldUpdateOperationsInput | Date | string
+    used?: BoolFieldUpdateOperationsInput | boolean
+    attempts?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PhoneResetOtpUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    codeHash?: StringFieldUpdateOperationsInput | string
+    expires?: DateTimeFieldUpdateOperationsInput | Date | string
+    used?: BoolFieldUpdateOperationsInput | boolean
+    attempts?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PhoneResetOtpCreateManyInput = {
+    id?: string
+    phone: string
+    codeHash: string
+    expires: Date | string
+    used?: boolean
+    attempts?: number
+    createdAt?: Date | string
+  }
+
+  export type PhoneResetOtpUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    codeHash?: StringFieldUpdateOperationsInput | string
+    expires?: DateTimeFieldUpdateOperationsInput | Date | string
+    used?: BoolFieldUpdateOperationsInput | boolean
+    attempts?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PhoneResetOtpUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    codeHash?: StringFieldUpdateOperationsInput | string
+    expires?: DateTimeFieldUpdateOperationsInput | Date | string
+    used?: BoolFieldUpdateOperationsInput | boolean
+    attempts?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MerchantProfileCreateInput = {
@@ -26590,6 +32080,8 @@ export namespace Prisma {
     brandOption?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    zipCode?: string | null
+    country?: string | null
     user: UserCreateNestedOneWithoutMerchantProfileInput
   }
 
@@ -26616,6 +32108,8 @@ export namespace Prisma {
     brandOption?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    zipCode?: string | null
+    country?: string | null
   }
 
   export type MerchantProfileUpdateInput = {
@@ -26640,6 +32134,8 @@ export namespace Prisma {
     brandOption?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneRequiredWithoutMerchantProfileNestedInput
   }
 
@@ -26666,6 +32162,8 @@ export namespace Prisma {
     brandOption?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MerchantProfileCreateManyInput = {
@@ -26691,6 +32189,8 @@ export namespace Prisma {
     brandOption?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    zipCode?: string | null
+    country?: string | null
   }
 
   export type MerchantProfileUpdateManyMutationInput = {
@@ -26715,6 +32215,8 @@ export namespace Prisma {
     brandOption?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MerchantProfileUncheckedUpdateManyInput = {
@@ -26740,6 +32242,8 @@ export namespace Prisma {
     brandOption?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type BrandCreateInput = {
@@ -27175,6 +32679,7 @@ export namespace Prisma {
     merchant: UserCreateNestedOneWithoutSalesInput
     brand?: BrandCreateNestedOneWithoutSalesInput
     SaleItem?: SaleItemCreateNestedManyWithoutSaleInput
+    Refund?: RefundCreateNestedManyWithoutSaleInput
   }
 
   export type SaleUncheckedCreateInput = {
@@ -27190,6 +32695,7 @@ export namespace Prisma {
     platformEarning?: number
     createdAt?: Date | string
     SaleItem?: SaleItemUncheckedCreateNestedManyWithoutSaleInput
+    Refund?: RefundUncheckedCreateNestedManyWithoutSaleInput
   }
 
   export type SaleUpdateInput = {
@@ -27205,6 +32711,7 @@ export namespace Prisma {
     merchant?: UserUpdateOneRequiredWithoutSalesNestedInput
     brand?: BrandUpdateOneWithoutSalesNestedInput
     SaleItem?: SaleItemUpdateManyWithoutSaleNestedInput
+    Refund?: RefundUpdateManyWithoutSaleNestedInput
   }
 
   export type SaleUncheckedUpdateInput = {
@@ -27220,6 +32727,7 @@ export namespace Prisma {
     platformEarning?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     SaleItem?: SaleItemUncheckedUpdateManyWithoutSaleNestedInput
+    Refund?: RefundUncheckedUpdateManyWithoutSaleNestedInput
   }
 
   export type SaleCreateManyInput = {
@@ -27742,6 +33250,7 @@ export namespace Prisma {
     size?: string | null
     order: OrderCreateNestedOneWithoutItemsInput
     Sale?: SaleCreateNestedManyWithoutOrderItemInput
+    Refund?: RefundCreateNestedManyWithoutOrderItemInput
   }
 
   export type OrderItemUncheckedCreateInput = {
@@ -27755,6 +33264,7 @@ export namespace Prisma {
     fitType?: $Enums.FitType | null
     size?: string | null
     Sale?: SaleUncheckedCreateNestedManyWithoutOrderItemInput
+    Refund?: RefundUncheckedCreateNestedManyWithoutOrderItemInput
   }
 
   export type OrderItemUpdateInput = {
@@ -27768,6 +33278,7 @@ export namespace Prisma {
     size?: NullableStringFieldUpdateOperationsInput | string | null
     order?: OrderUpdateOneRequiredWithoutItemsNestedInput
     Sale?: SaleUpdateManyWithoutOrderItemNestedInput
+    Refund?: RefundUpdateManyWithoutOrderItemNestedInput
   }
 
   export type OrderItemUncheckedUpdateInput = {
@@ -27781,6 +33292,7 @@ export namespace Prisma {
     fitType?: NullableEnumFitTypeFieldUpdateOperationsInput | $Enums.FitType | null
     size?: NullableStringFieldUpdateOperationsInput | string | null
     Sale?: SaleUncheckedUpdateManyWithoutOrderItemNestedInput
+    Refund?: RefundUncheckedUpdateManyWithoutOrderItemNestedInput
   }
 
   export type OrderItemCreateManyInput = {
@@ -27989,6 +33501,95 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type RefundCreateInput = {
+    id?: string
+    quantity: number
+    amount: Decimal | DecimalJsLike | number | string
+    brandEarning: Decimal | DecimalJsLike | number | string
+    merchantEarning: Decimal | DecimalJsLike | number | string
+    platformEarning: Decimal | DecimalJsLike | number | string
+    reason?: string | null
+    createdAt?: Date | string
+    orderItem: OrderItemCreateNestedOneWithoutRefundInput
+    sale?: SaleCreateNestedOneWithoutRefundInput
+  }
+
+  export type RefundUncheckedCreateInput = {
+    id?: string
+    orderItemId: string
+    saleId?: string | null
+    quantity: number
+    amount: Decimal | DecimalJsLike | number | string
+    brandEarning: Decimal | DecimalJsLike | number | string
+    merchantEarning: Decimal | DecimalJsLike | number | string
+    platformEarning: Decimal | DecimalJsLike | number | string
+    reason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type RefundUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    brandEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    merchantEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    platformEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderItem?: OrderItemUpdateOneRequiredWithoutRefundNestedInput
+    sale?: SaleUpdateOneWithoutRefundNestedInput
+  }
+
+  export type RefundUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderItemId?: StringFieldUpdateOperationsInput | string
+    saleId?: NullableStringFieldUpdateOperationsInput | string | null
+    quantity?: IntFieldUpdateOperationsInput | number
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    brandEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    merchantEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    platformEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RefundCreateManyInput = {
+    id?: string
+    orderItemId: string
+    saleId?: string | null
+    quantity: number
+    amount: Decimal | DecimalJsLike | number | string
+    brandEarning: Decimal | DecimalJsLike | number | string
+    merchantEarning: Decimal | DecimalJsLike | number | string
+    platformEarning: Decimal | DecimalJsLike | number | string
+    reason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type RefundUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    brandEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    merchantEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    platformEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RefundUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderItemId?: StringFieldUpdateOperationsInput | string
+    saleId?: NullableStringFieldUpdateOperationsInput | string | null
+    quantity?: IntFieldUpdateOperationsInput | number
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    brandEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    merchantEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    platformEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type PayoutCreateInput = {
     id?: string
     actor: $Enums.PayoutActor
@@ -28137,6 +33738,11 @@ export namespace Prisma {
     every?: UserAddressWhereInput
     some?: UserAddressWhereInput
     none?: UserAddressWhereInput
+  }
+
+  export type UserProfileNullableScalarRelationFilter = {
+    is?: UserProfileWhereInput | null
+    isNot?: UserProfileWhereInput | null
   }
 
   export type OrderListRelationFilter = {
@@ -28299,6 +33905,45 @@ export namespace Prisma {
     isNot?: UserWhereInput
   }
 
+  export type UserProfileCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    firstName?: SortOrder
+    lastName?: SortOrder
+    dateOfBirth?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    country?: SortOrder
+    address?: SortOrder
+    zipCode?: SortOrder
+  }
+
+  export type UserProfileMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    firstName?: SortOrder
+    lastName?: SortOrder
+    dateOfBirth?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    country?: SortOrder
+    address?: SortOrder
+    zipCode?: SortOrder
+  }
+
+  export type UserProfileMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    firstName?: SortOrder
+    lastName?: SortOrder
+    dateOfBirth?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    country?: SortOrder
+    address?: SortOrder
+    zipCode?: SortOrder
+  }
+
   export type UserAddressCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -28309,6 +33954,7 @@ export namespace Prisma {
     email?: SortOrder
     address?: SortOrder
     isDefault?: SortOrder
+    zipCode?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -28323,6 +33969,7 @@ export namespace Prisma {
     email?: SortOrder
     address?: SortOrder
     isDefault?: SortOrder
+    zipCode?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -28337,8 +33984,36 @@ export namespace Prisma {
     email?: SortOrder
     address?: SortOrder
     isDefault?: SortOrder
+    zipCode?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type PasswordResetTokenCountOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    tokenHash?: SortOrder
+    expires?: SortOrder
+    used?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PasswordResetTokenMaxOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    tokenHash?: SortOrder
+    expires?: SortOrder
+    used?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PasswordResetTokenMinOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    tokenHash?: SortOrder
+    expires?: SortOrder
+    used?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -28350,6 +34025,60 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type PhoneResetOtpCountOrderByAggregateInput = {
+    id?: SortOrder
+    phone?: SortOrder
+    codeHash?: SortOrder
+    expires?: SortOrder
+    used?: SortOrder
+    attempts?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PhoneResetOtpAvgOrderByAggregateInput = {
+    attempts?: SortOrder
+  }
+
+  export type PhoneResetOtpMaxOrderByAggregateInput = {
+    id?: SortOrder
+    phone?: SortOrder
+    codeHash?: SortOrder
+    expires?: SortOrder
+    used?: SortOrder
+    attempts?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PhoneResetOtpMinOrderByAggregateInput = {
+    id?: SortOrder
+    phone?: SortOrder
+    codeHash?: SortOrder
+    expires?: SortOrder
+    used?: SortOrder
+    attempts?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PhoneResetOtpSumOrderByAggregateInput = {
+    attempts?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type MerchantProfileCountOrderByAggregateInput = {
@@ -28375,6 +34104,8 @@ export namespace Prisma {
     brandOption?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    zipCode?: SortOrder
+    country?: SortOrder
   }
 
   export type MerchantProfileAvgOrderByAggregateInput = {
@@ -28405,6 +34136,8 @@ export namespace Prisma {
     brandOption?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    zipCode?: SortOrder
+    country?: SortOrder
   }
 
   export type MerchantProfileMinOrderByAggregateInput = {
@@ -28430,27 +34163,13 @@ export namespace Prisma {
     brandOption?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    zipCode?: SortOrder
+    country?: SortOrder
   }
 
   export type MerchantProfileSumOrderByAggregateInput = {
     tiar?: SortOrder
     leftTiar?: SortOrder
-  }
-
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type FloatFilter<$PrismaModel = never> = {
@@ -28755,7 +34474,17 @@ export namespace Prisma {
     none?: SaleItemWhereInput
   }
 
+  export type RefundListRelationFilter = {
+    every?: RefundWhereInput
+    some?: RefundWhereInput
+    none?: RefundWhereInput
+  }
+
   export type SaleItemOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type RefundOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -29398,6 +35127,66 @@ export namespace Prisma {
     merchantCommissionPct?: SortOrder
   }
 
+  export type SaleNullableScalarRelationFilter = {
+    is?: SaleWhereInput | null
+    isNot?: SaleWhereInput | null
+  }
+
+  export type RefundCountOrderByAggregateInput = {
+    id?: SortOrder
+    orderItemId?: SortOrder
+    saleId?: SortOrder
+    quantity?: SortOrder
+    amount?: SortOrder
+    brandEarning?: SortOrder
+    merchantEarning?: SortOrder
+    platformEarning?: SortOrder
+    reason?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type RefundAvgOrderByAggregateInput = {
+    quantity?: SortOrder
+    amount?: SortOrder
+    brandEarning?: SortOrder
+    merchantEarning?: SortOrder
+    platformEarning?: SortOrder
+  }
+
+  export type RefundMaxOrderByAggregateInput = {
+    id?: SortOrder
+    orderItemId?: SortOrder
+    saleId?: SortOrder
+    quantity?: SortOrder
+    amount?: SortOrder
+    brandEarning?: SortOrder
+    merchantEarning?: SortOrder
+    platformEarning?: SortOrder
+    reason?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type RefundMinOrderByAggregateInput = {
+    id?: SortOrder
+    orderItemId?: SortOrder
+    saleId?: SortOrder
+    quantity?: SortOrder
+    amount?: SortOrder
+    brandEarning?: SortOrder
+    merchantEarning?: SortOrder
+    platformEarning?: SortOrder
+    reason?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type RefundSumOrderByAggregateInput = {
+    quantity?: SortOrder
+    amount?: SortOrder
+    brandEarning?: SortOrder
+    merchantEarning?: SortOrder
+    platformEarning?: SortOrder
+  }
+
   export type EnumPayoutActorFilter<$PrismaModel = never> = {
     equals?: $Enums.PayoutActor | EnumPayoutActorFieldRefInput<$PrismaModel>
     in?: $Enums.PayoutActor[] | ListEnumPayoutActorFieldRefInput<$PrismaModel>
@@ -29487,6 +35276,12 @@ export namespace Prisma {
     connect?: UserAddressWhereUniqueInput | UserAddressWhereUniqueInput[]
   }
 
+  export type UserProfileCreateNestedOneWithoutUserInput = {
+    create?: XOR<UserProfileCreateWithoutUserInput, UserProfileUncheckedCreateWithoutUserInput>
+    connectOrCreate?: UserProfileCreateOrConnectWithoutUserInput
+    connect?: UserProfileWhereUniqueInput
+  }
+
   export type OrderCreateNestedManyWithoutUserInput = {
     create?: XOR<OrderCreateWithoutUserInput, OrderUncheckedCreateWithoutUserInput> | OrderCreateWithoutUserInput[] | OrderUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OrderCreateOrConnectWithoutUserInput | OrderCreateOrConnectWithoutUserInput[]
@@ -29540,6 +35335,12 @@ export namespace Prisma {
     connectOrCreate?: UserAddressCreateOrConnectWithoutUserInput | UserAddressCreateOrConnectWithoutUserInput[]
     createMany?: UserAddressCreateManyUserInputEnvelope
     connect?: UserAddressWhereUniqueInput | UserAddressWhereUniqueInput[]
+  }
+
+  export type UserProfileUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<UserProfileCreateWithoutUserInput, UserProfileUncheckedCreateWithoutUserInput>
+    connectOrCreate?: UserProfileCreateOrConnectWithoutUserInput
+    connect?: UserProfileWhereUniqueInput
   }
 
   export type OrderUncheckedCreateNestedManyWithoutUserInput = {
@@ -29647,6 +35448,16 @@ export namespace Prisma {
     update?: UserAddressUpdateWithWhereUniqueWithoutUserInput | UserAddressUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: UserAddressUpdateManyWithWhereWithoutUserInput | UserAddressUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: UserAddressScalarWhereInput | UserAddressScalarWhereInput[]
+  }
+
+  export type UserProfileUpdateOneWithoutUserNestedInput = {
+    create?: XOR<UserProfileCreateWithoutUserInput, UserProfileUncheckedCreateWithoutUserInput>
+    connectOrCreate?: UserProfileCreateOrConnectWithoutUserInput
+    upsert?: UserProfileUpsertWithoutUserInput
+    disconnect?: UserProfileWhereInput | boolean
+    delete?: UserProfileWhereInput | boolean
+    connect?: UserProfileWhereUniqueInput
+    update?: XOR<XOR<UserProfileUpdateToOneWithWhereWithoutUserInput, UserProfileUpdateWithoutUserInput>, UserProfileUncheckedUpdateWithoutUserInput>
   }
 
   export type OrderUpdateManyWithoutUserNestedInput = {
@@ -29757,6 +35568,16 @@ export namespace Prisma {
     deleteMany?: UserAddressScalarWhereInput | UserAddressScalarWhereInput[]
   }
 
+  export type UserProfileUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<UserProfileCreateWithoutUserInput, UserProfileUncheckedCreateWithoutUserInput>
+    connectOrCreate?: UserProfileCreateOrConnectWithoutUserInput
+    upsert?: UserProfileUpsertWithoutUserInput
+    disconnect?: UserProfileWhereInput | boolean
+    delete?: UserProfileWhereInput | boolean
+    connect?: UserProfileWhereUniqueInput
+    update?: XOR<XOR<UserProfileUpdateToOneWithWhereWithoutUserInput, UserProfileUpdateWithoutUserInput>, UserProfileUncheckedUpdateWithoutUserInput>
+  }
+
   export type OrderUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<OrderCreateWithoutUserInput, OrderUncheckedCreateWithoutUserInput> | OrderCreateWithoutUserInput[] | OrderUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OrderCreateOrConnectWithoutUserInput | OrderCreateOrConnectWithoutUserInput[]
@@ -29797,6 +35618,20 @@ export namespace Prisma {
     update?: PayoutUpdateWithWhereUniqueWithoutMerchantInput | PayoutUpdateWithWhereUniqueWithoutMerchantInput[]
     updateMany?: PayoutUpdateManyWithWhereWithoutMerchantInput | PayoutUpdateManyWithWhereWithoutMerchantInput[]
     deleteMany?: PayoutScalarWhereInput | PayoutScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutUserprofileInput = {
+    create?: XOR<UserCreateWithoutUserprofileInput, UserUncheckedCreateWithoutUserprofileInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUserprofileInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutUserprofileNestedInput = {
+    create?: XOR<UserCreateWithoutUserprofileInput, UserUncheckedCreateWithoutUserprofileInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUserprofileInput
+    upsert?: UserUpsertWithoutUserprofileInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutUserprofileInput, UserUpdateWithoutUserprofileInput>, UserUncheckedUpdateWithoutUserprofileInput>
   }
 
   export type UserCreateNestedOneWithoutAddressesInput = {
@@ -29855,18 +35690,18 @@ export namespace Prisma {
     deleteMany?: OrderScalarWhereInput | OrderScalarWhereInput[]
   }
 
-  export type UserCreateNestedOneWithoutMerchantProfileInput = {
-    create?: XOR<UserCreateWithoutMerchantProfileInput, UserUncheckedCreateWithoutMerchantProfileInput>
-    connectOrCreate?: UserCreateOrConnectWithoutMerchantProfileInput
-    connect?: UserWhereUniqueInput
-  }
-
   export type IntFieldUpdateOperationsInput = {
     set?: number
     increment?: number
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type UserCreateNestedOneWithoutMerchantProfileInput = {
+    create?: XOR<UserCreateWithoutMerchantProfileInput, UserUncheckedCreateWithoutMerchantProfileInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMerchantProfileInput
+    connect?: UserWhereUniqueInput
   }
 
   export type UserUpdateOneRequiredWithoutMerchantProfileNestedInput = {
@@ -30416,11 +36251,25 @@ export namespace Prisma {
     connect?: SaleItemWhereUniqueInput | SaleItemWhereUniqueInput[]
   }
 
+  export type RefundCreateNestedManyWithoutSaleInput = {
+    create?: XOR<RefundCreateWithoutSaleInput, RefundUncheckedCreateWithoutSaleInput> | RefundCreateWithoutSaleInput[] | RefundUncheckedCreateWithoutSaleInput[]
+    connectOrCreate?: RefundCreateOrConnectWithoutSaleInput | RefundCreateOrConnectWithoutSaleInput[]
+    createMany?: RefundCreateManySaleInputEnvelope
+    connect?: RefundWhereUniqueInput | RefundWhereUniqueInput[]
+  }
+
   export type SaleItemUncheckedCreateNestedManyWithoutSaleInput = {
     create?: XOR<SaleItemCreateWithoutSaleInput, SaleItemUncheckedCreateWithoutSaleInput> | SaleItemCreateWithoutSaleInput[] | SaleItemUncheckedCreateWithoutSaleInput[]
     connectOrCreate?: SaleItemCreateOrConnectWithoutSaleInput | SaleItemCreateOrConnectWithoutSaleInput[]
     createMany?: SaleItemCreateManySaleInputEnvelope
     connect?: SaleItemWhereUniqueInput | SaleItemWhereUniqueInput[]
+  }
+
+  export type RefundUncheckedCreateNestedManyWithoutSaleInput = {
+    create?: XOR<RefundCreateWithoutSaleInput, RefundUncheckedCreateWithoutSaleInput> | RefundCreateWithoutSaleInput[] | RefundUncheckedCreateWithoutSaleInput[]
+    connectOrCreate?: RefundCreateOrConnectWithoutSaleInput | RefundCreateOrConnectWithoutSaleInput[]
+    createMany?: RefundCreateManySaleInputEnvelope
+    connect?: RefundWhereUniqueInput | RefundWhereUniqueInput[]
   }
 
   export type OrderItemUpdateOneRequiredWithoutSaleNestedInput = {
@@ -30471,6 +36320,20 @@ export namespace Prisma {
     deleteMany?: SaleItemScalarWhereInput | SaleItemScalarWhereInput[]
   }
 
+  export type RefundUpdateManyWithoutSaleNestedInput = {
+    create?: XOR<RefundCreateWithoutSaleInput, RefundUncheckedCreateWithoutSaleInput> | RefundCreateWithoutSaleInput[] | RefundUncheckedCreateWithoutSaleInput[]
+    connectOrCreate?: RefundCreateOrConnectWithoutSaleInput | RefundCreateOrConnectWithoutSaleInput[]
+    upsert?: RefundUpsertWithWhereUniqueWithoutSaleInput | RefundUpsertWithWhereUniqueWithoutSaleInput[]
+    createMany?: RefundCreateManySaleInputEnvelope
+    set?: RefundWhereUniqueInput | RefundWhereUniqueInput[]
+    disconnect?: RefundWhereUniqueInput | RefundWhereUniqueInput[]
+    delete?: RefundWhereUniqueInput | RefundWhereUniqueInput[]
+    connect?: RefundWhereUniqueInput | RefundWhereUniqueInput[]
+    update?: RefundUpdateWithWhereUniqueWithoutSaleInput | RefundUpdateWithWhereUniqueWithoutSaleInput[]
+    updateMany?: RefundUpdateManyWithWhereWithoutSaleInput | RefundUpdateManyWithWhereWithoutSaleInput[]
+    deleteMany?: RefundScalarWhereInput | RefundScalarWhereInput[]
+  }
+
   export type SaleItemUncheckedUpdateManyWithoutSaleNestedInput = {
     create?: XOR<SaleItemCreateWithoutSaleInput, SaleItemUncheckedCreateWithoutSaleInput> | SaleItemCreateWithoutSaleInput[] | SaleItemUncheckedCreateWithoutSaleInput[]
     connectOrCreate?: SaleItemCreateOrConnectWithoutSaleInput | SaleItemCreateOrConnectWithoutSaleInput[]
@@ -30483,6 +36346,20 @@ export namespace Prisma {
     update?: SaleItemUpdateWithWhereUniqueWithoutSaleInput | SaleItemUpdateWithWhereUniqueWithoutSaleInput[]
     updateMany?: SaleItemUpdateManyWithWhereWithoutSaleInput | SaleItemUpdateManyWithWhereWithoutSaleInput[]
     deleteMany?: SaleItemScalarWhereInput | SaleItemScalarWhereInput[]
+  }
+
+  export type RefundUncheckedUpdateManyWithoutSaleNestedInput = {
+    create?: XOR<RefundCreateWithoutSaleInput, RefundUncheckedCreateWithoutSaleInput> | RefundCreateWithoutSaleInput[] | RefundUncheckedCreateWithoutSaleInput[]
+    connectOrCreate?: RefundCreateOrConnectWithoutSaleInput | RefundCreateOrConnectWithoutSaleInput[]
+    upsert?: RefundUpsertWithWhereUniqueWithoutSaleInput | RefundUpsertWithWhereUniqueWithoutSaleInput[]
+    createMany?: RefundCreateManySaleInputEnvelope
+    set?: RefundWhereUniqueInput | RefundWhereUniqueInput[]
+    disconnect?: RefundWhereUniqueInput | RefundWhereUniqueInput[]
+    delete?: RefundWhereUniqueInput | RefundWhereUniqueInput[]
+    connect?: RefundWhereUniqueInput | RefundWhereUniqueInput[]
+    update?: RefundUpdateWithWhereUniqueWithoutSaleInput | RefundUpdateWithWhereUniqueWithoutSaleInput[]
+    updateMany?: RefundUpdateManyWithWhereWithoutSaleInput | RefundUpdateManyWithWhereWithoutSaleInput[]
+    deleteMany?: RefundScalarWhereInput | RefundScalarWhereInput[]
   }
 
   export type SaleCreateNestedOneWithoutSaleItemInput = {
@@ -30778,11 +36655,25 @@ export namespace Prisma {
     connect?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
   }
 
+  export type RefundCreateNestedManyWithoutOrderItemInput = {
+    create?: XOR<RefundCreateWithoutOrderItemInput, RefundUncheckedCreateWithoutOrderItemInput> | RefundCreateWithoutOrderItemInput[] | RefundUncheckedCreateWithoutOrderItemInput[]
+    connectOrCreate?: RefundCreateOrConnectWithoutOrderItemInput | RefundCreateOrConnectWithoutOrderItemInput[]
+    createMany?: RefundCreateManyOrderItemInputEnvelope
+    connect?: RefundWhereUniqueInput | RefundWhereUniqueInput[]
+  }
+
   export type SaleUncheckedCreateNestedManyWithoutOrderItemInput = {
     create?: XOR<SaleCreateWithoutOrderItemInput, SaleUncheckedCreateWithoutOrderItemInput> | SaleCreateWithoutOrderItemInput[] | SaleUncheckedCreateWithoutOrderItemInput[]
     connectOrCreate?: SaleCreateOrConnectWithoutOrderItemInput | SaleCreateOrConnectWithoutOrderItemInput[]
     createMany?: SaleCreateManyOrderItemInputEnvelope
     connect?: SaleWhereUniqueInput | SaleWhereUniqueInput[]
+  }
+
+  export type RefundUncheckedCreateNestedManyWithoutOrderItemInput = {
+    create?: XOR<RefundCreateWithoutOrderItemInput, RefundUncheckedCreateWithoutOrderItemInput> | RefundCreateWithoutOrderItemInput[] | RefundUncheckedCreateWithoutOrderItemInput[]
+    connectOrCreate?: RefundCreateOrConnectWithoutOrderItemInput | RefundCreateOrConnectWithoutOrderItemInput[]
+    createMany?: RefundCreateManyOrderItemInputEnvelope
+    connect?: RefundWhereUniqueInput | RefundWhereUniqueInput[]
   }
 
   export type NullableEnumFitTypeFieldUpdateOperationsInput = {
@@ -30811,6 +36702,20 @@ export namespace Prisma {
     deleteMany?: SaleScalarWhereInput | SaleScalarWhereInput[]
   }
 
+  export type RefundUpdateManyWithoutOrderItemNestedInput = {
+    create?: XOR<RefundCreateWithoutOrderItemInput, RefundUncheckedCreateWithoutOrderItemInput> | RefundCreateWithoutOrderItemInput[] | RefundUncheckedCreateWithoutOrderItemInput[]
+    connectOrCreate?: RefundCreateOrConnectWithoutOrderItemInput | RefundCreateOrConnectWithoutOrderItemInput[]
+    upsert?: RefundUpsertWithWhereUniqueWithoutOrderItemInput | RefundUpsertWithWhereUniqueWithoutOrderItemInput[]
+    createMany?: RefundCreateManyOrderItemInputEnvelope
+    set?: RefundWhereUniqueInput | RefundWhereUniqueInput[]
+    disconnect?: RefundWhereUniqueInput | RefundWhereUniqueInput[]
+    delete?: RefundWhereUniqueInput | RefundWhereUniqueInput[]
+    connect?: RefundWhereUniqueInput | RefundWhereUniqueInput[]
+    update?: RefundUpdateWithWhereUniqueWithoutOrderItemInput | RefundUpdateWithWhereUniqueWithoutOrderItemInput[]
+    updateMany?: RefundUpdateManyWithWhereWithoutOrderItemInput | RefundUpdateManyWithWhereWithoutOrderItemInput[]
+    deleteMany?: RefundScalarWhereInput | RefundScalarWhereInput[]
+  }
+
   export type SaleUncheckedUpdateManyWithoutOrderItemNestedInput = {
     create?: XOR<SaleCreateWithoutOrderItemInput, SaleUncheckedCreateWithoutOrderItemInput> | SaleCreateWithoutOrderItemInput[] | SaleUncheckedCreateWithoutOrderItemInput[]
     connectOrCreate?: SaleCreateOrConnectWithoutOrderItemInput | SaleCreateOrConnectWithoutOrderItemInput[]
@@ -30823,6 +36728,20 @@ export namespace Prisma {
     update?: SaleUpdateWithWhereUniqueWithoutOrderItemInput | SaleUpdateWithWhereUniqueWithoutOrderItemInput[]
     updateMany?: SaleUpdateManyWithWhereWithoutOrderItemInput | SaleUpdateManyWithWhereWithoutOrderItemInput[]
     deleteMany?: SaleScalarWhereInput | SaleScalarWhereInput[]
+  }
+
+  export type RefundUncheckedUpdateManyWithoutOrderItemNestedInput = {
+    create?: XOR<RefundCreateWithoutOrderItemInput, RefundUncheckedCreateWithoutOrderItemInput> | RefundCreateWithoutOrderItemInput[] | RefundUncheckedCreateWithoutOrderItemInput[]
+    connectOrCreate?: RefundCreateOrConnectWithoutOrderItemInput | RefundCreateOrConnectWithoutOrderItemInput[]
+    upsert?: RefundUpsertWithWhereUniqueWithoutOrderItemInput | RefundUpsertWithWhereUniqueWithoutOrderItemInput[]
+    createMany?: RefundCreateManyOrderItemInputEnvelope
+    set?: RefundWhereUniqueInput | RefundWhereUniqueInput[]
+    disconnect?: RefundWhereUniqueInput | RefundWhereUniqueInput[]
+    delete?: RefundWhereUniqueInput | RefundWhereUniqueInput[]
+    connect?: RefundWhereUniqueInput | RefundWhereUniqueInput[]
+    update?: RefundUpdateWithWhereUniqueWithoutOrderItemInput | RefundUpdateWithWhereUniqueWithoutOrderItemInput[]
+    updateMany?: RefundUpdateManyWithWhereWithoutOrderItemInput | RefundUpdateManyWithWhereWithoutOrderItemInput[]
+    deleteMany?: RefundScalarWhereInput | RefundScalarWhereInput[]
   }
 
   export type OrderCreateNestedOneWithoutPaymentInput = {
@@ -30885,6 +36804,36 @@ export namespace Prisma {
     delete?: ProductWhereInput | boolean
     connect?: ProductWhereUniqueInput
     update?: XOR<XOR<ProductUpdateToOneWithWhereWithoutCommissionSettingInput, ProductUpdateWithoutCommissionSettingInput>, ProductUncheckedUpdateWithoutCommissionSettingInput>
+  }
+
+  export type OrderItemCreateNestedOneWithoutRefundInput = {
+    create?: XOR<OrderItemCreateWithoutRefundInput, OrderItemUncheckedCreateWithoutRefundInput>
+    connectOrCreate?: OrderItemCreateOrConnectWithoutRefundInput
+    connect?: OrderItemWhereUniqueInput
+  }
+
+  export type SaleCreateNestedOneWithoutRefundInput = {
+    create?: XOR<SaleCreateWithoutRefundInput, SaleUncheckedCreateWithoutRefundInput>
+    connectOrCreate?: SaleCreateOrConnectWithoutRefundInput
+    connect?: SaleWhereUniqueInput
+  }
+
+  export type OrderItemUpdateOneRequiredWithoutRefundNestedInput = {
+    create?: XOR<OrderItemCreateWithoutRefundInput, OrderItemUncheckedCreateWithoutRefundInput>
+    connectOrCreate?: OrderItemCreateOrConnectWithoutRefundInput
+    upsert?: OrderItemUpsertWithoutRefundInput
+    connect?: OrderItemWhereUniqueInput
+    update?: XOR<XOR<OrderItemUpdateToOneWithWhereWithoutRefundInput, OrderItemUpdateWithoutRefundInput>, OrderItemUncheckedUpdateWithoutRefundInput>
+  }
+
+  export type SaleUpdateOneWithoutRefundNestedInput = {
+    create?: XOR<SaleCreateWithoutRefundInput, SaleUncheckedCreateWithoutRefundInput>
+    connectOrCreate?: SaleCreateOrConnectWithoutRefundInput
+    upsert?: SaleUpsertWithoutRefundInput
+    disconnect?: SaleWhereInput | boolean
+    delete?: SaleWhereInput | boolean
+    connect?: SaleWhereUniqueInput
+    update?: XOR<XOR<SaleUpdateToOneWithWhereWithoutRefundInput, SaleUpdateWithoutRefundInput>, SaleUncheckedUpdateWithoutRefundInput>
   }
 
   export type BrandCreateNestedOneWithoutPayoutInput = {
@@ -31427,6 +37376,7 @@ export namespace Prisma {
     product: ProductCreateNestedOneWithoutSalesInput
     brand?: BrandCreateNestedOneWithoutSalesInput
     SaleItem?: SaleItemCreateNestedManyWithoutSaleInput
+    Refund?: RefundCreateNestedManyWithoutSaleInput
   }
 
   export type SaleUncheckedCreateWithoutMerchantInput = {
@@ -31441,6 +37391,7 @@ export namespace Prisma {
     platformEarning?: number
     createdAt?: Date | string
     SaleItem?: SaleItemUncheckedCreateNestedManyWithoutSaleInput
+    Refund?: RefundUncheckedCreateNestedManyWithoutSaleInput
   }
 
   export type SaleCreateOrConnectWithoutMerchantInput = {
@@ -31475,6 +37426,8 @@ export namespace Prisma {
     brandOption?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    zipCode?: string | null
+    country?: string | null
   }
 
   export type MerchantProfileUncheckedCreateWithoutUserInput = {
@@ -31499,6 +37452,8 @@ export namespace Prisma {
     brandOption?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    zipCode?: string | null
+    country?: string | null
   }
 
   export type MerchantProfileCreateOrConnectWithoutUserInput = {
@@ -31515,6 +37470,7 @@ export namespace Prisma {
     email?: string | null
     address: string
     isDefault?: boolean
+    zipCode?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     Order?: OrderCreateNestedManyWithoutAddressInput
@@ -31529,6 +37485,7 @@ export namespace Prisma {
     email?: string | null
     address: string
     isDefault?: boolean
+    zipCode?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     Order?: OrderUncheckedCreateNestedManyWithoutAddressInput
@@ -31542,6 +37499,35 @@ export namespace Prisma {
   export type UserAddressCreateManyUserInputEnvelope = {
     data: UserAddressCreateManyUserInput | UserAddressCreateManyUserInput[]
     skipDuplicates?: boolean
+  }
+
+  export type UserProfileCreateWithoutUserInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    dateOfBirth: Date | string
+    email: string
+    phone: string
+    country: string
+    address: string
+    zipCode: string
+  }
+
+  export type UserProfileUncheckedCreateWithoutUserInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    dateOfBirth: Date | string
+    email: string
+    phone: string
+    country: string
+    address: string
+    zipCode: string
+  }
+
+  export type UserProfileCreateOrConnectWithoutUserInput = {
+    where: UserProfileWhereUniqueInput
+    create: XOR<UserProfileCreateWithoutUserInput, UserProfileUncheckedCreateWithoutUserInput>
   }
 
   export type OrderCreateWithoutUserInput = {
@@ -31810,6 +37796,8 @@ export namespace Prisma {
     brandOption?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MerchantProfileUncheckedUpdateWithoutUserInput = {
@@ -31834,6 +37822,8 @@ export namespace Prisma {
     brandOption?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserAddressUpsertWithWhereUniqueWithoutUserInput = {
@@ -31865,8 +37855,44 @@ export namespace Prisma {
     email?: StringNullableFilter<"UserAddress"> | string | null
     address?: StringFilter<"UserAddress"> | string
     isDefault?: BoolFilter<"UserAddress"> | boolean
+    zipCode?: StringNullableFilter<"UserAddress"> | string | null
     createdAt?: DateTimeFilter<"UserAddress"> | Date | string
     updatedAt?: DateTimeFilter<"UserAddress"> | Date | string
+  }
+
+  export type UserProfileUpsertWithoutUserInput = {
+    update: XOR<UserProfileUpdateWithoutUserInput, UserProfileUncheckedUpdateWithoutUserInput>
+    create: XOR<UserProfileCreateWithoutUserInput, UserProfileUncheckedCreateWithoutUserInput>
+    where?: UserProfileWhereInput
+  }
+
+  export type UserProfileUpdateToOneWithWhereWithoutUserInput = {
+    where?: UserProfileWhereInput
+    data: XOR<UserProfileUpdateWithoutUserInput, UserProfileUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserProfileUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type UserProfileUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
   }
 
   export type OrderUpsertWithWhereUniqueWithoutUserInput = {
@@ -31969,6 +37995,102 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Payout"> | Date | string
   }
 
+  export type UserCreateWithoutUserprofileInput = {
+    id?: string
+    email?: string | null
+    phone?: string | null
+    name: string
+    password: string
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isActive?: boolean
+    brands?: BrandCreateNestedManyWithoutUserInput
+    products?: ProductCreateNestedManyWithoutUserInput
+    sales?: SaleCreateNestedManyWithoutMerchantInput
+    merchantProfile?: MerchantProfileCreateNestedOneWithoutUserInput
+    addresses?: UserAddressCreateNestedManyWithoutUserInput
+    Order?: OrderCreateNestedManyWithoutUserInput
+    CommissionSetting?: CommissionSettingCreateNestedManyWithoutMerchantInput
+    Payout?: PayoutCreateNestedManyWithoutMerchantInput
+  }
+
+  export type UserUncheckedCreateWithoutUserprofileInput = {
+    id?: string
+    email?: string | null
+    phone?: string | null
+    name: string
+    password: string
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isActive?: boolean
+    brands?: BrandUncheckedCreateNestedManyWithoutUserInput
+    products?: ProductUncheckedCreateNestedManyWithoutUserInput
+    sales?: SaleUncheckedCreateNestedManyWithoutMerchantInput
+    merchantProfile?: MerchantProfileUncheckedCreateNestedOneWithoutUserInput
+    addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
+    Order?: OrderUncheckedCreateNestedManyWithoutUserInput
+    CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutMerchantInput
+    Payout?: PayoutUncheckedCreateNestedManyWithoutMerchantInput
+  }
+
+  export type UserCreateOrConnectWithoutUserprofileInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutUserprofileInput, UserUncheckedCreateWithoutUserprofileInput>
+  }
+
+  export type UserUpsertWithoutUserprofileInput = {
+    update: XOR<UserUpdateWithoutUserprofileInput, UserUncheckedUpdateWithoutUserprofileInput>
+    create: XOR<UserCreateWithoutUserprofileInput, UserUncheckedCreateWithoutUserprofileInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutUserprofileInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutUserprofileInput, UserUncheckedUpdateWithoutUserprofileInput>
+  }
+
+  export type UserUpdateWithoutUserprofileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    brands?: BrandUpdateManyWithoutUserNestedInput
+    products?: ProductUpdateManyWithoutUserNestedInput
+    sales?: SaleUpdateManyWithoutMerchantNestedInput
+    merchantProfile?: MerchantProfileUpdateOneWithoutUserNestedInput
+    addresses?: UserAddressUpdateManyWithoutUserNestedInput
+    Order?: OrderUpdateManyWithoutUserNestedInput
+    CommissionSetting?: CommissionSettingUpdateManyWithoutMerchantNestedInput
+    Payout?: PayoutUpdateManyWithoutMerchantNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutUserprofileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    brands?: BrandUncheckedUpdateManyWithoutUserNestedInput
+    products?: ProductUncheckedUpdateManyWithoutUserNestedInput
+    sales?: SaleUncheckedUpdateManyWithoutMerchantNestedInput
+    merchantProfile?: MerchantProfileUncheckedUpdateOneWithoutUserNestedInput
+    addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
+    Order?: OrderUncheckedUpdateManyWithoutUserNestedInput
+    CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutMerchantNestedInput
+    Payout?: PayoutUncheckedUpdateManyWithoutMerchantNestedInput
+  }
+
   export type UserCreateWithoutAddressesInput = {
     id?: string
     email?: string | null
@@ -31983,6 +38105,7 @@ export namespace Prisma {
     products?: ProductCreateNestedManyWithoutUserInput
     sales?: SaleCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileCreateNestedOneWithoutUserInput
+    userprofile?: UserProfileCreateNestedOneWithoutUserInput
     Order?: OrderCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingCreateNestedManyWithoutMerchantInput
     Payout?: PayoutCreateNestedManyWithoutMerchantInput
@@ -32002,6 +38125,7 @@ export namespace Prisma {
     products?: ProductUncheckedCreateNestedManyWithoutUserInput
     sales?: SaleUncheckedCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileUncheckedCreateNestedOneWithoutUserInput
+    userprofile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
     Order?: OrderUncheckedCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutMerchantInput
     Payout?: PayoutUncheckedCreateNestedManyWithoutMerchantInput
@@ -32087,6 +38211,7 @@ export namespace Prisma {
     products?: ProductUpdateManyWithoutUserNestedInput
     sales?: SaleUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUpdateOneWithoutUserNestedInput
+    userprofile?: UserProfileUpdateOneWithoutUserNestedInput
     Order?: OrderUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUpdateManyWithoutMerchantNestedInput
@@ -32106,6 +38231,7 @@ export namespace Prisma {
     products?: ProductUncheckedUpdateManyWithoutUserNestedInput
     sales?: SaleUncheckedUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUncheckedUpdateOneWithoutUserNestedInput
+    userprofile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
     Order?: OrderUncheckedUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUncheckedUpdateManyWithoutMerchantNestedInput
@@ -32141,6 +38267,7 @@ export namespace Prisma {
     products?: ProductCreateNestedManyWithoutUserInput
     sales?: SaleCreateNestedManyWithoutMerchantInput
     addresses?: UserAddressCreateNestedManyWithoutUserInput
+    userprofile?: UserProfileCreateNestedOneWithoutUserInput
     Order?: OrderCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingCreateNestedManyWithoutMerchantInput
     Payout?: PayoutCreateNestedManyWithoutMerchantInput
@@ -32160,6 +38287,7 @@ export namespace Prisma {
     products?: ProductUncheckedCreateNestedManyWithoutUserInput
     sales?: SaleUncheckedCreateNestedManyWithoutMerchantInput
     addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
+    userprofile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
     Order?: OrderUncheckedCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutMerchantInput
     Payout?: PayoutUncheckedCreateNestedManyWithoutMerchantInput
@@ -32195,6 +38323,7 @@ export namespace Prisma {
     products?: ProductUpdateManyWithoutUserNestedInput
     sales?: SaleUpdateManyWithoutMerchantNestedInput
     addresses?: UserAddressUpdateManyWithoutUserNestedInput
+    userprofile?: UserProfileUpdateOneWithoutUserNestedInput
     Order?: OrderUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUpdateManyWithoutMerchantNestedInput
@@ -32214,6 +38343,7 @@ export namespace Prisma {
     products?: ProductUncheckedUpdateManyWithoutUserNestedInput
     sales?: SaleUncheckedUpdateManyWithoutMerchantNestedInput
     addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
+    userprofile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
     Order?: OrderUncheckedUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUncheckedUpdateManyWithoutMerchantNestedInput
@@ -32252,6 +38382,7 @@ export namespace Prisma {
     sales?: SaleCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileCreateNestedOneWithoutUserInput
     addresses?: UserAddressCreateNestedManyWithoutUserInput
+    userprofile?: UserProfileCreateNestedOneWithoutUserInput
     Order?: OrderCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingCreateNestedManyWithoutMerchantInput
     Payout?: PayoutCreateNestedManyWithoutMerchantInput
@@ -32271,6 +38402,7 @@ export namespace Prisma {
     sales?: SaleUncheckedCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileUncheckedCreateNestedOneWithoutUserInput
     addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
+    userprofile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
     Order?: OrderUncheckedCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutMerchantInput
     Payout?: PayoutUncheckedCreateNestedManyWithoutMerchantInput
@@ -32351,6 +38483,7 @@ export namespace Prisma {
     product: ProductCreateNestedOneWithoutSalesInput
     merchant: UserCreateNestedOneWithoutSalesInput
     SaleItem?: SaleItemCreateNestedManyWithoutSaleInput
+    Refund?: RefundCreateNestedManyWithoutSaleInput
   }
 
   export type SaleUncheckedCreateWithoutBrandInput = {
@@ -32365,6 +38498,7 @@ export namespace Prisma {
     platformEarning?: number
     createdAt?: Date | string
     SaleItem?: SaleItemUncheckedCreateNestedManyWithoutSaleInput
+    Refund?: RefundUncheckedCreateNestedManyWithoutSaleInput
   }
 
   export type SaleCreateOrConnectWithoutBrandInput = {
@@ -32491,6 +38625,7 @@ export namespace Prisma {
     sales?: SaleUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUpdateManyWithoutUserNestedInput
+    userprofile?: UserProfileUpdateOneWithoutUserNestedInput
     Order?: OrderUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUpdateManyWithoutMerchantNestedInput
@@ -32510,6 +38645,7 @@ export namespace Prisma {
     sales?: SaleUncheckedUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUncheckedUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
+    userprofile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
     Order?: OrderUncheckedUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUncheckedUpdateManyWithoutMerchantNestedInput
@@ -32835,6 +38971,7 @@ export namespace Prisma {
     sales?: SaleCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileCreateNestedOneWithoutUserInput
     addresses?: UserAddressCreateNestedManyWithoutUserInput
+    userprofile?: UserProfileCreateNestedOneWithoutUserInput
     Order?: OrderCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingCreateNestedManyWithoutMerchantInput
     Payout?: PayoutCreateNestedManyWithoutMerchantInput
@@ -32854,6 +38991,7 @@ export namespace Prisma {
     sales?: SaleUncheckedCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileUncheckedCreateNestedOneWithoutUserInput
     addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
+    userprofile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
     Order?: OrderUncheckedCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutMerchantInput
     Payout?: PayoutUncheckedCreateNestedManyWithoutMerchantInput
@@ -32876,6 +39014,7 @@ export namespace Prisma {
     merchant: UserCreateNestedOneWithoutSalesInput
     brand?: BrandCreateNestedOneWithoutSalesInput
     SaleItem?: SaleItemCreateNestedManyWithoutSaleInput
+    Refund?: RefundCreateNestedManyWithoutSaleInput
   }
 
   export type SaleUncheckedCreateWithoutProductInput = {
@@ -32890,6 +39029,7 @@ export namespace Prisma {
     platformEarning?: number
     createdAt?: Date | string
     SaleItem?: SaleItemUncheckedCreateNestedManyWithoutSaleInput
+    Refund?: RefundUncheckedCreateNestedManyWithoutSaleInput
   }
 
   export type SaleCreateOrConnectWithoutProductInput = {
@@ -33141,6 +39281,7 @@ export namespace Prisma {
     sales?: SaleUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUpdateManyWithoutUserNestedInput
+    userprofile?: UserProfileUpdateOneWithoutUserNestedInput
     Order?: OrderUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUpdateManyWithoutMerchantNestedInput
@@ -33160,6 +39301,7 @@ export namespace Prisma {
     sales?: SaleUncheckedUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUncheckedUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
+    userprofile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
     Order?: OrderUncheckedUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUncheckedUpdateManyWithoutMerchantNestedInput
@@ -33207,6 +39349,7 @@ export namespace Prisma {
     fitType?: $Enums.FitType | null
     size?: string | null
     order: OrderCreateNestedOneWithoutItemsInput
+    Refund?: RefundCreateNestedManyWithoutOrderItemInput
   }
 
   export type OrderItemUncheckedCreateWithoutSaleInput = {
@@ -33219,6 +39362,7 @@ export namespace Prisma {
     color?: string | null
     fitType?: $Enums.FitType | null
     size?: string | null
+    Refund?: RefundUncheckedCreateNestedManyWithoutOrderItemInput
   }
 
   export type OrderItemCreateOrConnectWithoutSaleInput = {
@@ -33293,6 +39437,7 @@ export namespace Prisma {
     products?: ProductCreateNestedManyWithoutUserInput
     merchantProfile?: MerchantProfileCreateNestedOneWithoutUserInput
     addresses?: UserAddressCreateNestedManyWithoutUserInput
+    userprofile?: UserProfileCreateNestedOneWithoutUserInput
     Order?: OrderCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingCreateNestedManyWithoutMerchantInput
     Payout?: PayoutCreateNestedManyWithoutMerchantInput
@@ -33312,6 +39457,7 @@ export namespace Prisma {
     products?: ProductUncheckedCreateNestedManyWithoutUserInput
     merchantProfile?: MerchantProfileUncheckedCreateNestedOneWithoutUserInput
     addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
+    userprofile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
     Order?: OrderUncheckedCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutMerchantInput
     Payout?: PayoutUncheckedCreateNestedManyWithoutMerchantInput
@@ -33417,6 +39563,40 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type RefundCreateWithoutSaleInput = {
+    id?: string
+    quantity: number
+    amount: Decimal | DecimalJsLike | number | string
+    brandEarning: Decimal | DecimalJsLike | number | string
+    merchantEarning: Decimal | DecimalJsLike | number | string
+    platformEarning: Decimal | DecimalJsLike | number | string
+    reason?: string | null
+    createdAt?: Date | string
+    orderItem: OrderItemCreateNestedOneWithoutRefundInput
+  }
+
+  export type RefundUncheckedCreateWithoutSaleInput = {
+    id?: string
+    orderItemId: string
+    quantity: number
+    amount: Decimal | DecimalJsLike | number | string
+    brandEarning: Decimal | DecimalJsLike | number | string
+    merchantEarning: Decimal | DecimalJsLike | number | string
+    platformEarning: Decimal | DecimalJsLike | number | string
+    reason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type RefundCreateOrConnectWithoutSaleInput = {
+    where: RefundWhereUniqueInput
+    create: XOR<RefundCreateWithoutSaleInput, RefundUncheckedCreateWithoutSaleInput>
+  }
+
+  export type RefundCreateManySaleInputEnvelope = {
+    data: RefundCreateManySaleInput | RefundCreateManySaleInput[]
+    skipDuplicates?: boolean
+  }
+
   export type OrderItemUpsertWithoutSaleInput = {
     update: XOR<OrderItemUpdateWithoutSaleInput, OrderItemUncheckedUpdateWithoutSaleInput>
     create: XOR<OrderItemCreateWithoutSaleInput, OrderItemUncheckedCreateWithoutSaleInput>
@@ -33438,6 +39618,7 @@ export namespace Prisma {
     fitType?: NullableEnumFitTypeFieldUpdateOperationsInput | $Enums.FitType | null
     size?: NullableStringFieldUpdateOperationsInput | string | null
     order?: OrderUpdateOneRequiredWithoutItemsNestedInput
+    Refund?: RefundUpdateManyWithoutOrderItemNestedInput
   }
 
   export type OrderItemUncheckedUpdateWithoutSaleInput = {
@@ -33450,6 +39631,7 @@ export namespace Prisma {
     color?: NullableStringFieldUpdateOperationsInput | string | null
     fitType?: NullableEnumFitTypeFieldUpdateOperationsInput | $Enums.FitType | null
     size?: NullableStringFieldUpdateOperationsInput | string | null
+    Refund?: RefundUncheckedUpdateManyWithoutOrderItemNestedInput
   }
 
   export type ProductUpsertWithoutSalesInput = {
@@ -33536,6 +39718,7 @@ export namespace Prisma {
     products?: ProductUpdateManyWithoutUserNestedInput
     merchantProfile?: MerchantProfileUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUpdateManyWithoutUserNestedInput
+    userprofile?: UserProfileUpdateOneWithoutUserNestedInput
     Order?: OrderUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUpdateManyWithoutMerchantNestedInput
@@ -33555,6 +39738,7 @@ export namespace Prisma {
     products?: ProductUncheckedUpdateManyWithoutUserNestedInput
     merchantProfile?: MerchantProfileUncheckedUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
+    userprofile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
     Order?: OrderUncheckedUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUncheckedUpdateManyWithoutMerchantNestedInput
@@ -33662,6 +39846,38 @@ export namespace Prisma {
     orderItemId?: StringFilter<"SaleItem"> | string
   }
 
+  export type RefundUpsertWithWhereUniqueWithoutSaleInput = {
+    where: RefundWhereUniqueInput
+    update: XOR<RefundUpdateWithoutSaleInput, RefundUncheckedUpdateWithoutSaleInput>
+    create: XOR<RefundCreateWithoutSaleInput, RefundUncheckedCreateWithoutSaleInput>
+  }
+
+  export type RefundUpdateWithWhereUniqueWithoutSaleInput = {
+    where: RefundWhereUniqueInput
+    data: XOR<RefundUpdateWithoutSaleInput, RefundUncheckedUpdateWithoutSaleInput>
+  }
+
+  export type RefundUpdateManyWithWhereWithoutSaleInput = {
+    where: RefundScalarWhereInput
+    data: XOR<RefundUpdateManyMutationInput, RefundUncheckedUpdateManyWithoutSaleInput>
+  }
+
+  export type RefundScalarWhereInput = {
+    AND?: RefundScalarWhereInput | RefundScalarWhereInput[]
+    OR?: RefundScalarWhereInput[]
+    NOT?: RefundScalarWhereInput | RefundScalarWhereInput[]
+    id?: StringFilter<"Refund"> | string
+    orderItemId?: StringFilter<"Refund"> | string
+    saleId?: StringNullableFilter<"Refund"> | string | null
+    quantity?: IntFilter<"Refund"> | number
+    amount?: DecimalFilter<"Refund"> | Decimal | DecimalJsLike | number | string
+    brandEarning?: DecimalFilter<"Refund"> | Decimal | DecimalJsLike | number | string
+    merchantEarning?: DecimalFilter<"Refund"> | Decimal | DecimalJsLike | number | string
+    platformEarning?: DecimalFilter<"Refund"> | Decimal | DecimalJsLike | number | string
+    reason?: StringNullableFilter<"Refund"> | string | null
+    createdAt?: DateTimeFilter<"Refund"> | Date | string
+  }
+
   export type SaleCreateWithoutSaleItemInput = {
     id?: string
     quantity?: number
@@ -33674,6 +39890,7 @@ export namespace Prisma {
     product: ProductCreateNestedOneWithoutSalesInput
     merchant: UserCreateNestedOneWithoutSalesInput
     brand?: BrandCreateNestedOneWithoutSalesInput
+    Refund?: RefundCreateNestedManyWithoutSaleInput
   }
 
   export type SaleUncheckedCreateWithoutSaleItemInput = {
@@ -33688,6 +39905,7 @@ export namespace Prisma {
     merchantEarning?: number
     platformEarning?: number
     createdAt?: Date | string
+    Refund?: RefundUncheckedCreateNestedManyWithoutSaleInput
   }
 
   export type SaleCreateOrConnectWithoutSaleItemInput = {
@@ -33718,6 +39936,7 @@ export namespace Prisma {
     product?: ProductUpdateOneRequiredWithoutSalesNestedInput
     merchant?: UserUpdateOneRequiredWithoutSalesNestedInput
     brand?: BrandUpdateOneWithoutSalesNestedInput
+    Refund?: RefundUpdateManyWithoutSaleNestedInput
   }
 
   export type SaleUncheckedUpdateWithoutSaleItemInput = {
@@ -33732,6 +39951,7 @@ export namespace Prisma {
     merchantEarning?: FloatFieldUpdateOperationsInput | number
     platformEarning?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    Refund?: RefundUncheckedUpdateManyWithoutSaleNestedInput
   }
 
   export type ProductCreateWithoutVariantsInput = {
@@ -34261,6 +40481,7 @@ export namespace Prisma {
     sales?: SaleCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileCreateNestedOneWithoutUserInput
     addresses?: UserAddressCreateNestedManyWithoutUserInput
+    userprofile?: UserProfileCreateNestedOneWithoutUserInput
     CommissionSetting?: CommissionSettingCreateNestedManyWithoutMerchantInput
     Payout?: PayoutCreateNestedManyWithoutMerchantInput
   }
@@ -34280,6 +40501,7 @@ export namespace Prisma {
     sales?: SaleUncheckedCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileUncheckedCreateNestedOneWithoutUserInput
     addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
+    userprofile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
     CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutMerchantInput
     Payout?: PayoutUncheckedCreateNestedManyWithoutMerchantInput
   }
@@ -34298,6 +40520,7 @@ export namespace Prisma {
     email?: string | null
     address: string
     isDefault?: boolean
+    zipCode?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutAddressesInput
@@ -34313,6 +40536,7 @@ export namespace Prisma {
     email?: string | null
     address: string
     isDefault?: boolean
+    zipCode?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -34332,6 +40556,7 @@ export namespace Prisma {
     fitType?: $Enums.FitType | null
     size?: string | null
     Sale?: SaleCreateNestedManyWithoutOrderItemInput
+    Refund?: RefundCreateNestedManyWithoutOrderItemInput
   }
 
   export type OrderItemUncheckedCreateWithoutOrderInput = {
@@ -34344,6 +40569,7 @@ export namespace Prisma {
     fitType?: $Enums.FitType | null
     size?: string | null
     Sale?: SaleUncheckedCreateNestedManyWithoutOrderItemInput
+    Refund?: RefundUncheckedCreateNestedManyWithoutOrderItemInput
   }
 
   export type OrderItemCreateOrConnectWithoutOrderInput = {
@@ -34407,6 +40633,7 @@ export namespace Prisma {
     sales?: SaleUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUpdateManyWithoutUserNestedInput
+    userprofile?: UserProfileUpdateOneWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUpdateManyWithoutMerchantNestedInput
   }
@@ -34426,6 +40653,7 @@ export namespace Prisma {
     sales?: SaleUncheckedUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUncheckedUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
+    userprofile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUncheckedUpdateManyWithoutMerchantNestedInput
   }
@@ -34450,6 +40678,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     address?: StringFieldUpdateOperationsInput | string
     isDefault?: BoolFieldUpdateOperationsInput | boolean
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutAddressesNestedInput
@@ -34465,6 +40694,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     address?: StringFieldUpdateOperationsInput | string
     isDefault?: BoolFieldUpdateOperationsInput | boolean
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -34588,6 +40818,7 @@ export namespace Prisma {
     merchant: UserCreateNestedOneWithoutSalesInput
     brand?: BrandCreateNestedOneWithoutSalesInput
     SaleItem?: SaleItemCreateNestedManyWithoutSaleInput
+    Refund?: RefundCreateNestedManyWithoutSaleInput
   }
 
   export type SaleUncheckedCreateWithoutOrderItemInput = {
@@ -34602,6 +40833,7 @@ export namespace Prisma {
     platformEarning?: number
     createdAt?: Date | string
     SaleItem?: SaleItemUncheckedCreateNestedManyWithoutSaleInput
+    Refund?: RefundUncheckedCreateNestedManyWithoutSaleInput
   }
 
   export type SaleCreateOrConnectWithoutOrderItemInput = {
@@ -34611,6 +40843,40 @@ export namespace Prisma {
 
   export type SaleCreateManyOrderItemInputEnvelope = {
     data: SaleCreateManyOrderItemInput | SaleCreateManyOrderItemInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type RefundCreateWithoutOrderItemInput = {
+    id?: string
+    quantity: number
+    amount: Decimal | DecimalJsLike | number | string
+    brandEarning: Decimal | DecimalJsLike | number | string
+    merchantEarning: Decimal | DecimalJsLike | number | string
+    platformEarning: Decimal | DecimalJsLike | number | string
+    reason?: string | null
+    createdAt?: Date | string
+    sale?: SaleCreateNestedOneWithoutRefundInput
+  }
+
+  export type RefundUncheckedCreateWithoutOrderItemInput = {
+    id?: string
+    saleId?: string | null
+    quantity: number
+    amount: Decimal | DecimalJsLike | number | string
+    brandEarning: Decimal | DecimalJsLike | number | string
+    merchantEarning: Decimal | DecimalJsLike | number | string
+    platformEarning: Decimal | DecimalJsLike | number | string
+    reason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type RefundCreateOrConnectWithoutOrderItemInput = {
+    where: RefundWhereUniqueInput
+    create: XOR<RefundCreateWithoutOrderItemInput, RefundUncheckedCreateWithoutOrderItemInput>
+  }
+
+  export type RefundCreateManyOrderItemInputEnvelope = {
+    data: RefundCreateManyOrderItemInput | RefundCreateManyOrderItemInput[]
     skipDuplicates?: boolean
   }
 
@@ -34679,6 +40945,22 @@ export namespace Prisma {
   export type SaleUpdateManyWithWhereWithoutOrderItemInput = {
     where: SaleScalarWhereInput
     data: XOR<SaleUpdateManyMutationInput, SaleUncheckedUpdateManyWithoutOrderItemInput>
+  }
+
+  export type RefundUpsertWithWhereUniqueWithoutOrderItemInput = {
+    where: RefundWhereUniqueInput
+    update: XOR<RefundUpdateWithoutOrderItemInput, RefundUncheckedUpdateWithoutOrderItemInput>
+    create: XOR<RefundCreateWithoutOrderItemInput, RefundUncheckedCreateWithoutOrderItemInput>
+  }
+
+  export type RefundUpdateWithWhereUniqueWithoutOrderItemInput = {
+    where: RefundWhereUniqueInput
+    data: XOR<RefundUpdateWithoutOrderItemInput, RefundUncheckedUpdateWithoutOrderItemInput>
+  }
+
+  export type RefundUpdateManyWithWhereWithoutOrderItemInput = {
+    where: RefundScalarWhereInput
+    data: XOR<RefundUpdateManyMutationInput, RefundUncheckedUpdateManyWithoutOrderItemInput>
   }
 
   export type OrderCreateWithoutPaymentInput = {
@@ -34859,6 +41141,7 @@ export namespace Prisma {
     sales?: SaleCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileCreateNestedOneWithoutUserInput
     addresses?: UserAddressCreateNestedManyWithoutUserInput
+    userprofile?: UserProfileCreateNestedOneWithoutUserInput
     Order?: OrderCreateNestedManyWithoutUserInput
     Payout?: PayoutCreateNestedManyWithoutMerchantInput
   }
@@ -34878,6 +41161,7 @@ export namespace Prisma {
     sales?: SaleUncheckedCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileUncheckedCreateNestedOneWithoutUserInput
     addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
+    userprofile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
     Order?: OrderUncheckedCreateNestedManyWithoutUserInput
     Payout?: PayoutUncheckedCreateNestedManyWithoutMerchantInput
   }
@@ -35039,6 +41323,7 @@ export namespace Prisma {
     sales?: SaleUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUpdateManyWithoutUserNestedInput
+    userprofile?: UserProfileUpdateOneWithoutUserNestedInput
     Order?: OrderUpdateManyWithoutUserNestedInput
     Payout?: PayoutUpdateManyWithoutMerchantNestedInput
   }
@@ -35058,6 +41343,7 @@ export namespace Prisma {
     sales?: SaleUncheckedUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUncheckedUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
+    userprofile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
     Order?: OrderUncheckedUpdateManyWithoutUserNestedInput
     Payout?: PayoutUncheckedUpdateManyWithoutMerchantNestedInput
   }
@@ -35119,6 +41405,150 @@ export namespace Prisma {
     tags?: TagUncheckedUpdateManyWithoutProductNestedInput
     variants?: ProductVariantUncheckedUpdateManyWithoutProductNestedInput
     sales?: SaleUncheckedUpdateManyWithoutProductNestedInput
+  }
+
+  export type OrderItemCreateWithoutRefundInput = {
+    id?: string
+    productId?: string | null
+    productTitle: string
+    unitPrice: Decimal | DecimalJsLike | number | string
+    quantity?: number
+    color?: string | null
+    fitType?: $Enums.FitType | null
+    size?: string | null
+    order: OrderCreateNestedOneWithoutItemsInput
+    Sale?: SaleCreateNestedManyWithoutOrderItemInput
+  }
+
+  export type OrderItemUncheckedCreateWithoutRefundInput = {
+    id?: string
+    orderId: string
+    productId?: string | null
+    productTitle: string
+    unitPrice: Decimal | DecimalJsLike | number | string
+    quantity?: number
+    color?: string | null
+    fitType?: $Enums.FitType | null
+    size?: string | null
+    Sale?: SaleUncheckedCreateNestedManyWithoutOrderItemInput
+  }
+
+  export type OrderItemCreateOrConnectWithoutRefundInput = {
+    where: OrderItemWhereUniqueInput
+    create: XOR<OrderItemCreateWithoutRefundInput, OrderItemUncheckedCreateWithoutRefundInput>
+  }
+
+  export type SaleCreateWithoutRefundInput = {
+    id?: string
+    quantity?: number
+    total: number
+    brandEarning?: number
+    merchantEarning?: number
+    platformEarning?: number
+    createdAt?: Date | string
+    orderItem: OrderItemCreateNestedOneWithoutSaleInput
+    product: ProductCreateNestedOneWithoutSalesInput
+    merchant: UserCreateNestedOneWithoutSalesInput
+    brand?: BrandCreateNestedOneWithoutSalesInput
+    SaleItem?: SaleItemCreateNestedManyWithoutSaleInput
+  }
+
+  export type SaleUncheckedCreateWithoutRefundInput = {
+    id?: string
+    orderItemId: string
+    productId: string
+    merchantId: string
+    brandId?: string | null
+    quantity?: number
+    total: number
+    brandEarning?: number
+    merchantEarning?: number
+    platformEarning?: number
+    createdAt?: Date | string
+    SaleItem?: SaleItemUncheckedCreateNestedManyWithoutSaleInput
+  }
+
+  export type SaleCreateOrConnectWithoutRefundInput = {
+    where: SaleWhereUniqueInput
+    create: XOR<SaleCreateWithoutRefundInput, SaleUncheckedCreateWithoutRefundInput>
+  }
+
+  export type OrderItemUpsertWithoutRefundInput = {
+    update: XOR<OrderItemUpdateWithoutRefundInput, OrderItemUncheckedUpdateWithoutRefundInput>
+    create: XOR<OrderItemCreateWithoutRefundInput, OrderItemUncheckedCreateWithoutRefundInput>
+    where?: OrderItemWhereInput
+  }
+
+  export type OrderItemUpdateToOneWithWhereWithoutRefundInput = {
+    where?: OrderItemWhereInput
+    data: XOR<OrderItemUpdateWithoutRefundInput, OrderItemUncheckedUpdateWithoutRefundInput>
+  }
+
+  export type OrderItemUpdateWithoutRefundInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: NullableStringFieldUpdateOperationsInput | string | null
+    productTitle?: StringFieldUpdateOperationsInput | string
+    unitPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    fitType?: NullableEnumFitTypeFieldUpdateOperationsInput | $Enums.FitType | null
+    size?: NullableStringFieldUpdateOperationsInput | string | null
+    order?: OrderUpdateOneRequiredWithoutItemsNestedInput
+    Sale?: SaleUpdateManyWithoutOrderItemNestedInput
+  }
+
+  export type OrderItemUncheckedUpdateWithoutRefundInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    productId?: NullableStringFieldUpdateOperationsInput | string | null
+    productTitle?: StringFieldUpdateOperationsInput | string
+    unitPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    fitType?: NullableEnumFitTypeFieldUpdateOperationsInput | $Enums.FitType | null
+    size?: NullableStringFieldUpdateOperationsInput | string | null
+    Sale?: SaleUncheckedUpdateManyWithoutOrderItemNestedInput
+  }
+
+  export type SaleUpsertWithoutRefundInput = {
+    update: XOR<SaleUpdateWithoutRefundInput, SaleUncheckedUpdateWithoutRefundInput>
+    create: XOR<SaleCreateWithoutRefundInput, SaleUncheckedCreateWithoutRefundInput>
+    where?: SaleWhereInput
+  }
+
+  export type SaleUpdateToOneWithWhereWithoutRefundInput = {
+    where?: SaleWhereInput
+    data: XOR<SaleUpdateWithoutRefundInput, SaleUncheckedUpdateWithoutRefundInput>
+  }
+
+  export type SaleUpdateWithoutRefundInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    total?: FloatFieldUpdateOperationsInput | number
+    brandEarning?: FloatFieldUpdateOperationsInput | number
+    merchantEarning?: FloatFieldUpdateOperationsInput | number
+    platformEarning?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderItem?: OrderItemUpdateOneRequiredWithoutSaleNestedInput
+    product?: ProductUpdateOneRequiredWithoutSalesNestedInput
+    merchant?: UserUpdateOneRequiredWithoutSalesNestedInput
+    brand?: BrandUpdateOneWithoutSalesNestedInput
+    SaleItem?: SaleItemUpdateManyWithoutSaleNestedInput
+  }
+
+  export type SaleUncheckedUpdateWithoutRefundInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderItemId?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    merchantId?: StringFieldUpdateOperationsInput | string
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
+    quantity?: IntFieldUpdateOperationsInput | number
+    total?: FloatFieldUpdateOperationsInput | number
+    brandEarning?: FloatFieldUpdateOperationsInput | number
+    merchantEarning?: FloatFieldUpdateOperationsInput | number
+    platformEarning?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    SaleItem?: SaleItemUncheckedUpdateManyWithoutSaleNestedInput
   }
 
   export type BrandCreateWithoutPayoutInput = {
@@ -35203,6 +41633,7 @@ export namespace Prisma {
     sales?: SaleCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileCreateNestedOneWithoutUserInput
     addresses?: UserAddressCreateNestedManyWithoutUserInput
+    userprofile?: UserProfileCreateNestedOneWithoutUserInput
     Order?: OrderCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingCreateNestedManyWithoutMerchantInput
   }
@@ -35222,6 +41653,7 @@ export namespace Prisma {
     sales?: SaleUncheckedCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileUncheckedCreateNestedOneWithoutUserInput
     addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
+    userprofile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
     Order?: OrderUncheckedCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutMerchantInput
   }
@@ -35330,6 +41762,7 @@ export namespace Prisma {
     sales?: SaleUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUpdateManyWithoutUserNestedInput
+    userprofile?: UserProfileUpdateOneWithoutUserNestedInput
     Order?: OrderUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUpdateManyWithoutMerchantNestedInput
   }
@@ -35349,6 +41782,7 @@ export namespace Prisma {
     sales?: SaleUncheckedUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUncheckedUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
+    userprofile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
     Order?: OrderUncheckedUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutMerchantNestedInput
   }
@@ -35421,6 +41855,7 @@ export namespace Prisma {
     email?: string | null
     address: string
     isDefault?: boolean
+    zipCode?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -35633,6 +42068,7 @@ export namespace Prisma {
     product?: ProductUpdateOneRequiredWithoutSalesNestedInput
     brand?: BrandUpdateOneWithoutSalesNestedInput
     SaleItem?: SaleItemUpdateManyWithoutSaleNestedInput
+    Refund?: RefundUpdateManyWithoutSaleNestedInput
   }
 
   export type SaleUncheckedUpdateWithoutMerchantInput = {
@@ -35647,6 +42083,7 @@ export namespace Prisma {
     platformEarning?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     SaleItem?: SaleItemUncheckedUpdateManyWithoutSaleNestedInput
+    Refund?: RefundUncheckedUpdateManyWithoutSaleNestedInput
   }
 
   export type SaleUncheckedUpdateManyWithoutMerchantInput = {
@@ -35671,6 +42108,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     address?: StringFieldUpdateOperationsInput | string
     isDefault?: BoolFieldUpdateOperationsInput | boolean
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     Order?: OrderUpdateManyWithoutAddressNestedInput
@@ -35685,6 +42123,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     address?: StringFieldUpdateOperationsInput | string
     isDefault?: BoolFieldUpdateOperationsInput | boolean
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     Order?: OrderUncheckedUpdateManyWithoutAddressNestedInput
@@ -35699,6 +42138,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     address?: StringFieldUpdateOperationsInput | string
     isDefault?: BoolFieldUpdateOperationsInput | boolean
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -36036,6 +42476,7 @@ export namespace Prisma {
     product?: ProductUpdateOneRequiredWithoutSalesNestedInput
     merchant?: UserUpdateOneRequiredWithoutSalesNestedInput
     SaleItem?: SaleItemUpdateManyWithoutSaleNestedInput
+    Refund?: RefundUpdateManyWithoutSaleNestedInput
   }
 
   export type SaleUncheckedUpdateWithoutBrandInput = {
@@ -36050,6 +42491,7 @@ export namespace Prisma {
     platformEarning?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     SaleItem?: SaleItemUncheckedUpdateManyWithoutSaleNestedInput
+    Refund?: RefundUncheckedUpdateManyWithoutSaleNestedInput
   }
 
   export type SaleUncheckedUpdateManyWithoutBrandInput = {
@@ -36357,6 +42799,7 @@ export namespace Prisma {
     merchant?: UserUpdateOneRequiredWithoutSalesNestedInput
     brand?: BrandUpdateOneWithoutSalesNestedInput
     SaleItem?: SaleItemUpdateManyWithoutSaleNestedInput
+    Refund?: RefundUpdateManyWithoutSaleNestedInput
   }
 
   export type SaleUncheckedUpdateWithoutProductInput = {
@@ -36371,6 +42814,7 @@ export namespace Prisma {
     platformEarning?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     SaleItem?: SaleItemUncheckedUpdateManyWithoutSaleNestedInput
+    Refund?: RefundUncheckedUpdateManyWithoutSaleNestedInput
   }
 
   export type SaleUncheckedUpdateManyWithoutProductInput = {
@@ -36434,6 +42878,18 @@ export namespace Prisma {
     orderItemId: string
   }
 
+  export type RefundCreateManySaleInput = {
+    id?: string
+    orderItemId: string
+    quantity: number
+    amount: Decimal | DecimalJsLike | number | string
+    brandEarning: Decimal | DecimalJsLike | number | string
+    merchantEarning: Decimal | DecimalJsLike | number | string
+    platformEarning: Decimal | DecimalJsLike | number | string
+    reason?: string | null
+    createdAt?: Date | string
+  }
+
   export type SaleItemUpdateWithoutSaleInput = {
     id?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
@@ -36459,6 +42915,42 @@ export namespace Prisma {
     unitPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     orderItemId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type RefundUpdateWithoutSaleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    brandEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    merchantEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    platformEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderItem?: OrderItemUpdateOneRequiredWithoutRefundNestedInput
+  }
+
+  export type RefundUncheckedUpdateWithoutSaleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderItemId?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    brandEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    merchantEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    platformEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RefundUncheckedUpdateManyWithoutSaleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderItemId?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    brandEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    merchantEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    platformEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MockupVariantCreateManyMockupInput = {
@@ -36600,6 +43092,7 @@ export namespace Prisma {
     fitType?: NullableEnumFitTypeFieldUpdateOperationsInput | $Enums.FitType | null
     size?: NullableStringFieldUpdateOperationsInput | string | null
     Sale?: SaleUpdateManyWithoutOrderItemNestedInput
+    Refund?: RefundUpdateManyWithoutOrderItemNestedInput
   }
 
   export type OrderItemUncheckedUpdateWithoutOrderInput = {
@@ -36612,6 +43105,7 @@ export namespace Prisma {
     fitType?: NullableEnumFitTypeFieldUpdateOperationsInput | $Enums.FitType | null
     size?: NullableStringFieldUpdateOperationsInput | string | null
     Sale?: SaleUncheckedUpdateManyWithoutOrderItemNestedInput
+    Refund?: RefundUncheckedUpdateManyWithoutOrderItemNestedInput
   }
 
   export type OrderItemUncheckedUpdateManyWithoutOrderInput = {
@@ -36638,6 +43132,18 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type RefundCreateManyOrderItemInput = {
+    id?: string
+    saleId?: string | null
+    quantity: number
+    amount: Decimal | DecimalJsLike | number | string
+    brandEarning: Decimal | DecimalJsLike | number | string
+    merchantEarning: Decimal | DecimalJsLike | number | string
+    platformEarning: Decimal | DecimalJsLike | number | string
+    reason?: string | null
+    createdAt?: Date | string
+  }
+
   export type SaleUpdateWithoutOrderItemInput = {
     id?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
@@ -36650,6 +43156,7 @@ export namespace Prisma {
     merchant?: UserUpdateOneRequiredWithoutSalesNestedInput
     brand?: BrandUpdateOneWithoutSalesNestedInput
     SaleItem?: SaleItemUpdateManyWithoutSaleNestedInput
+    Refund?: RefundUpdateManyWithoutSaleNestedInput
   }
 
   export type SaleUncheckedUpdateWithoutOrderItemInput = {
@@ -36664,6 +43171,7 @@ export namespace Prisma {
     platformEarning?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     SaleItem?: SaleItemUncheckedUpdateManyWithoutSaleNestedInput
+    Refund?: RefundUncheckedUpdateManyWithoutSaleNestedInput
   }
 
   export type SaleUncheckedUpdateManyWithoutOrderItemInput = {
@@ -36676,6 +43184,42 @@ export namespace Prisma {
     brandEarning?: FloatFieldUpdateOperationsInput | number
     merchantEarning?: FloatFieldUpdateOperationsInput | number
     platformEarning?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RefundUpdateWithoutOrderItemInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    brandEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    merchantEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    platformEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sale?: SaleUpdateOneWithoutRefundNestedInput
+  }
+
+  export type RefundUncheckedUpdateWithoutOrderItemInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    saleId?: NullableStringFieldUpdateOperationsInput | string | null
+    quantity?: IntFieldUpdateOperationsInput | number
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    brandEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    merchantEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    platformEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RefundUncheckedUpdateManyWithoutOrderItemInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    saleId?: NullableStringFieldUpdateOperationsInput | string | null
+    quantity?: IntFieldUpdateOperationsInput | number
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    brandEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    merchantEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    platformEarning?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

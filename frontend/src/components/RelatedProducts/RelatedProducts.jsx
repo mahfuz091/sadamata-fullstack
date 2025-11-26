@@ -65,7 +65,7 @@ const products = [
 
 const RelatedProducts = () => {
   return (
-    <div className="product-slider">
+    <div className="product-slider mt-5">
       <Container>
         <div className="product-slider__top">
           <h2 className="product-slider__title">Related Product</h2>

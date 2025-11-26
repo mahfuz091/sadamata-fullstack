@@ -366,5 +366,80 @@ ul.populer-feature__list.list-unstyled li i {
 .stsearch-box input {
    border: none;
    outline: none;
+}.post-pagination-list button {
+  display: inline-block;
+  background-color: var(--commerce-white);
+  color: var(--commerce-text);
+  text-transform: capitalize;
+  text-align: center;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 400ms ease;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 150%;
+  letter-spacing: -0.1px;
 }
- 
+.post-pagination-list button.active,
+.post-pagination-list button:hover {
+  color: var(--commerce-white);
+  background-color: var(--commerce-text-dark);
+}
+ .profile-dropdown {
+  position: absolute;
+  right: 0;
+  margin-top: 8px;
+  width: 160px;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  padding: 0;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 8px 14px;
+  font-size: 14px;
+  color: #333;
+  text-decoration: none;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background-color: var(--commerce-base);
+  color: #fff;
+}button.profileImageButton {
+    background: none;
+    outline: none;
+    border: none;
+    position: relative;
+}button.profileImageButton img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+}.main-header--one .commerce-btn {
+    color: var(--commerce-white);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 160%;
+    letter-spacing: -.08px;
+    padding-left: 20px;
+    padding-right: 20px;
+    background: transparent;
+}
+.main-header--one .commerce-btn:hover{
+  color: var(--commerce-base);
+}

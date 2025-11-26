@@ -37,7 +37,7 @@ function rangeLabel(total, page, pageSize) {
   return `Showing ${start} – ${end} of ${total} product${total === 1 ? '' : 's'}`;
 }
 
-const ProductAreaTop = ({ slug, q, result }) => {
+const ProductAreaTop = ({ slug, q, result, sortBy, setSortBy }) => {
   const { total = 0, page = 1, pageSize = 12 } = result || {};
 
   return (
@@ -65,6 +65,8 @@ const ProductAreaTop = ({ slug, q, result }) => {
               options={options}
               styles={customStyles}
               components={{ IndicatorSeparator: () => null }}
+              value={options.find(o => o.value === sortBy)}
+  onChange={(opt) => setSortBy(opt.value)}
               defaultValue={options[0]}
               isClearable={false}
               isSearchable={false}

@@ -1,9 +1,10 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import ProductAreaTop from "../ProductAreaTop/ProductAreaTop";
 import Image from "next/image";
 import RelatedProducts from "../RelatedProducts/RelatedProducts";
+import Link from "next/link";
 
 const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE_URL;
 
@@ -15,6 +16,10 @@ export const toPublicUrl = (path) => {
 
 const ProductArea = ({ result, slug, q, brands, mockups }) => {
   // 🧠 State for filters
+  const [page, setPage] = useState(1);
+  const pageSize = 40;
+  const [sortBy, setSortBy] = useState("views_desc");
+
   const [selectedGenders, setSelectedGenders] = useState([]);
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -30,99 +35,209 @@ const ProductArea = ({ result, slug, q, brands, mockups }) => {
     }
   };
 
+  useEffect(() => {
+    setPage(1);
+  }, [
+    selectedGenders,
+    selectedBrands,
+    selectedCategories,
+    minPrice,
+    maxPrice,
+    sortBy,
+  ]);
+
+  const { allFiltered, paginated } = useMemo(() => {
+    let products = result.items.filter((item) => {
+      const fits = item.variants.map((v) => v.fitType?.toUpperCase?.() || "");
+
+      if (
+        selectedGenders.length > 0 &&
+        !selectedGenders.includes("ALL") &&
+        !fits.some((fit) => selectedGenders.includes(fit))
+      )
+        return false;
+
+      if (selectedBrands.length > 0 && !selectedBrands.includes(item.brandName))
+        return false;
+
+      if (
+        selectedCategories.length > 0 &&
+        !selectedCategories.includes(item.mockupName)
+      )
+        return false;
+
+      if (minPrice && item.price < parseFloat(minPrice)) return false;
+      if (maxPrice && item.price > parseFloat(maxPrice)) return false;
+
+      return true;
+    });
+
+    // --------- SORTING ---------
+    if (sortBy === "price_asc") products.sort((a, b) => a.price - b.price);
+    if (sortBy === "price_desc") products.sort((a, b) => b.price - a.price);
+    if (sortBy === "views_desc")
+      products.sort((a, b) => (b.views || 0) - (a.views || 0));
+
+    // --------- PAGINATION ---------
+    const start = (page - 1) * pageSize;
+    const paginated = products.slice(start, start + pageSize);
+
+    return { allFiltered: products, paginated };
+  }, [
+    result.items,
+    selectedGenders,
+    selectedBrands,
+    selectedCategories,
+    minPrice,
+    maxPrice,
+    sortBy,
+    page,
+  ]);
 
   // 🧮 Filtered products
-// const filteredProducts = useMemo(() => {
-//   return result.items.filter((item) => {
-//     const gender = item.variants[0]?.fitType?.toUpperCase();
+  // const filteredProducts = useMemo(() => {
+  //   return result.items.filter((item) => {
+  //     const gender = item.variants[0]?.fitType?.toUpperCase();
 
-//     // ✅ Gender filter
-//     if (
-//       selectedGenders.length > 0 &&
-//       !selectedGenders.includes("ALL") && // <-- if "ALL" selected, skip gender filter
-//       !selectedGenders.includes(gender)
-//     ) {
-//       return false;
-//     }
+  //     // ✅ Gender filter
+  //     if (
+  //       selectedGenders.length > 0 &&
+  //       !selectedGenders.includes("ALL") && // <-- if "ALL" selected, skip gender filter
+  //       !selectedGenders.includes(gender)
+  //     ) {
+  //       return false;
+  //     }
 
-//     // ✅ Brand filter
-//     if (selectedBrands.length > 0 && !selectedBrands.includes(item.brandName))
-//       return false;
+  //     // ✅ Brand filter
+  //     if (selectedBrands.length > 0 && !selectedBrands.includes(item.brandName))
+  //       return false;
 
-//     // ✅ Category filter
-//     if (
-//       selectedCategories.length > 0 &&
-//       !selectedCategories.includes(item.mockupName)
-//     )
-//       return false;
+  //     // ✅ Category filter
+  //     if (
+  //       selectedCategories.length > 0 &&
+  //       !selectedCategories.includes(item.mockupName)
+  //     )
+  //       return false;
 
-//     // ✅ Price filter
-//     if (minPrice && item.price < parseFloat(minPrice)) return false;
-//     if (maxPrice && item.price > parseFloat(maxPrice)) return false;
+  //     // ✅ Price filter
+  //     if (minPrice && item.price < parseFloat(minPrice)) return false;
+  //     if (maxPrice && item.price > parseFloat(maxPrice)) return false;
 
-//     return true;
-//   });
-// }, [
-//   result.items,
-//   selectedGenders,
-//   selectedBrands,
-//   selectedCategories,
-//   minPrice,
-//   maxPrice,
-// ]);
+  //     return true;
+  //   });
+  // }, [
+  //   result.items,
+  //   selectedGenders,
+  //   selectedBrands,
+  //   selectedCategories,
+  //   minPrice,
+  //   maxPrice,
+  // ]);
 
-const filteredProducts = useMemo(() => {
-  return result.items.filter((item) => {
-    const fits = item.variants.map(
-      (v) => v.fitType?.toUpperCase?.() || ""
-    );
+  // const filteredProducts = useMemo(() => {
+  //   return result.items.filter((item) => {
+  //     const fits = item.variants.map(
+  //       (v) => v.fitType?.toUpperCase?.() || ""
+  //     );
 
-    // ✅ Gender filter
-    if (
-      selectedGenders.length > 0 &&
-      !selectedGenders.includes("ALL") &&
-      !fits.some((fit) => selectedGenders.includes(fit))
-    ) {
-      return false;
+  //     // ✅ Gender filter
+  //     if (
+  //       selectedGenders.length > 0 &&
+  //       !selectedGenders.includes("ALL") &&
+  //       !fits.some((fit) => selectedGenders.includes(fit))
+  //     ) {
+  //       return false;
+  //     }
+
+  //     // ✅ Brand filter
+  //     if (selectedBrands.length > 0 && !selectedBrands.includes(item.brandName))
+  //       return false;
+
+  //     // ✅ Category filter
+  //     if (
+  //       selectedCategories.length > 0 &&
+  //       !selectedCategories.includes(item.mockupName)
+  //     )
+  //       return false;
+
+  //     // ✅ Price filter
+  //     if (minPrice && item.price < parseFloat(minPrice)) return false;
+  //     if (maxPrice && item.price > parseFloat(maxPrice)) return false;
+
+  //     return true;
+  //   });
+  // }, [
+  //   result.items,
+  //   selectedGenders,
+  //   selectedBrands,
+  //   selectedCategories,
+  //   minPrice,
+  //   maxPrice,
+  // ]);
+
+  const filteredProducts = useMemo(() => {
+    const products = result.items.filter((item) => {
+      const fits = item.variants.map((v) => v.fitType?.toUpperCase?.() || "");
+
+      if (
+        selectedGenders.length > 0 &&
+        !selectedGenders.includes("ALL") &&
+        !fits.some((fit) => selectedGenders.includes(fit))
+      ) {
+        return false;
+      }
+
+      if (selectedBrands.length > 0 && !selectedBrands.includes(item.brandName))
+        return false;
+
+      if (
+        selectedCategories.length > 0 &&
+        !selectedCategories.includes(item.mockupName)
+      )
+        return false;
+
+      if (minPrice && item.price < parseFloat(minPrice)) return false;
+      if (maxPrice && item.price > parseFloat(maxPrice)) return false;
+
+      return true;
+    });
+
+    // ✅ Sorting
+    if (sortBy === "price_asc") {
+      products.sort((a, b) => a.price - b.price);
+    } else if (sortBy === "price_desc") {
+      products.sort((a, b) => b.price - a.price);
+    } else if (sortBy === "views_desc") {
+      products.sort((a, b) => (b.views || 0) - (a.views || 0));
     }
 
-    // ✅ Brand filter
-    if (selectedBrands.length > 0 && !selectedBrands.includes(item.brandName))
-      return false;
+    return products;
+  }, [
+    result.items,
+    selectedGenders,
+    selectedBrands,
+    selectedCategories,
+    minPrice,
+    maxPrice,
+    sortBy, // <<— Add this dependency
+  ]);
 
-    // ✅ Category filter
-    if (
-      selectedCategories.length > 0 &&
-      !selectedCategories.includes(item.mockupName)
-    )
-      return false;
-
-    // ✅ Price filter
-    if (minPrice && item.price < parseFloat(minPrice)) return false;
-    if (maxPrice && item.price > parseFloat(maxPrice)) return false;
-
-    return true;
-  });
-}, [
-  result.items,
-  selectedGenders,
-  selectedBrands,
-  selectedCategories,
-  minPrice,
-  maxPrice,
-]);
-
-
+  const totalPages = Math.ceil(allFiltered.length / pageSize);
 
   return (
     <section className="product-area">
       <Container fluid>
-        <ProductAreaTop slug={slug} q={q} result={result} />
+        <ProductAreaTop
+          slug={slug}
+          q={q}
+          result={result}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+        />
         <div className="product-area__inner">
           {/* Sidebar */}
           <aside className="sidebar__menu">
             <ul className="sidebar__menu__area list-unstyled">
-
               {/* Gender Filter */}
               <li className="sidebar__menu__area__item">
                 <a href="#" className="sidebar__menu__title">
@@ -228,7 +343,11 @@ const filteredProducts = useMemo(() => {
                         id={`brand-${b.name}`}
                         checked={selectedBrands.includes(b.name)}
                         onChange={() =>
-                          toggleFilter(b.name, setSelectedBrands, selectedBrands)
+                          toggleFilter(
+                            b.name,
+                            setSelectedBrands,
+                            selectedBrands
+                          )
                         }
                       />
                       <label htmlFor={`brand-${b.name}`}>
@@ -248,8 +367,8 @@ const filteredProducts = useMemo(() => {
           {/* Product Grid */}
           <div className="product-area__content">
             <Row className="gutter-y-32 gutter-x-32">
-              {filteredProducts.length > 0 ? (
-                filteredProducts.map((item) => (
+              {paginated.length > 0 ? (
+                paginated.map((item) => (
                   <Col xl={3} lg={4} md={6} key={item.id}>
                     <div className="product__item">
                       <div className="product__item__img">
@@ -272,9 +391,9 @@ const filteredProducts = useMemo(() => {
                           Brand: <a href="#">{item.brandName}</a>
                         </p>
                         <h4 className="product__item__title">
-                          <a href={`/products/${item.productId}`}>
+                          <Link href={`/products/${item.productId}`}>
                             {item.title}
-                          </a>
+                          </Link>
                         </h4>
                         <div className="product__item__box">
                           <div className="product__item__price">
@@ -289,9 +408,12 @@ const filteredProducts = useMemo(() => {
                             <span>4.9 (65)</span>
                           </div>
                         </div>
-                        <a href="#" className="commerce-btn product__item__link">
+                        <Link
+                          href={`/products/${item.productId}`}
+                          className="commerce-btn product__item__link"
+                        >
                           Add to Cart <i className="icon-right-arrow"></i>
-                        </a>
+                        </Link>
                       </div>
                     </div>
                   </Col>
@@ -302,25 +424,36 @@ const filteredProducts = useMemo(() => {
             </Row>
 
             <div className="post-pagination">
-              <a href="#" className="previous">
+              {/* Previous */}
+              <button
+                className="previous"
+                disabled={page === 1}
+                onClick={() => setPage(page - 1)}
+              >
                 <i className="icon-left-arrow"></i> Previous
-              </a>
+              </button>
+
               <ul className="post-pagination-list justify-content-center">
-                <li>
-                  <a href="#" className="active">
-                    1
-                  </a>
-                </li>
-                <li>
-                  <a href="#">2</a>
-                </li>
-                <li>
-                  <a href="#">3</a>
-                </li>
+                {[...Array(totalPages)].map((_, i) => (
+                  <li key={i}>
+                    <button
+                      className={page === i + 1 ? "active" : ""}
+                      onClick={() => setPage(i + 1)}
+                    >
+                      {i + 1}
+                    </button>
+                  </li>
+                ))}
               </ul>
-              <a href="#" className="next">
+
+              {/* Next */}
+              <button
+                className="next"
+                disabled={page === totalPages}
+                onClick={() => setPage(page + 1)}
+              >
                 Next <i className="icon-right-arrow"></i>
-              </a>
+              </button>
             </div>
 
             <RelatedProducts />

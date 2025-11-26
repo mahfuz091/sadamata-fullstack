@@ -132,6 +132,19 @@ exports.Prisma.UserScalarFieldEnum = {
   isActive: 'isActive'
 };
 
+exports.Prisma.UserProfileScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  dateOfBirth: 'dateOfBirth',
+  email: 'email',
+  phone: 'phone',
+  country: 'country',
+  address: 'address',
+  zipCode: 'zipCode'
+};
+
 exports.Prisma.UserAddressScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -142,8 +155,28 @@ exports.Prisma.UserAddressScalarFieldEnum = {
   email: 'email',
   address: 'address',
   isDefault: 'isDefault',
+  zipCode: 'zipCode',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PasswordResetTokenScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  tokenHash: 'tokenHash',
+  expires: 'expires',
+  used: 'used',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.PhoneResetOtpScalarFieldEnum = {
+  id: 'id',
+  phone: 'phone',
+  codeHash: 'codeHash',
+  expires: 'expires',
+  used: 'used',
+  attempts: 'attempts',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.MerchantProfileScalarFieldEnum = {
@@ -168,7 +201,9 @@ exports.Prisma.MerchantProfileScalarFieldEnum = {
   leftTiar: 'leftTiar',
   brandOption: 'brandOption',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  zipCode: 'zipCode',
+  country: 'country'
 };
 
 exports.Prisma.BrandScalarFieldEnum = {
@@ -343,6 +378,19 @@ exports.Prisma.CommissionSettingScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.RefundScalarFieldEnum = {
+  id: 'id',
+  orderItemId: 'orderItemId',
+  saleId: 'saleId',
+  quantity: 'quantity',
+  amount: 'amount',
+  brandEarning: 'brandEarning',
+  merchantEarning: 'merchantEarning',
+  platformEarning: 'platformEarning',
+  reason: 'reason',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.PayoutScalarFieldEnum = {
   id: 'id',
   actor: 'actor',
@@ -398,7 +446,10 @@ exports.PayoutActor = exports.$Enums.PayoutActor = {
 
 exports.Prisma.ModelName = {
   User: 'User',
+  UserProfile: 'UserProfile',
   UserAddress: 'UserAddress',
+  PasswordResetToken: 'PasswordResetToken',
+  PhoneResetOtp: 'PhoneResetOtp',
   MerchantProfile: 'MerchantProfile',
   Brand: 'Brand',
   BrandCategory: 'BrandCategory',
@@ -414,6 +465,7 @@ exports.Prisma.ModelName = {
   OrderItem: 'OrderItem',
   Payment: 'Payment',
   CommissionSetting: 'CommissionSetting',
+  Refund: 'Refund',
   Payout: 'Payout'
 };
 

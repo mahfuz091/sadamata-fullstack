@@ -2,10 +2,10 @@ import React from "react";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 
-const Layout = ({ children }) => {
+const Layout = ({ children, session }) => {
   return (
     <>
-      <Header />
+      <Header session={session} />
       {children}
       <Footer />
     </>

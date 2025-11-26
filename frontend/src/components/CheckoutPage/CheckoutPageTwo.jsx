@@ -8,7 +8,8 @@ import {
   addUserAddress,
   listUserAddresses,
 } from "@/app/actions/address/address.actions";
-
+import Select from 'react-select';
+import { customStyles } from "@/lib/reactSelect";
 const COUPONS = { SAVE10: 0.1, SAVE20: 0.2, WELCOME5: 0.05 };
 
 const toNum = (v) => {
@@ -211,7 +212,28 @@ const CheckoutPageTwo = ({ user }) => {
                         <label className="form-one__label">
                           Select address
                         </label>
-                        <select
+                        <Select
+  options={addresses.map(a => ({
+    value: a.id,
+    label: `${a.firstName} ${a.lastName} — ${a.address}${a.isDefault ? " [Default]" : ""}`
+  }))}
+  styles={customStyles}
+  components={{ IndicatorSeparator: () => null }}
+  value={
+    addresses
+      .map(a => ({
+        value: a.id,
+        label: `${a.firstName} ${a.lastName} — ${a.address}${a.isDefault ? " [Default]" : ""}`
+      }))
+      .find(opt => opt.value === selectedId) || null
+  }
+  onChange={(opt) => setSelectedId(opt?.value || "")}
+  isClearable={false}
+  isSearchable={true}
+  placeholder="Select Shipping Address"
+/>
+
+                        {/* <select
                           className="form-one__input"
                           value={selectedId}
                           onChange={(e) => setSelectedId(e.target.value)}
@@ -222,7 +244,7 @@ const CheckoutPageTwo = ({ user }) => {
                               {a.isDefault ? " [Default]" : ""}
                             </option>
                           ))}
-                        </select>
+                        </select> */}
                       </div>
                     </>
                   )}
@@ -231,7 +253,7 @@ const CheckoutPageTwo = ({ user }) => {
                 <div className="address-item__btn">
                   <button
                     type="button"
-                    className="commerce-btn"
+                    className="commerce-btn text-white"
                     onClick={() => setShowNewForm((v) => !v)}
                   >
                     {addresses.length === 0

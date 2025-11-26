@@ -1,5 +1,4 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+
 import Layout from "@/components/Layout/Layout";
 import Hero from "@/components/Hero/Hero";
 import BrandInfo from "@/components/BrandInfo/BrandInfo";
@@ -12,13 +11,14 @@ import TopNatokBrand from "@/components/TopNatokBrand/TopNatokBrand";
 import TopMovieBrandTshirt from "@/components/TopMovieBrandTshirt/TopMovieBrandTshirt";
 import TopNatokBrandTshirt from "@/components/TopNatokBrandTshirt/TopNatokBrandTshirt";
 import { getNewArrivals } from "./actions/product/product.actions";
+import { auth } from "@/auth";
 
 export default async function Home() {
   // const newA  =  await getNewArrivals()
-
-  // console.log(newA);
+const session = await auth();
+  console.log(session, "session");
   return (
-    <Layout>
+    <Layout session={session}>
       <Hero />
       <BrandInfo />
       <PopularProduct />

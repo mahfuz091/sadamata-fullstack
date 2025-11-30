@@ -61,9 +61,15 @@ export default function AddDesignFitNew2({
   const [backCanvas, setBackCanvas] = useState(null);
 
   const [designPosition, setDesignPosition] = useState({ x: 100, y: 100 });
-  const [designBackPosition, setDesignBackPosition] = useState({ x: 100, y: 100 });
+  const [designBackPosition, setDesignBackPosition] = useState({
+    x: 100,
+    y: 100,
+  });
   const [designSize, setDesignSize] = useState({ width: 200, height: 200 });
-  const [designBackSize, setDesignBackSize] = useState({ width: 200, height: 200 });
+  const [designBackSize, setDesignBackSize] = useState({
+    width: 200,
+    height: 200,
+  });
 
   const [isLoading, setIsLoading] = useState(false);
   const [isBackLoading, setIsBackLoading] = useState(false);
@@ -81,7 +87,9 @@ export default function AddDesignFitNew2({
   const [canvasInstances, setCanvasInstances] = useState([]); // grid fabric canvases
 
   const activeProduct =
-    activeProductIndex !== null ? allMockup?.[activeProductIndex] ?? null : null;
+    activeProductIndex !== null
+      ? allMockup?.[activeProductIndex] ?? null
+      : null;
 
   // Build mapping: product -> fits -> colors -> images
   function buildMockupsByProduct(list) {
@@ -99,7 +107,8 @@ export default function AddDesignFitNew2({
         const color = v.color?.toLowerCase?.();
         if (!fit || !color || !v.frontImg || !v.backImg) return;
 
-        if (!fits[fit]) fits[fit] = { colorFront: {}, colorBack: {}, colors: [] };
+        if (!fits[fit])
+          fits[fit] = { colorFront: {}, colorBack: {}, colors: [] };
         fits[fit].colorFront[color] = v.frontImg;
         fits[fit].colorBack[color] = v.backImg;
         if (!fits[fit].colors.includes(color)) fits[fit].colors.push(color);
@@ -165,12 +174,14 @@ export default function AddDesignFitNew2({
     });
     setCanvas(c);
     return () => c.dispose();
-  }, [isBackView,
+  }, [
+    isBackView,
     selectedColor,
     hoveredColor,
     activeProductIndex,
     selectedFitType,
-    hoveredFitType,]);
+    hoveredFitType,
+  ]);
 
   useEffect(() => {
     if (!canvasBackRef.current) return;
@@ -181,12 +192,14 @@ export default function AddDesignFitNew2({
     });
     setBackCanvas(c);
     return () => c.dispose();
-  }, [isBackView,
+  }, [
+    isBackView,
     selectedColor,
     hoveredColor,
     activeProductIndex,
     selectedFitType,
-    hoveredFitType,]);
+    hoveredFitType,
+  ]);
 
   // Grid canvas instances init ONCE when refs are ready (based on length)
   useEffect(() => {
@@ -554,16 +567,14 @@ export default function AddDesignFitNew2({
   }, [isBackLoading, designBack, backCanvas]);
 
   // Toggle helpers for checkbox arrays
-  const toggleMapArray =
-    (setter) =>
-    (key, value) => {
-      setter((prev) => {
-        const arr = prev[key] ?? [];
-        const exists = arr.includes(value);
-        const next = exists ? arr.filter((v) => v !== value) : [...arr, value];
-        return { ...prev, [key]: next };
-      });
-    };
+  const toggleMapArray = (setter) => (key, value) => {
+    setter((prev) => {
+      const arr = prev[key] ?? [];
+      const exists = arr.includes(value);
+      const next = exists ? arr.filter((v) => v !== value) : [...arr, value];
+      return { ...prev, [key]: next };
+    });
+  };
 
   const toggleFitAtIndex = toggleMapArray(setSelectedFitType);
   const toggleColorAtIndex = toggleMapArray(setSelectedColor);
@@ -697,7 +708,11 @@ export default function AddDesignFitNew2({
     el.width = baseImg.width;
     el.height = baseImg.height;
 
-    const fc = new Canvas(el, { width: el.width, height: el.height, selection: false });
+    const fc = new Canvas(el, {
+      width: el.width,
+      height: el.height,
+      selection: false,
+    });
 
     const base = new FabricImage(baseImg, {
       left: 0,
@@ -807,10 +822,9 @@ export default function AddDesignFitNew2({
       return null;
     }
 
-    const chosenMockup =
-      activeProduct?.id
-        ? { id: activeProduct.id, name: activeProduct.name || "mockup" }
-        : allMockup[0];
+    const chosenMockup = activeProduct?.id
+      ? { id: activeProduct.id, name: activeProduct.name || "mockup" }
+      : allMockup[0];
 
     if (!chosenMockup?.id) {
       toast.error("No mockupId available.");
@@ -863,11 +877,9 @@ export default function AddDesignFitNew2({
     (tags || []).forEach((tag, i) => {
       if (tag) formData.append(`tags[${i}]`, String(tag));
     });
-    [features.feature1, features.feature2]
-      .filter(Boolean)
-      .forEach((f, i) => {
-        formData.append(`features[${i}]`, String(f));
-      });
+    [features.feature1, features.feature2].filter(Boolean).forEach((f, i) => {
+      formData.append(`features[${i}]`, String(f));
+    });
 
     // Use only checked fits/colors (fallback to all if none checked)
     const fitsToUse =
@@ -931,8 +943,7 @@ export default function AddDesignFitNew2({
     return formData;
   };
 
-
-  const router = useRouter()
+  const router = useRouter();
 
   const handleCreateProduct = async () => {
     try {
@@ -955,51 +966,51 @@ export default function AddDesignFitNew2({
   };
 
   return (
-    <section className="dashboard-area section-space">
-      <div className="container">
-        <div className="row gutter-x-40">
-          <div className="col-lg-3">
+    <section className='dashboard-area section-space'>
+      <div className='container'>
+        <div className='row gutter-x-40'>
+          <div className='col-lg-3'>
             <DashSidebar />
           </div>
 
-          <div className="col-lg-9">
-            <div className="dashboard-area__content">
-              <div className="dashboard-area__top">
-                <h2 className="dashboard-area__title">Create Products</h2>
-                <a href="#" className="commerce-btn">
-                  Select Products <i className="icon-right-arrow" />
+          <div className='col-lg-9'>
+            <div className='dashboard-area__content'>
+              <div className='dashboard-area__top'>
+                <h2 className='dashboard-area__title'>Create Products</h2>
+                <a href='#' className='commerce-btn'>
+                  Select Products <i className='icon-right-arrow' />
                 </a>
               </div>
 
               {/* Upload area */}
-              <div className="dashboard-area__uplode">
-                <div className="dashboard-area__uplode-box">
+              <div className='dashboard-area__uplode'>
+                <div className='dashboard-area__uplode-box'>
                   <form>
-                    <div className="upload-area file-upload__area">
+                    <div className='upload-area file-upload__area'>
                       <label
-                        htmlFor="image-upload"
-                        className="file-upload__label"
+                        htmlFor='image-upload'
+                        className='file-upload__label'
                       >
                         <input
                           ref={inputFileRef}
-                          type="file"
-                          id="image-upload"
-                          className="file-upload__input"
+                          type='file'
+                          id='image-upload'
+                          className='file-upload__input'
                           hidden
                           onChange={handleFileChange}
                         />
                         {isLoading ? (
                           <div
-                            className="spinner-border text-primary"
-                            role="status"
+                            className='spinner-border text-primary'
+                            role='status'
                           >
-                            <span className="visually-hidden">Loading...</span>
+                            <span className='visually-hidden'>Loading...</span>
                           </div>
                         ) : (
                           designImage && (
                             <img
                               src={designImage}
-                              alt="Uploaded Design"
+                              alt='Uploaded Design'
                               width={200}
                               height={200}
                             />
@@ -1010,30 +1021,30 @@ export default function AddDesignFitNew2({
                           ""
                         ) : (
                           <>
-                            <div className="image-upload__icon">
+                            <div className='image-upload__icon'>
                               <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="60"
-                                height="60"
-                                viewBox="0 0 60 60"
-                                fill="none"
+                                xmlns='http://www.w3.org/2000/svg'
+                                width='60'
+                                height='60'
+                                viewBox='0 0 60 60'
+                                fill='none'
                               >
                                 <path
-                                  d="M49.9908 22.055C47.2178 11.008 36.0146 4.30066 24.9676 7.07371C16.3346 9.24086 10.0661 16.7022 9.42027 25.5795C3.29051 26.5903 -0.859227 32.3789 0.151639 38.5086C1.05025 43.9581 5.77216 47.9489 11.2951 47.927H20.669V44.1774H11.2951C7.15341 44.1774 3.79589 40.8199 3.79589 36.6783C3.79589 32.5366 7.15341 29.1791 11.2951 29.1791C12.3305 29.1791 13.1699 28.3397 13.1699 27.3043C13.1605 17.9855 20.7074 10.4235 30.0261 10.4142C38.0929 10.4062 45.037 16.1091 46.5975 24.0234C46.7515 24.8136 47.3928 25.4173 48.191 25.5232C53.3165 26.2531 56.8797 30.9997 56.1499 36.1251C55.4945 40.7275 51.565 44.1542 46.9162 44.1774H39.417V47.927H46.9162C54.1641 47.9051 60.0219 42.0117 59.9999 34.7637C59.9816 28.7304 55.8519 23.4867 49.9908 22.055Z"
-                                  fill="black"
+                                  d='M49.9908 22.055C47.2178 11.008 36.0146 4.30066 24.9676 7.07371C16.3346 9.24086 10.0661 16.7022 9.42027 25.5795C3.29051 26.5903 -0.859227 32.3789 0.151639 38.5086C1.05025 43.9581 5.77216 47.9489 11.2951 47.927H20.669V44.1774H11.2951C7.15341 44.1774 3.79589 40.8199 3.79589 36.6783C3.79589 32.5366 7.15341 29.1791 11.2951 29.1791C12.3305 29.1791 13.1699 28.3397 13.1699 27.3043C13.1605 17.9855 20.7074 10.4235 30.0261 10.4142C38.0929 10.4062 45.037 16.1091 46.5975 24.0234C46.7515 24.8136 47.3928 25.4173 48.191 25.5232C53.3165 26.2531 56.8797 30.9997 56.1499 36.1251C55.4945 40.7275 51.565 44.1542 46.9162 44.1774H39.417V47.927H46.9162C54.1641 47.9051 60.0219 42.0117 59.9999 34.7637C59.9816 28.7304 55.8519 23.4867 49.9908 22.055Z'
+                                  fill='black'
                                 />
                                 <path
-                                  d="M28.7118 29.7229L21.2126 37.2221L23.8561 39.8656L28.1681 35.5723V53.5516H31.9177V35.5723L36.211 39.8656L38.8545 37.2221L31.3553 29.7229C30.624 28.996 29.4431 28.996 28.7118 29.7229Z"
-                                  fill="black"
+                                  d='M28.7118 29.7229L21.2126 37.2221L23.8561 39.8656L28.1681 35.5723V53.5516H31.9177V35.5723L36.211 39.8656L38.8545 37.2221L31.3553 29.7229C30.624 28.996 29.4431 28.996 28.7118 29.7229Z'
+                                  fill='black'
                                 />
                               </svg>
                             </div>
-                            <span className="file-name">{fileName}</span>
-                            <div className="image-upload__text-box">
-                              <h3 className="image-upload__title">
+                            <span className='file-name'>{fileName}</span>
+                            <div className='image-upload__text-box'>
+                              <h3 className='image-upload__title'>
                                 Drag and drop artwork here
                               </h3>
-                              <p className="image-upload__text">
+                              <p className='image-upload__text'>
                                 or Click to browse for a file
                               </p>
                             </div>
@@ -1045,36 +1056,36 @@ export default function AddDesignFitNew2({
                 </div>
 
                 {/* Guidelines */}
-                <div className="dashboard-area__tag-box">
-                  <div className="tag-box-top">
-                    <h2 className="tag-box-title">Artwork should be:</h2>
+                <div className='dashboard-area__tag-box'>
+                  <div className='tag-box-top'>
+                    <h2 className='tag-box-title'>Artwork should be:</h2>
                     <button
-                      className="tag-box-button"
-                      data-target=".tag-box-button__list"
+                      className='tag-box-button'
+                      data-target='.tag-box-button__list'
                     >
-                      <i className="fas fa-caret-down" />
+                      <i className='fas fa-caret-down' />
                     </button>
                   </div>
-                  <div className="dashboard-area__list tag-box-button__list toggle-list">
-                    <button className="tag-iterm">PNG format</button>
-                    <button className="tag-iterm">
+                  <div className='dashboard-area__list tag-box-button__list toggle-list'>
+                    <button className='tag-iterm'>PNG format</button>
+                    <button className='tag-iterm'>
                       As large as possible (≥ 4500px)
                     </button>
-                    <button className="tag-iterm">
+                    <button className='tag-iterm'>
                       RGB color, 8 bits/channel
                     </button>
-                    <button className="tag-iterm">Less than 25 MB</button>
+                    <button className='tag-iterm'>Less than 25 MB</button>
                   </div>
                 </div>
               </div>
 
               {/* Product grid */}
-              <div className="product-category-list d-flex overflow-x-auto">
+              <div className='product-category-list d-flex overflow-x-auto'>
                 {allMockup.map((item, index) => (
-                  <div className="item" key={item.id ?? index}>
-                    <div className="product__item-two">
-                      <div className="product__item-two__img">
-                        <a href="#" className="product__item-two__img__item">
+                  <div className='item' key={item.id ?? index}>
+                    <div className='product__item-two'>
+                      <div className='product__item-two__img'>
+                        <a href='#' className='product__item-two__img__item'>
                           <canvas
                             ref={(el) => {
                               if (el) canvasRefs.current[index] = el;
@@ -1086,16 +1097,16 @@ export default function AddDesignFitNew2({
                           />
                         </a>
                       </div>
-                      <div className="product__item-two__content">
-                        <h4 className="product__item-two__title">
-                          <a href="product-details">{item.name}</a>
+                      <div className='product__item-two__content'>
+                        <h4 className='product__item-two__title'>
+                          <a href='product-details'>{item.name}</a>
                         </h4>
 
                         <button
-                          className="commerce-btn product__item-two__link"
+                          className='commerce-btn product__item-two__link'
                           onClick={() => setActiveProductIndex(index)}
                         >
-                          Edit Details <i className="icon-right-arrow"></i>
+                          Edit Details <i className='icon-right-arrow'></i>
                         </button>
                       </div>
                     </div>
@@ -1105,14 +1116,16 @@ export default function AddDesignFitNew2({
 
               {/* Active product preview */}
               {activeProduct && (
-                <div className="product-preview-panel">
+                <div className='product-preview-panel'>
                   <h2>Preview for {activeProduct.name}</h2>
 
-                  <div className="row gutter-x-30 gutter-y-30">
-                    <div className="col-lg-6">
-                      <div className="product-preview-panel__view-toggle">
+                  <div className='row gutter-x-30 gutter-y-30'>
+                    <div className='col-lg-6'>
+                      <div className='product-preview-panel__view-toggle'>
                         <button
-                          className={`toggle-btn ${!isBackView ? "active" : ""}`}
+                          className={`toggle-btn ${
+                            !isBackView ? "active" : ""
+                          }`}
                           onClick={handleFrontButtonClick}
                         >
                           Front
@@ -1126,7 +1139,7 @@ export default function AddDesignFitNew2({
                       </div>
 
                       {isBackView ? (
-                        <label htmlFor="backimage-upload">
+                        <label htmlFor='backimage-upload'>
                           <canvas
                             ref={canvasBackRef}
                             className={`front ${isBackView ? "" : "d-none"}`}
@@ -1136,9 +1149,9 @@ export default function AddDesignFitNew2({
                             }}
                           />
                           <input
-                            type="file"
-                            id="backimage-upload"
-                            className="file-upload__input"
+                            type='file'
+                            id='backimage-upload'
+                            className='file-upload__input'
                             hidden
                             onChange={handleBackFileChange}
                             disabled={!!designBack}
@@ -1158,33 +1171,32 @@ export default function AddDesignFitNew2({
                       )}
                     </div>
 
-                    <div className="col-lg-6">
-                      <div className="product-preview-panel__product-options">
+                    <div className='col-lg-6'>
+                      <div className='product-preview-panel__product-options'>
                         {/* FIT TYPES (checkbox) */}
-                        <div className="product-preview-panel__fit-type-selector">
-                          <p className="product-preview-panel__label">
+                        <div className='product-preview-panel__fit-type-selector'>
+                          <p className='product-preview-panel__label'>
                             Choose fit types:
                           </p>
-                          <div className="d-flex gap-3 flex-wrap">
+                          <div className='d-flex gap-3 flex-wrap'>
                             {(activeConfig?.fitTypes ?? []).map((fit) => {
-                              const checked =
-                                (selectedFitType[activeProductIndex] ?? []).includes(
-                                  fit
-                                );
+                              const checked = (
+                                selectedFitType[activeProductIndex] ?? []
+                              ).includes(fit);
                               return (
                                 <label
                                   key={fit}
-                                  className="fit-checkbox"
+                                  className='fit-checkbox'
                                   onMouseEnter={() => handleFitHover(fit)}
                                   onMouseLeave={() => handleFitHover(null)}
                                 >
                                   <input
-                                    type="checkbox"
-                                    name="fitType"
+                                    type='checkbox'
+                                    name='fitType'
                                     checked={checked}
                                     onChange={() => handleFitToggle(fit)}
                                   />
-                                  <span className="custom-check"></span>
+                                  <span className='custom-check'></span>
                                   {fit.charAt(0) + fit.slice(1).toLowerCase()}
                                 </label>
                               );
@@ -1193,8 +1205,8 @@ export default function AddDesignFitNew2({
                         </div>
 
                         {/* COLORS (checkbox) */}
-                        <div className="product-preview-panel__color-chooser">
-                          <p className="product-preview-panel__label">
+                        <div className='product-preview-panel__color-chooser'>
+                          <p className='product-preview-panel__label'>
                             Choose colors:
                           </p>
                           {/* <div className="color-options d-flex gap-2 flex-wrap">
@@ -1237,67 +1249,74 @@ export default function AddDesignFitNew2({
                               );
                             })}
                           </div> */}
-                          <div className="color-options d-flex gap-2 flex-wrap">
-  {(activeColors ?? []).map((color) => {
-    const checked = (selectedColor[activeProductIndex] ?? []).includes(color);
-    return (
-      <label key={color} className="color-option" style={{ position: "relative" }}>
-        <input
-          type="checkbox"
-          name="productColor"
-          value={color}
-          checked={checked}
-          onChange={() => handleColorToggle(color)}
-          style={{ display: "none" }}
-        />
-        <span
-          className={`color-circle ${checked ? "is-checked" : ""}`}
-          style={{
-            backgroundColor: color,
-            width: 36, // increased from 24
-            height: 36, // increased from 24
-            display: "inline-block",
-            borderRadius: "50%",
-            // border: "2px solid #ccc",
-            // boxShadow: checked ? "0 0 0 4px orange inset" : "none",
-            cursor: "pointer",
-            position: "relative",
-          }}
-          onMouseEnter={() => handleHoverColor(color)}
-          onMouseLeave={() => handleHoverColor(null)}
-          title={color}
-        >
-          {checked && (
-            <span
-              style={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                color: "white",
-                fontSize: "18px",
-                fontWeight: "bold",
-                textShadow: "0 0 2px rgba(0,0,0,0.5)",
-              }}
-            >
-              ✓
-            </span>
-          )}
-        </span>
-      </label>
-    );
-  })}
-</div>
-
+                          <div className='color-options d-flex gap-2 flex-wrap'>
+                            {(activeColors ?? []).map((color) => {
+                              const checked = (
+                                selectedColor[activeProductIndex] ?? []
+                              ).includes(color);
+                              return (
+                                <label
+                                  key={color}
+                                  className='color-option'
+                                  style={{ position: "relative" }}
+                                >
+                                  <input
+                                    type='checkbox'
+                                    name='productColor'
+                                    value={color}
+                                    checked={checked}
+                                    onChange={() => handleColorToggle(color)}
+                                    style={{ display: "none" }}
+                                  />
+                                  <span
+                                    className={`color-circle ${
+                                      checked ? "is-checked" : ""
+                                    }`}
+                                    style={{
+                                      backgroundColor: color,
+                                      width: 36, // increased from 24
+                                      height: 36, // increased from 24
+                                      display: "inline-block",
+                                      borderRadius: "50%",
+                                      // border: "2px solid #ccc",
+                                      // boxShadow: checked ? "0 0 0 4px orange inset" : "none",
+                                      cursor: "pointer",
+                                      position: "relative",
+                                    }}
+                                    onMouseEnter={() => handleHoverColor(color)}
+                                    onMouseLeave={() => handleHoverColor(null)}
+                                    title={color}
+                                  >
+                                    {checked && (
+                                      <span
+                                        style={{
+                                          position: "absolute",
+                                          top: "50%",
+                                          left: "50%",
+                                          transform: "translate(-50%, -50%)",
+                                          color: "white",
+                                          fontSize: "18px",
+                                          fontWeight: "bold",
+                                          textShadow: "0 0 2px rgba(0,0,0,0.5)",
+                                        }}
+                                      >
+                                        ✓
+                                      </span>
+                                    )}
+                                  </span>
+                                </label>
+                              );
+                            })}
+                          </div>
                         </div>
 
-                        <div className="product-preview-panel__price-input-field">
-                          <label className="product-preview-panel__label">
+                        <div className='product-preview-panel__price-input-field'>
+                          <label className='product-preview-panel__label'>
                             Price (Minimum BDT 500):
                           </label>
                           <input
-                            type="text"
-                            placeholder="BDT 0.00"
+                            type='text'
+                            placeholder='BDT 0.00'
                             onChange={(e) =>
                               setFeatures((p) => ({
                                 ...p,
@@ -1313,30 +1332,30 @@ export default function AddDesignFitNew2({
               )}
 
               {/* Product Details Form */}
-              <div className="product-details__form mt-4">
-                <div className="product-details__form-top">
-                  <h2 className="product-details__form-title">
+              <div className='product-details__form mt-4'>
+                <div className='product-details__form-top'>
+                  <h2 className='product-details__form-title'>
                     Artworld should be:
                   </h2>
                   <button
-                    className="tag-box-button"
-                    data-target=".product-details__form-two"
+                    className='tag-box-button'
+                    data-target='.product-details__form-two'
                   >
-                    <i className="fas fa-caret-down"></i>
+                    <i className='fas fa-caret-down'></i>
                   </button>
                 </div>
 
                 <form
-                  action="#"
-                  className="product-details__form-two toggle-list"
+                  action='#'
+                  className='product-details__form-two toggle-list'
                 >
-                  <div className="row gutter-x-30 gutter-y-30">
-                    <div className="col-lg-6">
-                      <div className="product-details__form__content">
-                        <h4 className="product-details__form__title">
+                  <div className='row gutter-x-30 gutter-y-30'>
+                    <div className='col-lg-6'>
+                      <div className='product-details__form__content'>
+                        <h4 className='product-details__form__title'>
                           Product details (required)
                         </h4>
-                        <p className="product-details__form__text">
+                        <p className='product-details__form__text'>
                           Product names will be appended to this design title
                           e.g. a design title of “Funny Cat” will be displayed
                           as “Funny Cat T-Shirt” on the t-shirt product details
@@ -1344,13 +1363,13 @@ export default function AddDesignFitNew2({
                         </p>
                       </div>
 
-                      <div className="form-group">
-                        <div className="form-control-two">
-                          <label htmlFor="title">Design Title</label>
+                      <div className='form-group'>
+                        <div className='form-control-two'>
+                          <label htmlFor='title'>Design Title</label>
                           <input
-                            type="text"
-                            name="title"
-                            id="title"
+                            type='text'
+                            name='title'
+                            id='title'
                             value={features.title}
                             onChange={handleFeatureChange}
                           />
@@ -1359,17 +1378,17 @@ export default function AddDesignFitNew2({
                           </span>
                         </div>
 
-                        <div className="form-control-two">
+                        <div className='form-control-two'>
                           <label>Select Brand</label>
 
                           {user?.merchantProfile?.brandOption ? (
                             <>
-                              <div className="flex items-center gap-4 mt-2">
+                              <div className='flex items-center gap-4 mt-2'>
                                 <label>
                                   <input
-                                    type="radio"
-                                    name="brandOption"
-                                    value="non-brand"
+                                    type='radio'
+                                    name='brandOption'
+                                    value='non-brand'
                                     checked={brandOption === "non-brand"}
                                     onChange={(e) =>
                                       setBrandOption(e.target.value)
@@ -1380,9 +1399,9 @@ export default function AddDesignFitNew2({
 
                                 <label>
                                   <input
-                                    type="radio"
-                                    name="brandOption"
-                                    value="select-brand"
+                                    type='radio'
+                                    name='brandOption'
+                                    value='select-brand'
                                     checked={brandOption === "select-brand"}
                                     onChange={(e) =>
                                       setBrandOption(e.target.value)
@@ -1394,10 +1413,10 @@ export default function AddDesignFitNew2({
 
                               {brandOption === "non-brand" && (
                                 <input
-                                  type="text"
-                                  name="brandName"
-                                  placeholder="Write your brand"
-                                  className="mt-2"
+                                  type='text'
+                                  name='brandName'
+                                  placeholder='Write your brand'
+                                  className='mt-2'
                                   onChange={handleFeatureChange}
                                 />
                               )}
@@ -1415,12 +1434,12 @@ export default function AddDesignFitNew2({
                             //   onBrandChange={(id) => setBrandId(id)}
                             // />
                             <>
-                              <div className="d-flex align-items-center gap-4 mt-2">
+                              <div className='d-flex align-items-center gap-4 mt-2'>
                                 <label>
                                   <input
-                                    type="radio"
-                                    name="brandOption"
-                                    value="non-brand"
+                                    type='radio'
+                                    name='brandOption'
+                                    value='non-brand'
                                     checked={brandOption === "non-brand"}
                                     onChange={(e) =>
                                       setBrandOption(e.target.value)
@@ -1431,9 +1450,9 @@ export default function AddDesignFitNew2({
 
                                 <label>
                                   <input
-                                    type="radio"
-                                    name="brandOption"
-                                    value="select-brand"
+                                    type='radio'
+                                    name='brandOption'
+                                    value='select-brand'
                                     checked={brandOption === "select-brand"}
                                     onChange={(e) =>
                                       setBrandOption(e.target.value)
@@ -1445,18 +1464,18 @@ export default function AddDesignFitNew2({
 
                               {brandOption === "non-brand" && (
                                 <input
-                                  type="text"
-                                  name="brandName"
-                                  placeholder="Write your brand"
-                                  className="mt-2"
+                                  type='text'
+                                  name='brandName'
+                                  placeholder='Write your brand'
+                                  className='mt-2'
                                   onChange={handleFeatureChange}
                                 />
                               )}
 
                               {brandOption === "select-brand" && (
                                 <BrandDropdown
-                                  // brands={}
-                                  // onBrandChange={(id) => setBrandId(id)}
+                                // brands={}
+                                // onBrandChange={(id) => setBrandId(id)}
                                 />
                               )}
                             </>
@@ -1469,36 +1488,36 @@ export default function AddDesignFitNew2({
                       </div>
                     </div>
 
-                    <div className="col-lg-6">
-                      <div className="product-details__form__content">
-                        <h4 className="product-details__form__title">
+                    <div className='col-lg-6'>
+                      <div className='product-details__form__content'>
+                        <h4 className='product-details__form__title'>
                           Product Features (optional)
                         </h4>
-                        <p className="product-details__form__text">
+                        <p className='product-details__form__text'>
                           Summarize the unique details of your design. They’ll
                           appear in a bulleted list, along with other product
                           information we automatically include.
                         </p>
                       </div>
 
-                      <div className="form-group">
-                        <div className="form-control-two">
-                          <label htmlFor="feature1">Feature bullet 1</label>
+                      <div className='form-group'>
+                        <div className='form-control-two'>
+                          <label htmlFor='feature1'>Feature bullet 1</label>
                           <input
-                            type="text"
-                            name="feature1"
-                            id="feature1"
+                            type='text'
+                            name='feature1'
+                            id='feature1'
                             value={features.feature1}
                             onChange={handleFeatureChange}
                           />
                           <span>256 characters remaining</span>
                         </div>
-                        <div className="form-control-two">
-                          <label htmlFor="feature2">Feature bullet 2</label>
+                        <div className='form-control-two'>
+                          <label htmlFor='feature2'>Feature bullet 2</label>
                           <input
-                            type="text"
-                            name="feature2"
-                            id="feature2"
+                            type='text'
+                            name='feature2'
+                            id='feature2'
                             value={features.feature2}
                             onChange={handleFeatureChange}
                           />
@@ -1506,14 +1525,14 @@ export default function AddDesignFitNew2({
                             50 characters remaining (minimum 3 characters)
                           </span>
                         </div>
-                        <div className="form-control-two">
-                          <label htmlFor="description">
+                        <div className='form-control-two'>
+                          <label htmlFor='description'>
                             Product description
                           </label>
                           <textarea
-                            name="description"
-                            id="description"
-                            placeholder="Minimum 75 characters"
+                            name='description'
+                            id='description'
+                            placeholder='Minimum 75 characters'
                             value={features.description}
                             onChange={handleFeatureChange}
                           ></textarea>
@@ -1526,39 +1545,43 @@ export default function AddDesignFitNew2({
               </div>
 
               {/* Keywords Input */}
-              <div className="product-details__keyword">
-                <div className="product-details__form-top">
-                  <h2 className="product-details__form-title">
+              <div className='product-details__keyword'>
+                <div className='product-details__form-top'>
+                  <h2 className='product-details__form-title'>
                     Artworld should be:
                   </h2>
-                  <button className="tag-box-button" data-target=".keyword">
-                    <i className="fas fa-caret-down"></i>
+                  <button className='tag-box-button' data-target='.keyword'>
+                    <i className='fas fa-caret-down'></i>
                   </button>
                 </div>
-                <p className="product-details__keyword__text">
+                <p className='product-details__keyword__text'>
                   When entering your product tags or keywords for SEO, you’re
                   taking a crucial step toward increasing your product’s
                   visibility <br /> and attracting more potential customers.
                 </p>
-                <div className="keyword toggle-list">
-                  <label htmlFor="tagInput" className="tag-input-label">
+                <div className='keyword toggle-list'>
+                  <label htmlFor='tagInput' className='tag-input-label'>
                     *Product Keyword
                   </label>
-                  <div className="tag-input-wrapper">
-                    <div className="tag-box" id="tagBox">
+                  <div className='tag-input-wrapper'>
+                    <div className='tag-box' id='tagBox'>
                       {tags.map((tag, index) => (
-                        <Tag key={index} tag={tag} onRemove={() => removeTag(index)} />
+                        <Tag
+                          key={index}
+                          tag={tag}
+                          onRemove={() => removeTag(index)}
+                        />
                       ))}
 
                       <input
-                        type="text"
-                        id="tagInput"
-                        className="tag-input"
-                        maxLength="200"
+                        type='text'
+                        id='tagInput'
+                        className='tag-input'
+                        maxLength='200'
                         onKeyDown={handleTagKeyDown}
                       />
                     </div>
-                    <p className="char-limit" id="charLimit">
+                    <p className='char-limit' id='charLimit'>
                       200 characters remaining
                     </p>
                   </div>
@@ -1566,35 +1589,35 @@ export default function AddDesignFitNew2({
               </div>
 
               {/* Availability Section */}
-              <div className="product-details__availability">
-                <div className="product-details__form-top">
-                  <h2 className="product-details__form-title">
+              <div className='product-details__availability'>
+                <div className='product-details__form-top'>
+                  <h2 className='product-details__form-title'>
                     Product availability on Amazon
                   </h2>
                   <button
-                    className="tag-box-button"
-                    data-target=".product-details-form"
+                    className='tag-box-button'
+                    data-target='.product-details-form'
                   >
-                    <i className="fas fa-caret-down"></i>
+                    <i className='fas fa-caret-down'></i>
                   </button>
                 </div>
-                <form action="#" className="toggle-list product-details-form">
-                  <div className="row gutter-x-6">
-                    <div className="col-lg-6">
+                <form action='#' className='toggle-list product-details-form'>
+                  <div className='row gutter-x-6'>
+                    <div className='col-lg-6'>
                       <div
-                        className="product-details__item-box"
+                        className='product-details__item-box'
                         onClick={() => setSelected("non-searchable")}
                       >
                         <label
-                          htmlFor="non-searchable"
-                          className="availability__item"
+                          htmlFor='non-searchable'
+                          className='availability__item'
                         >
                           <input
-                            type="radio"
-                            id="non-searchable"
-                            name="searchability"
-                            value="non-searchable"
-                            className="sr-only"
+                            type='radio'
+                            id='non-searchable'
+                            name='searchability'
+                            value='non-searchable'
+                            className='sr-only'
                             checked={selected === "non-searchable"}
                             onChange={() => setSelected("non-searchable")}
                           />
@@ -1603,11 +1626,11 @@ export default function AddDesignFitNew2({
                               selected === "non-searchable" ? "active" : ""
                             }`}
                           ></span>
-                          <div className="availability__item__content">
-                            <h3 className="availability__item__title">
+                          <div className='availability__item__content'>
+                            <h3 className='availability__item__title'>
                               Non-searchable
                             </h3>
-                            <p className="availability__item__text">
+                            <p className='availability__item__text'>
                               Does not appear in Sadamata search results
                             </p>
                           </div>
@@ -1615,18 +1638,21 @@ export default function AddDesignFitNew2({
                       </div>
                     </div>
 
-                    <div className="col-lg-6">
+                    <div className='col-lg-6'>
                       <div
-                        className="product-details__item-box"
+                        className='product-details__item-box'
                         onClick={() => setSelected("searchable")}
                       >
-                        <label htmlFor="searchable" className="availability__item">
+                        <label
+                          htmlFor='searchable'
+                          className='availability__item'
+                        >
                           <input
-                            type="radio"
-                            id="searchable"
-                            name="searchability"
-                            value="searchable"
-                            className="sr-only"
+                            type='radio'
+                            id='searchable'
+                            name='searchability'
+                            value='searchable'
+                            className='sr-only'
                             checked={selected === "searchable"}
                             onChange={() => setSelected("searchable")}
                           />
@@ -1635,14 +1661,14 @@ export default function AddDesignFitNew2({
                               selected === "searchable" ? "active" : ""
                             }`}
                           ></span>
-                          <div className="availability__item__content">
-                            <h3 className="availability__item__title">
+                          <div className='availability__item__content'>
+                            <h3 className='availability__item__title'>
                               Searchable
                             </h3>
-                            <p className="availability__item__text">
+                            <p className='availability__item__text'>
                               Appears in Amazon search results
                             </p>
-                            <p className="availability__item__text">
+                            <p className='availability__item__text'>
                               Customers can find these products through Sadamata
                               search results
                             </p>
@@ -1653,16 +1679,16 @@ export default function AddDesignFitNew2({
                   </div>
                 </form>
 
-                <div className="product-details__btn-group">
-                  <button type="button" className="commerce-btn">
-                    Save draft<i className="icon-right-arrow"></i>
+                <div className='product-details__btn-group'>
+                  <button type='button' className='commerce-btn'>
+                    Save draft<i className='icon-right-arrow'></i>
                   </button>
                   <button
-                    type="button"
-                    className="commerce-btn ms-3"
+                    type='button'
+                    className='commerce-btn ms-3'
                     onClick={handleCreateProduct}
                   >
-                    Publish <i className="icon-right-arrow"></i>
+                    Publish <i className='icon-right-arrow'></i>
                   </button>
                   {/* Utilities (optional):
                   <button className="commerce-btn" onClick={saveImage}>Save Image</button>
@@ -1676,7 +1702,7 @@ export default function AddDesignFitNew2({
                   </button> */}
                 </div>
 
-                <p className="product-details__availability__text">
+                <p className='product-details__availability__text'>
                   By submitting for production, you acknowledge you have all the
                   necessary rights to the original artwork, Brand name, design
                   title, product features and description.

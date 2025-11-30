@@ -21,11 +21,11 @@ const nextConfig = {
       },
     ],
   },
-    
+
   experimental: {
     serverActions: {
-      bodySizeLimit: '30mb',
-      llowedOrigins: ['*'], // or narrow to your domains
+      bodySizeLimit: "200mb",
+      llowedOrigins: ["*"], // or narrow to your domains
     },
   },
 };

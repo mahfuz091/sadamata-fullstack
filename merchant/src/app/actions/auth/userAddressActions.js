@@ -26,7 +26,7 @@ export async function updateUserAddressProfileImageFile(id, file) {
   fs.writeFileSync(filePath, buffer);
 
   // Update Prisma
-  const updatedAddress = await prisma.userAddress.update({
+  const updatedAddress = await prisma.user.update({
     where: { id },
     data: {
       profileImage: `/profileImage/${fileName}`,

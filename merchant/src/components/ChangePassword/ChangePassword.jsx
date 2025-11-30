@@ -34,7 +34,7 @@ const ChangePassword = ({ user, countries }) => {
 
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(
-    user?.addresses?.[0]?.profileImage || "/assets/images/resources/avater.png"
+    user?.profileImage || "/assets/images/resources/avater.png"
   );
 
   const [formData, setFormData] = useState({
@@ -65,7 +65,7 @@ const ChangePassword = ({ user, countries }) => {
 
     try {
       const updated = await updateUserAddressProfileImageFile(
-        user.addresses[0].id,
+        user.id,
         selectedFile
       );
       // updated is expected to return { updatedAddress, publicUrl } or at least updatedAddress.profileImage

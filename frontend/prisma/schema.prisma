@@ -32,8 +32,8 @@ model User {
   merchantProfile MerchantProfile?
   addresses       UserAddress[] // NEW
   userprofile     UserProfile?
-
-  Order Order[]
+  profileImage    String?
+  Order           Order[]
 
   CommissionSetting CommissionSetting[]
 

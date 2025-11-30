@@ -15,7 +15,7 @@ const Profile = ({ user, countries }) => {
     user?.merchantProfile?.contactPhone || ""
   );
   const [country, setCountry] = useState(null);
-  // console.log(country, 'country');
+  console.log(user, "profile");
 
   useEffect(() => {
     if (user?.merchantProfile?.country) {
@@ -29,7 +29,7 @@ const Profile = ({ user, countries }) => {
   }, [user, countries]);
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(
-    user?.addresses[0]?.profileImage || "/assets/images/resources/avater.png"
+    user?.profileImage || "/assets/images/resources/avater.png"
   );
   const [formData, setFormData] = useState({
     name: user.name || "",
@@ -66,7 +66,7 @@ const Profile = ({ user, countries }) => {
 
     try {
       const updated = await updateUserAddressProfileImageFile(
-        user.addresses[0].id,
+        user.id,
         selectedFile
       );
       setPreview(updated.profileImage);

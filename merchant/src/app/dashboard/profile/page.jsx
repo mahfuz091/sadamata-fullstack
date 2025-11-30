@@ -19,6 +19,7 @@ const page = async () => {
       phone: true,
       merchantProfile: true, // must match your relation field name in schema
       addresses: true,
+      profileImage: true,
     },
   });
   // console.log(user, 'user');

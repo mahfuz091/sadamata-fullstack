@@ -35,7 +35,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           email: user.email,
           phone: user.phone,
           name: user.name,
-          profileImage: defaultAddress?.profileImage || null, // ✅ from UserAddress
+          profileImage: user?.profileImage || null, // ✅ from UserAddress
         };
       },
     }),
@@ -82,7 +82,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           const latestImage =
             dbUser?.addresses?.[0]?.profileImage ?? token.profileImage;
-          token.profileImage = latestImage;
+          token.profileImage = dbUser?.profileImage ?? latestImage;
         } catch (err) {
           console.error("Failed to refresh profileImage in jwt callback", err);
         }

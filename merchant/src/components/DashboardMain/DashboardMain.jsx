@@ -21,7 +21,7 @@ const options2 = [
   { label: 'Today', value: 'today' },
   { label: 'Last 7 days', value: 'last7d' },
   { label: 'Last 30 days', value: 'last30d' },
-  { label: 'Last 90 days', value: 'last90d' },
+  // { label: 'Last 90 days', value: 'last90d' },
 ];
 
 const DashboardMain = ({ report, session, salesReport, stats, today, salesData }) => {
@@ -142,7 +142,7 @@ const [selected, setSelected] = useState(options2[0]); // default: today
               <div className="dashboard__top">
                 <div className="currency dashboard__top__item">
                   <div className="currency__item">
-                    <h3 className="currency__number">10</h3>
+                    <h3 className="currency__number">{stats?.merchantProfile?.leftTiar}</h3>
                     <p className="currency__title">TIER</p>
                   </div>
                   <div className="currency__item">

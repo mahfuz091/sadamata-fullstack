@@ -6,7 +6,7 @@
 
 import { Role } from "@/generated/prisma";
 import { prisma } from "@/lib/prisma";
-import { unstable_noStore as noStore } from "next/cache";
+import { unstable_noStore as noStore, revalidatePath } from "next/cache";
 
 export async function assertIsMerchant(userId) {
   const user = await prisma.user.findUnique({
@@ -108,4 +108,51 @@ export async function getMerchantProducts({
     totalPages: Math.ceil(total / take),
   };
 }
+// ============================
+// File: src/server/merchant-products.actions.js
+// ============================
 
+export async function deleteMerchantProduct(_prev, formData) {
+  const merchantId = formData.get("merchantId");
+  const productId = formData.get("productId");
+
+  if (!merchantId || !productId) {
+    throw new Error("merchantId and productId are required");
+  }
+
+  await assertIsMerchant(merchantId);
+
+  // 1) Validate product ownership
+  const product = await prisma.product.findUnique({
+    where: { id: productId },
+    select: { id: true, userId: true },
+  });
+
+  if (!product) throw new Error("Product not found");
+  if (product.userId !== merchantId)
+    throw new Error("Not allowed to delete this product");
+
+  // 2) Delete product
+  await prisma.product.delete({
+    where: { id: productId },
+  });
+
+  // 3) Increase leftTiar by +1
+  await prisma.merchantProfile.update({
+    where: { userId: merchantId },
+    data: {
+      leftTiar: {
+        increment: 1,
+      },
+    },
+  });
+
+  // 4) Revalidate UI
+  revalidatePath("/dashboard/manage");
+
+  return {
+    success: true,
+    message: "Product deleted successfully",
+    productId,
+  };
+}

@@ -46,11 +46,22 @@ export async function getMerchantProductStats(merchantId, opts = {}) {
 
   const totalProductsWithSales = soldProductIds.length;
 
+  // --- 4) Merchant Profile: get tiar + leftTiar ---
+  const merchantProfile = await prisma.merchantProfile.findUnique({
+    where: { userId: merchantId },
+    select: {
+      tiar: true,
+      leftTiar: true
+    },
+  });
+
+
   return {
     merchantId,
     totalProducts,
     totalLiveProducts,
     totalProductsWithSales,
+    merchantProfile
   };
 }
 

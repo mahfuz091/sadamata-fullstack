@@ -9,6 +9,7 @@ import { createProduct } from "@/app/actions/product/product.actions";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import BrandDropdown from "./BrandDropDown";
+import { useRouter } from "next/navigation";
 
 const SPINNER_SVG_DATAURI =
   "data:image/svg+xml;utf8," +
@@ -930,6 +931,9 @@ export default function AddDesignFitNew2({
     return formData;
   };
 
+
+  const router = useRouter()
+
   const handleCreateProduct = async () => {
     try {
       const formData = await prepareMockupFiles();
@@ -939,6 +943,7 @@ export default function AddDesignFitNew2({
 
       if (product.success) {
         toast.success("Product created!");
+        router.push("/dashboard");
       } else {
         console.error("Failed to create product:", product.message);
         toast.error(product.message || "Failed to create product.");

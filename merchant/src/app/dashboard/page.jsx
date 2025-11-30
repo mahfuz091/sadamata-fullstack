@@ -19,7 +19,7 @@ const today = await getTodayUploadedProducts(session?.user?.id);
 const salesData = await getMerchantSalesKpis(session?.user?.id)
 
 // console.log( report,"report");
-// console.log(stats, "stats");
+console.log(stats, "stats");
 // console.log(today, "today");
 // console.log(salesReport, "salesreport");
 // console.log(salesData, "salesData");

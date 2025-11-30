@@ -533,3 +533,9 @@ button.profileImageButton {
  
 
 
+.action-buttons__trash{
+  cursor: pointer;
+  background: none;
+  border: none;
+  margin-left: 5px;
+}

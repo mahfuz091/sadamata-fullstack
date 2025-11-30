@@ -97,6 +97,7 @@ const ChangePassword = ({ user, countries }) => {
     }
 
     setLoading(true);
+
     try {
       // Call server action
       await updateUserPassword(user.id, {

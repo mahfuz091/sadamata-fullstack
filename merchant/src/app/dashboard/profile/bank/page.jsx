@@ -1,5 +1,6 @@
+import Bank from "@/components/Bank/Bank";
 import { auth } from "@/auth";
-import Profile from "@/components/Profile/Profile";
+
 import { prisma } from "@/lib/prisma";
 import React from "react";
 import { GetCountries } from "react-country-state-city";
@@ -21,9 +22,11 @@ const page = async () => {
       addresses: true,
     },
   });
-  // console.log(user, 'user');
-
-  return <Profile user={user} countries={countries} />;
+  return (
+    <>
+      <Bank user={user} countries={countries} />
+    </>
+  );
 };
 
 export default page;

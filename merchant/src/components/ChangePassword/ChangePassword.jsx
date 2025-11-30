@@ -1,54 +1,53 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { CountrySelect, GetCountries } from "react-country-state-city";
+import { CountrySelect } from "react-country-state-city";
 import {
-  updateUserAddressProfileImageFile,
   updateUserInfo,
-} from "@/app/actions/auth/userAddressActions";
+  updateUserAddressProfileImageFile,
+  updateMerchantBankInfo,
+  updateUserPassword,
+} from "@/app/actions/auth/userAddressActions"; // keep your existing user update
+
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-const Profile = ({ user, countries }) => {
+const ChangePassword = ({ user, countries }) => {
   const [editMode, setEditMode] = useState(false);
   const [phoneValue, setPhoneValue] = useState(
     user?.merchantProfile?.contactPhone || ""
   );
   const [country, setCountry] = useState(null);
-  // console.log(country, 'country');
-
+  const [form, setForm] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
   useEffect(() => {
     if (user?.merchantProfile?.country) {
       const matched = countries.find(
         (c) => c.name === user.merchantProfile.country
       );
-      // console.log(matched, 'matched');
-
       setCountry(matched);
     }
   }, [user, countries]);
+
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(
-    user?.addresses[0]?.profileImage || "/assets/images/resources/avater.png"
+    user?.addresses?.[0]?.profileImage || "/assets/images/resources/avater.png"
   );
+
   const [formData, setFormData] = useState({
-    name: user.name || "",
-    email: user.email || user.addresses?.[0]?.email || "",
-    dateOfBirth: user.merchantProfile?.dateOfBirth
-      ? formatDateForInput(user.merchantProfile.dateOfBirth)
-      : "",
-    // addresses
-    presentAddress: user.merchantProfile?.presentAddress || "",
-    permanentAddress: user.merchantProfile?.permanentAddress || "",
-    zipCode: user.merchantProfile?.zipCode || "",
-    // bank & extra fields (if any used later)
-    // new fields requested
-    nidOrPassportNo: user.merchantProfile?.nidOrPassportNo || "",
-    portfolioUrl: user.merchantProfile?.portfolioUrl || "",
-    websiteUrl: user.merchantProfile?.websiteUrl || "",
+    bankName: user?.merchantProfile?.bankName || "",
+    bankBranch: user?.merchantProfile?.bankBranch || "",
+    accountName: user?.merchantProfile?.accountName || "",
+    accountNumber: user?.merchantProfile?.accountNumber || "",
+    routingNumber: user?.merchantProfile?.routingNumber || "",
   });
+
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
   function formatDateForInput(date) {
     if (!date) return "";
     const d = new Date(date);
@@ -69,8 +68,11 @@ const Profile = ({ user, countries }) => {
         user.addresses[0].id,
         selectedFile
       );
-      setPreview(updated.profileImage);
-      router.refresh();
+      // updated is expected to return { updatedAddress, publicUrl } or at least updatedAddress.profileImage
+      // If your server action returns different shape, adapt accordingly.
+      const newImg = updated?.profileImage || updated?.publicUrl || null;
+      if (newImg) setPreview(newImg);
+      router.refresh(); // refresh server components & session data
       toast.success("Profile image updated!");
     } catch (err) {
       console.error(err);
@@ -80,36 +82,54 @@ const Profile = ({ user, countries }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setForm((p) => ({ ...p, [name]: value }));
   };
 
-  const handleUpdate = async () => {
+  // Existing update handler (personal info)
+  const handleSubmit = async () => {
+    if (form.newPassword !== form.confirmPassword) {
+      toast.error("New password and confirm password do not match");
+      return;
+    }
+    if (form.newPassword.length < 8) {
+      toast.error("New password must be at least 8 characters");
+      return;
+    }
+
     setLoading(true);
     try {
-      await updateUserInfo(user.id, {
-        // user fields
-        name: formData.name,
-        email: formData.email,
-        phone: phoneValue,
-        // merchantProfile fields (new + existing)
-        dateOfBirth: formData.dateOfBirth
-          ? new Date(formData.dateOfBirth)
-          : null,
-        permanentAddress: formData.permanentAddress,
-        presentAddress: formData.presentAddress,
-        zipCode: formData.zipCode,
-        country: country?.name || user.merchantProfile?.country || null,
-        nidOrPassportNo: formData.nidOrPassportNo,
-        portfolioUrl: formData.portfolioUrl,
-        websiteUrl: formData.websiteUrl,
+      // Call server action
+      await updateUserPassword(user.id, {
+        currentPassword: form.currentPassword,
+        newPassword: form.newPassword,
       });
 
-      toast.success("Profile updated successfully!");
+      toast.success("Password updated successfully");
+      setEditMode(false);
+      setForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+
+      // optional: refresh server components / session
+      router.refresh();
+    } catch (err) {
+      console.error(err);
+      toast.error(err?.message || "Failed to update password");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // NEW: bank-specific update handler
+  const handleBankUpdate = async () => {
+    setLoading(true);
+    try {
+      await updateMerchantBankInfo(user.id, formData);
+
+      toast.success("Bank info updated!");
       setEditMode(false);
       router.refresh();
     } catch (err) {
       console.error(err);
-      toast.error("Failed to update profile");
+      toast.error("Failed to update bank info");
     }
     setLoading(false);
   };
@@ -125,7 +145,13 @@ const Profile = ({ user, countries }) => {
         </div>
 
         <div className='user-profile__form'>
-          <form className='user-form' onSubmit={(e) => e.preventDefault()}>
+          <form
+            className='user-form form-one'
+            onSubmit={(e) => {
+              e.preventDefault();
+              // If editMode and bank fields are visible, you may want to call handleBankUpdate
+            }}
+          >
             <aside className='user-profile__info'>
               <div className='user-profile__info__avater'>
                 <div className='avatar-container'>
@@ -138,6 +164,7 @@ const Profile = ({ user, countries }) => {
                       onChange={handleFileChange}
                     />
                     <label htmlFor='avater'>
+                      {/* SVG unchanged */}
                       <svg
                         xmlns='http://www.w3.org/2000/svg'
                         width='24'
@@ -197,8 +224,9 @@ const Profile = ({ user, countries }) => {
             <div className='user-profile__contact'>
               <div className='user-profile__top'>
                 <h3 className='user-profile__contact__title'>
-                  User Personal Information
+                  Update Password
                 </h3>
+
                 <div>
                   <button
                     type='button'
@@ -206,16 +234,17 @@ const Profile = ({ user, countries }) => {
                     onClick={() => setEditMode((prev) => !prev)}
                   >
                     <i className='icon-edit-2'></i>{" "}
-                    {editMode ? "Cancel" : "Edit Profile"}
+                    {editMode ? "Cancel" : "Change Password"}
                   </button>
+
                   {editMode && (
                     <button
                       type='button'
                       className='commerce-btn'
-                      onClick={handleUpdate}
+                      onClick={handleSubmit}
                       disabled={loading}
                     >
-                      {loading ? "Updating..." : "Update Profile"}
+                      {loading ? "Updating..." : "Update Password"}
                     </button>
                   )}
                 </div>
@@ -223,145 +252,43 @@ const Profile = ({ user, countries }) => {
 
               <div className='user-profile__group'>
                 <div className='user-profile__group__item'>
-                  <label htmlFor='name'>Name</label>
-
+                  <label htmlFor='currentPassword'>Current Password</label>
                   <input
-                    type='text'
-                    name='name'
-                    id='name'
-                    value={formData.name}
+                    type='password'
+                    name='currentPassword'
+                    id='currentPassword'
+                    value={form.currentPassword}
                     onChange={handleChange}
                     readOnly={!editMode}
+                    autoComplete='current-password'
                   />
                 </div>
 
                 <div className='user-profile__group__item'>
-                  <label htmlFor='email'>Email</label>
-
+                  <label htmlFor='newPassword'>New Password</label>
                   <input
-                    type='email'
-                    name='email'
-                    id='email'
-                    value={formData.email}
-                    onChange={handleChange}
-                    readOnly
-                  />
-                </div>
-
-                <div className='user-profile__group__item'>
-                  <label htmlFor='phone'>Phone Number</label>
-
-                  <input
-                    type='text'
-                    name='phone'
-                    value={phoneValue}
-                    onChange={(e) => setPhoneValue(e.target.value)}
-                    readOnly={!editMode}
-                  />
-                </div>
-
-                <div className='user-profile__group__item'>
-                  <label htmlFor='dateOfBirth'>Date of Birth</label>
-
-                  <input
-                    type='date'
-                    name='dateOfBirth'
-                    id='dateOfBirth'
-                    value={formData.dateOfBirth}
+                    type='password'
+                    name='newPassword'
+                    id='newPassword'
+                    value={form.newPassword}
                     onChange={handleChange}
                     readOnly={!editMode}
+                    autoComplete='new-password'
                   />
                 </div>
 
                 <div className='user-profile__group__item'>
-                  <label htmlFor='country'>Country</label>
-
-                  <CountrySelect
-                    value={country}
-                    onChange={setCountry}
-                    placeHolder='Select Country'
-                  />
-                </div>
-
-                <div className='user-profile__group__item'>
-                  <label htmlFor='permanentaddress'>Permanent Address</label>
-
+                  <label htmlFor='confirmPassword'>Confirm New Password</label>
                   <input
-                    type='text'
-                    name='permanentAddress'
-                    id='permanentaddress'
-                    value={formData.permanentAddress}
+                    type='password'
+                    name='confirmPassword'
+                    id='confirmPassword'
+                    value={form.confirmPassword}
                     onChange={handleChange}
                     readOnly={!editMode}
+                    autoComplete='new-password'
                   />
                 </div>
-                <div className='user-profile__group__item'>
-                  <label htmlFor='address'>Present Address</label>
-
-                  <input
-                    type='text'
-                    name='presentAddress'
-                    id='address'
-                    value={formData.presentAddress}
-                    onChange={handleChange}
-                    readOnly={!editMode}
-                  />
-                </div>
-
-                <div className='user-profile__group__item'>
-                  <label htmlFor='zipCode'>Zip Code</label>
-
-                  <input
-                    type='text'
-                    name='zipCode'
-                    id='zipCode'
-                    value={formData.zipCode}
-                    onChange={handleChange}
-                    readOnly={!editMode}
-                  />
-                </div>
-
-                <div className='user-profile__group__item'>
-                  <label htmlFor='nidOrPassportNo'>NID / Passport No</label>
-                  <input
-                    type='text'
-                    name='nidOrPassportNo'
-                    id='nidOrPassportNo'
-                    value={formData.nidOrPassportNo}
-                    onChange={handleChange}
-                    readOnly={!editMode}
-                  />
-                </div>
-
-                <div className='user-profile__group__item'>
-                  <label htmlFor='portfolioUrl'>Portfolio URL</label>
-                  <input
-                    type='text'
-                    name='portfolioUrl'
-                    id='portfolioUrl'
-                    value={formData.portfolioUrl}
-                    onChange={handleChange}
-                    readOnly={!editMode}
-                  />
-                </div>
-
-                <div className='user-profile__group__item'>
-                  <label htmlFor='websiteUrl'>Website URL</label>
-                  <input
-                    type='text'
-                    name='websiteUrl'
-                    id='websiteUrl'
-                    value={formData.websiteUrl}
-                    onChange={handleChange}
-                    readOnly={!editMode}
-                  />
-                </div>
-
-                {/* {editMode && (
-                  <button type="button" className="commerce-btn mt-3" onClick={handleUpdate} disabled={loading}>
-                    {loading ? 'Updating...' : 'Update Profile'}
-                  </button>
-                )} */}
               </div>
             </div>
           </form>
@@ -371,4 +298,4 @@ const Profile = ({ user, countries }) => {
   );
 };
 
-export default Profile;
+export default ChangePassword;

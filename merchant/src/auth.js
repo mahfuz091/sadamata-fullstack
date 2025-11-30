@@ -27,7 +27,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         if (!user) return null;
         console.log(user, "user authjs");
-        
 
         const defaultAddress = user.addresses[0];
 
@@ -48,16 +47,51 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
   session: { strategy: "jwt" },
 
+  // callbacks: {
+  //   jwt({ token, user }) {
+  //     if (user) {
+  //       token.id = user.id;
+  //       token.profileImage = user.profileImage;
+  //     }
+  //     return token;
+  //   },
+
+  //   session({ session, token }) {
+  //     session.user.id = token.id;
+  //     session.user.profileImage = token.profileImage;
+  //     return session;
+  //   },
+  // },
   callbacks: {
-    jwt({ token, user }) {
+    async jwt({ token, user }) {
+      // On sign in, NextAuth passes `user`
       if (user) {
         token.id = user.id;
-        token.profileImage = user.profileImage;
+        // if you already have profileImage on sign in, set it
+        token.profileImage = user.profileImage ?? token.profileImage;
+        return token;
       }
+
+      // For subsequent requests, token exists — fetch latest from DB
+      if (token?.id) {
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: token.id },
+            include: { addresses: true },
+          });
+
+          const latestImage =
+            dbUser?.addresses?.[0]?.profileImage ?? token.profileImage;
+          token.profileImage = latestImage;
+        } catch (err) {
+          console.error("Failed to refresh profileImage in jwt callback", err);
+        }
+      }
+
       return token;
     },
 
-    session({ session, token }) {
+    async session({ session, token }) {
       session.user.id = token.id;
       session.user.profileImage = token.profileImage;
       return session;

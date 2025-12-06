@@ -4,10 +4,25 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { logOut } from "@/app/actions/auth/auth.actions";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const HeaderTwo = ({ session }) => {
   const [open, setOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   console.log(session, "session in header");
 
   return (
@@ -41,7 +56,7 @@ const HeaderTwo = ({ session }) => {
                 )} */}
                 <div className='mobile-nav__info flex items-center gap-3'>
                   {session?.user ? (
-                    <div className='relative'>
+                    <div className='relative' ref={dropdownRef}>
                       {/* Profile Image Button */}
                       <button
                         className='profileImageButton'

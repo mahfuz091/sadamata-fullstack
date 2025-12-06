@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
+
+const MOCKUP_ORIGIN = process.env.MOCKUP_ORIGIN || "http://localhost:3003";
+// In production set e.g. MOCKUP_ORIGIN="https://admin.sadamata.com"
+
 const nextConfig = {
   images: {
     remotePatterns: [
@@ -6,18 +10,18 @@ const nextConfig = {
         protocol: "http",
         hostname: "localhost",
         port: "3001",
-        pathname: "/**", // or "/uploads/**" if you want to restrict
+        pathname: "/**",
       },
       {
         protocol: "http",
         hostname: "localhost",
-        port: "3000",
-        pathname: "/**", // or "/uploads/**" if you want to restrict
+        port: "3003",
+        pathname: "/**",
       },
       {
         protocol: "https",
         hostname: "merchant-chi.vercel.app",
-        pathname: "/**", // or "/uploads/**" if you want to restrict
+        pathname: "/**",
       },
     ],
   },
@@ -25,8 +29,19 @@ const nextConfig = {
   experimental: {
     serverActions: {
       bodySizeLimit: "200mb",
-      llowedOrigins: ["*"], // or narrow to your domains
+      llowedOrigins: ["*"], // (you probably meant allowedOrigins, but irrelevant for canvas)
     },
   },
+
+  async rewrites() {
+    return [
+      {
+        // Browser requests /mockup/...  -> Next proxies to your mockup server
+        source: "/mockup/:file*",
+        destination: `${MOCKUP_ORIGIN}/mockups/:file*`,
+      },
+    ];
+  },
 };
+
 export default nextConfig;

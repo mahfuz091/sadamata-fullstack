@@ -13,14 +13,15 @@
   "dependencies": {
     "@fontsource/instrument-sans": "^5.2.6",
     "@fontsource/inter": "^5.2.6",
-    "@prisma/client": "^6.17.0",
+    "@prisma/adapter-pg": "^7.0.1",
+    "@prisma/client": "^7.0.1",
     "bcryptjs": "^3.0.2",
     "bootstrap": "^5.3.7",
     "fabric": "^6.7.1",
     "file-saver": "^2.0.5",
     "jszip": "^3.10.1",
     "next": "15.3.4",
-    "next-auth": "^5.0.0-beta.29",
+    "next-auth": "5.0.0-beta.29",
     "nodemailer": "^6.10.1",
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.10",
@@ -33,6 +34,6 @@
     "zod": "^4.1.5"
   },
   "devDependencies": {
-    "prisma": "^6.17.0"
+    "prisma": "^7.0.1"
   }
 }

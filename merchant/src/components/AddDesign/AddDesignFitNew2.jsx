@@ -20,6 +20,9 @@ const SPINNER_SVG_DATAURI =
         d="M25 5 a20 20 0 0 1 0 40"/>
 </svg>`);
 
+const MOCKUP_BASE_URL =
+  process.env.NEXT_PUBLIC_MOCKUP_BASE_URL || "http://localhost:3003/";
+
 export default function AddDesignFitNew2({
   allMockup,
   currentUserId,

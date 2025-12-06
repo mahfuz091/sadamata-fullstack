@@ -18,6 +18,7 @@ const page = async () => {
       email: true,
       phone: true,
       merchantProfile: true, // must match your relation field name in schema
+      brand: true,
       addresses: true,
       profileImage: true,
     },

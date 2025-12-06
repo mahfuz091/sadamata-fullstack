@@ -11,17 +11,13 @@ import Link from "next/link";
 
 const Profile = ({ user, countries }) => {
   const [editMode, setEditMode] = useState(false);
-  const [phoneValue, setPhoneValue] = useState(
-    user?.merchantProfile?.contactPhone || ""
-  );
+  const [phoneValue, setPhoneValue] = useState(user?.brand?.contactPhone || "");
   const [country, setCountry] = useState(null);
   console.log(user, "profile");
 
   useEffect(() => {
-    if (user?.merchantProfile?.country) {
-      const matched = countries.find(
-        (c) => c.name === user.merchantProfile.country
-      );
+    if (user?.brand?.country) {
+      const matched = countries.find((c) => c.name === user.brand.country);
       // console.log(matched, 'matched');
 
       setCountry(matched);
@@ -34,18 +30,18 @@ const Profile = ({ user, countries }) => {
   const [formData, setFormData] = useState({
     name: user.name || "",
     email: user.email || user.addresses?.[0]?.email || "",
-    dateOfBirth: user.merchantProfile?.dateOfBirth
-      ? formatDateForInput(user.merchantProfile.dateOfBirth)
+    dateOfBirth: user.brand?.dateOfBirth
+      ? formatDateForInput(user.brand?.dateOfBirth)
       : "",
     // addresses
-    presentAddress: user.merchantProfile?.presentAddress || "",
-    permanentAddress: user.merchantProfile?.permanentAddress || "",
-    zipCode: user.merchantProfile?.zipCode || "",
+    presentAddress: user.brand?.presentAddress || "",
+    permanentAddress: user.brand?.permanentAddress || "",
+    zipCode: user.brands?.zipCode || "",
     // bank & extra fields (if any used later)
     // new fields requested
-    nidOrPassportNo: user.merchantProfile?.nidOrPassportNo || "",
-    portfolioUrl: user.merchantProfile?.portfolioUrl || "",
-    websiteUrl: user.merchantProfile?.websiteUrl || "",
+    nidOrPassportNo: user.brand?.nidOrPassportNo || "",
+    portfolioUrl: user.brand?.portfolioUrl || "",
+    websiteUrl: user.brand?.websiteUrl || "",
   });
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -98,7 +94,7 @@ const Profile = ({ user, countries }) => {
         permanentAddress: formData.permanentAddress,
         presentAddress: formData.presentAddress,
         zipCode: formData.zipCode,
-        country: country?.name || user.merchantProfile?.country || null,
+        country: country?.name || user.brand?.country || null,
         nidOrPassportNo: formData.nidOrPassportNo,
         portfolioUrl: formData.portfolioUrl,
         websiteUrl: formData.websiteUrl,

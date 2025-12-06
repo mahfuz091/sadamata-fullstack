@@ -78,7 +78,7 @@ export async function updateUserInfo(userId, data) {
         name: data.name,
         email: data.email,
         phone: data.phone,
-        merchantProfile: {
+        brand: {
           update: {
             // existing fields
             dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth) : null,
@@ -94,7 +94,7 @@ export async function updateUserInfo(userId, data) {
           },
         },
       },
-      include: { merchantProfile: true, addresses: true },
+      include: { brand: true, addresses: true },
     });
 
     return updatedUser;
@@ -113,7 +113,7 @@ export async function updateMerchantBankInfo(userId, data) {
   if (!userId) throw new Error("UserId is required");
 
   try {
-    const updated = await prisma.merchantProfile.update({
+    const updated = await prisma.brand.update({
       where: { userId }, // merchantProfile.userId is unique
       data: {
         bankName: data.bankName,

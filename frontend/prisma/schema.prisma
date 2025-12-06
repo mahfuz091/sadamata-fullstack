@@ -15,29 +15,31 @@ datasource db {
 }
 
 model User {
-  id              String           @id @default(uuid()) // Changed to UUID
-  email           String?          @unique
-  phone           String?          @unique
-  name            String
-  password        String
-  role            Role             @default(USER)
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  isActive        Boolean          @default(true)
+  id        String   @id @default(uuid()) // Changed to UUID
+  email     String?  @unique
+  phone     String?  @unique
+  name      String
+  password  String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isActive  Boolean  @default(true)
   // A user can create many brands (if their role is 'BRAND')
-  brands          Brand[]          @relation("UserBrands") // Add this to complete the relation
+
   products        Product[]
   sales           Sale[]           @relation("MerchantSales")
   // NEW: one-to-one merchant profile
   merchantProfile MerchantProfile?
   addresses       UserAddress[] // NEW
-  userprofile     UserProfile?
+  userProfile     UserProfile?
   profileImage    String?
   Order           Order[]
 
   CommissionSetting CommissionSetting[]
 
-  Payout Payout[] @relation("MerchantPayouts")
+  Payout  Payout[] @relation("MerchantPayouts")
+  brand   Brand? // <-- NO fields, NO references
+  brandId String?
 }
 
 model UserProfile {
@@ -54,29 +56,6 @@ model UserProfile {
   address     String
   zipCode     String
 }
-
-// model UserAddress {
-//   id        String   @id @default(cuid())
-//   userId    String
-//   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-//   label     String?        // "Home", "Office", etc.
-//   firstName  String
-//   lastName  String
-//   phone     String
-//   address  String
-//   address2  String?
-//   city      String
-//   postcode  String
-//   country   String @default("Bangladesh")
-//   isDefault Boolean @default(false)
-
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-
-//   @@index([userId, isDefault])
-//   Order Order[]
-// }
 
 model UserAddress {
   id           String   @id @default(cuid())
@@ -166,8 +145,8 @@ model Brand {
   updatedAt       DateTime      @updatedAt
   brandCategory   BrandCategory @relation(fields: [brandCategoryId], references: [id])
   brandCategoryId String
-  user            User          @relation("UserBrands", fields: [userId], references: [id])
-  userId          String
+  userId          String        @unique
+  user            User          @relation(fields: [userId], references: [id])
   Product         Product[]
 
   Sales Sale[] @relation("BrandSales")
@@ -205,6 +184,9 @@ model Brand {
   CommissionSetting CommissionSetting[]
 
   Payout Payout[] @relation("BrandPayouts")
+
+  zipCode String?
+  country String?
 }
 
 model BrandCategory {

@@ -3,6 +3,7 @@ import { removeAuthCookie, setAuthCookie, signAuthToken } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { signIn, signOut, auth } from "@/auth";
 import bcrypt from "bcryptjs"; // for hashing passwords
+import { redirect } from "next/navigation";
 // helpers
 function pick(...vals) {
   for (const v of vals)
@@ -201,6 +202,13 @@ export async function registerUser(formData) {
 
     const message = opt(pick(formData.get("message"), formData.get("massage"))); // textarea id was "massage"
 
+    if (role === "BRAND" && !brandCategoryId) {
+      return {
+        success: false,
+        message: "Brand category is required for brand registration.",
+      };
+    }
+
     // ---- create user (+ merchant profile if role is MERCH) ----
     const result = await prisma.$transaction(async (tx) => {
       const user = await tx.user.create({
@@ -245,7 +253,7 @@ export async function registerUser(formData) {
           },
         });
 
-         await tx.commissionSetting.create({
+        await tx.commissionSetting.create({
           data: {
             brandId: brandProfile.id,
             merchantId: null,
@@ -329,23 +337,23 @@ export async function updateUserAccount(userId, action) {
   }
 }
 
-export async function loginUser(_prevState, formData) {
-  const identifier = formData.get("identifier");
-  const password = formData.get("password");
+// export async function loginUser(_prevState, formData) {
+//   const identifier = formData.get("identifier");
+//   const password = formData.get("password");
 
-  if (!identifier) return { success: false, message: "Email or phone is required" };
-  if (!password) return { success: false, message: "Password is required" };
+//   if (!identifier) return { success: false, message: "Email or phone is required" };
+//   if (!password) return { success: false, message: "Password is required" };
 
-  // সফল হলে Next.js সার্ভার অ্যাকশন অটো-রিডাইরেক্ট থ্রো করবে
-  await signIn("credentials", {
-    identifier,
-    password,
-    redirectTo: "/dashboard",
-  });
+//   // সফল হলে Next.js সার্ভার অ্যাকশন অটো-রিডাইরেক্ট থ্রো করবে
+//   await signIn("credentials", {
+//     identifier,
+//     password,
+//     redirectTo: "/dashboard",
+//   });
 
-  // সাধারণত এখানে এক্সিকিউশন পৌঁছায় না (রিডাইরেক্ট হয়ে যায়)
-  return { success: true, message: "Logged in" };
-}
+//   // সাধারণত এখানে এক্সিকিউশন পৌঁছায় না (রিডাইরেক্ট হয়ে যায়)
+//   return { success: true, message: "Logged in" };
+// }
 
 // export const loginUser = async (prevState, formData) => {
 //   const identifier = formData.get("identifier");
@@ -398,6 +406,64 @@ export async function loginUser(_prevState, formData) {
 //     password,
 //   });
 // };
+
+export const loginUser = async (prevState, formData) => {
+  const identifier = formData.get("identifier");
+  const password = formData.get("password");
+
+  if (!identifier) {
+    return { success: false, message: "Email or phone is required" };
+  }
+  if (!password) {
+    return { success: false, message: "Password is required" };
+  }
+
+  // Find user (email OR phone)
+  const user = await prisma.user.findFirst({
+    where: {
+      AND: [
+        { OR: [{ email: identifier }, { phone: identifier }] },
+        { role: "BRAND" },
+      ],
+    },
+  });
+
+  // console.log(user, "user");
+
+  if (!user) {
+    return { success: false, message: "User not found" };
+  }
+  if (!user.isActive) {
+    return {
+      success: false,
+      message: "Your account is not active. Please contact support.",
+    };
+  }
+  if (user.role !== "BRAND") {
+    return {
+      success: false,
+      message: "You are not authorized to access this portal.",
+    };
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  if (!isPasswordValid) {
+    return { success: false, message: "Invalid password" };
+  }
+
+  // NextAuth signIn
+  const response = await signIn("credentials", {
+    redirect: false,
+    identifier,
+    password,
+  });
+  redirect("/dashboard");
+  // return {
+  //   success: true,
+  //   message: "Login successful",
+  //   user,
+  // };
+};
 export const logOut = async () => {
   await signOut();
   // redirect("/login");

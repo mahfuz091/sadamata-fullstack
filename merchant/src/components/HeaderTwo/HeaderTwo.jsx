@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import logo from "@/assets/images/logo-light.png";
 
 import { logOut } from "@/app/actions/auth/auth.actions";
 import { useState } from "react";

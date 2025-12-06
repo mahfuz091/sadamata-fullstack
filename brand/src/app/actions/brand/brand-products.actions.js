@@ -209,7 +209,6 @@ export async function getAllBrandProductsOfUser({
   });
 
   console.log(brands, "brands");
-  
 
   if (!brands.length) {
     return {
@@ -228,11 +227,10 @@ export async function getAllBrandProductsOfUser({
   // 🧩 Step 2: ওই brandId গুলোর প্রোডাক্ট আনুন
   const where = {
     brandId: brands[0].id,
-    
   };
 
   console.log(where, "where");
-  
+
   if (typeof isActive === "boolean") where.isActive = isActive;
   if (typeof visibility === "boolean") where.visibility = visibility;
   if (search && search.trim()) {
@@ -317,4 +315,3 @@ export async function getAllBrandProductsOfUser({
     },
   };
 }
-

@@ -19,16 +19,14 @@ const VendorLogin = () => {
 
   console.log(state);
   useEffect(() => {
-    if(state.message){
+    if (state.message) {
       if (!state?.success) {
         toast.warning(state?.message);
-      }
-      else if(state?.success){
+      } else if (state?.success) {
         toast.success(state?.message);
         console.log(state, "state");
       }
     }
-    
   }, [state]);
 
   // console.log(state?.msg, state?.success);
@@ -129,8 +127,17 @@ const VendorLogin = () => {
                 className='commerce-btn'
                 disabled={!!errors.identifier || !!errors.password || isPending}
               >
-                {isPending ? "Login..." : "Login"}
-                <i className='icon-right-arrow' />
+                {isPending ? (
+                  <>
+                    {" "}
+                    <span className='spinner'></span> <span>Logging in...</span>
+                  </>
+                ) : (
+                  <>
+                    {" "}
+                    Login <i className='icon-right-arrow' />{" "}
+                  </>
+                )}
               </button>
             </div>
           </form>

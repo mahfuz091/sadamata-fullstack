@@ -13,16 +13,12 @@ import Link from "next/link";
 
 const Bank = ({ user, countries }) => {
   const [editMode, setEditMode] = useState(false);
-  const [phoneValue, setPhoneValue] = useState(
-    user?.merchantProfile?.contactPhone || ""
-  );
+  const [phoneValue, setPhoneValue] = useState(user?.brand?.contactPhone || "");
   const [country, setCountry] = useState(null);
 
   useEffect(() => {
-    if (user?.merchantProfile?.country) {
-      const matched = countries.find(
-        (c) => c.name === user.merchantProfile.country
-      );
+    if (user?.brand?.country) {
+      const matched = countries.find((c) => c.name === user.brand.country);
       setCountry(matched);
     }
   }, [user, countries]);
@@ -33,11 +29,11 @@ const Bank = ({ user, countries }) => {
   );
 
   const [formData, setFormData] = useState({
-    bankName: user?.merchantProfile?.bankName || "",
-    bankBranch: user?.merchantProfile?.bankBranch || "",
-    accountName: user?.merchantProfile?.accountName || "",
-    accountNumber: user?.merchantProfile?.accountNumber || "",
-    routingNumber: user?.merchantProfile?.routingNumber || "",
+    bankName: user?.brand?.bankName || "",
+    bankBranch: user?.brand?.bankBranch || "",
+    accountName: user?.brand?.accountName || "",
+    accountNumber: user?.brand?.accountNumber || "",
+    routingNumber: user?.brand?.routingNumber || "",
   });
 
   const [loading, setLoading] = useState(false);

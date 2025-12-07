@@ -14,8 +14,8 @@ import productImg from "@/assets/images/products/item-1-1.png";
  */
 const historyProducts = Array.from({ length: 8 }).map((_, i) => ({
   id: i + 1,
-  brand: "Disney",
-  title: "Disney The Lion King Scar I'm Surrounded T-Shirt",
+  brand: "Sadamata",
+  title: "Sadamata The Lion King Scar I'm Surrounded T-Shirt",
   price: 17.95,
   rating: 4.9,
   reviews: 65,
@@ -104,7 +104,7 @@ export default function TopNatokBrandTshirt() {
                   </h4>
                   <div className='product__item__box'>
                     <div className='product__item__price'>
-                      ${prod.price.toFixed(2)}
+                      ৳{prod.price.toFixed(2)}
                     </div>
                     <div className='product__item__ratings'>
                       {[...Array(5)].map((_, i) => (

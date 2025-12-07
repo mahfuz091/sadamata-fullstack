@@ -12,9 +12,9 @@ import Image from "next/image";
 const BrandProfile = () => {
   const products = Array(12).fill({
     image: image,
-    title: "Disney The Lion King Scar I'm Surrounded T-Shirt",
-    brand: "Disney",
-    price: "$17.95",
+    title: "Sadamata The Lion King Scar I'm Surrounded T-Shirt",
+    brand: "Sadamata",
+    price: "৳17.95",
     rating: "4.9",
     reviews: 65,
   });
@@ -34,7 +34,7 @@ const BrandProfile = () => {
                   <Image src={user} alt='user image' />
                 </div>
                 <div className='brand-profile-top__content'>
-                  <h4 className='brand-profile-top__name'>Disney</h4>
+                  <h4 className='brand-profile-top__name'>Sadamata</h4>
                   <span className='brand-profile-top__followers'>
                     5.8K Followers
                   </span>

@@ -18,45 +18,45 @@ import "swiper/css/pagination";
 const products = [
   {
     id: 1,
-    brand: "Disney",
-    title: "Disney The Lion King Scar I'm Surrounded T-Shirt",
-    price: "$17.95",
+    brand: "Sadamata",
+    title: "Sadamata The Lion King Scar I'm Surrounded T-Shirt",
+    price: "৳17.95",
     rating: 4.9,
     reviews: 65,
     image: item1,
   },
   {
     id: 2,
-    brand: "Disney",
-    title: "Disney The Lion King Scar I'm Surrounded T-Shirt",
-    price: "$17.95",
+    brand: "Sadamata",
+    title: "Sadamata The Lion King Scar I'm Surrounded T-Shirt",
+    price: "৳17.95",
     rating: 4.9,
     reviews: 65,
     image: item2,
   },
   {
     id: 3,
-    brand: "Disney",
-    title: "Disney The Lion King Scar I'm Surrounded T-Shirt",
-    price: "$17.95",
+    brand: "Sadamata",
+    title: "Sadamata The Lion King Scar I'm Surrounded T-Shirt",
+    price: "৳17.95",
     rating: 4.9,
     reviews: 65,
     image: item3,
   },
   {
     id: 4,
-    brand: "Disney",
-    title: "Disney The Lion King Scar I'm Surrounded T-Shirt",
-    price: "$17.95",
+    brand: "Sadamata",
+    title: "Sadamata The Lion King Scar I'm Surrounded T-Shirt",
+    price: "৳17.95",
     rating: 4.9,
     reviews: 65,
     image: item4,
   },
   {
     id: 5,
-    brand: "Disney",
-    title: "Disney The Lion King Scar I'm Surrounded T-Shirt",
-    price: "$17.95",
+    brand: "Sadamata",
+    title: "Sadamata The Lion King Scar I'm Surrounded T-Shirt",
+    price: "৳17.95",
     rating: 4.9,
     reviews: 65,
     image: item5,
@@ -65,18 +65,18 @@ const products = [
 
 const RelatedProducts = () => {
   return (
-    <div className="product-slider mt-5">
+    <div className='product-slider mt-5'>
       <Container>
-        <div className="product-slider__top">
-          <h2 className="product-slider__title">Related Product</h2>
-          <div className="product-slider__btn">
-            <Link href="/product" className="inline-flex items-center gap-2">
-              See All Product <i className="icon-right-arrow" />
+        <div className='product-slider__top'>
+          <h2 className='product-slider__title'>Related Product</h2>
+          <div className='product-slider__btn'>
+            <Link href='/product' className='inline-flex items-center gap-2'>
+              See All Product <i className='icon-right-arrow' />
             </Link>
           </div>
         </div>
 
-        <div className="product-slider__carousel commerce-swiper__carousel">
+        <div className='product-slider__carousel commerce-swiper__carousel'>
           <Swiper
             modules={[Pagination]}
             pagination={{ clickable: true }}
@@ -95,44 +95,47 @@ const RelatedProducts = () => {
               // >= 1280px (desktop default similar to 4x in slick)
               1280: { slidesPerView: 4, slidesPerGroup: 1 },
             }}
-            className=""
+            className=''
           >
             {products.map((item) => (
               <SwiperSlide key={item.id}>
-                <div className="item">
-                  <div className="product__item">
-                    <div className="product__item__img">
-                      <Link href="#" className="product__item__img__item">
-                        <Image src={item.image} alt="product image" />
+                <div className='item'>
+                  <div className='product__item'>
+                    <div className='product__item__img'>
+                      <Link href='#' className='product__item__img__item'>
+                        <Image src={item.image} alt='product image' />
                       </Link>
-                      <div className="product__item__btn">
-                        <Link href="/cart" aria-label="Add to wishlist">
-                          <i className="far fa-heart" />
+                      <div className='product__item__btn'>
+                        <Link href='/cart' aria-label='Add to wishlist'>
+                          <i className='far fa-heart' />
                         </Link>
                       </div>
                     </div>
-                    <div className="product__item__content">
-                      <p className="product__item__brand">
-                        Brand: <Link href="#">{item.brand}</Link>
+                    <div className='product__item__content'>
+                      <p className='product__item__brand'>
+                        Brand: <Link href='#'>{item.brand}</Link>
                       </p>
-                      <h4 className="product__item__title">
-                        <Link href="/product-details">{item.title}</Link>
+                      <h4 className='product__item__title'>
+                        <Link href='/product-details'>{item.title}</Link>
                       </h4>
-                      <div className="product__item__box">
-                        <div className="product__item__price">{item.price}</div>
-                        <div className="product__item__ratings">
-                          <i className="fas fa-star"></i>
-                          <i className="fas fa-star"></i>
-                          <i className="fas fa-star"></i>
-                          <i className="fas fa-star"></i>
-                          <i className="fas fa-star"></i>
+                      <div className='product__item__box'>
+                        <div className='product__item__price'>{item.price}</div>
+                        <div className='product__item__ratings'>
+                          <i className='fas fa-star'></i>
+                          <i className='fas fa-star'></i>
+                          <i className='fas fa-star'></i>
+                          <i className='fas fa-star'></i>
+                          <i className='fas fa-star'></i>
                           <span>
                             {item.rating} ({item.reviews})
                           </span>
                         </div>
                       </div>
-                      <Link href="/cart" className="commerce-btn product__item__link">
-                        Add to Cart <i className="icon-right-arrow" />
+                      <Link
+                        href='/cart'
+                        className='commerce-btn product__item__link'
+                      >
+                        Add to Cart <i className='icon-right-arrow' />
                       </Link>
                     </div>
                   </div>

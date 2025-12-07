@@ -1,9 +1,17 @@
 // components/FeatureProductSection.js
 "use client";
-const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE_URL ;
+const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE_URL;
 import Image from "next/image";
 import { useState, useEffect, useTransition } from "react";
-import { Container, Row, Col, Button, Nav, Pagination, Spinner } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Button,
+  Nav,
+  Pagination,
+  Spinner,
+} from "react-bootstrap";
 
 import {
   getAllProducts,
@@ -27,8 +35,6 @@ const loaders = {
   featured: (args) => getFeaturedProducts({ ...args, featuredTag: "featured" }),
 };
 
-
-
 const FeatureProduct = () => {
   const [activeTab, setActiveTab] = useState("all");
   const [products, setProducts] = useState([]);
@@ -37,13 +43,7 @@ const FeatureProduct = () => {
   const [isPending, startTransition] = useTransition();
   const pageSize = 8;
 
-
-console.log(products, "products");
-
-
-
-
-
+  console.log(products, "products");
 
   // Fetch whenever tab or page changes
   useEffect(() => {
@@ -70,7 +70,7 @@ console.log(products, "products");
 
   const handlePrev = () => setPage((p) => Math.max(1, p - 1));
   const handleNext = () => setPage((p) => Math.min(totalPages, p + 1));
-console.log(products, "products");
+  console.log(products, "products");
 
   return (
     // <section className='feature-product py-5'>
@@ -167,14 +167,14 @@ console.log(products, "products");
     //     </div>
     //   </Container>
     // </section>
-    <section className="feature-product py-5">
+    <section className='feature-product py-5'>
       <Container>
-        <div className="feature-product__top text-center mb-4">
-          <h2 className="feature-product__title mb-3">
+        <div className='feature-product__top text-center mb-4'>
+          <h2 className='feature-product__title mb-3'>
             Elevate Your Style with Our Trendy Tees
           </h2>
 
-          <ul className="list-unstyled post-filter feature-product__filter__list">
+          <ul className='list-unstyled post-filter feature-product__filter__list'>
             {TABS.map((t) => (
               <li
                 key={t.key}
@@ -188,66 +188,74 @@ console.log(products, "products");
           </ul>
 
           {isPending && (
-           <Spinner animation="border" role="status">
-      <span className="visually-hidden">Loading...</span>
-    </Spinner>
+            <Spinner animation='border' role='status'>
+              <span className='visually-hidden'>Loading...</span>
+            </Spinner>
           )}
         </div>
 
-        <Row className="g-4">
+        <Row className='g-4'>
           {products.map((product) => {
-           const rel = (product?.variants[0]?.frontImg || "").replace(/^\/+/, ""); // strip leading slash
-  const imgSrc = rel ? `${ASSET_BASE}/${rel}` : `${ASSET_BASE}/uploads/placeholder.png`;
+            const rel = (product?.variants[0]?.frontImg || "").replace(
+              /^\/+/,
+              ""
+            ); // strip leading slash
+            const imgSrc = rel
+              ? `${ASSET_BASE}/${rel}`
+              : `${ASSET_BASE}/uploads/placeholder.png`;
 
             return (
               <Col key={product.id} md={6} lg={4} xl={3}>
-                <div className="product__item h-100 d-flex flex-column">
-                  <div className="product__item__img position-relative">
-                    <a className="product__item__img__item d-block">
+                <div className='product__item h-100 d-flex flex-column'>
+                  <div className='product__item__img position-relative'>
+                    <a className='product__item__img__item d-block'>
                       <Image
                         src={imgSrc}
                         alt={product.title || "Product image"}
-                        className="img-fluid"
+                        className='img-fluid'
                         width={500}
                         height={500}
                         unoptimized
                       />
                     </a>
-                    <div className="product__item__btn position-absolute top-0 end-0 p-2">
-                      <i className="far fa-heart"></i>
+                    <div className='product__item__btn position-absolute top-0 end-0 p-2'>
+                      <i className='far fa-heart'></i>
                     </div>
                   </div>
 
-                  <div className="product__item__content p-3 mt-auto">
-                    <p className="product__item__brand m-0">
+                  <div className='product__item__content p-3 mt-auto'>
+                    <p className='product__item__brand m-0'>
                       Brand:{" "}
                       <span>
-                        {product?.Brand?.name ??
-                          product?.brandName ??
-                          "—"}
+                        {product?.Brand?.name ?? product?.brandName ?? "—"}
                       </span>
                     </p>
 
-                    <h4 className="product__item__title my-2">
-                      <Link href={`/products/${product.productId}`}>{product.title}</Link>
+                    <h4 className='product__item__title my-2'>
+                      <Link href={`/products/${product.productId}`}>
+                        {product.title}
+                      </Link>
                     </h4>
 
-                    <div className="product__item__box d-flex justify-content-between align-items-center">
-                      <div className="product__item__price">
+                    <div className='product__item__box d-flex justify-content-between align-items-center'>
+                      <div className='product__item__price'>
                         {typeof product.price === "number"
-                          ? `$${product.price.toFixed(2)}`
-                          : "$—"}
+                          ? `৳${product.price.toFixed(2)}`
+                          : "৳—"}
                       </div>
-                      <div className="product__item__ratings">
+                      <div className='product__item__ratings'>
                         {[...Array(5)].map((_, i) => (
-                          <i key={i} className="fas fa-star text-warning"></i>
+                          <i key={i} className='fas fa-star text-warning'></i>
                         ))}
-                        <span className="ms-1">4.9 (65)</span>
+                        <span className='ms-1'>4.9 (65)</span>
                       </div>
                     </div>
 
-                    <Link href={`/products/${product.productId}`} className="commerce-btn product__item__link mt-2">
-                      Add to Cart <i className="icon-right-arrow"></i>
+                    <Link
+                      href={`/products/${product.productId}`}
+                      className='commerce-btn product__item__link mt-2'
+                    >
+                      Add to Cart <i className='icon-right-arrow'></i>
                     </Link>
                   </div>
                 </div>
@@ -257,9 +265,12 @@ console.log(products, "products");
         </Row>
 
         {/* Pagination */}
-        <div className="feature-product__pagination mt-4">
-          <Pagination className="justify-content-center">
-            <Pagination.Prev disabled={page <= 1 || isPending} onClick={handlePrev} />
+        <div className='feature-product__pagination mt-4'>
+          <Pagination className='justify-content-center'>
+            <Pagination.Prev
+              disabled={page <= 1 || isPending}
+              onClick={handlePrev}
+            />
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
               <Pagination.Item
                 key={n}

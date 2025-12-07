@@ -3,7 +3,7 @@
  * Client
 **/
 
-import * as runtime from './runtime/library.js';
+import * as runtime from './runtime/client.js';
 import $Types = runtime.Types // general types
 import $Public = runtime.Types.Public
 import $Utils = runtime.Types.Utils
@@ -204,7 +204,7 @@ export const ImageType: typeof $Enums.ImageType
  * ```
  *
  *
- * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
+ * Read more in our [docs](https://pris.ly/d/client).
  */
 export class PrismaClient<
   ClientOptions extends Prisma.PrismaClientOptions = Prisma.PrismaClientOptions,
@@ -225,7 +225,7 @@ export class PrismaClient<
    * ```
    *
    *
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
+   * Read more in our [docs](https://pris.ly/d/client).
    */
 
   constructor(optionsArg ?: Prisma.Subset<ClientOptions, Prisma.PrismaClientOptions>);
@@ -248,7 +248,7 @@ export class PrismaClient<
    * const result = await prisma.$executeRaw`UPDATE User SET cool = ${true} WHERE email = ${'user@email.com'};`
    * ```
    *
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
+   * Read more in our [docs](https://pris.ly/d/raw-queries).
    */
   $executeRaw<T = unknown>(query: TemplateStringsArray | Prisma.Sql, ...values: any[]): Prisma.PrismaPromise<number>;
 
@@ -260,7 +260,7 @@ export class PrismaClient<
    * const result = await prisma.$executeRawUnsafe('UPDATE User SET cool = $1 WHERE email = $2 ;', true, 'user@email.com')
    * ```
    *
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
+   * Read more in our [docs](https://pris.ly/d/raw-queries).
    */
   $executeRawUnsafe<T = unknown>(query: string, ...values: any[]): Prisma.PrismaPromise<number>;
 
@@ -271,7 +271,7 @@ export class PrismaClient<
    * const result = await prisma.$queryRaw`SELECT * FROM User WHERE id = ${1} OR email = ${'user@email.com'};`
    * ```
    *
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
+   * Read more in our [docs](https://pris.ly/d/raw-queries).
    */
   $queryRaw<T = unknown>(query: TemplateStringsArray | Prisma.Sql, ...values: any[]): Prisma.PrismaPromise<T>;
 
@@ -283,7 +283,7 @@ export class PrismaClient<
    * const result = await prisma.$queryRawUnsafe('SELECT * FROM User WHERE id = $1 OR email = $2;', 1, 'user@email.com')
    * ```
    *
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
+   * Read more in our [docs](https://pris.ly/d/raw-queries).
    */
   $queryRawUnsafe<T = unknown>(query: string, ...values: any[]): Prisma.PrismaPromise<T>;
 
@@ -304,7 +304,6 @@ export class PrismaClient<
   $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<runtime.Types.Utils.UnwrapTuple<P>>
 
   $transaction<R>(fn: (prisma: Omit<PrismaClient, runtime.ITXClientDenyList>) => $Utils.JsPromise<R>, options?: { maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<R>
-
 
   $extends: $Extensions.ExtendsHook<"extends", Prisma.TypeMapCb<ClientOptions>, ExtArgs, $Utils.Call<Prisma.TypeMapCb<ClientOptions>, {
     extArgs: ExtArgs
@@ -569,14 +568,6 @@ export namespace Prisma {
   export type DecimalJsLike = runtime.DecimalJsLike
 
   /**
-   * Metrics
-   */
-  export type Metrics = runtime.Metrics
-  export type Metric<T> = runtime.Metric<T>
-  export type MetricHistogram = runtime.MetricHistogram
-  export type MetricHistogramBucket = runtime.MetricHistogramBucket
-
-  /**
   * Extensions
   */
   export import Extension = $Extensions.UserArgs
@@ -587,11 +578,12 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.16.2
-   * Query Engine version: 1c57fdcd7e44b29b9313256c76699e91c3ac3c43
+   * Prisma Client JS version: 7.1.0
+   * Query Engine version: ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba
    */
   export type PrismaVersion = {
     client: string
+    engine: string
   }
 
   export const prismaVersion: PrismaVersion
@@ -601,6 +593,7 @@ export namespace Prisma {
    */
 
 
+  export import Bytes = runtime.Bytes
   export import JsonObject = runtime.JsonObject
   export import JsonArray = runtime.JsonArray
   export import JsonValue = runtime.JsonValue
@@ -996,9 +989,6 @@ export namespace Prisma {
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
 
 
-  export type Datasources = {
-    db?: Datasource
-  }
 
   interface TypeMapCb<ClientOptions = {}> extends $Utils.Fn<{extArgs: $Extensions.InternalArgs }, $Utils.Record<string, any>> {
     returns: Prisma.TypeMap<this['params']['extArgs'], ClientOptions extends { omit: infer OmitOptions } ? OmitOptions : {}>
@@ -2670,14 +2660,6 @@ export namespace Prisma {
   export type ErrorFormat = 'pretty' | 'colorless' | 'minimal'
   export interface PrismaClientOptions {
     /**
-     * Overwrites the datasource url from your schema.prisma file
-     */
-    datasources?: Datasources
-    /**
-     * Overwrites the datasource url from your schema.prisma file
-     */
-    datasourceUrl?: string
-    /**
      * @default "colorless"
      */
     errorFormat?: ErrorFormat
@@ -2703,7 +2685,7 @@ export namespace Prisma {
      *  { emit: 'stdout', level: 'error' }
      * 
      * ```
-     * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/logging#the-log-option).
+     * Read more in our [docs](https://pris.ly/d/logging).
      */
     log?: (LogLevel | LogDefinition)[]
     /**
@@ -2719,7 +2701,11 @@ export namespace Prisma {
     /**
      * Instance of a Driver Adapter, e.g., like one provided by `@prisma/adapter-planetscale`
      */
-    adapter?: runtime.SqlDriverAdapterFactory | null
+    adapter?: runtime.SqlDriverAdapterFactory
+    /**
+     * Prisma Accelerate URL allowing the client to connect through Accelerate instead of a direct database.
+     */
+    accelerateUrl?: string
     /**
      * Global configuration for omitting model fields by default.
      * 
@@ -2735,6 +2721,22 @@ export namespace Prisma {
      * ```
      */
     omit?: Prisma.GlobalOmitConfig
+    /**
+     * SQL commenter plugins that add metadata to SQL queries as comments.
+     * Comments follow the sqlcommenter format: https://google.github.io/sqlcommenter/
+     * 
+     * @example
+     * ```
+     * const prisma = new PrismaClient({
+     *   adapter,
+     *   comments: [
+     *     traceContext(),
+     *     queryInsights(),
+     *   ],
+     * })
+     * ```
+     */
+    comments?: runtime.SqlCommenterPlugin[]
   }
   export type GlobalOmitConfig = {
     user?: UserOmit
@@ -2839,7 +2841,6 @@ export namespace Prisma {
    */
 
   export type UserCountOutputType = {
-    brands: number
     products: number
     sales: number
     addresses: number
@@ -2849,7 +2850,6 @@ export namespace Prisma {
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    brands?: boolean | UserCountOutputTypeCountBrandsArgs
     products?: boolean | UserCountOutputTypeCountProductsArgs
     sales?: boolean | UserCountOutputTypeCountSalesArgs
     addresses?: boolean | UserCountOutputTypeCountAddressesArgs
@@ -2867,13 +2867,6 @@ export namespace Prisma {
      * Select specific fields to fetch from the UserCountOutputType
      */
     select?: UserCountOutputTypeSelect<ExtArgs> | null
-  }
-
-  /**
-   * UserCountOutputType without action
-   */
-  export type UserCountOutputTypeCountBrandsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: BrandWhereInput
   }
 
   /**
@@ -3281,6 +3274,8 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     isActive: boolean | null
+    profileImage: string | null
+    brandId: string | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -3293,6 +3288,8 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     isActive: boolean | null
+    profileImage: string | null
+    brandId: string | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -3305,6 +3302,8 @@ export namespace Prisma {
     createdAt: number
     updatedAt: number
     isActive: number
+    profileImage: number
+    brandId: number
     _all: number
   }
 
@@ -3319,6 +3318,8 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     isActive?: true
+    profileImage?: true
+    brandId?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -3331,6 +3332,8 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     isActive?: true
+    profileImage?: true
+    brandId?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -3343,6 +3346,8 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     isActive?: true
+    profileImage?: true
+    brandId?: true
     _all?: true
   }
 
@@ -3428,6 +3433,8 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     isActive: boolean
+    profileImage: string | null
+    brandId: string | null
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -3457,15 +3464,17 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     isActive?: boolean
-    brands?: boolean | User$brandsArgs<ExtArgs>
+    profileImage?: boolean
+    brandId?: boolean
     products?: boolean | User$productsArgs<ExtArgs>
     sales?: boolean | User$salesArgs<ExtArgs>
     merchantProfile?: boolean | User$merchantProfileArgs<ExtArgs>
     addresses?: boolean | User$addressesArgs<ExtArgs>
-    userprofile?: boolean | User$userprofileArgs<ExtArgs>
+    userProfile?: boolean | User$userProfileArgs<ExtArgs>
     Order?: boolean | User$OrderArgs<ExtArgs>
     CommissionSetting?: boolean | User$CommissionSettingArgs<ExtArgs>
     Payout?: boolean | User$PayoutArgs<ExtArgs>
+    brand?: boolean | User$brandArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -3479,6 +3488,8 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     isActive?: boolean
+    profileImage?: boolean
+    brandId?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -3491,6 +3502,8 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     isActive?: boolean
+    profileImage?: boolean
+    brandId?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -3503,19 +3516,21 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     isActive?: boolean
+    profileImage?: boolean
+    brandId?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "phone" | "name" | "password" | "role" | "createdAt" | "updatedAt" | "isActive", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "phone" | "name" | "password" | "role" | "createdAt" | "updatedAt" | "isActive" | "profileImage" | "brandId", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    brands?: boolean | User$brandsArgs<ExtArgs>
     products?: boolean | User$productsArgs<ExtArgs>
     sales?: boolean | User$salesArgs<ExtArgs>
     merchantProfile?: boolean | User$merchantProfileArgs<ExtArgs>
     addresses?: boolean | User$addressesArgs<ExtArgs>
-    userprofile?: boolean | User$userprofileArgs<ExtArgs>
+    userProfile?: boolean | User$userProfileArgs<ExtArgs>
     Order?: boolean | User$OrderArgs<ExtArgs>
     CommissionSetting?: boolean | User$CommissionSettingArgs<ExtArgs>
     Payout?: boolean | User$PayoutArgs<ExtArgs>
+    brand?: boolean | User$brandArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3524,15 +3539,15 @@ export namespace Prisma {
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
-      brands: Prisma.$BrandPayload<ExtArgs>[]
       products: Prisma.$ProductPayload<ExtArgs>[]
       sales: Prisma.$SalePayload<ExtArgs>[]
       merchantProfile: Prisma.$MerchantProfilePayload<ExtArgs> | null
       addresses: Prisma.$UserAddressPayload<ExtArgs>[]
-      userprofile: Prisma.$UserProfilePayload<ExtArgs> | null
+      userProfile: Prisma.$UserProfilePayload<ExtArgs> | null
       Order: Prisma.$OrderPayload<ExtArgs>[]
       CommissionSetting: Prisma.$CommissionSettingPayload<ExtArgs>[]
       Payout: Prisma.$PayoutPayload<ExtArgs>[]
+      brand: Prisma.$BrandPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3544,6 +3559,8 @@ export namespace Prisma {
       createdAt: Date
       updatedAt: Date
       isActive: boolean
+      profileImage: string | null
+      brandId: string | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -3938,15 +3955,15 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    brands<T extends User$brandsArgs<ExtArgs> = {}>(args?: Subset<T, User$brandsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BrandPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     products<T extends User$productsArgs<ExtArgs> = {}>(args?: Subset<T, User$productsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sales<T extends User$salesArgs<ExtArgs> = {}>(args?: Subset<T, User$salesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     merchantProfile<T extends User$merchantProfileArgs<ExtArgs> = {}>(args?: Subset<T, User$merchantProfileArgs<ExtArgs>>): Prisma__MerchantProfileClient<$Result.GetResult<Prisma.$MerchantProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     addresses<T extends User$addressesArgs<ExtArgs> = {}>(args?: Subset<T, User$addressesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserAddressPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    userprofile<T extends User$userprofileArgs<ExtArgs> = {}>(args?: Subset<T, User$userprofileArgs<ExtArgs>>): Prisma__UserProfileClient<$Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    userProfile<T extends User$userProfileArgs<ExtArgs> = {}>(args?: Subset<T, User$userProfileArgs<ExtArgs>>): Prisma__UserProfileClient<$Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     Order<T extends User$OrderArgs<ExtArgs> = {}>(args?: Subset<T, User$OrderArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     CommissionSetting<T extends User$CommissionSettingArgs<ExtArgs> = {}>(args?: Subset<T, User$CommissionSettingArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommissionSettingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     Payout<T extends User$PayoutArgs<ExtArgs> = {}>(args?: Subset<T, User$PayoutArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PayoutPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    brand<T extends User$brandArgs<ExtArgs> = {}>(args?: Subset<T, User$brandArgs<ExtArgs>>): Prisma__BrandClient<$Result.GetResult<Prisma.$BrandPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3985,6 +4002,8 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
     readonly isActive: FieldRef<"User", 'Boolean'>
+    readonly profileImage: FieldRef<"User", 'String'>
+    readonly brandId: FieldRef<"User", 'String'>
   }
     
 
@@ -4373,30 +4392,6 @@ export namespace Prisma {
   }
 
   /**
-   * User.brands
-   */
-  export type User$brandsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Brand
-     */
-    select?: BrandSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Brand
-     */
-    omit?: BrandOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BrandInclude<ExtArgs> | null
-    where?: BrandWhereInput
-    orderBy?: BrandOrderByWithRelationInput | BrandOrderByWithRelationInput[]
-    cursor?: BrandWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: BrandScalarFieldEnum | BrandScalarFieldEnum[]
-  }
-
-  /**
    * User.products
    */
   export type User$productsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4488,9 +4483,9 @@ export namespace Prisma {
   }
 
   /**
-   * User.userprofile
+   * User.userProfile
    */
-  export type User$userprofileArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$userProfileArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the UserProfile
      */
@@ -4576,6 +4571,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: PayoutScalarFieldEnum | PayoutScalarFieldEnum[]
+  }
+
+  /**
+   * User.brand
+   */
+  export type User$brandArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Brand
+     */
+    select?: BrandSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Brand
+     */
+    omit?: BrandOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BrandInclude<ExtArgs> | null
+    where?: BrandWhereInput
   }
 
   /**
@@ -10353,6 +10367,8 @@ export namespace Prisma {
     message: string | null
     industryType: string | null
     socialProfile: string | null
+    zipCode: string | null
+    country: string | null
   }
 
   export type BrandMaxAggregateOutputType = {
@@ -10381,6 +10397,8 @@ export namespace Prisma {
     message: string | null
     industryType: string | null
     socialProfile: string | null
+    zipCode: string | null
+    country: string | null
   }
 
   export type BrandCountAggregateOutputType = {
@@ -10409,6 +10427,8 @@ export namespace Prisma {
     message: number
     industryType: number
     socialProfile: number
+    zipCode: number
+    country: number
     _all: number
   }
 
@@ -10449,6 +10469,8 @@ export namespace Prisma {
     message?: true
     industryType?: true
     socialProfile?: true
+    zipCode?: true
+    country?: true
   }
 
   export type BrandMaxAggregateInputType = {
@@ -10477,6 +10499,8 @@ export namespace Prisma {
     message?: true
     industryType?: true
     socialProfile?: true
+    zipCode?: true
+    country?: true
   }
 
   export type BrandCountAggregateInputType = {
@@ -10505,6 +10529,8 @@ export namespace Prisma {
     message?: true
     industryType?: true
     socialProfile?: true
+    zipCode?: true
+    country?: true
     _all?: true
   }
 
@@ -10620,6 +10646,8 @@ export namespace Prisma {
     message: string | null
     industryType: string
     socialProfile: string
+    zipCode: string | null
+    country: string | null
     _count: BrandCountAggregateOutputType | null
     _avg: BrandAvgAggregateOutputType | null
     _sum: BrandSumAggregateOutputType | null
@@ -10667,6 +10695,8 @@ export namespace Prisma {
     message?: boolean
     industryType?: boolean
     socialProfile?: boolean
+    zipCode?: boolean
+    country?: boolean
     brandCategory?: boolean | BrandCategoryDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     Product?: boolean | Brand$ProductArgs<ExtArgs>
@@ -10702,6 +10732,8 @@ export namespace Prisma {
     message?: boolean
     industryType?: boolean
     socialProfile?: boolean
+    zipCode?: boolean
+    country?: boolean
     brandCategory?: boolean | BrandCategoryDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["brand"]>
@@ -10732,6 +10764,8 @@ export namespace Prisma {
     message?: boolean
     industryType?: boolean
     socialProfile?: boolean
+    zipCode?: boolean
+    country?: boolean
     brandCategory?: boolean | BrandCategoryDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["brand"]>
@@ -10762,9 +10796,11 @@ export namespace Prisma {
     message?: boolean
     industryType?: boolean
     socialProfile?: boolean
+    zipCode?: boolean
+    country?: boolean
   }
 
-  export type BrandOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "isActive" | "createdAt" | "updatedAt" | "brandCategoryId" | "userId" | "defaultBrandPct" | "defaultMerchantPct" | "dateOfBirth" | "contactEmail" | "contactPhone" | "nidOrPassportNo" | "presentAddress" | "permanentAddress" | "portfolioUrl" | "websiteUrl" | "bankName" | "bankBranch" | "accountName" | "accountNumber" | "routingNumber" | "message" | "industryType" | "socialProfile", ExtArgs["result"]["brand"]>
+  export type BrandOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "isActive" | "createdAt" | "updatedAt" | "brandCategoryId" | "userId" | "defaultBrandPct" | "defaultMerchantPct" | "dateOfBirth" | "contactEmail" | "contactPhone" | "nidOrPassportNo" | "presentAddress" | "permanentAddress" | "portfolioUrl" | "websiteUrl" | "bankName" | "bankBranch" | "accountName" | "accountNumber" | "routingNumber" | "message" | "industryType" | "socialProfile" | "zipCode" | "country", ExtArgs["result"]["brand"]>
   export type BrandInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     brandCategory?: boolean | BrandCategoryDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -10819,6 +10855,8 @@ export namespace Prisma {
       message: string | null
       industryType: string
       socialProfile: string
+      zipCode: string | null
+      country: string | null
     }, ExtArgs["result"]["brand"]>
     composites: {}
   }
@@ -11273,6 +11311,8 @@ export namespace Prisma {
     readonly message: FieldRef<"Brand", 'String'>
     readonly industryType: FieldRef<"Brand", 'String'>
     readonly socialProfile: FieldRef<"Brand", 'String'>
+    readonly zipCode: FieldRef<"Brand", 'String'>
+    readonly country: FieldRef<"Brand", 'String'>
   }
     
 
@@ -29226,7 +29266,9 @@ export namespace Prisma {
     role: 'role',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    isActive: 'isActive'
+    isActive: 'isActive',
+    profileImage: 'profileImage',
+    brandId: 'brandId'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -29346,7 +29388,9 @@ export namespace Prisma {
     routingNumber: 'routingNumber',
     message: 'message',
     industryType: 'industryType',
-    socialProfile: 'socialProfile'
+    socialProfile: 'socialProfile',
+    zipCode: 'zipCode',
+    country: 'country'
   };
 
   export type BrandScalarFieldEnum = (typeof BrandScalarFieldEnum)[keyof typeof BrandScalarFieldEnum]
@@ -29759,15 +29803,17 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     isActive?: BoolFilter<"User"> | boolean
-    brands?: BrandListRelationFilter
+    profileImage?: StringNullableFilter<"User"> | string | null
+    brandId?: StringNullableFilter<"User"> | string | null
     products?: ProductListRelationFilter
     sales?: SaleListRelationFilter
     merchantProfile?: XOR<MerchantProfileNullableScalarRelationFilter, MerchantProfileWhereInput> | null
     addresses?: UserAddressListRelationFilter
-    userprofile?: XOR<UserProfileNullableScalarRelationFilter, UserProfileWhereInput> | null
+    userProfile?: XOR<UserProfileNullableScalarRelationFilter, UserProfileWhereInput> | null
     Order?: OrderListRelationFilter
     CommissionSetting?: CommissionSettingListRelationFilter
     Payout?: PayoutListRelationFilter
+    brand?: XOR<BrandNullableScalarRelationFilter, BrandWhereInput> | null
   }
 
   export type UserOrderByWithRelationInput = {
@@ -29780,15 +29826,17 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isActive?: SortOrder
-    brands?: BrandOrderByRelationAggregateInput
+    profileImage?: SortOrderInput | SortOrder
+    brandId?: SortOrderInput | SortOrder
     products?: ProductOrderByRelationAggregateInput
     sales?: SaleOrderByRelationAggregateInput
     merchantProfile?: MerchantProfileOrderByWithRelationInput
     addresses?: UserAddressOrderByRelationAggregateInput
-    userprofile?: UserProfileOrderByWithRelationInput
+    userProfile?: UserProfileOrderByWithRelationInput
     Order?: OrderOrderByRelationAggregateInput
     CommissionSetting?: CommissionSettingOrderByRelationAggregateInput
     Payout?: PayoutOrderByRelationAggregateInput
+    brand?: BrandOrderByWithRelationInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -29804,15 +29852,17 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     isActive?: BoolFilter<"User"> | boolean
-    brands?: BrandListRelationFilter
+    profileImage?: StringNullableFilter<"User"> | string | null
+    brandId?: StringNullableFilter<"User"> | string | null
     products?: ProductListRelationFilter
     sales?: SaleListRelationFilter
     merchantProfile?: XOR<MerchantProfileNullableScalarRelationFilter, MerchantProfileWhereInput> | null
     addresses?: UserAddressListRelationFilter
-    userprofile?: XOR<UserProfileNullableScalarRelationFilter, UserProfileWhereInput> | null
+    userProfile?: XOR<UserProfileNullableScalarRelationFilter, UserProfileWhereInput> | null
     Order?: OrderListRelationFilter
     CommissionSetting?: CommissionSettingListRelationFilter
     Payout?: PayoutListRelationFilter
+    brand?: XOR<BrandNullableScalarRelationFilter, BrandWhereInput> | null
   }, "id" | "email" | "phone">
 
   export type UserOrderByWithAggregationInput = {
@@ -29825,6 +29875,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isActive?: SortOrder
+    profileImage?: SortOrderInput | SortOrder
+    brandId?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -29843,6 +29895,8 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     isActive?: BoolWithAggregatesFilter<"User"> | boolean
+    profileImage?: StringNullableWithAggregatesFilter<"User"> | string | null
+    brandId?: StringNullableWithAggregatesFilter<"User"> | string | null
   }
 
   export type UserProfileWhereInput = {
@@ -30320,6 +30374,8 @@ export namespace Prisma {
     message?: StringNullableFilter<"Brand"> | string | null
     industryType?: StringFilter<"Brand"> | string
     socialProfile?: StringFilter<"Brand"> | string
+    zipCode?: StringNullableFilter<"Brand"> | string | null
+    country?: StringNullableFilter<"Brand"> | string | null
     brandCategory?: XOR<BrandCategoryScalarRelationFilter, BrandCategoryWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     Product?: ProductListRelationFilter
@@ -30354,6 +30410,8 @@ export namespace Prisma {
     message?: SortOrderInput | SortOrder
     industryType?: SortOrder
     socialProfile?: SortOrder
+    zipCode?: SortOrderInput | SortOrder
+    country?: SortOrderInput | SortOrder
     brandCategory?: BrandCategoryOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
     Product?: ProductOrderByRelationAggregateInput
@@ -30364,6 +30422,7 @@ export namespace Prisma {
 
   export type BrandWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    userId?: string
     AND?: BrandWhereInput | BrandWhereInput[]
     OR?: BrandWhereInput[]
     NOT?: BrandWhereInput | BrandWhereInput[]
@@ -30372,7 +30431,6 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Brand"> | Date | string
     updatedAt?: DateTimeFilter<"Brand"> | Date | string
     brandCategoryId?: StringFilter<"Brand"> | string
-    userId?: StringFilter<"Brand"> | string
     defaultBrandPct?: FloatFilter<"Brand"> | number
     defaultMerchantPct?: FloatFilter<"Brand"> | number
     dateOfBirth?: DateTimeFilter<"Brand"> | Date | string
@@ -30391,13 +30449,15 @@ export namespace Prisma {
     message?: StringNullableFilter<"Brand"> | string | null
     industryType?: StringFilter<"Brand"> | string
     socialProfile?: StringFilter<"Brand"> | string
+    zipCode?: StringNullableFilter<"Brand"> | string | null
+    country?: StringNullableFilter<"Brand"> | string | null
     brandCategory?: XOR<BrandCategoryScalarRelationFilter, BrandCategoryWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     Product?: ProductListRelationFilter
     Sales?: SaleListRelationFilter
     CommissionSetting?: CommissionSettingListRelationFilter
     Payout?: PayoutListRelationFilter
-  }, "id">
+  }, "id" | "userId">
 
   export type BrandOrderByWithAggregationInput = {
     id?: SortOrder
@@ -30425,6 +30485,8 @@ export namespace Prisma {
     message?: SortOrderInput | SortOrder
     industryType?: SortOrder
     socialProfile?: SortOrder
+    zipCode?: SortOrderInput | SortOrder
+    country?: SortOrderInput | SortOrder
     _count?: BrandCountOrderByAggregateInput
     _avg?: BrandAvgOrderByAggregateInput
     _max?: BrandMaxOrderByAggregateInput
@@ -30461,6 +30523,8 @@ export namespace Prisma {
     message?: StringNullableWithAggregatesFilter<"Brand"> | string | null
     industryType?: StringWithAggregatesFilter<"Brand"> | string
     socialProfile?: StringWithAggregatesFilter<"Brand"> | string
+    zipCode?: StringNullableWithAggregatesFilter<"Brand"> | string | null
+    country?: StringNullableWithAggregatesFilter<"Brand"> | string | null
   }
 
   export type BrandCategoryWhereInput = {
@@ -31617,15 +31681,17 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
-    brands?: BrandCreateNestedManyWithoutUserInput
+    profileImage?: string | null
+    brandId?: string | null
     products?: ProductCreateNestedManyWithoutUserInput
     sales?: SaleCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileCreateNestedOneWithoutUserInput
     addresses?: UserAddressCreateNestedManyWithoutUserInput
-    userprofile?: UserProfileCreateNestedOneWithoutUserInput
+    userProfile?: UserProfileCreateNestedOneWithoutUserInput
     Order?: OrderCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingCreateNestedManyWithoutMerchantInput
     Payout?: PayoutCreateNestedManyWithoutMerchantInput
+    brand?: BrandCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -31638,15 +31704,17 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
-    brands?: BrandUncheckedCreateNestedManyWithoutUserInput
+    profileImage?: string | null
+    brandId?: string | null
     products?: ProductUncheckedCreateNestedManyWithoutUserInput
     sales?: SaleUncheckedCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileUncheckedCreateNestedOneWithoutUserInput
     addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
-    userprofile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
+    userProfile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
     Order?: OrderUncheckedCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutMerchantInput
     Payout?: PayoutUncheckedCreateNestedManyWithoutMerchantInput
+    brand?: BrandUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -31659,15 +31727,17 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    brands?: BrandUpdateManyWithoutUserNestedInput
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
     products?: ProductUpdateManyWithoutUserNestedInput
     sales?: SaleUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUpdateManyWithoutUserNestedInput
-    userprofile?: UserProfileUpdateOneWithoutUserNestedInput
+    userProfile?: UserProfileUpdateOneWithoutUserNestedInput
     Order?: OrderUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUpdateManyWithoutMerchantNestedInput
+    brand?: BrandUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -31680,15 +31750,17 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    brands?: BrandUncheckedUpdateManyWithoutUserNestedInput
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
     products?: ProductUncheckedUpdateManyWithoutUserNestedInput
     sales?: SaleUncheckedUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUncheckedUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
-    userprofile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
+    userProfile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
     Order?: OrderUncheckedUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUncheckedUpdateManyWithoutMerchantNestedInput
+    brand?: BrandUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -31701,6 +31773,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
+    profileImage?: string | null
+    brandId?: string | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -31713,6 +31787,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -31725,6 +31801,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserProfileCreateInput = {
@@ -31737,7 +31815,7 @@ export namespace Prisma {
     country: string
     address: string
     zipCode: string
-    user: UserCreateNestedOneWithoutUserprofileInput
+    user: UserCreateNestedOneWithoutUserProfileInput
   }
 
   export type UserProfileUncheckedCreateInput = {
@@ -31763,7 +31841,7 @@ export namespace Prisma {
     country?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
     zipCode?: StringFieldUpdateOperationsInput | string
-    user?: UserUpdateOneRequiredWithoutUserprofileNestedInput
+    user?: UserUpdateOneRequiredWithoutUserProfileNestedInput
   }
 
   export type UserProfileUncheckedUpdateInput = {
@@ -32270,8 +32348,10 @@ export namespace Prisma {
     message?: string | null
     industryType: string
     socialProfile: string
+    zipCode?: string | null
+    country?: string | null
     brandCategory: BrandCategoryCreateNestedOneWithoutBrandInput
-    user: UserCreateNestedOneWithoutBrandsInput
+    user: UserCreateNestedOneWithoutBrandInput
     Product?: ProductCreateNestedManyWithoutBrandInput
     Sales?: SaleCreateNestedManyWithoutBrandInput
     CommissionSetting?: CommissionSettingCreateNestedManyWithoutBrandInput
@@ -32304,6 +32384,8 @@ export namespace Prisma {
     message?: string | null
     industryType: string
     socialProfile: string
+    zipCode?: string | null
+    country?: string | null
     Product?: ProductUncheckedCreateNestedManyWithoutBrandInput
     Sales?: SaleUncheckedCreateNestedManyWithoutBrandInput
     CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutBrandInput
@@ -32334,8 +32416,10 @@ export namespace Prisma {
     message?: NullableStringFieldUpdateOperationsInput | string | null
     industryType?: StringFieldUpdateOperationsInput | string
     socialProfile?: StringFieldUpdateOperationsInput | string
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
     brandCategory?: BrandCategoryUpdateOneRequiredWithoutBrandNestedInput
-    user?: UserUpdateOneRequiredWithoutBrandsNestedInput
+    user?: UserUpdateOneRequiredWithoutBrandNestedInput
     Product?: ProductUpdateManyWithoutBrandNestedInput
     Sales?: SaleUpdateManyWithoutBrandNestedInput
     CommissionSetting?: CommissionSettingUpdateManyWithoutBrandNestedInput
@@ -32368,6 +32452,8 @@ export namespace Prisma {
     message?: NullableStringFieldUpdateOperationsInput | string | null
     industryType?: StringFieldUpdateOperationsInput | string
     socialProfile?: StringFieldUpdateOperationsInput | string
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
     Product?: ProductUncheckedUpdateManyWithoutBrandNestedInput
     Sales?: SaleUncheckedUpdateManyWithoutBrandNestedInput
     CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutBrandNestedInput
@@ -32400,6 +32486,8 @@ export namespace Prisma {
     message?: string | null
     industryType: string
     socialProfile: string
+    zipCode?: string | null
+    country?: string | null
   }
 
   export type BrandUpdateManyMutationInput = {
@@ -32426,6 +32514,8 @@ export namespace Prisma {
     message?: NullableStringFieldUpdateOperationsInput | string | null
     industryType?: StringFieldUpdateOperationsInput | string
     socialProfile?: StringFieldUpdateOperationsInput | string
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type BrandUncheckedUpdateManyInput = {
@@ -32454,6 +32544,8 @@ export namespace Prisma {
     message?: NullableStringFieldUpdateOperationsInput | string | null
     industryType?: StringFieldUpdateOperationsInput | string
     socialProfile?: StringFieldUpdateOperationsInput | string
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type BrandCategoryCreateInput = {
@@ -33711,12 +33803,6 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
-  export type BrandListRelationFilter = {
-    every?: BrandWhereInput
-    some?: BrandWhereInput
-    none?: BrandWhereInput
-  }
-
   export type ProductListRelationFilter = {
     every?: ProductWhereInput
     some?: ProductWhereInput
@@ -33763,13 +33849,14 @@ export namespace Prisma {
     none?: PayoutWhereInput
   }
 
+  export type BrandNullableScalarRelationFilter = {
+    is?: BrandWhereInput | null
+    isNot?: BrandWhereInput | null
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
-  }
-
-  export type BrandOrderByRelationAggregateInput = {
-    _count?: SortOrder
   }
 
   export type ProductOrderByRelationAggregateInput = {
@@ -33806,6 +33893,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isActive?: SortOrder
+    profileImage?: SortOrder
+    brandId?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -33818,6 +33907,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isActive?: SortOrder
+    profileImage?: SortOrder
+    brandId?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -33830,6 +33921,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isActive?: SortOrder
+    profileImage?: SortOrder
+    brandId?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -34214,6 +34307,8 @@ export namespace Prisma {
     message?: SortOrder
     industryType?: SortOrder
     socialProfile?: SortOrder
+    zipCode?: SortOrder
+    country?: SortOrder
   }
 
   export type BrandAvgOrderByAggregateInput = {
@@ -34247,6 +34342,8 @@ export namespace Prisma {
     message?: SortOrder
     industryType?: SortOrder
     socialProfile?: SortOrder
+    zipCode?: SortOrder
+    country?: SortOrder
   }
 
   export type BrandMinOrderByAggregateInput = {
@@ -34275,6 +34372,8 @@ export namespace Prisma {
     message?: SortOrder
     industryType?: SortOrder
     socialProfile?: SortOrder
+    zipCode?: SortOrder
+    country?: SortOrder
   }
 
   export type BrandSumOrderByAggregateInput = {
@@ -34296,6 +34395,16 @@ export namespace Prisma {
     _sum?: NestedFloatFilter<$PrismaModel>
     _min?: NestedFloatFilter<$PrismaModel>
     _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type BrandListRelationFilter = {
+    every?: BrandWhereInput
+    some?: BrandWhereInput
+    none?: BrandWhereInput
+  }
+
+  export type BrandOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type BrandCategoryCountOrderByAggregateInput = {
@@ -34328,11 +34437,6 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type BrandNullableScalarRelationFilter = {
-    is?: BrandWhereInput | null
-    isNot?: BrandWhereInput | null
   }
 
   export type FeatureListRelationFilter = {
@@ -35242,13 +35346,6 @@ export namespace Prisma {
     _max?: NestedEnumPayoutActorFilter<$PrismaModel>
   }
 
-  export type BrandCreateNestedManyWithoutUserInput = {
-    create?: XOR<BrandCreateWithoutUserInput, BrandUncheckedCreateWithoutUserInput> | BrandCreateWithoutUserInput[] | BrandUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: BrandCreateOrConnectWithoutUserInput | BrandCreateOrConnectWithoutUserInput[]
-    createMany?: BrandCreateManyUserInputEnvelope
-    connect?: BrandWhereUniqueInput | BrandWhereUniqueInput[]
-  }
-
   export type ProductCreateNestedManyWithoutUserInput = {
     create?: XOR<ProductCreateWithoutUserInput, ProductUncheckedCreateWithoutUserInput> | ProductCreateWithoutUserInput[] | ProductUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ProductCreateOrConnectWithoutUserInput | ProductCreateOrConnectWithoutUserInput[]
@@ -35303,11 +35400,10 @@ export namespace Prisma {
     connect?: PayoutWhereUniqueInput | PayoutWhereUniqueInput[]
   }
 
-  export type BrandUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<BrandCreateWithoutUserInput, BrandUncheckedCreateWithoutUserInput> | BrandCreateWithoutUserInput[] | BrandUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: BrandCreateOrConnectWithoutUserInput | BrandCreateOrConnectWithoutUserInput[]
-    createMany?: BrandCreateManyUserInputEnvelope
-    connect?: BrandWhereUniqueInput | BrandWhereUniqueInput[]
+  export type BrandCreateNestedOneWithoutUserInput = {
+    create?: XOR<BrandCreateWithoutUserInput, BrandUncheckedCreateWithoutUserInput>
+    connectOrCreate?: BrandCreateOrConnectWithoutUserInput
+    connect?: BrandWhereUniqueInput
   }
 
   export type ProductUncheckedCreateNestedManyWithoutUserInput = {
@@ -35364,6 +35460,12 @@ export namespace Prisma {
     connect?: PayoutWhereUniqueInput | PayoutWhereUniqueInput[]
   }
 
+  export type BrandUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<BrandCreateWithoutUserInput, BrandUncheckedCreateWithoutUserInput>
+    connectOrCreate?: BrandCreateOrConnectWithoutUserInput
+    connect?: BrandWhereUniqueInput
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -35382,20 +35484,6 @@ export namespace Prisma {
 
   export type BoolFieldUpdateOperationsInput = {
     set?: boolean
-  }
-
-  export type BrandUpdateManyWithoutUserNestedInput = {
-    create?: XOR<BrandCreateWithoutUserInput, BrandUncheckedCreateWithoutUserInput> | BrandCreateWithoutUserInput[] | BrandUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: BrandCreateOrConnectWithoutUserInput | BrandCreateOrConnectWithoutUserInput[]
-    upsert?: BrandUpsertWithWhereUniqueWithoutUserInput | BrandUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: BrandCreateManyUserInputEnvelope
-    set?: BrandWhereUniqueInput | BrandWhereUniqueInput[]
-    disconnect?: BrandWhereUniqueInput | BrandWhereUniqueInput[]
-    delete?: BrandWhereUniqueInput | BrandWhereUniqueInput[]
-    connect?: BrandWhereUniqueInput | BrandWhereUniqueInput[]
-    update?: BrandUpdateWithWhereUniqueWithoutUserInput | BrandUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: BrandUpdateManyWithWhereWithoutUserInput | BrandUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: BrandScalarWhereInput | BrandScalarWhereInput[]
   }
 
   export type ProductUpdateManyWithoutUserNestedInput = {
@@ -35502,18 +35590,14 @@ export namespace Prisma {
     deleteMany?: PayoutScalarWhereInput | PayoutScalarWhereInput[]
   }
 
-  export type BrandUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<BrandCreateWithoutUserInput, BrandUncheckedCreateWithoutUserInput> | BrandCreateWithoutUserInput[] | BrandUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: BrandCreateOrConnectWithoutUserInput | BrandCreateOrConnectWithoutUserInput[]
-    upsert?: BrandUpsertWithWhereUniqueWithoutUserInput | BrandUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: BrandCreateManyUserInputEnvelope
-    set?: BrandWhereUniqueInput | BrandWhereUniqueInput[]
-    disconnect?: BrandWhereUniqueInput | BrandWhereUniqueInput[]
-    delete?: BrandWhereUniqueInput | BrandWhereUniqueInput[]
-    connect?: BrandWhereUniqueInput | BrandWhereUniqueInput[]
-    update?: BrandUpdateWithWhereUniqueWithoutUserInput | BrandUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: BrandUpdateManyWithWhereWithoutUserInput | BrandUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: BrandScalarWhereInput | BrandScalarWhereInput[]
+  export type BrandUpdateOneWithoutUserNestedInput = {
+    create?: XOR<BrandCreateWithoutUserInput, BrandUncheckedCreateWithoutUserInput>
+    connectOrCreate?: BrandCreateOrConnectWithoutUserInput
+    upsert?: BrandUpsertWithoutUserInput
+    disconnect?: BrandWhereInput | boolean
+    delete?: BrandWhereInput | boolean
+    connect?: BrandWhereUniqueInput
+    update?: XOR<XOR<BrandUpdateToOneWithWhereWithoutUserInput, BrandUpdateWithoutUserInput>, BrandUncheckedUpdateWithoutUserInput>
   }
 
   export type ProductUncheckedUpdateManyWithoutUserNestedInput = {
@@ -35620,18 +35704,28 @@ export namespace Prisma {
     deleteMany?: PayoutScalarWhereInput | PayoutScalarWhereInput[]
   }
 
-  export type UserCreateNestedOneWithoutUserprofileInput = {
-    create?: XOR<UserCreateWithoutUserprofileInput, UserUncheckedCreateWithoutUserprofileInput>
-    connectOrCreate?: UserCreateOrConnectWithoutUserprofileInput
+  export type BrandUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<BrandCreateWithoutUserInput, BrandUncheckedCreateWithoutUserInput>
+    connectOrCreate?: BrandCreateOrConnectWithoutUserInput
+    upsert?: BrandUpsertWithoutUserInput
+    disconnect?: BrandWhereInput | boolean
+    delete?: BrandWhereInput | boolean
+    connect?: BrandWhereUniqueInput
+    update?: XOR<XOR<BrandUpdateToOneWithWhereWithoutUserInput, BrandUpdateWithoutUserInput>, BrandUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserCreateNestedOneWithoutUserProfileInput = {
+    create?: XOR<UserCreateWithoutUserProfileInput, UserUncheckedCreateWithoutUserProfileInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUserProfileInput
     connect?: UserWhereUniqueInput
   }
 
-  export type UserUpdateOneRequiredWithoutUserprofileNestedInput = {
-    create?: XOR<UserCreateWithoutUserprofileInput, UserUncheckedCreateWithoutUserprofileInput>
-    connectOrCreate?: UserCreateOrConnectWithoutUserprofileInput
-    upsert?: UserUpsertWithoutUserprofileInput
+  export type UserUpdateOneRequiredWithoutUserProfileNestedInput = {
+    create?: XOR<UserCreateWithoutUserProfileInput, UserUncheckedCreateWithoutUserProfileInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUserProfileInput
+    upsert?: UserUpsertWithoutUserProfileInput
     connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutUserprofileInput, UserUpdateWithoutUserprofileInput>, UserUncheckedUpdateWithoutUserprofileInput>
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutUserProfileInput, UserUpdateWithoutUserProfileInput>, UserUncheckedUpdateWithoutUserProfileInput>
   }
 
   export type UserCreateNestedOneWithoutAddressesInput = {
@@ -35718,9 +35812,9 @@ export namespace Prisma {
     connect?: BrandCategoryWhereUniqueInput
   }
 
-  export type UserCreateNestedOneWithoutBrandsInput = {
-    create?: XOR<UserCreateWithoutBrandsInput, UserUncheckedCreateWithoutBrandsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutBrandsInput
+  export type UserCreateNestedOneWithoutBrandInput = {
+    create?: XOR<UserCreateWithoutBrandInput, UserUncheckedCreateWithoutBrandInput>
+    connectOrCreate?: UserCreateOrConnectWithoutBrandInput
     connect?: UserWhereUniqueInput
   }
 
@@ -35796,12 +35890,12 @@ export namespace Prisma {
     update?: XOR<XOR<BrandCategoryUpdateToOneWithWhereWithoutBrandInput, BrandCategoryUpdateWithoutBrandInput>, BrandCategoryUncheckedUpdateWithoutBrandInput>
   }
 
-  export type UserUpdateOneRequiredWithoutBrandsNestedInput = {
-    create?: XOR<UserCreateWithoutBrandsInput, UserUncheckedCreateWithoutBrandsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutBrandsInput
-    upsert?: UserUpsertWithoutBrandsInput
+  export type UserUpdateOneRequiredWithoutBrandNestedInput = {
+    create?: XOR<UserCreateWithoutBrandInput, UserUncheckedCreateWithoutBrandInput>
+    connectOrCreate?: UserCreateOrConnectWithoutBrandInput
+    upsert?: UserUpsertWithoutBrandInput
     connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutBrandsInput, UserUpdateWithoutBrandsInput>, UserUncheckedUpdateWithoutBrandsInput>
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutBrandInput, UserUpdateWithoutBrandInput>, UserUncheckedUpdateWithoutBrandInput>
   }
 
   export type ProductUpdateManyWithoutBrandNestedInput = {
@@ -37234,78 +37328,6 @@ export namespace Prisma {
     _max?: NestedEnumPayoutActorFilter<$PrismaModel>
   }
 
-  export type BrandCreateWithoutUserInput = {
-    id?: string
-    name: string
-    isActive?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    defaultBrandPct?: number
-    defaultMerchantPct?: number
-    dateOfBirth: Date | string
-    contactEmail: string
-    contactPhone: string
-    nidOrPassportNo: string
-    presentAddress: string
-    permanentAddress: string
-    portfolioUrl?: string | null
-    websiteUrl?: string | null
-    bankName: string
-    bankBranch: string
-    accountName: string
-    accountNumber: string
-    routingNumber: string
-    message?: string | null
-    industryType: string
-    socialProfile: string
-    brandCategory: BrandCategoryCreateNestedOneWithoutBrandInput
-    Product?: ProductCreateNestedManyWithoutBrandInput
-    Sales?: SaleCreateNestedManyWithoutBrandInput
-    CommissionSetting?: CommissionSettingCreateNestedManyWithoutBrandInput
-    Payout?: PayoutCreateNestedManyWithoutBrandInput
-  }
-
-  export type BrandUncheckedCreateWithoutUserInput = {
-    id?: string
-    name: string
-    isActive?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    brandCategoryId: string
-    defaultBrandPct?: number
-    defaultMerchantPct?: number
-    dateOfBirth: Date | string
-    contactEmail: string
-    contactPhone: string
-    nidOrPassportNo: string
-    presentAddress: string
-    permanentAddress: string
-    portfolioUrl?: string | null
-    websiteUrl?: string | null
-    bankName: string
-    bankBranch: string
-    accountName: string
-    accountNumber: string
-    routingNumber: string
-    message?: string | null
-    industryType: string
-    socialProfile: string
-    Product?: ProductUncheckedCreateNestedManyWithoutBrandInput
-    Sales?: SaleUncheckedCreateNestedManyWithoutBrandInput
-    CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutBrandInput
-    Payout?: PayoutUncheckedCreateNestedManyWithoutBrandInput
-  }
-
-  export type BrandCreateOrConnectWithoutUserInput = {
-    where: BrandWhereUniqueInput
-    create: XOR<BrandCreateWithoutUserInput, BrandUncheckedCreateWithoutUserInput>
-  }
-
-  export type BrandCreateManyUserInputEnvelope = {
-    data: BrandCreateManyUserInput | BrandCreateManyUserInput[]
-    skipDuplicates?: boolean
-  }
-
   export type ProductCreateWithoutUserInput = {
     id?: string
     productId: string
@@ -37644,51 +37666,75 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type BrandUpsertWithWhereUniqueWithoutUserInput = {
+  export type BrandCreateWithoutUserInput = {
+    id?: string
+    name: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    defaultBrandPct?: number
+    defaultMerchantPct?: number
+    dateOfBirth: Date | string
+    contactEmail: string
+    contactPhone: string
+    nidOrPassportNo: string
+    presentAddress: string
+    permanentAddress: string
+    portfolioUrl?: string | null
+    websiteUrl?: string | null
+    bankName: string
+    bankBranch: string
+    accountName: string
+    accountNumber: string
+    routingNumber: string
+    message?: string | null
+    industryType: string
+    socialProfile: string
+    zipCode?: string | null
+    country?: string | null
+    brandCategory: BrandCategoryCreateNestedOneWithoutBrandInput
+    Product?: ProductCreateNestedManyWithoutBrandInput
+    Sales?: SaleCreateNestedManyWithoutBrandInput
+    CommissionSetting?: CommissionSettingCreateNestedManyWithoutBrandInput
+    Payout?: PayoutCreateNestedManyWithoutBrandInput
+  }
+
+  export type BrandUncheckedCreateWithoutUserInput = {
+    id?: string
+    name: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    brandCategoryId: string
+    defaultBrandPct?: number
+    defaultMerchantPct?: number
+    dateOfBirth: Date | string
+    contactEmail: string
+    contactPhone: string
+    nidOrPassportNo: string
+    presentAddress: string
+    permanentAddress: string
+    portfolioUrl?: string | null
+    websiteUrl?: string | null
+    bankName: string
+    bankBranch: string
+    accountName: string
+    accountNumber: string
+    routingNumber: string
+    message?: string | null
+    industryType: string
+    socialProfile: string
+    zipCode?: string | null
+    country?: string | null
+    Product?: ProductUncheckedCreateNestedManyWithoutBrandInput
+    Sales?: SaleUncheckedCreateNestedManyWithoutBrandInput
+    CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutBrandInput
+    Payout?: PayoutUncheckedCreateNestedManyWithoutBrandInput
+  }
+
+  export type BrandCreateOrConnectWithoutUserInput = {
     where: BrandWhereUniqueInput
-    update: XOR<BrandUpdateWithoutUserInput, BrandUncheckedUpdateWithoutUserInput>
     create: XOR<BrandCreateWithoutUserInput, BrandUncheckedCreateWithoutUserInput>
-  }
-
-  export type BrandUpdateWithWhereUniqueWithoutUserInput = {
-    where: BrandWhereUniqueInput
-    data: XOR<BrandUpdateWithoutUserInput, BrandUncheckedUpdateWithoutUserInput>
-  }
-
-  export type BrandUpdateManyWithWhereWithoutUserInput = {
-    where: BrandScalarWhereInput
-    data: XOR<BrandUpdateManyMutationInput, BrandUncheckedUpdateManyWithoutUserInput>
-  }
-
-  export type BrandScalarWhereInput = {
-    AND?: BrandScalarWhereInput | BrandScalarWhereInput[]
-    OR?: BrandScalarWhereInput[]
-    NOT?: BrandScalarWhereInput | BrandScalarWhereInput[]
-    id?: StringFilter<"Brand"> | string
-    name?: StringFilter<"Brand"> | string
-    isActive?: BoolFilter<"Brand"> | boolean
-    createdAt?: DateTimeFilter<"Brand"> | Date | string
-    updatedAt?: DateTimeFilter<"Brand"> | Date | string
-    brandCategoryId?: StringFilter<"Brand"> | string
-    userId?: StringFilter<"Brand"> | string
-    defaultBrandPct?: FloatFilter<"Brand"> | number
-    defaultMerchantPct?: FloatFilter<"Brand"> | number
-    dateOfBirth?: DateTimeFilter<"Brand"> | Date | string
-    contactEmail?: StringFilter<"Brand"> | string
-    contactPhone?: StringFilter<"Brand"> | string
-    nidOrPassportNo?: StringFilter<"Brand"> | string
-    presentAddress?: StringFilter<"Brand"> | string
-    permanentAddress?: StringFilter<"Brand"> | string
-    portfolioUrl?: StringNullableFilter<"Brand"> | string | null
-    websiteUrl?: StringNullableFilter<"Brand"> | string | null
-    bankName?: StringFilter<"Brand"> | string
-    bankBranch?: StringFilter<"Brand"> | string
-    accountName?: StringFilter<"Brand"> | string
-    accountNumber?: StringFilter<"Brand"> | string
-    routingNumber?: StringFilter<"Brand"> | string
-    message?: StringNullableFilter<"Brand"> | string | null
-    industryType?: StringFilter<"Brand"> | string
-    socialProfile?: StringFilter<"Brand"> | string
   }
 
   export type ProductUpsertWithWhereUniqueWithoutUserInput = {
@@ -37995,7 +38041,84 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Payout"> | Date | string
   }
 
-  export type UserCreateWithoutUserprofileInput = {
+  export type BrandUpsertWithoutUserInput = {
+    update: XOR<BrandUpdateWithoutUserInput, BrandUncheckedUpdateWithoutUserInput>
+    create: XOR<BrandCreateWithoutUserInput, BrandUncheckedCreateWithoutUserInput>
+    where?: BrandWhereInput
+  }
+
+  export type BrandUpdateToOneWithWhereWithoutUserInput = {
+    where?: BrandWhereInput
+    data: XOR<BrandUpdateWithoutUserInput, BrandUncheckedUpdateWithoutUserInput>
+  }
+
+  export type BrandUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    defaultBrandPct?: FloatFieldUpdateOperationsInput | number
+    defaultMerchantPct?: FloatFieldUpdateOperationsInput | number
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    contactEmail?: StringFieldUpdateOperationsInput | string
+    contactPhone?: StringFieldUpdateOperationsInput | string
+    nidOrPassportNo?: StringFieldUpdateOperationsInput | string
+    presentAddress?: StringFieldUpdateOperationsInput | string
+    permanentAddress?: StringFieldUpdateOperationsInput | string
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankBranch?: StringFieldUpdateOperationsInput | string
+    accountName?: StringFieldUpdateOperationsInput | string
+    accountNumber?: StringFieldUpdateOperationsInput | string
+    routingNumber?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    industryType?: StringFieldUpdateOperationsInput | string
+    socialProfile?: StringFieldUpdateOperationsInput | string
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    brandCategory?: BrandCategoryUpdateOneRequiredWithoutBrandNestedInput
+    Product?: ProductUpdateManyWithoutBrandNestedInput
+    Sales?: SaleUpdateManyWithoutBrandNestedInput
+    CommissionSetting?: CommissionSettingUpdateManyWithoutBrandNestedInput
+    Payout?: PayoutUpdateManyWithoutBrandNestedInput
+  }
+
+  export type BrandUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    brandCategoryId?: StringFieldUpdateOperationsInput | string
+    defaultBrandPct?: FloatFieldUpdateOperationsInput | number
+    defaultMerchantPct?: FloatFieldUpdateOperationsInput | number
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    contactEmail?: StringFieldUpdateOperationsInput | string
+    contactPhone?: StringFieldUpdateOperationsInput | string
+    nidOrPassportNo?: StringFieldUpdateOperationsInput | string
+    presentAddress?: StringFieldUpdateOperationsInput | string
+    permanentAddress?: StringFieldUpdateOperationsInput | string
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankBranch?: StringFieldUpdateOperationsInput | string
+    accountName?: StringFieldUpdateOperationsInput | string
+    accountNumber?: StringFieldUpdateOperationsInput | string
+    routingNumber?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    industryType?: StringFieldUpdateOperationsInput | string
+    socialProfile?: StringFieldUpdateOperationsInput | string
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    Product?: ProductUncheckedUpdateManyWithoutBrandNestedInput
+    Sales?: SaleUncheckedUpdateManyWithoutBrandNestedInput
+    CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutBrandNestedInput
+    Payout?: PayoutUncheckedUpdateManyWithoutBrandNestedInput
+  }
+
+  export type UserCreateWithoutUserProfileInput = {
     id?: string
     email?: string | null
     phone?: string | null
@@ -38005,7 +38128,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
-    brands?: BrandCreateNestedManyWithoutUserInput
+    profileImage?: string | null
+    brandId?: string | null
     products?: ProductCreateNestedManyWithoutUserInput
     sales?: SaleCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileCreateNestedOneWithoutUserInput
@@ -38013,9 +38137,10 @@ export namespace Prisma {
     Order?: OrderCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingCreateNestedManyWithoutMerchantInput
     Payout?: PayoutCreateNestedManyWithoutMerchantInput
+    brand?: BrandCreateNestedOneWithoutUserInput
   }
 
-  export type UserUncheckedCreateWithoutUserprofileInput = {
+  export type UserUncheckedCreateWithoutUserProfileInput = {
     id?: string
     email?: string | null
     phone?: string | null
@@ -38025,7 +38150,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
-    brands?: BrandUncheckedCreateNestedManyWithoutUserInput
+    profileImage?: string | null
+    brandId?: string | null
     products?: ProductUncheckedCreateNestedManyWithoutUserInput
     sales?: SaleUncheckedCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileUncheckedCreateNestedOneWithoutUserInput
@@ -38033,25 +38159,26 @@ export namespace Prisma {
     Order?: OrderUncheckedCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutMerchantInput
     Payout?: PayoutUncheckedCreateNestedManyWithoutMerchantInput
+    brand?: BrandUncheckedCreateNestedOneWithoutUserInput
   }
 
-  export type UserCreateOrConnectWithoutUserprofileInput = {
+  export type UserCreateOrConnectWithoutUserProfileInput = {
     where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutUserprofileInput, UserUncheckedCreateWithoutUserprofileInput>
+    create: XOR<UserCreateWithoutUserProfileInput, UserUncheckedCreateWithoutUserProfileInput>
   }
 
-  export type UserUpsertWithoutUserprofileInput = {
-    update: XOR<UserUpdateWithoutUserprofileInput, UserUncheckedUpdateWithoutUserprofileInput>
-    create: XOR<UserCreateWithoutUserprofileInput, UserUncheckedCreateWithoutUserprofileInput>
+  export type UserUpsertWithoutUserProfileInput = {
+    update: XOR<UserUpdateWithoutUserProfileInput, UserUncheckedUpdateWithoutUserProfileInput>
+    create: XOR<UserCreateWithoutUserProfileInput, UserUncheckedCreateWithoutUserProfileInput>
     where?: UserWhereInput
   }
 
-  export type UserUpdateToOneWithWhereWithoutUserprofileInput = {
+  export type UserUpdateToOneWithWhereWithoutUserProfileInput = {
     where?: UserWhereInput
-    data: XOR<UserUpdateWithoutUserprofileInput, UserUncheckedUpdateWithoutUserprofileInput>
+    data: XOR<UserUpdateWithoutUserProfileInput, UserUncheckedUpdateWithoutUserProfileInput>
   }
 
-  export type UserUpdateWithoutUserprofileInput = {
+  export type UserUpdateWithoutUserProfileInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
@@ -38061,7 +38188,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    brands?: BrandUpdateManyWithoutUserNestedInput
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
     products?: ProductUpdateManyWithoutUserNestedInput
     sales?: SaleUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUpdateOneWithoutUserNestedInput
@@ -38069,9 +38197,10 @@ export namespace Prisma {
     Order?: OrderUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUpdateManyWithoutMerchantNestedInput
+    brand?: BrandUpdateOneWithoutUserNestedInput
   }
 
-  export type UserUncheckedUpdateWithoutUserprofileInput = {
+  export type UserUncheckedUpdateWithoutUserProfileInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
@@ -38081,7 +38210,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    brands?: BrandUncheckedUpdateManyWithoutUserNestedInput
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
     products?: ProductUncheckedUpdateManyWithoutUserNestedInput
     sales?: SaleUncheckedUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -38089,6 +38219,7 @@ export namespace Prisma {
     Order?: OrderUncheckedUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUncheckedUpdateManyWithoutMerchantNestedInput
+    brand?: BrandUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserCreateWithoutAddressesInput = {
@@ -38101,14 +38232,16 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
-    brands?: BrandCreateNestedManyWithoutUserInput
+    profileImage?: string | null
+    brandId?: string | null
     products?: ProductCreateNestedManyWithoutUserInput
     sales?: SaleCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileCreateNestedOneWithoutUserInput
-    userprofile?: UserProfileCreateNestedOneWithoutUserInput
+    userProfile?: UserProfileCreateNestedOneWithoutUserInput
     Order?: OrderCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingCreateNestedManyWithoutMerchantInput
     Payout?: PayoutCreateNestedManyWithoutMerchantInput
+    brand?: BrandCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAddressesInput = {
@@ -38121,14 +38254,16 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
-    brands?: BrandUncheckedCreateNestedManyWithoutUserInput
+    profileImage?: string | null
+    brandId?: string | null
     products?: ProductUncheckedCreateNestedManyWithoutUserInput
     sales?: SaleUncheckedCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileUncheckedCreateNestedOneWithoutUserInput
-    userprofile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
+    userProfile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
     Order?: OrderUncheckedCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutMerchantInput
     Payout?: PayoutUncheckedCreateNestedManyWithoutMerchantInput
+    brand?: BrandUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAddressesInput = {
@@ -38207,14 +38342,16 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    brands?: BrandUpdateManyWithoutUserNestedInput
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
     products?: ProductUpdateManyWithoutUserNestedInput
     sales?: SaleUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUpdateOneWithoutUserNestedInput
-    userprofile?: UserProfileUpdateOneWithoutUserNestedInput
+    userProfile?: UserProfileUpdateOneWithoutUserNestedInput
     Order?: OrderUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUpdateManyWithoutMerchantNestedInput
+    brand?: BrandUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAddressesInput = {
@@ -38227,14 +38364,16 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    brands?: BrandUncheckedUpdateManyWithoutUserNestedInput
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
     products?: ProductUncheckedUpdateManyWithoutUserNestedInput
     sales?: SaleUncheckedUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUncheckedUpdateOneWithoutUserNestedInput
-    userprofile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
+    userProfile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
     Order?: OrderUncheckedUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUncheckedUpdateManyWithoutMerchantNestedInput
+    brand?: BrandUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type OrderUpsertWithWhereUniqueWithoutAddressInput = {
@@ -38263,14 +38402,16 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
-    brands?: BrandCreateNestedManyWithoutUserInput
+    profileImage?: string | null
+    brandId?: string | null
     products?: ProductCreateNestedManyWithoutUserInput
     sales?: SaleCreateNestedManyWithoutMerchantInput
     addresses?: UserAddressCreateNestedManyWithoutUserInput
-    userprofile?: UserProfileCreateNestedOneWithoutUserInput
+    userProfile?: UserProfileCreateNestedOneWithoutUserInput
     Order?: OrderCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingCreateNestedManyWithoutMerchantInput
     Payout?: PayoutCreateNestedManyWithoutMerchantInput
+    brand?: BrandCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMerchantProfileInput = {
@@ -38283,14 +38424,16 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
-    brands?: BrandUncheckedCreateNestedManyWithoutUserInput
+    profileImage?: string | null
+    brandId?: string | null
     products?: ProductUncheckedCreateNestedManyWithoutUserInput
     sales?: SaleUncheckedCreateNestedManyWithoutMerchantInput
     addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
-    userprofile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
+    userProfile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
     Order?: OrderUncheckedCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutMerchantInput
     Payout?: PayoutUncheckedCreateNestedManyWithoutMerchantInput
+    brand?: BrandUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMerchantProfileInput = {
@@ -38319,14 +38462,16 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    brands?: BrandUpdateManyWithoutUserNestedInput
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
     products?: ProductUpdateManyWithoutUserNestedInput
     sales?: SaleUpdateManyWithoutMerchantNestedInput
     addresses?: UserAddressUpdateManyWithoutUserNestedInput
-    userprofile?: UserProfileUpdateOneWithoutUserNestedInput
+    userProfile?: UserProfileUpdateOneWithoutUserNestedInput
     Order?: OrderUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUpdateManyWithoutMerchantNestedInput
+    brand?: BrandUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMerchantProfileInput = {
@@ -38339,14 +38484,16 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    brands?: BrandUncheckedUpdateManyWithoutUserNestedInput
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
     products?: ProductUncheckedUpdateManyWithoutUserNestedInput
     sales?: SaleUncheckedUpdateManyWithoutMerchantNestedInput
     addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
-    userprofile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
+    userProfile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
     Order?: OrderUncheckedUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUncheckedUpdateManyWithoutMerchantNestedInput
+    brand?: BrandUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type BrandCategoryCreateWithoutBrandInput = {
@@ -38368,7 +38515,7 @@ export namespace Prisma {
     create: XOR<BrandCategoryCreateWithoutBrandInput, BrandCategoryUncheckedCreateWithoutBrandInput>
   }
 
-  export type UserCreateWithoutBrandsInput = {
+  export type UserCreateWithoutBrandInput = {
     id?: string
     email?: string | null
     phone?: string | null
@@ -38378,17 +38525,19 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
+    profileImage?: string | null
+    brandId?: string | null
     products?: ProductCreateNestedManyWithoutUserInput
     sales?: SaleCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileCreateNestedOneWithoutUserInput
     addresses?: UserAddressCreateNestedManyWithoutUserInput
-    userprofile?: UserProfileCreateNestedOneWithoutUserInput
+    userProfile?: UserProfileCreateNestedOneWithoutUserInput
     Order?: OrderCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingCreateNestedManyWithoutMerchantInput
     Payout?: PayoutCreateNestedManyWithoutMerchantInput
   }
 
-  export type UserUncheckedCreateWithoutBrandsInput = {
+  export type UserUncheckedCreateWithoutBrandInput = {
     id?: string
     email?: string | null
     phone?: string | null
@@ -38398,19 +38547,21 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
+    profileImage?: string | null
+    brandId?: string | null
     products?: ProductUncheckedCreateNestedManyWithoutUserInput
     sales?: SaleUncheckedCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileUncheckedCreateNestedOneWithoutUserInput
     addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
-    userprofile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
+    userProfile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
     Order?: OrderUncheckedCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutMerchantInput
     Payout?: PayoutUncheckedCreateNestedManyWithoutMerchantInput
   }
 
-  export type UserCreateOrConnectWithoutBrandsInput = {
+  export type UserCreateOrConnectWithoutBrandInput = {
     where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutBrandsInput, UserUncheckedCreateWithoutBrandsInput>
+    create: XOR<UserCreateWithoutBrandInput, UserUncheckedCreateWithoutBrandInput>
   }
 
   export type ProductCreateWithoutBrandInput = {
@@ -38600,18 +38751,18 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type UserUpsertWithoutBrandsInput = {
-    update: XOR<UserUpdateWithoutBrandsInput, UserUncheckedUpdateWithoutBrandsInput>
-    create: XOR<UserCreateWithoutBrandsInput, UserUncheckedCreateWithoutBrandsInput>
+  export type UserUpsertWithoutBrandInput = {
+    update: XOR<UserUpdateWithoutBrandInput, UserUncheckedUpdateWithoutBrandInput>
+    create: XOR<UserCreateWithoutBrandInput, UserUncheckedCreateWithoutBrandInput>
     where?: UserWhereInput
   }
 
-  export type UserUpdateToOneWithWhereWithoutBrandsInput = {
+  export type UserUpdateToOneWithWhereWithoutBrandInput = {
     where?: UserWhereInput
-    data: XOR<UserUpdateWithoutBrandsInput, UserUncheckedUpdateWithoutBrandsInput>
+    data: XOR<UserUpdateWithoutBrandInput, UserUncheckedUpdateWithoutBrandInput>
   }
 
-  export type UserUpdateWithoutBrandsInput = {
+  export type UserUpdateWithoutBrandInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
@@ -38621,17 +38772,19 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
     products?: ProductUpdateManyWithoutUserNestedInput
     sales?: SaleUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUpdateManyWithoutUserNestedInput
-    userprofile?: UserProfileUpdateOneWithoutUserNestedInput
+    userProfile?: UserProfileUpdateOneWithoutUserNestedInput
     Order?: OrderUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUpdateManyWithoutMerchantNestedInput
   }
 
-  export type UserUncheckedUpdateWithoutBrandsInput = {
+  export type UserUncheckedUpdateWithoutBrandInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
@@ -38641,11 +38794,13 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
     products?: ProductUncheckedUpdateManyWithoutUserNestedInput
     sales?: SaleUncheckedUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUncheckedUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
-    userprofile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
+    userProfile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
     Order?: OrderUncheckedUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUncheckedUpdateManyWithoutMerchantNestedInput
@@ -38739,7 +38894,9 @@ export namespace Prisma {
     message?: string | null
     industryType: string
     socialProfile: string
-    user: UserCreateNestedOneWithoutBrandsInput
+    zipCode?: string | null
+    country?: string | null
+    user: UserCreateNestedOneWithoutBrandInput
     Product?: ProductCreateNestedManyWithoutBrandInput
     Sales?: SaleCreateNestedManyWithoutBrandInput
     CommissionSetting?: CommissionSettingCreateNestedManyWithoutBrandInput
@@ -38771,6 +38928,8 @@ export namespace Prisma {
     message?: string | null
     industryType: string
     socialProfile: string
+    zipCode?: string | null
+    country?: string | null
     Product?: ProductUncheckedCreateNestedManyWithoutBrandInput
     Sales?: SaleUncheckedCreateNestedManyWithoutBrandInput
     CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutBrandInput
@@ -38803,6 +38962,39 @@ export namespace Prisma {
     data: XOR<BrandUpdateManyMutationInput, BrandUncheckedUpdateManyWithoutBrandCategoryInput>
   }
 
+  export type BrandScalarWhereInput = {
+    AND?: BrandScalarWhereInput | BrandScalarWhereInput[]
+    OR?: BrandScalarWhereInput[]
+    NOT?: BrandScalarWhereInput | BrandScalarWhereInput[]
+    id?: StringFilter<"Brand"> | string
+    name?: StringFilter<"Brand"> | string
+    isActive?: BoolFilter<"Brand"> | boolean
+    createdAt?: DateTimeFilter<"Brand"> | Date | string
+    updatedAt?: DateTimeFilter<"Brand"> | Date | string
+    brandCategoryId?: StringFilter<"Brand"> | string
+    userId?: StringFilter<"Brand"> | string
+    defaultBrandPct?: FloatFilter<"Brand"> | number
+    defaultMerchantPct?: FloatFilter<"Brand"> | number
+    dateOfBirth?: DateTimeFilter<"Brand"> | Date | string
+    contactEmail?: StringFilter<"Brand"> | string
+    contactPhone?: StringFilter<"Brand"> | string
+    nidOrPassportNo?: StringFilter<"Brand"> | string
+    presentAddress?: StringFilter<"Brand"> | string
+    permanentAddress?: StringFilter<"Brand"> | string
+    portfolioUrl?: StringNullableFilter<"Brand"> | string | null
+    websiteUrl?: StringNullableFilter<"Brand"> | string | null
+    bankName?: StringFilter<"Brand"> | string
+    bankBranch?: StringFilter<"Brand"> | string
+    accountName?: StringFilter<"Brand"> | string
+    accountNumber?: StringFilter<"Brand"> | string
+    routingNumber?: StringFilter<"Brand"> | string
+    message?: StringNullableFilter<"Brand"> | string | null
+    industryType?: StringFilter<"Brand"> | string
+    socialProfile?: StringFilter<"Brand"> | string
+    zipCode?: StringNullableFilter<"Brand"> | string | null
+    country?: StringNullableFilter<"Brand"> | string | null
+  }
+
   export type BrandCreateWithoutProductInput = {
     id?: string
     name: string
@@ -38827,8 +39019,10 @@ export namespace Prisma {
     message?: string | null
     industryType: string
     socialProfile: string
+    zipCode?: string | null
+    country?: string | null
     brandCategory: BrandCategoryCreateNestedOneWithoutBrandInput
-    user: UserCreateNestedOneWithoutBrandsInput
+    user: UserCreateNestedOneWithoutBrandInput
     Sales?: SaleCreateNestedManyWithoutBrandInput
     CommissionSetting?: CommissionSettingCreateNestedManyWithoutBrandInput
     Payout?: PayoutCreateNestedManyWithoutBrandInput
@@ -38860,6 +39054,8 @@ export namespace Prisma {
     message?: string | null
     industryType: string
     socialProfile: string
+    zipCode?: string | null
+    country?: string | null
     Sales?: SaleUncheckedCreateNestedManyWithoutBrandInput
     CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutBrandInput
     Payout?: PayoutUncheckedCreateNestedManyWithoutBrandInput
@@ -38967,14 +39163,16 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
-    brands?: BrandCreateNestedManyWithoutUserInput
+    profileImage?: string | null
+    brandId?: string | null
     sales?: SaleCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileCreateNestedOneWithoutUserInput
     addresses?: UserAddressCreateNestedManyWithoutUserInput
-    userprofile?: UserProfileCreateNestedOneWithoutUserInput
+    userProfile?: UserProfileCreateNestedOneWithoutUserInput
     Order?: OrderCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingCreateNestedManyWithoutMerchantInput
     Payout?: PayoutCreateNestedManyWithoutMerchantInput
+    brand?: BrandCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutProductsInput = {
@@ -38987,14 +39185,16 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
-    brands?: BrandUncheckedCreateNestedManyWithoutUserInput
+    profileImage?: string | null
+    brandId?: string | null
     sales?: SaleUncheckedCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileUncheckedCreateNestedOneWithoutUserInput
     addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
-    userprofile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
+    userProfile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
     Order?: OrderUncheckedCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutMerchantInput
     Payout?: PayoutUncheckedCreateNestedManyWithoutMerchantInput
+    brand?: BrandUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutProductsInput = {
@@ -39113,8 +39313,10 @@ export namespace Prisma {
     message?: NullableStringFieldUpdateOperationsInput | string | null
     industryType?: StringFieldUpdateOperationsInput | string
     socialProfile?: StringFieldUpdateOperationsInput | string
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
     brandCategory?: BrandCategoryUpdateOneRequiredWithoutBrandNestedInput
-    user?: UserUpdateOneRequiredWithoutBrandsNestedInput
+    user?: UserUpdateOneRequiredWithoutBrandNestedInput
     Sales?: SaleUpdateManyWithoutBrandNestedInput
     CommissionSetting?: CommissionSettingUpdateManyWithoutBrandNestedInput
     Payout?: PayoutUpdateManyWithoutBrandNestedInput
@@ -39146,6 +39348,8 @@ export namespace Prisma {
     message?: NullableStringFieldUpdateOperationsInput | string | null
     industryType?: StringFieldUpdateOperationsInput | string
     socialProfile?: StringFieldUpdateOperationsInput | string
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
     Sales?: SaleUncheckedUpdateManyWithoutBrandNestedInput
     CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutBrandNestedInput
     Payout?: PayoutUncheckedUpdateManyWithoutBrandNestedInput
@@ -39277,14 +39481,16 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    brands?: BrandUpdateManyWithoutUserNestedInput
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
     sales?: SaleUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUpdateManyWithoutUserNestedInput
-    userprofile?: UserProfileUpdateOneWithoutUserNestedInput
+    userProfile?: UserProfileUpdateOneWithoutUserNestedInput
     Order?: OrderUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUpdateManyWithoutMerchantNestedInput
+    brand?: BrandUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutProductsInput = {
@@ -39297,14 +39503,16 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    brands?: BrandUncheckedUpdateManyWithoutUserNestedInput
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
     sales?: SaleUncheckedUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUncheckedUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
-    userprofile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
+    userProfile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
     Order?: OrderUncheckedUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUncheckedUpdateManyWithoutMerchantNestedInput
+    brand?: BrandUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type SaleUpsertWithWhereUniqueWithoutProductInput = {
@@ -39433,14 +39641,16 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
-    brands?: BrandCreateNestedManyWithoutUserInput
+    profileImage?: string | null
+    brandId?: string | null
     products?: ProductCreateNestedManyWithoutUserInput
     merchantProfile?: MerchantProfileCreateNestedOneWithoutUserInput
     addresses?: UserAddressCreateNestedManyWithoutUserInput
-    userprofile?: UserProfileCreateNestedOneWithoutUserInput
+    userProfile?: UserProfileCreateNestedOneWithoutUserInput
     Order?: OrderCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingCreateNestedManyWithoutMerchantInput
     Payout?: PayoutCreateNestedManyWithoutMerchantInput
+    brand?: BrandCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSalesInput = {
@@ -39453,14 +39663,16 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
-    brands?: BrandUncheckedCreateNestedManyWithoutUserInput
+    profileImage?: string | null
+    brandId?: string | null
     products?: ProductUncheckedCreateNestedManyWithoutUserInput
     merchantProfile?: MerchantProfileUncheckedCreateNestedOneWithoutUserInput
     addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
-    userprofile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
+    userProfile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
     Order?: OrderUncheckedCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutMerchantInput
     Payout?: PayoutUncheckedCreateNestedManyWithoutMerchantInput
+    brand?: BrandUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSalesInput = {
@@ -39492,8 +39704,10 @@ export namespace Prisma {
     message?: string | null
     industryType: string
     socialProfile: string
+    zipCode?: string | null
+    country?: string | null
     brandCategory: BrandCategoryCreateNestedOneWithoutBrandInput
-    user: UserCreateNestedOneWithoutBrandsInput
+    user: UserCreateNestedOneWithoutBrandInput
     Product?: ProductCreateNestedManyWithoutBrandInput
     CommissionSetting?: CommissionSettingCreateNestedManyWithoutBrandInput
     Payout?: PayoutCreateNestedManyWithoutBrandInput
@@ -39525,6 +39739,8 @@ export namespace Prisma {
     message?: string | null
     industryType: string
     socialProfile: string
+    zipCode?: string | null
+    country?: string | null
     Product?: ProductUncheckedCreateNestedManyWithoutBrandInput
     CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutBrandInput
     Payout?: PayoutUncheckedCreateNestedManyWithoutBrandInput
@@ -39714,14 +39930,16 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    brands?: BrandUpdateManyWithoutUserNestedInput
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
     products?: ProductUpdateManyWithoutUserNestedInput
     merchantProfile?: MerchantProfileUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUpdateManyWithoutUserNestedInput
-    userprofile?: UserProfileUpdateOneWithoutUserNestedInput
+    userProfile?: UserProfileUpdateOneWithoutUserNestedInput
     Order?: OrderUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUpdateManyWithoutMerchantNestedInput
+    brand?: BrandUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSalesInput = {
@@ -39734,14 +39952,16 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    brands?: BrandUncheckedUpdateManyWithoutUserNestedInput
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
     products?: ProductUncheckedUpdateManyWithoutUserNestedInput
     merchantProfile?: MerchantProfileUncheckedUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
-    userprofile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
+    userProfile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
     Order?: OrderUncheckedUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUncheckedUpdateManyWithoutMerchantNestedInput
+    brand?: BrandUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type BrandUpsertWithoutSalesInput = {
@@ -39779,8 +39999,10 @@ export namespace Prisma {
     message?: NullableStringFieldUpdateOperationsInput | string | null
     industryType?: StringFieldUpdateOperationsInput | string
     socialProfile?: StringFieldUpdateOperationsInput | string
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
     brandCategory?: BrandCategoryUpdateOneRequiredWithoutBrandNestedInput
-    user?: UserUpdateOneRequiredWithoutBrandsNestedInput
+    user?: UserUpdateOneRequiredWithoutBrandNestedInput
     Product?: ProductUpdateManyWithoutBrandNestedInput
     CommissionSetting?: CommissionSettingUpdateManyWithoutBrandNestedInput
     Payout?: PayoutUpdateManyWithoutBrandNestedInput
@@ -39812,6 +40034,8 @@ export namespace Prisma {
     message?: NullableStringFieldUpdateOperationsInput | string | null
     industryType?: StringFieldUpdateOperationsInput | string
     socialProfile?: StringFieldUpdateOperationsInput | string
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
     Product?: ProductUncheckedUpdateManyWithoutBrandNestedInput
     CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutBrandNestedInput
     Payout?: PayoutUncheckedUpdateManyWithoutBrandNestedInput
@@ -40476,14 +40700,16 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
-    brands?: BrandCreateNestedManyWithoutUserInput
+    profileImage?: string | null
+    brandId?: string | null
     products?: ProductCreateNestedManyWithoutUserInput
     sales?: SaleCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileCreateNestedOneWithoutUserInput
     addresses?: UserAddressCreateNestedManyWithoutUserInput
-    userprofile?: UserProfileCreateNestedOneWithoutUserInput
+    userProfile?: UserProfileCreateNestedOneWithoutUserInput
     CommissionSetting?: CommissionSettingCreateNestedManyWithoutMerchantInput
     Payout?: PayoutCreateNestedManyWithoutMerchantInput
+    brand?: BrandCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutOrderInput = {
@@ -40496,14 +40722,16 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
-    brands?: BrandUncheckedCreateNestedManyWithoutUserInput
+    profileImage?: string | null
+    brandId?: string | null
     products?: ProductUncheckedCreateNestedManyWithoutUserInput
     sales?: SaleUncheckedCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileUncheckedCreateNestedOneWithoutUserInput
     addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
-    userprofile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
+    userProfile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
     CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutMerchantInput
     Payout?: PayoutUncheckedCreateNestedManyWithoutMerchantInput
+    brand?: BrandUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutOrderInput = {
@@ -40628,14 +40856,16 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    brands?: BrandUpdateManyWithoutUserNestedInput
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
     products?: ProductUpdateManyWithoutUserNestedInput
     sales?: SaleUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUpdateManyWithoutUserNestedInput
-    userprofile?: UserProfileUpdateOneWithoutUserNestedInput
+    userProfile?: UserProfileUpdateOneWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUpdateManyWithoutMerchantNestedInput
+    brand?: BrandUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOrderInput = {
@@ -40648,14 +40878,16 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    brands?: BrandUncheckedUpdateManyWithoutUserNestedInput
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
     products?: ProductUncheckedUpdateManyWithoutUserNestedInput
     sales?: SaleUncheckedUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUncheckedUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
-    userprofile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
+    userProfile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutMerchantNestedInput
     Payout?: PayoutUncheckedUpdateManyWithoutMerchantNestedInput
+    brand?: BrandUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserAddressUpsertWithoutOrderInput = {
@@ -41083,8 +41315,10 @@ export namespace Prisma {
     message?: string | null
     industryType: string
     socialProfile: string
+    zipCode?: string | null
+    country?: string | null
     brandCategory: BrandCategoryCreateNestedOneWithoutBrandInput
-    user: UserCreateNestedOneWithoutBrandsInput
+    user: UserCreateNestedOneWithoutBrandInput
     Product?: ProductCreateNestedManyWithoutBrandInput
     Sales?: SaleCreateNestedManyWithoutBrandInput
     Payout?: PayoutCreateNestedManyWithoutBrandInput
@@ -41116,6 +41350,8 @@ export namespace Prisma {
     message?: string | null
     industryType: string
     socialProfile: string
+    zipCode?: string | null
+    country?: string | null
     Product?: ProductUncheckedCreateNestedManyWithoutBrandInput
     Sales?: SaleUncheckedCreateNestedManyWithoutBrandInput
     Payout?: PayoutUncheckedCreateNestedManyWithoutBrandInput
@@ -41136,14 +41372,16 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
-    brands?: BrandCreateNestedManyWithoutUserInput
+    profileImage?: string | null
+    brandId?: string | null
     products?: ProductCreateNestedManyWithoutUserInput
     sales?: SaleCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileCreateNestedOneWithoutUserInput
     addresses?: UserAddressCreateNestedManyWithoutUserInput
-    userprofile?: UserProfileCreateNestedOneWithoutUserInput
+    userProfile?: UserProfileCreateNestedOneWithoutUserInput
     Order?: OrderCreateNestedManyWithoutUserInput
     Payout?: PayoutCreateNestedManyWithoutMerchantInput
+    brand?: BrandCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCommissionSettingInput = {
@@ -41156,14 +41394,16 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
-    brands?: BrandUncheckedCreateNestedManyWithoutUserInput
+    profileImage?: string | null
+    brandId?: string | null
     products?: ProductUncheckedCreateNestedManyWithoutUserInput
     sales?: SaleUncheckedCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileUncheckedCreateNestedOneWithoutUserInput
     addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
-    userprofile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
+    userProfile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
     Order?: OrderUncheckedCreateNestedManyWithoutUserInput
     Payout?: PayoutUncheckedCreateNestedManyWithoutMerchantInput
+    brand?: BrandUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCommissionSettingInput = {
@@ -41259,8 +41499,10 @@ export namespace Prisma {
     message?: NullableStringFieldUpdateOperationsInput | string | null
     industryType?: StringFieldUpdateOperationsInput | string
     socialProfile?: StringFieldUpdateOperationsInput | string
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
     brandCategory?: BrandCategoryUpdateOneRequiredWithoutBrandNestedInput
-    user?: UserUpdateOneRequiredWithoutBrandsNestedInput
+    user?: UserUpdateOneRequiredWithoutBrandNestedInput
     Product?: ProductUpdateManyWithoutBrandNestedInput
     Sales?: SaleUpdateManyWithoutBrandNestedInput
     Payout?: PayoutUpdateManyWithoutBrandNestedInput
@@ -41292,6 +41534,8 @@ export namespace Prisma {
     message?: NullableStringFieldUpdateOperationsInput | string | null
     industryType?: StringFieldUpdateOperationsInput | string
     socialProfile?: StringFieldUpdateOperationsInput | string
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
     Product?: ProductUncheckedUpdateManyWithoutBrandNestedInput
     Sales?: SaleUncheckedUpdateManyWithoutBrandNestedInput
     Payout?: PayoutUncheckedUpdateManyWithoutBrandNestedInput
@@ -41318,14 +41562,16 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    brands?: BrandUpdateManyWithoutUserNestedInput
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
     products?: ProductUpdateManyWithoutUserNestedInput
     sales?: SaleUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUpdateManyWithoutUserNestedInput
-    userprofile?: UserProfileUpdateOneWithoutUserNestedInput
+    userProfile?: UserProfileUpdateOneWithoutUserNestedInput
     Order?: OrderUpdateManyWithoutUserNestedInput
     Payout?: PayoutUpdateManyWithoutMerchantNestedInput
+    brand?: BrandUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCommissionSettingInput = {
@@ -41338,14 +41584,16 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    brands?: BrandUncheckedUpdateManyWithoutUserNestedInput
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
     products?: ProductUncheckedUpdateManyWithoutUserNestedInput
     sales?: SaleUncheckedUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUncheckedUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
-    userprofile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
+    userProfile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
     Order?: OrderUncheckedUpdateManyWithoutUserNestedInput
     Payout?: PayoutUncheckedUpdateManyWithoutMerchantNestedInput
+    brand?: BrandUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type ProductUpsertWithoutCommissionSettingInput = {
@@ -41575,8 +41823,10 @@ export namespace Prisma {
     message?: string | null
     industryType: string
     socialProfile: string
+    zipCode?: string | null
+    country?: string | null
     brandCategory: BrandCategoryCreateNestedOneWithoutBrandInput
-    user: UserCreateNestedOneWithoutBrandsInput
+    user: UserCreateNestedOneWithoutBrandInput
     Product?: ProductCreateNestedManyWithoutBrandInput
     Sales?: SaleCreateNestedManyWithoutBrandInput
     CommissionSetting?: CommissionSettingCreateNestedManyWithoutBrandInput
@@ -41608,6 +41858,8 @@ export namespace Prisma {
     message?: string | null
     industryType: string
     socialProfile: string
+    zipCode?: string | null
+    country?: string | null
     Product?: ProductUncheckedCreateNestedManyWithoutBrandInput
     Sales?: SaleUncheckedCreateNestedManyWithoutBrandInput
     CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutBrandInput
@@ -41628,14 +41880,16 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
-    brands?: BrandCreateNestedManyWithoutUserInput
+    profileImage?: string | null
+    brandId?: string | null
     products?: ProductCreateNestedManyWithoutUserInput
     sales?: SaleCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileCreateNestedOneWithoutUserInput
     addresses?: UserAddressCreateNestedManyWithoutUserInput
-    userprofile?: UserProfileCreateNestedOneWithoutUserInput
+    userProfile?: UserProfileCreateNestedOneWithoutUserInput
     Order?: OrderCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingCreateNestedManyWithoutMerchantInput
+    brand?: BrandCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPayoutInput = {
@@ -41648,14 +41902,16 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
-    brands?: BrandUncheckedCreateNestedManyWithoutUserInput
+    profileImage?: string | null
+    brandId?: string | null
     products?: ProductUncheckedCreateNestedManyWithoutUserInput
     sales?: SaleUncheckedCreateNestedManyWithoutMerchantInput
     merchantProfile?: MerchantProfileUncheckedCreateNestedOneWithoutUserInput
     addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
-    userprofile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
+    userProfile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
     Order?: OrderUncheckedCreateNestedManyWithoutUserInput
     CommissionSetting?: CommissionSettingUncheckedCreateNestedManyWithoutMerchantInput
+    brand?: BrandUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutPayoutInput = {
@@ -41698,8 +41954,10 @@ export namespace Prisma {
     message?: NullableStringFieldUpdateOperationsInput | string | null
     industryType?: StringFieldUpdateOperationsInput | string
     socialProfile?: StringFieldUpdateOperationsInput | string
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
     brandCategory?: BrandCategoryUpdateOneRequiredWithoutBrandNestedInput
-    user?: UserUpdateOneRequiredWithoutBrandsNestedInput
+    user?: UserUpdateOneRequiredWithoutBrandNestedInput
     Product?: ProductUpdateManyWithoutBrandNestedInput
     Sales?: SaleUpdateManyWithoutBrandNestedInput
     CommissionSetting?: CommissionSettingUpdateManyWithoutBrandNestedInput
@@ -41731,6 +41989,8 @@ export namespace Prisma {
     message?: NullableStringFieldUpdateOperationsInput | string | null
     industryType?: StringFieldUpdateOperationsInput | string
     socialProfile?: StringFieldUpdateOperationsInput | string
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
     Product?: ProductUncheckedUpdateManyWithoutBrandNestedInput
     Sales?: SaleUncheckedUpdateManyWithoutBrandNestedInput
     CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutBrandNestedInput
@@ -41757,14 +42017,16 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    brands?: BrandUpdateManyWithoutUserNestedInput
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
     products?: ProductUpdateManyWithoutUserNestedInput
     sales?: SaleUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUpdateManyWithoutUserNestedInput
-    userprofile?: UserProfileUpdateOneWithoutUserNestedInput
+    userProfile?: UserProfileUpdateOneWithoutUserNestedInput
     Order?: OrderUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUpdateManyWithoutMerchantNestedInput
+    brand?: BrandUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPayoutInput = {
@@ -41777,41 +42039,16 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    brands?: BrandUncheckedUpdateManyWithoutUserNestedInput
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    brandId?: NullableStringFieldUpdateOperationsInput | string | null
     products?: ProductUncheckedUpdateManyWithoutUserNestedInput
     sales?: SaleUncheckedUpdateManyWithoutMerchantNestedInput
     merchantProfile?: MerchantProfileUncheckedUpdateOneWithoutUserNestedInput
     addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
-    userprofile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
+    userProfile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
     Order?: OrderUncheckedUpdateManyWithoutUserNestedInput
     CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutMerchantNestedInput
-  }
-
-  export type BrandCreateManyUserInput = {
-    id?: string
-    name: string
-    isActive?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    brandCategoryId: string
-    defaultBrandPct?: number
-    defaultMerchantPct?: number
-    dateOfBirth: Date | string
-    contactEmail: string
-    contactPhone: string
-    nidOrPassportNo: string
-    presentAddress: string
-    permanentAddress: string
-    portfolioUrl?: string | null
-    websiteUrl?: string | null
-    bankName: string
-    bankBranch: string
-    accountName: string
-    accountNumber: string
-    routingNumber: string
-    message?: string | null
-    industryType: string
-    socialProfile: string
+    brand?: BrandUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type ProductCreateManyUserInput = {
@@ -41898,95 +42135,6 @@ export namespace Prisma {
     amount: Decimal | DecimalJsLike | number | string
     note?: string | null
     createdAt?: Date | string
-  }
-
-  export type BrandUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    defaultBrandPct?: FloatFieldUpdateOperationsInput | number
-    defaultMerchantPct?: FloatFieldUpdateOperationsInput | number
-    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    contactEmail?: StringFieldUpdateOperationsInput | string
-    contactPhone?: StringFieldUpdateOperationsInput | string
-    nidOrPassportNo?: StringFieldUpdateOperationsInput | string
-    presentAddress?: StringFieldUpdateOperationsInput | string
-    permanentAddress?: StringFieldUpdateOperationsInput | string
-    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    bankName?: StringFieldUpdateOperationsInput | string
-    bankBranch?: StringFieldUpdateOperationsInput | string
-    accountName?: StringFieldUpdateOperationsInput | string
-    accountNumber?: StringFieldUpdateOperationsInput | string
-    routingNumber?: StringFieldUpdateOperationsInput | string
-    message?: NullableStringFieldUpdateOperationsInput | string | null
-    industryType?: StringFieldUpdateOperationsInput | string
-    socialProfile?: StringFieldUpdateOperationsInput | string
-    brandCategory?: BrandCategoryUpdateOneRequiredWithoutBrandNestedInput
-    Product?: ProductUpdateManyWithoutBrandNestedInput
-    Sales?: SaleUpdateManyWithoutBrandNestedInput
-    CommissionSetting?: CommissionSettingUpdateManyWithoutBrandNestedInput
-    Payout?: PayoutUpdateManyWithoutBrandNestedInput
-  }
-
-  export type BrandUncheckedUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    brandCategoryId?: StringFieldUpdateOperationsInput | string
-    defaultBrandPct?: FloatFieldUpdateOperationsInput | number
-    defaultMerchantPct?: FloatFieldUpdateOperationsInput | number
-    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    contactEmail?: StringFieldUpdateOperationsInput | string
-    contactPhone?: StringFieldUpdateOperationsInput | string
-    nidOrPassportNo?: StringFieldUpdateOperationsInput | string
-    presentAddress?: StringFieldUpdateOperationsInput | string
-    permanentAddress?: StringFieldUpdateOperationsInput | string
-    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    bankName?: StringFieldUpdateOperationsInput | string
-    bankBranch?: StringFieldUpdateOperationsInput | string
-    accountName?: StringFieldUpdateOperationsInput | string
-    accountNumber?: StringFieldUpdateOperationsInput | string
-    routingNumber?: StringFieldUpdateOperationsInput | string
-    message?: NullableStringFieldUpdateOperationsInput | string | null
-    industryType?: StringFieldUpdateOperationsInput | string
-    socialProfile?: StringFieldUpdateOperationsInput | string
-    Product?: ProductUncheckedUpdateManyWithoutBrandNestedInput
-    Sales?: SaleUncheckedUpdateManyWithoutBrandNestedInput
-    CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutBrandNestedInput
-    Payout?: PayoutUncheckedUpdateManyWithoutBrandNestedInput
-  }
-
-  export type BrandUncheckedUpdateManyWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    brandCategoryId?: StringFieldUpdateOperationsInput | string
-    defaultBrandPct?: FloatFieldUpdateOperationsInput | number
-    defaultMerchantPct?: FloatFieldUpdateOperationsInput | number
-    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    contactEmail?: StringFieldUpdateOperationsInput | string
-    contactPhone?: StringFieldUpdateOperationsInput | string
-    nidOrPassportNo?: StringFieldUpdateOperationsInput | string
-    presentAddress?: StringFieldUpdateOperationsInput | string
-    permanentAddress?: StringFieldUpdateOperationsInput | string
-    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    bankName?: StringFieldUpdateOperationsInput | string
-    bankBranch?: StringFieldUpdateOperationsInput | string
-    accountName?: StringFieldUpdateOperationsInput | string
-    accountNumber?: StringFieldUpdateOperationsInput | string
-    routingNumber?: StringFieldUpdateOperationsInput | string
-    message?: NullableStringFieldUpdateOperationsInput | string | null
-    industryType?: StringFieldUpdateOperationsInput | string
-    socialProfile?: StringFieldUpdateOperationsInput | string
   }
 
   export type ProductUpdateWithoutUserInput = {
@@ -42598,6 +42746,8 @@ export namespace Prisma {
     message?: string | null
     industryType: string
     socialProfile: string
+    zipCode?: string | null
+    country?: string | null
   }
 
   export type BrandUpdateWithoutBrandCategoryInput = {
@@ -42624,7 +42774,9 @@ export namespace Prisma {
     message?: NullableStringFieldUpdateOperationsInput | string | null
     industryType?: StringFieldUpdateOperationsInput | string
     socialProfile?: StringFieldUpdateOperationsInput | string
-    user?: UserUpdateOneRequiredWithoutBrandsNestedInput
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    user?: UserUpdateOneRequiredWithoutBrandNestedInput
     Product?: ProductUpdateManyWithoutBrandNestedInput
     Sales?: SaleUpdateManyWithoutBrandNestedInput
     CommissionSetting?: CommissionSettingUpdateManyWithoutBrandNestedInput
@@ -42656,6 +42808,8 @@ export namespace Prisma {
     message?: NullableStringFieldUpdateOperationsInput | string | null
     industryType?: StringFieldUpdateOperationsInput | string
     socialProfile?: StringFieldUpdateOperationsInput | string
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
     Product?: ProductUncheckedUpdateManyWithoutBrandNestedInput
     Sales?: SaleUncheckedUpdateManyWithoutBrandNestedInput
     CommissionSetting?: CommissionSettingUncheckedUpdateManyWithoutBrandNestedInput
@@ -42687,6 +42841,8 @@ export namespace Prisma {
     message?: NullableStringFieldUpdateOperationsInput | string | null
     industryType?: StringFieldUpdateOperationsInput | string
     socialProfile?: StringFieldUpdateOperationsInput | string
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type FeatureCreateManyProductInput = {

@@ -9,7 +9,7 @@ export async function updateUserAddressProfileImageFile(id, file) {
   console.log(id, "updateuseraddressid");
 
   // Ensure the directory exists
-  const uploadDir = path.join(process.cwd(), "public/profileImage");
+  const uploadDir = path.join(process.cwd(), "uploads/profileImage");
   if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
   }
@@ -29,7 +29,7 @@ export async function updateUserAddressProfileImageFile(id, file) {
   const updatedAddress = await prisma.user.update({
     where: { id },
     data: {
-      profileImage: `/profileImage/${fileName}`,
+      profileImage: `uploads/profileImage/${fileName}`,
       updatedAt: new Date(),
     },
   });

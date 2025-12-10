@@ -3,6 +3,7 @@ import ProductArea from "@/components/ProductArea/ProductArea";
 import React from "react";
 import { searchProducts } from "../actions/search/search.actions";
 import { auth } from "@/auth";
+import prisma from "@/lib/prisma";
 
 const page = async ({ searchParams }) => {
   const session = await auth();
@@ -13,7 +14,7 @@ const page = async ({ searchParams }) => {
     page: 1,
     pageSize: 12,
   });
-  console.log(result);
+  //   console.log(result);
   const brands = await prisma.brand.findMany({
     select: { id: true, name: true },
   });

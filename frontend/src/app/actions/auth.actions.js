@@ -1,6 +1,6 @@
 "use server";
 
-import  prisma  from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { AuthError } from "next-auth";
 import bcrypt from "bcryptjs"; // for hashing passwords
 import { signIn, signOut, auth } from "@/auth";
@@ -14,7 +14,9 @@ export async function registerUser(prevState, formData) {
     const phone = (formData.get("phone") || "").toString().trim() || null;
     const password = (formData.get("password") || "").toString();
     const confirmPassword = (formData.get("confirmPassword") || "").toString();
-    let role = ((formData.get("role") || "USER").toString() || "USER").toUpperCase();
+    let role = (
+      (formData.get("role") || "USER").toString() || "USER"
+    ).toUpperCase();
 
     if (!name || !password || !confirmPassword || (!email && !phone)) {
       return { success: false, message: "All fields are required" };
@@ -179,7 +181,6 @@ export async function registerUser(prevState, formData) {
 //       message: "Your account is not active. Please contact support.",
 //     };
 //   }
-  
 
 //   const isPasswordValid = await bcrypt.compare(password, user.password);
 //   if (!isPasswordValid) {
@@ -197,8 +198,8 @@ export async function registerUser(prevState, formData) {
 // log out
 export const logOut = async () => {
   await signOut();
-  // redirect("/login");
-  revalidatePath("/dashboard/*");
+  redirect("/login");
+  // revalidatePath("/dashboard/*");
 };
 // export const loginUser = async (prevState, formData) => {
 //   const identifier = formData.get("identifier");
@@ -225,19 +226,16 @@ export const logOut = async () => {
 //   if (!user) {
 //     return { success: false, message: "User not found" };
 //   }
-  
-
 
 //   const isPasswordValid = await bcrypt.compare(password, user.password);
 //   if (!isPasswordValid) {
 //     return { success: false, message: "Invalid password" };
 //   }
 
-
 //   const response = await signIn("credentials", {
 //     identifier,
 //     password,
-    
+
 //   });
 //   return { success: true , message: "Login successful" };
 // };
@@ -247,19 +245,28 @@ export const loginUser = async (prevState, formData) => {
     const password = formData.get("password");
     const redirectRaw = formData.get("redirect") || "/";
     const redirectTo =
-      typeof redirectRaw === "string" && redirectRaw.startsWith("/") ? redirectRaw : "/";
+      typeof redirectRaw === "string" && redirectRaw.startsWith("/")
+        ? redirectRaw
+        : "/";
 
-    if (!identifier) return { success: false, message: "Email or phone is required" };
+    if (!identifier)
+      return { success: false, message: "Email or phone is required" };
     if (!password) return { success: false, message: "Password is required" };
 
     // (Your pre-check; optional—see note below)
     const user = await prisma.user.findFirst({
-      where: { AND: [{ OR: [{ email: identifier }, { phone: identifier }] }, { role: "USER" }] },
+      where: {
+        AND: [
+          { OR: [{ email: identifier }, { phone: identifier }] },
+          { role: "USER" },
+        ],
+      },
     });
     if (!user) return { success: false, message: "User not found" };
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) return { success: false, message: "Invalid password" };
+    if (!isPasswordValid)
+      return { success: false, message: "Invalid password" };
 
     // NextAuth signIn — on success this will THROW a NEXT_REDIRECT
     await signIn("credentials", { identifier, password, redirectTo });
@@ -272,14 +279,15 @@ export const loginUser = async (prevState, formData) => {
       if (error.type === "CredentialsSignin") {
         return { success: false, message: "Invalid email/phone or password" };
       }
-      return { success: false, message: "Authentication failed. Please try again." };
+      return {
+        success: false,
+        message: "Authentication failed. Please try again.",
+      };
     }
     // IMPORTANT: let NEXT_REDIRECT bubble (do NOT swallow it)
     throw error;
   }
 };
-
-
 
 // export async function updateUserAccount(userId, action) {
 //   try {

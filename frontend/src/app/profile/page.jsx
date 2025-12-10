@@ -4,11 +4,15 @@ import Layout from "@/components/Layout/Layout";
 import Profile from "@/components/Profile/Profile";
 import RelatedProducts from "@/components/RelatedProducts/RelatedProducts";
 import prisma from "@/lib/prisma";
+import { redirect } from "next/navigation";
 import React from "react";
 import { GetCountries } from "react-country-state-city";
 
 const page = async () => {
   const session = await auth();
+  if (!session) {
+    redirect("/login");
+  }
   const countries = await GetCountries();
   const userId = session?.user.id;
   const user = await prisma.user.findUnique({

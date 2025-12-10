@@ -6,7 +6,8 @@ import { prisma } from "@/lib/prisma";
 import generateBlogId from "@/utils/generateTitle";
 
 const uploadDir = path.join(process.cwd(), "public", "uploads");
-const uploadProductDir = path.join(process.cwd(), "public", "uploads", "product");
+const uploadProductDir = path.join(process.cwd(), "uploads", "products");
+const uploadDesignDir = path.join(process.cwd(), "uploads", "designs");
 
 // Helper to save uploaded file from FormData
 
@@ -85,6 +86,18 @@ async function saveFile(file, fieldName) {
 }
 // Helper to save uploaded file from FormData
 async function saveProductFile(file, fieldName) {
+  if (!file) return null;
+  const bytes = await file.arrayBuffer();
+  const buffer = Buffer.from(bytes);
+  const ext = path.extname(file.name) || ".jpg";
+  const filename = `${Date.now()}-${fieldName}${ext}`;
+  const filepath = path.join(uploadProductDir, filename);
+
+  await fs.mkdir(uploadProductDir, { recursive: true });
+  await fs.writeFile(filepath, buffer);
+  return `/uploads/product/${filename}`;
+}
+async function saveDesignFile(file, fieldName) {
   if (!file) return null;
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
@@ -201,7 +214,6 @@ async function saveProductFile(file, fieldName) {
 //     const price = parseFloat(formData.get("price"));
 //     const brandId = formData.get("brandId") || null;
 //     const brandName = formData.get("brandName") || null;
-    
 
 //     const mockupId = formData.get("mockupId") || null; // REQUIRED if relation is required
 //     const userId = formData.get("userId") || null; // REQUIRED if relation is required
@@ -281,7 +293,6 @@ async function saveProductFile(file, fieldName) {
 
 //     const productId = generateBlogId(title)
 
-    
 //     // Build data object with relation connects
 //     const data = {
 //       title,
@@ -346,15 +357,17 @@ export async function createProduct(formData) {
     const mockupId = formData.get("mockupId") || null;
     const userId = formData.get("userId") || null;
 
-    const visibility = ((formData.get("visibility") ?? "true").toString() === "true");
+    const visibility =
+      (formData.get("visibility") ?? "true").toString() === "true";
 
     const frontDesignFile = formData.get("frontDesign");
-    const backDesignFile  = formData.get("backDesign");
+    const backDesignFile = formData.get("backDesign");
 
     if (!mockupId) throw new Error("mockupId is required.");
     if (!userId) throw new Error("userId is required.");
     if (!title) throw new Error("title is required.");
-    if (!Number.isFinite(price)) throw new Error("price is required and must be a number.");
+    if (!Number.isFinite(price))
+      throw new Error("price is required and must be a number.");
 
     // Derive commissions on server
     const { brandPct, merchantPct } = await resolveEffectiveCommissions({
@@ -366,15 +379,17 @@ export async function createProduct(formData) {
     const isNonEmptyFile = (f) => f && typeof f.size === "number" && f.size > 0;
 
     const frontDesignUrl = isNonEmptyFile(frontDesignFile)
-      ? await saveProductFile(frontDesignFile, "frontDesign")
+      ? await saveDesignFile(frontDesignFile, "frontDesign")
       : null;
 
     const backDesignUrl = isNonEmptyFile(backDesignFile)
-      ? await saveProductFile(backDesignFile, "backDesign")
+      ? await saveDesignFile(backDesignFile, "backDesign")
       : null;
 
     if (!frontDesignUrl) {
-      throw new Error("frontDesign is required (no file uploaded or zero size).");
+      throw new Error(
+        "frontDesign is required (no file uploaded or zero size)."
+      );
     }
 
     // Arrays
@@ -437,7 +452,8 @@ export async function createProduct(formData) {
         where: { userId },
         select: { tiar: true },
       });
-      if (!merchantProfile) throw new Error("Merchant profile not found for this user.");
+      if (!merchantProfile)
+        throw new Error("Merchant profile not found for this user.");
 
       // 3) Balance check (only if we actually decrement)
       if (DECREMENT > 0 && merchantProfile.tiar < DECREMENT) {
@@ -463,26 +479,26 @@ export async function createProduct(formData) {
           ...(brandId ? { Brand: { connect: { id: brandId } } } : {}),
 
           tags: { create: tags.filter(Boolean).map((value) => ({ value })) },
-          features: { create: features.filter(Boolean).map((content) => ({ content })) },
+          features: {
+            create: features.filter(Boolean).map((content) => ({ content })),
+          },
           variants: { create: variantsInput },
         },
       });
 
       // 5) Compute totals/leftTiar after creation
-    
-     
 
       // total AFTER creation
-  const totalAfter = totalBefore + 1;
+      const totalAfter = totalBefore + 1;
 
-  // leftTiar = tiar - totalAfter (never negative)
-  const leftTiar = Math.max(0, merchantProfile.tiar - totalAfter);
+      // leftTiar = tiar - totalAfter (never negative)
+      const leftTiar = Math.max(0, merchantProfile.tiar - totalAfter);
 
-  // update ONLY leftTiar (do NOT touch tiar)
-  await tx.merchantProfile.update({
-    where: { userId },
-    data: { leftTiar: { set: leftTiar } },
-  });
+      // update ONLY leftTiar (do NOT touch tiar)
+      await tx.merchantProfile.update({
+        where: { userId },
+        data: { leftTiar: { set: leftTiar } },
+      });
     });
     // ================================================================================
 
@@ -498,8 +514,6 @@ export async function createProduct(formData) {
     };
   }
 }
-
-
 
 // UPDATE PRODUCT
 export async function updateProduct(formData) {

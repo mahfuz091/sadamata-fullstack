@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 
-const MOCKUP_ORIGIN = process.env.MOCKUP_ORIGIN || "http://localhost:3003";
+const MOCKUP_ORIGIN =
+  process.env.NEXT_PUBLIC_MOCKUP_ORIGIN || "http://localhost:3003";
 // In production set e.g. MOCKUP_ORIGIN="https://admin.sadamata.com"
 
 const nextConfig = {
@@ -23,6 +24,11 @@ const nextConfig = {
         hostname: "merchant-chi.vercel.app",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "admin.sadamata.com",
+        pathname: "/**",
+      },
     ],
   },
 
@@ -38,7 +44,7 @@ const nextConfig = {
       {
         // Browser requests /mockup/...  -> Next proxies to your mockup server
         source: "/mockup/:file*",
-        destination: `${MOCKUP_ORIGIN}/mockups/:file*`,
+        destination: `${MOCKUP_ORIGIN}/uploads/mockups/:file*`,
       },
     ];
   },

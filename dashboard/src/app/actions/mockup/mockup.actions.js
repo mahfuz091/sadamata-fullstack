@@ -4,7 +4,7 @@ import path from "path";
 import fs from "fs/promises";
 import { prisma } from "@/lib/prisma";
 
-const uploadDir = path.join(process.cwd(), "public", "mockups");
+const uploadDir = path.join(process.cwd(), "uploads", "mockups");
 
 // Helper to save uploaded file from FormData
 async function saveFile(file, fieldName) {
@@ -17,7 +17,7 @@ async function saveFile(file, fieldName) {
 
   await fs.mkdir(uploadDir, { recursive: true });
   await fs.writeFile(filepath, buffer);
-  return `/mockups/${filename}`;
+  return `/uploads/mockups/${filename}`;
 }
 
 // Create new Mockup with Variants

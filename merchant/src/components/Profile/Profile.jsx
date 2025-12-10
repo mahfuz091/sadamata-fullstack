@@ -15,7 +15,7 @@ const Profile = ({ user, countries }) => {
     user?.merchantProfile?.contactPhone || ""
   );
   const [country, setCountry] = useState(null);
-  console.log(user, "profile");
+  // console.log(user, "profile");
 
   useEffect(() => {
     if (user?.merchantProfile?.country) {
@@ -28,8 +28,13 @@ const Profile = ({ user, countries }) => {
     }
   }, [user, countries]);
   const [file, setFile] = useState(null);
+  // const [preview, setPreview] = useState(
+  //   user?.profileImage || "/assets/images/resources/avater.png"
+  // );
   const [preview, setPreview] = useState(
-    user?.profileImage || "/assets/images/resources/avater.png"
+    user?.profileImage
+      ? `${process.env.NEXT_PUBLIC_BASE_URL}${user.profileImage}`
+      : "/assets/images/resources/avater.png"
   );
   const [formData, setFormData] = useState({
     name: user.name || "",
@@ -69,7 +74,8 @@ const Profile = ({ user, countries }) => {
         user.id,
         selectedFile
       );
-      setPreview(updated.profileImage);
+      // setPreview(updated.profileImage);
+      setPreview(`${process.env.NEXT_PUBLIC_BASE_URL}${updated.profileImage}`);
       router.refresh();
       toast.success("Profile image updated!");
     } catch (err) {

@@ -37,6 +37,8 @@ const customStyles = {
   }),
 };
 const Header = ({ session }) => {
+  console.log(session, "session header");
+
   const [options, setOptions] = useState([]);
   const [selected, setSelected] = useState(null);
   const [text, setText] = useState("");

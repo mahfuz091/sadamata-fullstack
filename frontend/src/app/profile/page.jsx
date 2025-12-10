@@ -25,7 +25,7 @@ const page = async () => {
     },
   });
   return (
-    <Layout>
+    <Layout session={session}>
       <Profile user={user} countries={countries} />
     </Layout>
   );

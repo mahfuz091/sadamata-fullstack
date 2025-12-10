@@ -1,22 +1,24 @@
-'use server';
+"use server";
 
-import prisma from '@/lib/prisma';
-import fs from 'fs';
-import path from 'path';
+import prisma from "@/lib/prisma";
+import fs from "fs";
+import path from "path";
 
 export async function updateUserProfileImageFile(id, file) {
-   if (!file) throw new Error('No file provided');
-console.log(id, "updateuseraddressid");
+  if (!file) throw new Error("No file provided");
+  console.log(id, "updateuseraddressid");
 
   // Ensure the directory exists
-  const uploadDir = path.join(process.cwd(), 'public/profileImage');
+  const uploadDir = path.join(process.cwd(), "public/profileImage");
   if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
   }
 
   // Generate unique file name
   const fileExt = path.extname(file.name); // e.g., ".png"
-  const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 6)}${fileExt}`;
+  const fileName = `${Date.now()}-${Math.random()
+    .toString(36)
+    .substr(2, 6)}${fileExt}`;
   const filePath = path.join(uploadDir, fileName);
 
   // Save the file
@@ -43,7 +45,7 @@ export async function updateUserInfo(userId, data) {
         email: data.email,
         phone: data.phone,
 
-        userprofile: {
+        userProfile: {
           upsert: {
             create: {
               firstName: data.firstName,
@@ -69,7 +71,7 @@ export async function updateUserInfo(userId, data) {
         },
       },
       include: {
-        userprofile: true,
+        userProfile: true,
         addresses: true,
       },
     });
@@ -77,14 +79,14 @@ export async function updateUserInfo(userId, data) {
     return updatedUser;
   } catch (err) {
     console.error(err);
-    throw new Error('Failed to update user info');
+    throw new Error("Failed to update user info");
   }
 }
 
 // UPDATE USER + USERPROFILE
 export async function updateUserProfile(userId, data) {
-  console.log(data, 'data');
-  
+  console.log(data, "data");
+
   try {
     const updated = await prisma.user.update({
       where: { id: userId },
@@ -92,14 +94,12 @@ export async function updateUserProfile(userId, data) {
         email: data.email,
         // phone: data.phone,
         name: `${data.firstName} ${data.lastName}`,
-        userprofile: {
+        userProfile: {
           upsert: {
             create: {
               firstName: data.firstName,
               lastName: data.lastName,
-              dateOfBirth: data.dateOfBirth
-                ? new Date(data.dateOfBirth)
-                : null,
+              dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth) : null,
               email: data.email,
               phone: data.phone,
               country: data.country,
@@ -109,9 +109,7 @@ export async function updateUserProfile(userId, data) {
             update: {
               firstName: data.firstName,
               lastName: data.lastName,
-              dateOfBirth: data.dateOfBirth
-                ? new Date(data.dateOfBirth)
-                : null,
+              dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth) : null,
               email: data.email,
               phone: data.phone,
               country: data.country,
@@ -121,7 +119,7 @@ export async function updateUserProfile(userId, data) {
           },
         },
       },
-      include: { userprofile: true },
+      include: { userProfile: true },
     });
 
     return updated;

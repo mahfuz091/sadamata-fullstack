@@ -43,7 +43,7 @@ const nextConfig = {
     return [
       {
         // Browser requests /mockup/...  -> Next proxies to your mockup server
-        source: "/mockup/:file*",
+        source: "/mockup/uploads/mockups/:file*",
         destination: `${MOCKUP_ORIGIN}/uploads/mockups/:file*`,
       },
     ];

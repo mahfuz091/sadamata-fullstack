@@ -29,6 +29,11 @@ const nextConfig = {
         hostname: "admin.sadamata.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "img.youtube.com",
+        pathname: "/**",
+      },
     ],
   },
 

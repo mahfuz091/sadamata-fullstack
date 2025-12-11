@@ -1,12 +1,19 @@
+import "dotenv/config";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@/generated/prisma";
+const connectionString = `${process.env.DATABASE_URL}`;
 
-// Create a global object to store Prisma Client
-const globalForPrisma = globalThis;
+const adapter = new PrismaPg({ connectionString });
 
-// Use the existing Prisma Client if available, or create a new one
-const prisma = globalForPrisma.prisma ?? new PrismaClient();
+let prisma;
 
-// In non-production environments, persist the Prisma Client in globalForPrisma
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+if (process.env.NODE_ENV === "production") {
+  prisma = new PrismaClient({ adapter });
+} else {
+  if (!global.prisma) {
+    global.prisma = new PrismaClient({ adapter });
+  }
+  prisma = global.prisma;
+}
 
 export { prisma };

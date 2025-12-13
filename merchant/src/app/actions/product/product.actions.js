@@ -95,7 +95,7 @@ async function saveProductFile(file, fieldName) {
 
   await fs.mkdir(uploadProductDir, { recursive: true });
   await fs.writeFile(filepath, buffer);
-  return `/uploads/product/${filename}`;
+  return `/uploads/products/${filename}`;
 }
 async function saveDesignFile(file, fieldName) {
   if (!file) return null;
@@ -103,11 +103,11 @@ async function saveDesignFile(file, fieldName) {
   const buffer = Buffer.from(bytes);
   const ext = path.extname(file.name) || ".jpg";
   const filename = `${Date.now()}-${fieldName}${ext}`;
-  const filepath = path.join(uploadProductDir, filename);
+  const filepath = path.join(uploadDesignDir, filename);
 
-  await fs.mkdir(uploadProductDir, { recursive: true });
+  await fs.mkdir(uploadDesignDir, { recursive: true });
   await fs.writeFile(filepath, buffer);
-  return `/uploads/product/${filename}`;
+  return `/uploads/designs/${filename}`;
 }
 
 // CREATE PRODUCT

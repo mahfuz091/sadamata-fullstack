@@ -41,15 +41,17 @@ export function NavUser({ user }) {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size='lg'
-              className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
+              className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground bg-[#f37927] text-white hover:bg-[#f29456]'
             >
               <Avatar className='h-8 w-8 rounded-lg grayscale'>
                 <AvatarImage src={user?.profileImage} alt={user.name} />
                 <AvatarFallback className='rounded-lg'>CN</AvatarFallback>
               </Avatar>
               <div className='grid flex-1 text-left text-sm leading-tight'>
-                <span className='truncate font-medium'>{user?.name}</span>
-                <span className='text-muted-foreground truncate text-xs'>
+                <span className='truncate font-medium text-white'>
+                  {user?.name}
+                </span>
+                <span className=' truncate text-xs text-white'>
                   {user.email}
                 </span>
               </div>
@@ -57,7 +59,7 @@ export function NavUser({ user }) {
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className='w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg'
+            className='w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg text-white'
             side={isMobile ? "bottom" : "right"}
             align='end'
             sideOffset={4}

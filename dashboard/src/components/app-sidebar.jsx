@@ -30,6 +30,8 @@ import {
   LayoutDashboard,
   ThumbsUp,
   User2Icon,
+  BaggageClaim,
+  Shirt,
 } from "lucide-react";
 import { NavDocuments } from "@/components/nav-documents";
 import { NavMain } from "@/components/nav-main";
@@ -113,6 +115,16 @@ const data = {
       title: "Merchants",
       url: "/dashboard/merch",
       icon: User2Icon,
+    },
+    {
+      title: "Orders",
+      url: "/dashboard/orders",
+      icon: BaggageClaim,
+    },
+    {
+      title: "Products",
+      url: "/dashboard/products",
+      icon: Shirt,
     },
   ],
   navClouds: [

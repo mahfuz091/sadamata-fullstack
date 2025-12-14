@@ -16,6 +16,15 @@ import { assets } from "@/assets/assets";
 
 const FIT_TYPES = ["MEN", "WOMEN", "YOUTH"];
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "";
+
+function getImageUrl(path) {
+  if (!path) return undefined;
+  if (path.startsWith("http")) return path;
+  const normalized = path.replace(/\\/g, "/").replace(/^\/+/, "");
+  return `${API_BASE.replace(/\/+$/, "")}/${normalized}`;
+}
+
 export default function EditMockup({ mockup }) {
   const router = useRouter();
 
@@ -305,7 +314,7 @@ export default function EditMockup({ mockup }) {
                     <div className='w-full h-40 border border-slate-200 rounded flex items-center justify-center overflow-hidden bg-white'>
                       {v.frontImgUrl ? (
                         <Image
-                          src={v.frontImgUrl}
+                          src={getImageUrl(v.frontImgUrl)}
                           alt='Front'
                           width={300}
                           height={160}
@@ -345,7 +354,7 @@ export default function EditMockup({ mockup }) {
                     <div className='w-full h-40 border border-slate-200 rounded flex items-center justify-center overflow-hidden bg-white'>
                       {v.backImgUrl ? (
                         <Image
-                          src={v.backImgUrl}
+                          src={getImageUrl(v.backImgUrl)}
                           alt='Back'
                           width={300}
                           height={160}

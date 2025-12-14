@@ -8,7 +8,7 @@ import CustomSelect from "../CustomSelect/CustomSelect";
 import DashSidebar from "../DashSidebar/DashSidebar";
 import { deleteMerchantProduct } from "@/app/actions/merchant/merchant-products.actions";
 import { toast } from "sonner";
-
+const MAIN_URL = process.env.NEXT_PUBLIC_MAIN_URL;
 export default function DashboardManage({
   initialItems,
   totalPages,
@@ -21,6 +21,10 @@ export default function DashboardManage({
   const [page, setPage] = useState(initialPage);
   const [isPending, startTransition] = useTransition();
   // console.log(items, "items");
+
+  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [visibilityFilter, setVisibilityFilter] = useState("ALL");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const hasMore = page < totalPages;
 
@@ -51,14 +55,17 @@ export default function DashboardManage({
     { value: "vanilla", label: "Product: 1 Selected" },
   ];
   const options3 = [
-    { value: "chocolate", label: "Status: All" },
-    { value: "strawberry", label: "Status: All" },
-    { value: "vanilla", label: "Status: All" },
+    { value: "ALL", label: "Status: All" },
+    { value: "UNDERREVIEW", label: "Under Review" },
+    { value: "PROCESSING", label: "Processing" },
+    { value: "REJECTED", label: "Rejected" },
+    { value: "ACTIVE", label: "Active" },
   ];
+
   const options4 = [
-    { value: "chocolate", label: "Availability: All" },
-    { value: "strawberry", label: "Availability: All" },
-    { value: "vanilla", label: "Availability: All" },
+    { value: "ALL", label: "Availability: All" },
+    { value: "ACTIVE", label: "Active" },
+    { value: "INACTIVE", label: "Inactive" },
   ];
   const [isDeleting, startDeleteTransition] = useTransition();
 
@@ -82,6 +89,43 @@ export default function DashboardManage({
       }
     });
   }
+
+  const filteredItems = items.filter((product) => {
+    // STATUS FILTER
+    if (statusFilter !== "ALL" && product.status !== statusFilter) {
+      return false;
+    }
+
+    // VISIBILITY FILTER
+    if (visibilityFilter === "ACTIVE" && product.isActive !== true) {
+      return false;
+    }
+
+    if (visibilityFilter === "INACTIVE" && product.isActive !== false) {
+      return false;
+    }
+
+    // SEARCH FILTER
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase();
+
+      const searchableText = [
+        product.title,
+        product.brandName,
+        product?.brand?.name,
+        product.mockupName,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      if (!searchableText.includes(term)) {
+        return false;
+      }
+    }
+
+    return true;
+  });
 
   return (
     <section className='dashboard-area section-space'>
@@ -121,21 +165,27 @@ export default function DashboardManage({
                     <div className='filter-item'>
                       <CustomSelect
                         options={options3}
-                        onChange={handleSelect}
-                        placeholder='Status: All'
+                        onChange={(opt) => setStatusFilter(opt.value)}
+                        placeholder='Availability: All'
                       />
                     </div>
                     <div className='filter-item'>
                       <CustomSelect
                         options={options4}
-                        onChange={handleSelect}
+                        onChange={(opt) => setVisibilityFilter(opt.value)}
                         placeholder='Availability: All'
                       />
                     </div>
                   </div>
                   <div className='filter-item'>
                     <div className='filter-item__search'>
-                      <input type='text' name='search' placeholder='Search' />
+                      <input
+                        type='text'
+                        name='search'
+                        placeholder='Search'
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                      />
                       <button type='submit'>
                         <i className='fas fa-search'></i>
                       </button>
@@ -174,7 +224,7 @@ export default function DashboardManage({
                       </tr>
                     </thead>
                     <tbody>
-                      {items.map((product, index) => (
+                      {filteredItems.map((product, index) => (
                         <tr key={product.id}>
                           <td>{index + 1}</td>
                           <td>
@@ -186,7 +236,16 @@ export default function DashboardManage({
                                 width={80}
                                 height={80}
                               />
-                              <span>{product.title}</span>
+                              {product.isActive ? (
+                                <Link
+                                  href={`${MAIN_URL}/products/${product.productId}`}
+                                  target='_blank'
+                                >
+                                  <span>{product.title}</span>
+                                </Link>
+                              ) : (
+                                <span>{product.title}</span>
+                              )}
                             </div>
                           </td>
                           <td>
@@ -201,7 +260,7 @@ export default function DashboardManage({
                             )}
                           </td>
                           <td>{product.price}</td>
-                          <td>{product.isActive ? "Live" : "Inactive"}</td>
+                          <td>{product?.status}</td>
                           <td>
                             <button className='action-buttons'>
                               {/* You can replace with a component or an icon library */}

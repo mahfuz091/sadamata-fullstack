@@ -5,7 +5,7 @@ export const metadata = {
   title: "Product Details",
 };
 
-const BASE_URL = process.env.ASSET_BASE_URL || "";
+const BASE_URL = process.env.NEXT_PUBLIC_ASSET_BASE_URL || "";
 
 const imgSrc = (path) => {
   if (!path) return null;

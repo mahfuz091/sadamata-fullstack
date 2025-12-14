@@ -3,7 +3,6 @@
 // ============================
 "use server";
 
-
 import { Role } from "@/generated/prisma";
 import { prisma } from "@/lib/prisma";
 import { unstable_noStore as noStore, revalidatePath } from "next/cache";
@@ -15,9 +14,9 @@ export async function assertIsMerchant(userId) {
   });
   if (!user) throw new Error("User not found");
   if (!user.isActive) throw new Error("User is disabled");
-//   if (user.role !== Role.MERCH ) {
-//     throw new Error("Not authorized");
-//   }
+  //   if (user.role !== Role.MERCH ) {
+  //     throw new Error("Not authorized");
+  //   }
 }
 
 function buildWhere({ merchantId, brandId, isActive, visibility }) {
@@ -79,6 +78,7 @@ export async function getMerchantProducts({
         visibility: true,
         updatedAt: true,
         brandName: true,
+        status: true,
         Mockup: { select: { name: true } }, // only mockup name
         Brand: { select: { id: true, name: true, isActive: true } },
         variants: { select: { frontImg: true }, take: 1 },
@@ -96,6 +96,7 @@ export async function getMerchantProducts({
     updatedAt: p.updatedAt,
     brandName: p.brandName,
     brand: p.Brand,
+    status: p.status,
     mockupName: p.Mockup?.name || null,
     previewImg: p.variants?.[0]?.frontImg || null,
   }));

@@ -4,6 +4,37 @@ import path from "path";
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   outputFileTracingRoot: path.resolve(),
+  images: {
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "3001",
+        pathname: "/**",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "3003",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "merch.sadamata.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "admin.sadamata.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "img.youtube.com",
+        pathname: "/**",
+      },
+    ],
+  },
   experimental: {
     serverActions: {
       // raise the Server Actions request body limit

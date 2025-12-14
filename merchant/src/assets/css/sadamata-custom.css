@@ -566,3 +566,13 @@ button.profileImageButton {
   line-height: 160%;
   letter-spacing: -0.08px;
 }
+.user-profile__info__menu li:hover {
+  background-color: var(--commerce-base);
+  border: 1px solid var(--commerce-base);
+  color: var(--commerce-white);
+}
+.user-profile__info__menu li.active {
+  background-color: var(--commerce-base);
+  border: 1px solid var(--commerce-base);
+  color: var(--commerce-white);
+}

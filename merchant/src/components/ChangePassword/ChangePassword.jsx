@@ -211,14 +211,15 @@ const ChangePassword = ({ user, countries }) => {
                   </li>
                 </Link>
                 <Link href='/dashboard/profile/change-password'>
-                  <li className='user-profile__info__menu__item '>
+                  <li className='user-profile__info__menu__item active'>
                     Change password
                   </li>
                 </Link>
-
-                <li className='user-profile__info__menu__item mt-3'>
-                  Delete your account
-                </li>
+                <Link href='/dashboard'>
+                  <li className='user-profile__info__menu__item mt-3'>
+                    Back To Dashboard
+                  </li>
+                </Link>
               </ul>
             </aside>
 
@@ -262,6 +263,7 @@ const ChangePassword = ({ user, countries }) => {
                     onChange={handleChange}
                     readOnly={!editMode}
                     autoComplete='current-password'
+                    placeholder='Enter current password'
                   />
                 </div>
 
@@ -275,6 +277,7 @@ const ChangePassword = ({ user, countries }) => {
                     onChange={handleChange}
                     readOnly={!editMode}
                     autoComplete='new-password'
+                    placeholder='Enter new password'
                   />
                 </div>
 
@@ -288,6 +291,7 @@ const ChangePassword = ({ user, countries }) => {
                     onChange={handleChange}
                     readOnly={!editMode}
                     autoComplete='new-password'
+                    placeholder='Confirm new password'
                   />
                 </div>
               </div>

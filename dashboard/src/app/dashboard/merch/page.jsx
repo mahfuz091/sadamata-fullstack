@@ -1,7 +1,5 @@
-import { brandList, merchList } from "@/app/actions/user/user.actions";
-import BrandsTable from "@/components/BrandsTable/BrandsTable";
+import { merchList } from "@/app/actions/user/user.actions";
 import MerchTable from "@/components/MerchTable/MerchTable";
-import UsersTable from "@/components/UsersTable/UsersTable";
 import React from "react";
 export const metadata = {
   title: "Merchants",
@@ -9,6 +7,7 @@ export const metadata = {
 
 const page = async () => {
   const users = await merchList();
+  console.log(users, "merch");
 
   return (
     <div className=''>

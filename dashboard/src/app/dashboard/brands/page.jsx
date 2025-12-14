@@ -9,6 +9,8 @@ export const metadata = {
 const page = async () => {
   const users = await brandList();
 
+  console.log(users, "brand");
+
   return (
     <div className=''>
       <div className='flex flex-1 flex-col'>

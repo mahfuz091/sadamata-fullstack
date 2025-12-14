@@ -6,6 +6,7 @@ import { signIn, signOut, auth } from "@/auth";
 
 import { redirect } from "next/navigation";
 import { Role } from "@/generated/prisma";
+import { revalidatePath } from "next/cache";
 
 /** ---------- Register ---------- */
 export const registerUser = async (_prevState, formData) => {
@@ -234,7 +235,7 @@ export const merchList = async () => {
     // try the expected shape with createdAt
     try {
       const users = await prisma.user.findMany({
-        where: { role: "Merch" },
+        where: { role: "MERCH" },
         select: {
           id: true,
           name: true,
@@ -606,6 +607,68 @@ export const updateUserIsActive = async (_prevState, { userId, isActive }) => {
     };
   } catch (err) {
     console.error("updateUserIsActive error:", err);
+    return { success: false, msg: "Something went wrong" };
+  }
+};
+
+/** ---------- Update Merchant Tier & Brand Option (ADMIN) ---------- */
+/** ---------- Update Merchant Tier & Brand Option (ADMIN) ---------- */
+export const updateMerchantAdminSettings = async (
+  _prevState,
+  { userId, tiar, brandOption }
+) => {
+  try {
+    if (!userId) {
+      return { success: false, msg: "User ID required" };
+    }
+
+    const session = await auth();
+    if (!session?.user) {
+      return { success: false, msg: "Unauthorized" };
+    }
+
+    if (!["ADMIN", "SUPERADMIN"].includes(session.user.role)) {
+      return { success: false, msg: "Forbidden: admin only" };
+    }
+
+    const newTiar = Number(tiar);
+    if (newTiar < 0) {
+      return { success: false, msg: "Tier cannot be negative" };
+    }
+
+    // 🔹 Count total products created by merchant
+    const totalProducts = await prisma.product.count({
+      where: { userId },
+    });
+
+    // 🔹 Calculate remaining tier
+    const newLeftTiar = Math.max(newTiar - totalProducts, 0);
+
+    const updated = await prisma.merchantProfile.update({
+      where: { userId },
+      data: {
+        tiar: newTiar,
+        leftTiar: newLeftTiar,
+        brandOption: Boolean(brandOption),
+      },
+      select: {
+        tiar: true,
+        leftTiar: true,
+        brandOption: true,
+      },
+    });
+    revalidatePath("/dashboard/merch");
+
+    return {
+      success: true,
+      msg: "Merchant settings updated",
+      data: {
+        ...updated,
+        totalProducts,
+      },
+    };
+  } catch (err) {
+    console.error("updateMerchantAdminSettings error:", err);
     return { success: false, msg: "Something went wrong" };
   }
 };

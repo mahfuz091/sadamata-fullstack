@@ -178,7 +178,7 @@ const Profile = ({ user, countries }) => {
               </div>
               <ul className='user-profile__info__menu list-unstyled'>
                 <Link href='/dashboard/profile/'>
-                  <li className='user-profile__info__menu__item'>
+                  <li className='user-profile__info__menu__item active'>
                     User Profile information
                   </li>
                 </Link>
@@ -194,9 +194,11 @@ const Profile = ({ user, countries }) => {
                   </li>
                 </Link>
 
-                <li className='user-profile__info__menu__item mt-3'>
-                  Delete your account
-                </li>
+                <Link href='/dashboard'>
+                  <li className='user-profile__info__menu__item mt-3'>
+                    Back To Dashboard
+                  </li>
+                </Link>
               </ul>
             </aside>
 

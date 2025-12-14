@@ -17,6 +17,8 @@ async function resolveEffectiveCommissions({ merchantId, brandId }) {
     where: { isActive: true, merchantId, brandId: brandId || undefined },
     orderBy: { effectiveFrom: "desc" },
   });
+  console.log(merchantId, brandId, pairRule);
+
   if (pairRule) {
     return {
       brandPct: pairRule.brandCommissionPct,
@@ -370,10 +372,14 @@ export async function createProduct(formData) {
       throw new Error("price is required and must be a number.");
 
     // Derive commissions on server
-    const { brandPct, merchantPct } = await resolveEffectiveCommissions({
-      merchantId: userId,
-      brandId,
-    });
+    const { brandPct, merchantPct, source } = await resolveEffectiveCommissions(
+      {
+        merchantId: userId,
+        brandId,
+      }
+    );
+
+    console.log(brandPct, merchantPct, source);
 
     // Save files BEFORE the transaction (I/O)
     const isNonEmptyFile = (f) => f && typeof f.size === "number" && f.size > 0;
@@ -392,7 +398,6 @@ export async function createProduct(formData) {
       );
     }
 
-    // Arrays
     const tags = [];
     const features = [];
     for (const key of formData.keys()) {

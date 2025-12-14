@@ -9,8 +9,12 @@ import {
   updateUserIsActive,
   deleteUser,
 } from "@/app/actions/user/user.actions";
+import MerchantProfileDialog from "./MerchantProfileDialog";
+import Link from "next/link";
 
 export default function MerchTable({ initial = [] }) {
+  const [open, setOpen] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState(null);
   const [users, setUsers] = useState(initial);
   const [loadingIds, setLoadingIds] = useState([]);
   const router = useRouter();
@@ -89,6 +93,23 @@ export default function MerchTable({ initial = [] }) {
       render: (role) => <Tag>{role}</Tag>,
     },
     {
+      title: "Applied At",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (createdAt) => {
+        const date = new Date(createdAt);
+        return (
+          <div>
+            {date.toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })}
+          </div>
+        );
+      },
+    },
+    {
       title: "Account Status",
       dataIndex: "isActive",
       key: "isActive",
@@ -107,6 +128,23 @@ export default function MerchTable({ initial = [] }) {
       key: "actions",
       render: (_, record) => (
         <Space>
+          <Link href={`/dashboard/merch/${record.id}`}>
+            <Button
+              type='primary'
+              className='bg-[#f29456]! border-[#f29456]! hover:bg-[#f29456] hover:border-[#f29456]'
+            >
+              Details
+            </Button>
+          </Link>
+          <Link href={`/dashboard/merch/${record.id}/stats`}>
+            <Button
+              type='primary'
+              className='bg-[#f29456]! border-[#f29456]! hover:bg-[#f29456] hover:border-[#f29456]'
+            >
+              Stats
+            </Button>
+          </Link>
+
           <Popconfirm
             title='Delete this user?'
             okText='Yes'
@@ -128,11 +166,13 @@ export default function MerchTable({ initial = [] }) {
   ];
 
   return (
-    <Table
-      rowKey='id'
-      dataSource={users}
-      columns={columns}
-      pagination={{ pageSize: 10 }}
-    />
+    <>
+      <Table
+        rowKey='id'
+        dataSource={users}
+        columns={columns}
+        pagination={{ pageSize: 10 }}
+      />
+    </>
   );
 }

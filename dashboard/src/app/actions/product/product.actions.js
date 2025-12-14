@@ -113,7 +113,39 @@ export async function updateProductActive(_, { productId, isActive }) {
     };
   }
 }
+export async function updateProductStatus(_, { productId, status }) {
+  try {
+    if (!productId || !status) {
+      return { success: false, msg: "productId and status are required" };
+    }
 
+    const isActive = status === "ACTIVE";
+
+    const product = await prisma.product.update({
+      where: { id: productId },
+      data: {
+        status,
+        isActive, // ✅ auto-sync
+        updatedAt: new Date(),
+      },
+      include: {
+        User: true,
+        Brand: true,
+      },
+    });
+
+    return {
+      success: true,
+      data: product,
+    };
+  } catch (err) {
+    console.error("updateProductStatus error:", err);
+    return {
+      success: false,
+      msg: "Failed to update product status",
+    };
+  }
+}
 /* -----------------------------
    DELETE PRODUCT (OPTIONAL)
 --------------------------------*/

@@ -1,18 +1,22 @@
 "use client";
 
 import React, { useState } from "react";
-import { Table, Switch, Button, Space, message } from "antd";
+import { Table, Select, Button, Space, message, Tag } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import {
   deleteProduct,
-  updateProductActive,
+  updateProductStatus,
 } from "@/app/actions/product/product.actions";
+import Link from "next/link";
+
+const { Option } = Select;
 
 export default function ProductsTable({ initial = [] }) {
   const [products, setProducts] = useState(initial);
   const [loadingIds, setLoadingIds] = useState([]);
   const router = useRouter();
+  console.log(products, "products");
 
   const setLoadingFor = (id, val) => {
     setLoadingIds((prev) =>
@@ -20,22 +24,26 @@ export default function ProductsTable({ initial = [] }) {
     );
   };
 
-  const handleToggleActive = async (product) => {
+  const handleStatusChange = async (product, status) => {
     setLoadingFor(product.id, true);
 
-    const res = await updateProductActive(null, {
+    const res = await updateProductStatus(null, {
       productId: product.id,
-      isActive: !product.isActive,
+      status,
     });
 
-    console.log(res);
-
     if (!res?.success) {
-      message.error(res?.msg || "Failed to update product");
+      message.error(res?.msg || "Failed to update status");
     } else {
       setProducts((prev) =>
         prev.map((p) =>
-          p.id === product.id ? { ...p, isActive: !p.isActive } : p
+          p.id === product.id
+            ? {
+                ...p,
+                status,
+                isActive: status === "ACTIVE",
+              }
+            : p
         )
       );
       message.success("Product status updated");
@@ -45,27 +53,10 @@ export default function ProductsTable({ initial = [] }) {
     router.refresh();
   };
 
-  const handleDelete = async (productId) => {
-    setLoadingFor(productId, true);
-
-    const res = await deleteProduct(null, { productId });
-
-    if (!res?.success) {
-      message.error(res?.msg || "Failed to delete product");
-    } else {
-      setProducts((prev) => prev.filter((p) => p.id !== productId));
-      message.success("Product deleted");
-    }
-
-    setLoadingFor(productId, false);
-    router.refresh();
-  };
-
   const columns = [
     {
       title: "Product",
       dataIndex: "title",
-      key: "title",
       render: (v) => <strong>{v}</strong>,
     },
     {
@@ -82,15 +73,37 @@ export default function ProductsTable({ initial = [] }) {
       render: (_, r) => r.Brand?.name || r.brandName || "-",
     },
     {
-      title: "Active",
-      dataIndex: "isActive",
+      title: "Status",
       render: (_, r) => (
-        <Switch
-          checked={r.isActive}
+        <Select
+          value={r.status}
+          style={{ width: 150 }}
           loading={loadingIds.includes(r.id)}
-          onChange={() => handleToggleActive(r)}
-        />
+          onChange={(val) => handleStatusChange(r, val)}
+        >
+          <Option value='UNDERREVIEW'>
+            <Tag color='orange'>UNDER REVIEW</Tag>
+          </Option>
+          <Option value='PROCESSING'>
+            <Tag color='blue'>PROCESSING</Tag>
+          </Option>
+          <Option value='ACTIVE'>
+            <Tag color='green'>ACTIVE</Tag>
+          </Option>
+          <Option value='REJECT'>
+            <Tag color='red'>REJECT</Tag>
+          </Option>
+        </Select>
       ),
+    },
+    {
+      title: "Visibility",
+      render: (_, r) =>
+        r.isActive ? (
+          <Tag color='green'>Live</Tag>
+        ) : (
+          <Tag color='red'>Hidden</Tag>
+        ),
     },
     {
       title: "Created",
@@ -101,6 +114,9 @@ export default function ProductsTable({ initial = [] }) {
       title: "Actions",
       render: (_, r) => (
         <Space>
+          <Link href={`/dashboard/products/${r.id}`}>
+            <Button className=''>Details</Button>
+          </Link>
           <Button
             danger
             icon={<DeleteOutlined />}
@@ -111,6 +127,22 @@ export default function ProductsTable({ initial = [] }) {
       ),
     },
   ];
+
+  const handleDelete = async (productId) => {
+    setLoadingFor(productId, true);
+
+    const res = await deleteProduct(null, { productId });
+
+    if (!res?.success) {
+      message.error(res?.msg || "Failed to delete product");
+    } else {
+      setProducts((prev) => prev.filter((p) => p.id !== productId));
+      message.success("Product deleted");
+    }
+
+    setLoadingFor(productId, false);
+    router.refresh();
+  };
 
   return (
     <Table

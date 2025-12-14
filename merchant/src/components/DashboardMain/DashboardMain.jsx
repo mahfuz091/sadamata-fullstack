@@ -18,17 +18,24 @@ import DashSidebar from "../DashSidebar/DashSidebar";
 import CustomSelect from "../CustomSelect/CustomSelect";
 
 const options2 = [
-  { label: 'Today', value: 'today' },
-  { label: 'Last 7 days', value: 'last7d' },
-  { label: 'Last 30 days', value: 'last30d' },
+  { label: "Today", value: "today" },
+  { label: "Last 7 days", value: "last7d" },
+  { label: "Last 30 days", value: "last30d" },
   // { label: 'Last 90 days', value: 'last90d' },
 ];
 
-const DashboardMain = ({ report, session, salesReport, stats, today, salesData }) => {
+const DashboardMain = ({
+  report,
+  session,
+  salesReport,
+  stats,
+  today,
+  salesData,
+}) => {
   const [data, setData] = useState([]);
-const [selected, setSelected] = useState(options2[0]); // default: today
+  const [selected, setSelected] = useState(options2[0]); // default: today
 
-  const rangeKey = selected?.value ?? 'today';
+  const rangeKey = selected?.value ?? "today";
   const current = salesData?.ranges?.[rangeKey] ?? { items: [], totalQty: 0 };
   const hasSales = (current.items?.length ?? 0) > 0;
   useEffect(() => {
@@ -99,17 +106,17 @@ const [selected, setSelected] = useState(options2[0]); // default: today
       {
         label: "Uploader Today",
         value: today.totalTodayUploaded || 0,
-        total: stats.totalProducts || 0,
+        total: Math.round((stats?.merchantProfile?.tiar || 0) * 0.1) || 0,
       },
       {
         label: "Live Designs",
-        value: stats.totalLiveProducts || 0,
-        total: stats.totalProducts || 0,
+        value: stats.totalProducts || 0,
+        total: stats?.merchantProfile?.tiar || 0,
       },
       {
         label: "Live Products",
-        value: stats.totalLiveProducts || 0,
-        total: stats.totalProducts || 0,
+        value: stats.totalProducts || 0,
+        total: stats?.merchantProfile?.tiar || 0,
       },
       {
         label: "Products with Sales",
@@ -129,52 +136,54 @@ const [selected, setSelected] = useState(options2[0]); // default: today
     setMetrics(withPercent);
   }, [stats, today]);
   console.log(metrics, "metrics");
-  
+
   return (
-    <section className="dashboard-area section-space">
-      <div className="container">
-        <div className="row gutter-x-40">
-          <div className="col-lg-3">
+    <section className='dashboard-area section-space'>
+      <div className='container'>
+        <div className='row gutter-x-40'>
+          <div className='col-lg-3'>
             <DashSidebar />
           </div>
-          <div className="col-lg-9">
-            <div className="dashboard-area__content">
-              <div className="dashboard__top">
-                <div className="currency dashboard__top__item">
-                  <div className="currency__item">
-                    <h3 className="currency__number">{stats?.merchantProfile?.leftTiar}</h3>
-                    <p className="currency__title">TIER</p>
+          <div className='col-lg-9'>
+            <div className='dashboard-area__content'>
+              <div className='dashboard__top'>
+                <div className='currency dashboard__top__item'>
+                  <div className='currency__item'>
+                    <h3 className='currency__number'>
+                      {stats?.merchantProfile?.tiar}
+                    </h3>
+                    <p className='currency__title'>TIER</p>
                   </div>
-                  <div className="currency__item">
-                    <h3 className="currency__number">0</h3>
-                    <p className="currency__title">UR</p>
+                  <div className='currency__item'>
+                    <h3 className='currency__number'>0</h3>
+                    <p className='currency__title'>UR</p>
                   </div>
-                  <div className="currency__item">
-                    <h3 className="currency__number">0</h3>
-                    <p className="currency__title">PS</p>
+                  <div className='currency__item'>
+                    <h3 className='currency__number'>0</h3>
+                    <p className='currency__title'>PS</p>
                   </div>
-                  <div className="currency__item">
-                    <h3 className="currency__number">0</h3>
-                    <p className="currency__title">REJ</p>
+                  <div className='currency__item'>
+                    <h3 className='currency__number'>0</h3>
+                    <p className='currency__title'>REJ</p>
                   </div>
                 </div>
-                <div className="flag dashboard__top__item">
+                <div className='flag dashboard__top__item'>
                   {[flag1, flag2, flag3, flag4, flag5, flag6].map(
                     (flag, index) => (
-                      <div className="flag__item" key={index}>
-                        <div className="flag__img">
+                      <div className='flag__item' key={index}>
+                        <div className='flag__img'>
                           <Image src={flag} alt={`flag ${index + 1}`} />
                         </div>
-                        <p className="flag__title">
+                        <p className='flag__title'>
                           <span>Upcoming</span>
                         </p>
                       </div>
                     )
                   )}
                 </div>
-                <div className="dashboard__top__btn">
-                  <Link href="/dashboard/add-design" className="commerce-btn">
-                    Create <i className="icon-right-arrow"></i>
+                <div className='dashboard__top__btn'>
+                  <Link href='/dashboard/add-design' className='commerce-btn'>
+                    Create <i className='icon-right-arrow'></i>
                   </Link>
                 </div>
               </div>
@@ -216,46 +225,48 @@ const [selected, setSelected] = useState(options2[0]); // default: today
                   </p>
                 </div>
               </div> */}
-              <div className="dashboard__metrics">
-      {metrics.map((item, i) => (
-        <div className="dashboard__metrics__item" key={i}>
-          <h4 className="dashboard__metrics__text">{item.label}</h4>
-          <div className="dashboard__metrics__progess-box">
-            <div className="dashboard__metrics__progess__inner">
-              <div className="progess__left">
-                {item.value} <span>of</span> {item.total}
-              </div>
-              <div className="progess__persent">{item.percent}%</div>
-            </div>
-            <div className="progess-box">
-              <div
-                className="progess-box__inner"
-                style={{ width: `${item.percent}%` }}
-              ></div>
-            </div>
-          </div>
-        </div>
-      ))}
+              <div className='dashboard__metrics'>
+                {metrics.map((item, i) => (
+                  <div className='dashboard__metrics__item' key={i}>
+                    <h4 className='dashboard__metrics__text'>{item.label}</h4>
+                    <div className='dashboard__metrics__progess-box'>
+                      <div className='dashboard__metrics__progess__inner'>
+                        <div className='progess__left'>
+                          {item.value} <span>of</span> {item.total}
+                        </div>
+                        <div className='progess__persent'>{item.percent}%</div>
+                      </div>
+                      <div className='progess-box'>
+                        <div
+                          className='progess-box__inner'
+                          style={{ width: `${item.percent}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
 
-      <div className="dashboard__metrics__item dashboard__star">
-        <h4 className="dashboard__metrics__text">Reviews</h4>
-        <div className="dashboard__star__inner">
-          {[...Array(5)].map((_, i) => (
-            <i className="fas fa-star" key={i}></i>
-          ))}
-        </div>
-        <p className="dashboard__metrics__text-two">0.0 from 0 reviews</p>
-      </div>
-    </div>
-              <div className="dashboard-dverview">
-                <div className="row gutter-x-10 gutter-y-20">
-                  <div className="col-xl-6 col-lg-12 col-md-6 col-sm-12">
-                    <div className="dashboard-dverview__item">
-                      <div className="dashboard-dverview__top">
-                        <h3 className="dashboard-dverview__title">
+                <div className='dashboard__metrics__item dashboard__star'>
+                  <h4 className='dashboard__metrics__text'>Reviews</h4>
+                  <div className='dashboard__star__inner'>
+                    {[...Array(5)].map((_, i) => (
+                      <i className='fas fa-star' key={i}></i>
+                    ))}
+                  </div>
+                  <p className='dashboard__metrics__text-two'>
+                    0.0 from 0 reviews
+                  </p>
+                </div>
+              </div>
+              <div className='dashboard-dverview'>
+                <div className='row gutter-x-10 gutter-y-20'>
+                  <div className='col-xl-6 col-lg-12 col-md-6 col-sm-12'>
+                    <div className='dashboard-dverview__item'>
+                      <div className='dashboard-dverview__top'>
+                        <h3 className='dashboard-dverview__title'>
                           Today’s Sales
                         </h3>
-                        <p className="dashboard-dverview__date">
+                        <p className='dashboard-dverview__date'>
                           {new Date().toLocaleDateString("en-US", {
                             day: "numeric",
                             month: "long",
@@ -263,10 +274,10 @@ const [selected, setSelected] = useState(options2[0]); // default: today
                           })}
                         </p>
                       </div>
-                      <div className="row gutter-x-10 gutter-y-10">
-                        <div className="col-12">
-                          <div className="dashboard-dverview__count">
-                            <h2 className="dashboard-dverview__count-text">
+                      <div className='row gutter-x-10 gutter-y-10'>
+                        <div className='col-12'>
+                          <div className='dashboard-dverview__count'>
+                            <h2 className='dashboard-dverview__count-text'>
                               {report?.soldOrders}
                             </h2>
                           </div>
@@ -287,20 +298,20 @@ const [selected, setSelected] = useState(options2[0]); // default: today
 
                             if (label === "Sold") value = report?.soldOrders;
                             else if (label === "Cancelled")
-                              value =
-                                report?.canceledOrders; // note: spelling ‘canceledOrders’
+                              value = report?.canceledOrders;
+                            // note: spelling ‘canceledOrders’
                             else if (label === "Returned")
                               value = report?.refundedUnits;
                             else if (label === "Royalties")
                               value = report?.netMerchantRoyalty;
 
                             return (
-                              <div className="col-md-6 col-lg-3" key={i}>
-                                <div className="count-box">
-                                  <h3 className="count-box__numbner">
+                              <div className='col-md-6 col-lg-3' key={i}>
+                                <div className='count-box'>
+                                  <h3 className='count-box__numbner'>
                                     {value ?? 0}
                                   </h3>
-                                  <p className="count-box__text">{label}</p>
+                                  <p className='count-box__text'>{label}</p>
                                 </div>
                               </div>
                             );
@@ -309,17 +320,21 @@ const [selected, setSelected] = useState(options2[0]); // default: today
                       </div>
                     </div>
                   </div>
-                  <div className="col-xl-6 col-lg-12 col-md-6 col-sm-12">
-                    <div className="cart">
-                      <Image src={cartImg} alt="cart image" />
+                  <div className='col-xl-6 col-lg-12 col-md-6 col-sm-12'>
+                    <div className='cart'>
+                      <Image src={cartImg} alt='cart image' />
                     </div>
                   </div>
-                  <div className="col-xl-6 col-lg-12 col-md-6 col-sm-12">
-                    <div className="dashboard-dverview__item dashboard-dverview__item--two">
-                      <div className="dashboard-dverview__top">
-                        <h3 className="dashboard-dverview__title">Sales</h3>
-                        <div className="dashboard-dverview__right">
-                          <CustomSelect options={options2} value={selected}  onChange={(opt) => setSelected(opt)}/>
+                  <div className='col-xl-6 col-lg-12 col-md-6 col-sm-12'>
+                    <div className='dashboard-dverview__item dashboard-dverview__item--two'>
+                      <div className='dashboard-dverview__top'>
+                        <h3 className='dashboard-dverview__title'>Sales</h3>
+                        <div className='dashboard-dverview__right'>
+                          <CustomSelect
+                            options={options2}
+                            value={selected}
+                            onChange={(opt) => setSelected(opt)}
+                          />
                         </div>
                       </div>
                       {/* <div className="dashboard-dverview__salse-box">
@@ -334,72 +349,81 @@ const [selected, setSelected] = useState(options2[0]); // default: today
                           <Image src={saleAvatar} alt="sales avatar" />
                         </div>
                       </div> */}
-                       {!hasSales ? (
-        // ===== Empty state (No Sales Yet) =====
-        <div className="dashboard-dverview__salse-box">
-          <h3 className="dashboard-dverview__salse-title">No Sales Yet</h3>
-          <p className="dashboard-dverview__salse-text">
-            Hang in there... We’ll notify you the moment you make a sale!
-          </p>
-          <div className="dashboard-dverview__salse-thumb">
-            {saleAvatar && (
-              <Image src={saleAvatar} alt="sales avatar" />
-            )}
-          </div>
-        </div>
-      ) : (
-        // ===== Has data =====
-        <div className="dashboard-dverview__salse-list">
-          <div className="dashboard-dverview__salse-summary">
-            <span className="dashboard-dverview__salse-total-label">Total Qty</span>
-            <span className="dashboard-dverview__salse-total-value">
-              {current.totalQty}
-            </span>
-          </div>
+                      {!hasSales ? (
+                        // ===== Empty state (No Sales Yet) =====
+                        <div className='dashboard-dverview__salse-box'>
+                          <h3 className='dashboard-dverview__salse-title'>
+                            No Sales Yet
+                          </h3>
+                          <p className='dashboard-dverview__salse-text'>
+                            Hang in there... We’ll notify you the moment you
+                            make a sale!
+                          </p>
+                          <div className='dashboard-dverview__salse-thumb'>
+                            {saleAvatar && (
+                              <Image src={saleAvatar} alt='sales avatar' />
+                            )}
+                          </div>
+                        </div>
+                      ) : (
+                        // ===== Has data =====
+                        <div className='dashboard-dverview__salse-list'>
+                          <div className='dashboard-dverview__salse-summary'>
+                            <span className='dashboard-dverview__salse-total-label'>
+                              Total Qty
+                            </span>
+                            <span className='dashboard-dverview__salse-total-value'>
+                              {current.totalQty}
+                            </span>
+                          </div>
 
-          <ul className="dashboard-dverview__salse-ul">
-            {current.items.map((item) => (
-              <li key={item.productId} className="dashboard-dverview__salse-li">
-                <div className="dashboard-dverview__salse-li-left">
-                  <div className="dashboard-dverview__salse-li-thumb">
-                    {item.image ? (
-                      <Image
-                        src={item.image}
-                        alt={item.productName || 'Product'}
-                        width={64}
-                        height={64}
-                      />
-                    ) : (
-                      <div className="dashboard-dverview__salse-li-fallback" />
-                    )}
-                  </div>
-                  <div className="dashboard-dverview__salse-li-meta">
-                    <h4 className="dashboard-dverview__salse-li-title">
-                      {item.productName || 'Unknown Product'}
-                    </h4>
-                   
-                  </div>
-                </div>
+                          <ul className='dashboard-dverview__salse-ul'>
+                            {current.items.map((item) => (
+                              <li
+                                key={item.productId}
+                                className='dashboard-dverview__salse-li'
+                              >
+                                <div className='dashboard-dverview__salse-li-left'>
+                                  <div className='dashboard-dverview__salse-li-thumb'>
+                                    {item.image ? (
+                                      <Image
+                                        src={item.image}
+                                        alt={item.productName || "Product"}
+                                        width={64}
+                                        height={64}
+                                      />
+                                    ) : (
+                                      <div className='dashboard-dverview__salse-li-fallback' />
+                                    )}
+                                  </div>
+                                  <div className='dashboard-dverview__salse-li-meta'>
+                                    <h4 className='dashboard-dverview__salse-li-title'>
+                                      {item.productName || "Unknown Product"}
+                                    </h4>
+                                  </div>
+                                </div>
 
-                <div className="dashboard-dverview__salse-li-right">
-                  <span className="dashboard-dverview__salse-li-qty">{item.qty}</span>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+                                <div className='dashboard-dverview__salse-li-right'>
+                                  <span className='dashboard-dverview__salse-li-qty'>
+                                    {item.qty}
+                                  </span>
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                     </div>
                   </div>
-                  <div className="col-xl-6 col-lg-12 col-md-6 col-sm-12">
-                    <div className="dashboard-dverview__item dashboard-dverview__item--two">
-                      <div className="dashboard-dverview__top">
-                        <h3 className="dashboard-dverview__title">
+                  <div className='col-xl-6 col-lg-12 col-md-6 col-sm-12'>
+                    <div className='dashboard-dverview__item dashboard-dverview__item--two'>
+                      <div className='dashboard-dverview__top'>
+                        <h3 className='dashboard-dverview__title'>
                           Sales Report
                         </h3>
                       </div>
-                      <div className="dashboard-dverview__receved">
-                        <div className="row gutter-y-9 gutter-x-20">
+                      <div className='dashboard-dverview__receved'>
+                        <div className='row gutter-y-9 gutter-x-20'>
                           {/* {[
                             {
                               label: "Yesterday",
@@ -466,20 +490,20 @@ const [selected, setSelected] = useState(options2[0]); // default: today
                           ))} */}
                           {data.map((item, i) => (
                             <div className={`col-sm-${item.col}`} key={i}>
-                              <div className="receved__item">
-                                <h5 className="receved__title">
+                              <div className='receved__item'>
+                                <h5 className='receved__title'>
                                   {item.label}
                                   {item.date && <span> {item.date}</span>}
                                 </h5>
-                                <div className="receved__item__box">
-                                  <h3 className="receved__item__number">
+                                <div className='receved__item__box'>
+                                  <h3 className='receved__item__number'>
                                     {item.count}
                                   </h3>
-                                  <div className="receved__item__right">
-                                    <span className="receved__item__money">
+                                  <div className='receved__item__right'>
+                                    <span className='receved__item__money'>
                                       {item.money}
                                     </span>
-                                    <span className="receved__item__order">
+                                    <span className='receved__item__order'>
                                       {item.orders}
                                     </span>
                                   </div>

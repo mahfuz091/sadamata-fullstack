@@ -128,7 +128,16 @@ export type Payout = $Result.DefaultSelection<Prisma.$PayoutPayload>
  * Enums
  */
 export namespace $Enums {
-  export const PayoutActor: {
+  export const ProductStat: {
+  UNDERREVIEW: 'UNDERREVIEW',
+  PROCESSING: 'PROCESSING',
+  ACTIVE: 'ACTIVE'
+};
+
+export type ProductStat = (typeof ProductStat)[keyof typeof ProductStat]
+
+
+export const PayoutActor: {
   BRAND: 'BRAND',
   MERCHANT: 'MERCHANT'
 };
@@ -171,6 +180,10 @@ export const ImageType: {
 export type ImageType = (typeof ImageType)[keyof typeof ImageType]
 
 }
+
+export type ProductStat = $Enums.ProductStat
+
+export const ProductStat: typeof $Enums.ProductStat
 
 export type PayoutActor = $Enums.PayoutActor
 
@@ -12913,6 +12926,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     isActive: boolean | null
+    status: $Enums.ProductStat | null
     brandName: string | null
     brandId: string | null
     mockupId: string | null
@@ -12933,6 +12947,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     isActive: boolean | null
+    status: $Enums.ProductStat | null
     brandName: string | null
     brandId: string | null
     mockupId: string | null
@@ -12953,6 +12968,7 @@ export namespace Prisma {
     createdAt: number
     updatedAt: number
     isActive: number
+    status: number
     brandName: number
     brandId: number
     mockupId: number
@@ -12987,6 +13003,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     isActive?: true
+    status?: true
     brandName?: true
     brandId?: true
     mockupId?: true
@@ -13007,6 +13024,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     isActive?: true
+    status?: true
     brandName?: true
     brandId?: true
     mockupId?: true
@@ -13027,6 +13045,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     isActive?: true
+    status?: true
     brandName?: true
     brandId?: true
     mockupId?: true
@@ -13134,6 +13153,7 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     isActive: boolean
+    status: $Enums.ProductStat | null
     brandName: string | null
     brandId: string | null
     mockupId: string
@@ -13173,6 +13193,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     isActive?: boolean
+    status?: boolean
     brandName?: boolean
     brandId?: boolean
     mockupId?: boolean
@@ -13202,6 +13223,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     isActive?: boolean
+    status?: boolean
     brandName?: boolean
     brandId?: boolean
     mockupId?: boolean
@@ -13225,6 +13247,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     isActive?: boolean
+    status?: boolean
     brandName?: boolean
     brandId?: boolean
     mockupId?: boolean
@@ -13248,6 +13271,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     isActive?: boolean
+    status?: boolean
     brandName?: boolean
     brandId?: boolean
     mockupId?: boolean
@@ -13259,7 +13283,7 @@ export namespace Prisma {
     merchantCommissionPct?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productId" | "title" | "description" | "price" | "createdAt" | "updatedAt" | "isActive" | "brandName" | "brandId" | "mockupId" | "userId" | "visibility" | "backDesign" | "frontDesign" | "brandCommissionPct" | "merchantCommissionPct", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productId" | "title" | "description" | "price" | "createdAt" | "updatedAt" | "isActive" | "status" | "brandName" | "brandId" | "mockupId" | "userId" | "visibility" | "backDesign" | "frontDesign" | "brandCommissionPct" | "merchantCommissionPct", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Brand?: boolean | Product$BrandArgs<ExtArgs>
     features?: boolean | Product$featuresArgs<ExtArgs>
@@ -13303,6 +13327,7 @@ export namespace Prisma {
       createdAt: Date
       updatedAt: Date
       isActive: boolean
+      status: $Enums.ProductStat | null
       brandName: string | null
       brandId: string | null
       mockupId: string
@@ -13751,6 +13776,7 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"Product", 'DateTime'>
     readonly updatedAt: FieldRef<"Product", 'DateTime'>
     readonly isActive: FieldRef<"Product", 'Boolean'>
+    readonly status: FieldRef<"Product", 'ProductStat'>
     readonly brandName: FieldRef<"Product", 'String'>
     readonly brandId: FieldRef<"Product", 'String'>
     readonly mockupId: FieldRef<"Product", 'String'>
@@ -29415,6 +29441,7 @@ export namespace Prisma {
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     isActive: 'isActive',
+    status: 'status',
     brandName: 'brandName',
     brandId: 'brandId',
     mockupId: 'mockupId',
@@ -29728,6 +29755,20 @@ export namespace Prisma {
    * Reference to a field of type 'Float[]'
    */
   export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ProductStat'
+   */
+  export type EnumProductStatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProductStat'>
+    
+
+
+  /**
+   * Reference to a field of type 'ProductStat[]'
+   */
+  export type ListEnumProductStatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProductStat[]'>
     
 
 
@@ -30589,6 +30630,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     isActive?: BoolFilter<"Product"> | boolean
+    status?: EnumProductStatNullableFilter<"Product"> | $Enums.ProductStat | null
     brandName?: StringNullableFilter<"Product"> | string | null
     brandId?: StringNullableFilter<"Product"> | string | null
     mockupId?: StringFilter<"Product"> | string
@@ -30617,6 +30659,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isActive?: SortOrder
+    status?: SortOrderInput | SortOrder
     brandName?: SortOrderInput | SortOrder
     brandId?: SortOrderInput | SortOrder
     mockupId?: SortOrder
@@ -30648,6 +30691,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     isActive?: BoolFilter<"Product"> | boolean
+    status?: EnumProductStatNullableFilter<"Product"> | $Enums.ProductStat | null
     brandName?: StringNullableFilter<"Product"> | string | null
     brandId?: StringNullableFilter<"Product"> | string | null
     mockupId?: StringFilter<"Product"> | string
@@ -30676,6 +30720,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isActive?: SortOrder
+    status?: SortOrderInput | SortOrder
     brandName?: SortOrderInput | SortOrder
     brandId?: SortOrderInput | SortOrder
     mockupId?: SortOrder
@@ -30704,6 +30749,7 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
     isActive?: BoolWithAggregatesFilter<"Product"> | boolean
+    status?: EnumProductStatNullableWithAggregatesFilter<"Product"> | $Enums.ProductStat | null
     brandName?: StringNullableWithAggregatesFilter<"Product"> | string | null
     brandId?: StringNullableWithAggregatesFilter<"Product"> | string | null
     mockupId?: StringWithAggregatesFilter<"Product"> | string
@@ -32610,6 +32656,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
+    status?: $Enums.ProductStat | null
     brandName?: string | null
     visibility?: boolean
     backDesign?: string | null
@@ -32635,6 +32682,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
+    status?: $Enums.ProductStat | null
     brandName?: string | null
     brandId?: string | null
     mockupId: string
@@ -32660,6 +32708,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32685,6 +32734,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     brandId?: NullableStringFieldUpdateOperationsInput | string | null
     mockupId?: StringFieldUpdateOperationsInput | string
@@ -32710,6 +32760,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
+    status?: $Enums.ProductStat | null
     brandName?: string | null
     brandId?: string | null
     mockupId: string
@@ -32730,6 +32781,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32747,6 +32799,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     brandId?: NullableStringFieldUpdateOperationsInput | string | null
     mockupId?: StringFieldUpdateOperationsInput | string
@@ -34428,6 +34481,13 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type EnumProductStatNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProductStat | EnumProductStatFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ProductStat[] | ListEnumProductStatFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ProductStat[] | ListEnumProductStatFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumProductStatNullableFilter<$PrismaModel> | $Enums.ProductStat | null
+  }
+
   export type FloatNullableFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel> | null
     in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
@@ -34483,6 +34543,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isActive?: SortOrder
+    status?: SortOrder
     brandName?: SortOrder
     brandId?: SortOrder
     mockupId?: SortOrder
@@ -34509,6 +34570,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isActive?: SortOrder
+    status?: SortOrder
     brandName?: SortOrder
     brandId?: SortOrder
     mockupId?: SortOrder
@@ -34529,6 +34591,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isActive?: SortOrder
+    status?: SortOrder
     brandName?: SortOrder
     brandId?: SortOrder
     mockupId?: SortOrder
@@ -34544,6 +34607,16 @@ export namespace Prisma {
     price?: SortOrder
     brandCommissionPct?: SortOrder
     merchantCommissionPct?: SortOrder
+  }
+
+  export type EnumProductStatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProductStat | EnumProductStatFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ProductStat[] | ListEnumProductStatFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ProductStat[] | ListEnumProductStatFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumProductStatNullableWithAggregatesFilter<$PrismaModel> | $Enums.ProductStat | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumProductStatNullableFilter<$PrismaModel>
+    _max?: NestedEnumProductStatNullableFilter<$PrismaModel>
   }
 
   export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -36140,6 +36213,10 @@ export namespace Prisma {
     connect?: CommissionSettingWhereUniqueInput | CommissionSettingWhereUniqueInput[]
   }
 
+  export type NullableEnumProductStatFieldUpdateOperationsInput = {
+    set?: $Enums.ProductStat | null
+  }
+
   export type NullableFloatFieldUpdateOperationsInput = {
     set?: number | null
     increment?: number
@@ -37148,6 +37225,13 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
+  export type NestedEnumProductStatNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProductStat | EnumProductStatFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ProductStat[] | ListEnumProductStatFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ProductStat[] | ListEnumProductStatFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumProductStatNullableFilter<$PrismaModel> | $Enums.ProductStat | null
+  }
+
   export type NestedFloatNullableFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel> | null
     in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
@@ -37157,6 +37241,16 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedEnumProductStatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProductStat | EnumProductStatFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ProductStat[] | ListEnumProductStatFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ProductStat[] | ListEnumProductStatFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumProductStatNullableWithAggregatesFilter<$PrismaModel> | $Enums.ProductStat | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumProductStatNullableFilter<$PrismaModel>
+    _max?: NestedEnumProductStatNullableFilter<$PrismaModel>
   }
 
   export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -37337,6 +37431,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
+    status?: $Enums.ProductStat | null
     brandName?: string | null
     visibility?: boolean
     backDesign?: string | null
@@ -37361,6 +37456,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
+    status?: $Enums.ProductStat | null
     brandName?: string | null
     brandId?: string | null
     mockupId: string
@@ -37765,6 +37861,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     isActive?: BoolFilter<"Product"> | boolean
+    status?: EnumProductStatNullableFilter<"Product"> | $Enums.ProductStat | null
     brandName?: StringNullableFilter<"Product"> | string | null
     brandId?: StringNullableFilter<"Product"> | string | null
     mockupId?: StringFilter<"Product"> | string
@@ -38573,6 +38670,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
+    status?: $Enums.ProductStat | null
     brandName?: string | null
     visibility?: boolean
     backDesign?: string | null
@@ -38597,6 +38695,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
+    status?: $Enums.ProductStat | null
     brandName?: string | null
     mockupId: string
     userId: string
@@ -39587,6 +39686,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
+    status?: $Enums.ProductStat | null
     brandName?: string | null
     visibility?: boolean
     backDesign?: string | null
@@ -39611,6 +39711,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
+    status?: $Enums.ProductStat | null
     brandName?: string | null
     brandId?: string | null
     mockupId: string
@@ -39870,6 +39971,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
@@ -39894,6 +39996,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     brandId?: NullableStringFieldUpdateOperationsInput | string | null
     mockupId?: StringFieldUpdateOperationsInput | string
@@ -40187,6 +40290,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
+    status?: $Enums.ProductStat | null
     brandName?: string | null
     visibility?: boolean
     backDesign?: string | null
@@ -40211,6 +40315,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
+    status?: $Enums.ProductStat | null
     brandName?: string | null
     brandId?: string | null
     mockupId: string
@@ -40251,6 +40356,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40275,6 +40381,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     brandId?: NullableStringFieldUpdateOperationsInput | string | null
     mockupId?: StringFieldUpdateOperationsInput | string
@@ -40299,6 +40406,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
+    status?: $Enums.ProductStat | null
     brandName?: string | null
     visibility?: boolean
     backDesign?: string | null
@@ -40323,6 +40431,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
+    status?: $Enums.ProductStat | null
     brandName?: string | null
     brandId?: string | null
     mockupId: string
@@ -40363,6 +40472,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40387,6 +40497,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     brandId?: NullableStringFieldUpdateOperationsInput | string | null
     mockupId?: StringFieldUpdateOperationsInput | string
@@ -40411,6 +40522,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
+    status?: $Enums.ProductStat | null
     brandName?: string | null
     visibility?: boolean
     backDesign?: string | null
@@ -40435,6 +40547,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
+    status?: $Enums.ProductStat | null
     brandName?: string | null
     brandId?: string | null
     mockupId: string
@@ -40475,6 +40588,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40499,6 +40613,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     brandId?: NullableStringFieldUpdateOperationsInput | string | null
     mockupId?: StringFieldUpdateOperationsInput | string
@@ -40549,6 +40664,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
+    status?: $Enums.ProductStat | null
     brandName?: string | null
     visibility?: boolean
     backDesign?: string | null
@@ -40573,6 +40689,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
+    status?: $Enums.ProductStat | null
     brandName?: string | null
     brandId?: string | null
     userId: string
@@ -41420,6 +41537,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
+    status?: $Enums.ProductStat | null
     brandName?: string | null
     visibility?: boolean
     backDesign?: string | null
@@ -41444,6 +41562,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
+    status?: $Enums.ProductStat | null
     brandName?: string | null
     brandId?: string | null
     mockupId: string
@@ -41616,6 +41735,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
@@ -41640,6 +41760,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     brandId?: NullableStringFieldUpdateOperationsInput | string | null
     mockupId?: StringFieldUpdateOperationsInput | string
@@ -42060,6 +42181,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
+    status?: $Enums.ProductStat | null
     brandName?: string | null
     brandId?: string | null
     mockupId: string
@@ -42146,6 +42268,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
@@ -42170,6 +42293,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     brandId?: NullableStringFieldUpdateOperationsInput | string | null
     mockupId?: StringFieldUpdateOperationsInput | string
@@ -42194,6 +42318,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     brandId?: NullableStringFieldUpdateOperationsInput | string | null
     mockupId?: StringFieldUpdateOperationsInput | string
@@ -42500,6 +42625,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
+    status?: $Enums.ProductStat | null
     brandName?: string | null
     mockupId: string
     userId: string
@@ -42554,6 +42680,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
@@ -42578,6 +42705,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     mockupId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
@@ -42602,6 +42730,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     mockupId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
@@ -43126,6 +43255,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isActive?: boolean
+    status?: $Enums.ProductStat | null
     brandName?: string | null
     brandId?: string | null
     userId: string
@@ -43169,6 +43299,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
@@ -43193,6 +43324,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     brandId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
@@ -43217,6 +43349,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     brandId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string

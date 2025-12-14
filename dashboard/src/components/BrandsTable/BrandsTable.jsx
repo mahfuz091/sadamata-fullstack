@@ -9,6 +9,7 @@ import {
   updateUserIsActive,
   deleteUser,
 } from "@/app/actions/user/user.actions";
+import Link from "next/link";
 
 export default function BrandsTable({ initial = [] }) {
   const [users, setUsers] = useState(initial);
@@ -83,6 +84,23 @@ export default function BrandsTable({ initial = [] }) {
       render: (email) => <div style={{ fontSize: 13 }}>{email}</div>,
     },
     {
+      title: "Applied At",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (createdAt) => {
+        const date = new Date(createdAt);
+        return (
+          <div>
+            {date.toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })}
+          </div>
+        );
+      },
+    },
+    {
       title: "Role",
       dataIndex: "role",
       key: "role",
@@ -107,6 +125,23 @@ export default function BrandsTable({ initial = [] }) {
       key: "actions",
       render: (_, record) => (
         <Space>
+          <Link href={`/dashboard/brands/${record.id}`}>
+            <Button
+              type='primary'
+              className='bg-[#f29456]! border-[#f29456]! hover:bg-[#f29456] hover:border-[#f29456]'
+            >
+              Details
+            </Button>
+          </Link>
+          <Link href={`/dashboard/brands/${record.id}/stats`}>
+            <Button
+              type='primary'
+              className='bg-[#f29456]! border-[#f29456]! hover:bg-[#f29456] hover:border-[#f29456]'
+            >
+              Stats
+            </Button>
+          </Link>
+
           <Popconfirm
             title='Delete this user?'
             okText='Yes'

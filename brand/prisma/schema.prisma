@@ -197,14 +197,15 @@ model BrandCategory {
 }
 
 model Product {
-  id          String   @id @default(uuid())
-  productId   String   @unique
+  id          String       @id @default(uuid())
+  productId   String       @unique
   title       String
   description String?
   price       Float
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  isActive    Boolean  @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  isActive    Boolean      @default(false)
+  status      ProductStat? @default(UNDERREVIEW)
   // Brand handling
 
   brandName String?
@@ -235,6 +236,13 @@ model Product {
   sales Sale[] // track product sales
 
   CommissionSetting CommissionSetting[]
+}
+
+enum ProductStat {
+  UNDERREVIEW
+  PROCESSING
+  ACTIVE
+  REJECT
 }
 
 model Sale {

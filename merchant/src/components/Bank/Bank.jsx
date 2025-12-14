@@ -190,7 +190,7 @@ const Bank = ({ user, countries }) => {
                 </Link>
 
                 <Link href='/dashboard/profile/bank'>
-                  <li className='user-profile__info__menu__item'>
+                  <li className='user-profile__info__menu__item active'>
                     User Bank information
                   </li>
                 </Link>
@@ -200,9 +200,11 @@ const Bank = ({ user, countries }) => {
                   </li>
                 </Link>
 
-                <li className='user-profile__info__menu__item mt-3'>
-                  Delete your account
-                </li>
+                <Link href='/dashboard'>
+                  <li className='user-profile__info__menu__item mt-3'>
+                    Back To Dashboard
+                  </li>
+                </Link>
               </ul>
             </aside>
 

@@ -3,7 +3,7 @@ import ProductsTable from "@/components/ProductsTable/ProductsTable";
 
 export default async function ProductsPage() {
   const res = await getProducts();
-  console.log(res);
+  console.log(res, "res products");
 
   if (!res?.success) {
     return <div>Failed to load products</div>;

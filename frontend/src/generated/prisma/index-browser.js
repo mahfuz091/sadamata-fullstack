@@ -254,6 +254,7 @@ exports.Prisma.ProductScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   isActive: 'isActive',
+  status: 'status',
   brandName: 'brandName',
   brandId: 'brandId',
   mockupId: 'mockupId',
@@ -435,6 +436,12 @@ exports.Role = exports.$Enums.Role = {
   ADMIN: 'ADMIN',
   BRAND: 'BRAND',
   MERCH: 'MERCH'
+};
+
+exports.ProductStat = exports.$Enums.ProductStat = {
+  UNDERREVIEW: 'UNDERREVIEW',
+  PROCESSING: 'PROCESSING',
+  ACTIVE: 'ACTIVE'
 };
 
 exports.FitType = exports.$Enums.FitType = {

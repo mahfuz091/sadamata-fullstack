@@ -1,6 +1,6 @@
-'use server';
+"use server";
 
-import { prisma } from '@/lib/prisma';
+import { prisma } from "@/lib/prisma";
 
 /**
  * মার্চেন্ট প্রোডাক্ট স্ট্যাটস
@@ -10,7 +10,7 @@ import { prisma } from '@/lib/prisma';
  *   - timeFrom/timeTo দিলে "products that have sales" রেঞ্জ-ভিত্তিক গণনা হবে (Sale.createdAt)
  */
 export async function getMerchantProductStats(merchantId, opts = {}) {
-  if (!merchantId) throw new Error('merchantId required');
+  if (!merchantId) throw new Error("merchantId required");
 
   const { useVisibility = false, timeFrom, timeTo } = opts;
 
@@ -28,6 +28,16 @@ export async function getMerchantProductStats(merchantId, opts = {}) {
     where: liveWhere,
   });
 
+  const totalUnderReviewProducts = await prisma.product.count({
+    where: { userId: merchantId, status: "UNDERREVIEW", isActive: false },
+  });
+  const totalProcessingProducts = await prisma.product.count({
+    where: { userId: merchantId, status: "PROCESSING", isActive: false },
+  });
+  const totalRejectedProducts = await prisma.product.count({
+    where: { userId: merchantId, status: "REJECT", isActive: false },
+  });
+
   // 3) total products that have sales (ডিস্টিংক্ট productId)
   // Sale-এ merchantId আছে, তাই সরাসরি ব্যবহার করা যায়।
   const saleWhere = {
@@ -41,7 +51,7 @@ export async function getMerchantProductStats(merchantId, opts = {}) {
   const soldProductIds = await prisma.sale.findMany({
     where: saleWhere,
     select: { productId: true },
-    distinct: ['productId'],
+    distinct: ["productId"],
   });
 
   const totalProductsWithSales = soldProductIds.length;
@@ -51,30 +61,50 @@ export async function getMerchantProductStats(merchantId, opts = {}) {
     where: { userId: merchantId },
     select: {
       tiar: true,
-      leftTiar: true
+      leftTiar: true,
     },
   });
-
 
   return {
     merchantId,
     totalProducts,
     totalLiveProducts,
     totalProductsWithSales,
-    merchantProfile
+    merchantProfile,
+    totalUnderReviewProducts,
+    totalProcessingProducts,
+    totalRejectedProducts,
   };
 }
 
 export async function getTodayUploadedProducts(merchantId) {
-  if (!merchantId) throw new Error('merchantId is required');
+  if (!merchantId) throw new Error("merchantId is required");
 
   // Dhaka timezone = UTC +6
   const now = new Date();
   const dhakaOffset = 6 * 60 * 60 * 1000;
   const nowDhaka = new Date(now.getTime() + dhakaOffset);
 
-  const startDhaka = new Date(Date.UTC(nowDhaka.getUTCFullYear(), nowDhaka.getUTCMonth(), nowDhaka.getUTCDate(), 0, 0, 0));
-  const endDhaka = new Date(Date.UTC(nowDhaka.getUTCFullYear(), nowDhaka.getUTCMonth(), nowDhaka.getUTCDate(), 23, 59, 59));
+  const startDhaka = new Date(
+    Date.UTC(
+      nowDhaka.getUTCFullYear(),
+      nowDhaka.getUTCMonth(),
+      nowDhaka.getUTCDate(),
+      0,
+      0,
+      0
+    )
+  );
+  const endDhaka = new Date(
+    Date.UTC(
+      nowDhaka.getUTCFullYear(),
+      nowDhaka.getUTCMonth(),
+      nowDhaka.getUTCDate(),
+      23,
+      59,
+      59
+    )
+  );
 
   // Convert back to UTC for query
   const startUTC = new Date(startDhaka.getTime() - dhakaOffset);
@@ -94,7 +124,7 @@ export async function getTodayUploadedProducts(merchantId) {
       isActive: true,
       createdAt: true,
     },
-    orderBy: { createdAt: 'desc' },
+    orderBy: { createdAt: "desc" },
   });
 
   const totalTodayUploaded = products.length;

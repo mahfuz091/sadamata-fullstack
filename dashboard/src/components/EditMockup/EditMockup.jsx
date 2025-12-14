@@ -16,7 +16,7 @@ import { assets } from "@/assets/assets";
 
 const FIT_TYPES = ["MEN", "WOMEN", "YOUTH"];
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "";
+const API_BASE = process.env.NEXT_PUBLIC_BASE_URL || "";
 
 function getImageUrl(path) {
   if (!path) return undefined;

@@ -39,7 +39,7 @@ const nextConfig = {
 
   experimental: {
     serverActions: {
-      bodySizeLimit: "200mb",
+      bodySizeLimit: "800mb",
       llowedOrigins: ["*"], // (you probably meant allowedOrigins, but irrelevant for canvas)
     },
   },

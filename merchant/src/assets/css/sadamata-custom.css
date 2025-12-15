@@ -576,3 +576,14 @@ button.profileImageButton {
   border: 1px solid var(--commerce-base);
   color: var(--commerce-white);
 }
+
+.my-toast {
+  border-radius: 12px;
+  background: #0f172a;
+  color: white;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.my-toast-desc {
+  opacity: 0.8;
+}

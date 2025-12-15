@@ -10,6 +10,7 @@ import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import BrandDropdown from "./BrandDropDown";
 import { useRouter } from "next/navigation";
+import { validatePngFile } from "@/utils/validation";
 const MOCKUP_BASE_URL =
   process.env.NEXT_PUBLIC_MOCKUP_BASE_URL || "https://admin.sadamata.com";
 const SPINNER_SVG_DATAURI =
@@ -95,13 +96,33 @@ export default function AddDesignFitAdmin({
   const [hoveredFitType, setHoveredFitType] = useState({});
   const [selectedColor, setSelectedColor] = useState({});
   const [hoveredColor, setHoveredColor] = useState({});
+  const [activePreviewFit, setActivePreviewFit] = useState({});
+  const [fitClickHistory, setFitClickHistory] = useState({});
 
+  // const getActiveFit = (idx, fallback) => {
+  //   if (idx == null) return fallback;
+  //   const hover = hoveredFitType[idx];
+  //   if (hover) return hover;
+  //   const picked = selectedFitType[idx];
+  //   return picked?.[0] ?? fallback;
+  // };
   const getActiveFit = (idx, fallback) => {
     if (idx == null) return fallback;
+
     const hover = hoveredFitType[idx];
     if (hover) return hover;
-    const picked = selectedFitType[idx];
-    return picked?.[0] ?? fallback;
+
+    const selected = selectedFitType[idx] ?? [];
+    const history = fitClickHistory[idx] ?? [];
+
+    // Pick the LAST clicked fit that is still selected
+    for (let i = history.length - 1; i >= 0; i--) {
+      if (selected.includes(history[i])) {
+        return history[i];
+      }
+    }
+
+    return selected[0] ?? fallback;
   };
 
   const getActiveColor = (idx, fallback) => {
@@ -194,6 +215,11 @@ export default function AddDesignFitAdmin({
   const handleFileChange = (e) => {
     if (e.target.files?.[0]) {
       const file = e.target.files[0];
+      if (!validatePngFile(file)) {
+        e.target.value = ""; // reset input
+        return;
+      }
+
       setFileName(file.name);
       setIsLoading(true);
       setDesignImageFile(file);
@@ -214,6 +240,11 @@ export default function AddDesignFitAdmin({
   const handleBackFileChange = (e) => {
     if (e.target.files?.[0]) {
       const file = e.target.files[0];
+      if (!validatePngFile(file)) {
+        e.target.value = ""; // reset input
+        return;
+      }
+
       setBackFileName(file.name);
       setDesignBackFile(file);
       setIsBackLoading(true);
@@ -227,6 +258,50 @@ export default function AddDesignFitAdmin({
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  // ------------------ REMOVE DESIGN HANDLERS ------------------
+
+  const handleRemoveFrontDesign = () => {
+    setDesignImage(null);
+    setDesignImageFile(null);
+    setFileName("");
+    setIsLoading(false);
+
+    // reset design position & size (optional but recommended)
+    setDesignPosition({ x: 100, y: 100 });
+    setDesignSize({ width: 200, height: 200 });
+
+    // clear fabric canvas safely
+    if (canvas) {
+      safeClear(canvas);
+    }
+
+    // reset file input so same file can be re-uploaded
+    if (inputFileRef.current) {
+      inputFileRef.current.value = "";
+    }
+
+    toast.info("Front design removed");
+  };
+
+  const handleRemoveBackDesign = () => {
+    setDesignBack(false);
+    setDesignBackFile(null);
+    setBackFileName("");
+    setIsBackLoading(false);
+
+    setDesignBackPosition({ x: 100, y: 100 });
+    setDesignBackSize({ width: 200, height: 200 });
+
+    if (backCanvas) {
+      safeClear(backCanvas);
+    }
+
+    const backInput = document.getElementById("backimage-upload");
+    if (backInput) backInput.value = "";
+
+    toast.info("Back design removed");
   };
 
   // ------------------ FABRIC CANVAS INIT ------------------
@@ -273,7 +348,7 @@ export default function AddDesignFitAdmin({
     if (!refs.length) return;
 
     const instances = refs.map(
-      (ref) => new Canvas(ref, { width: 350, height: 350, selection: false })
+      (ref) => new Canvas(ref, { width: 400, height: 400, selection: false })
     );
     setCanvasInstances(instances);
 
@@ -415,15 +490,15 @@ export default function AddDesignFitAdmin({
       if (!designImg) return;
       const targetWidth = 80;
       const targetHeight = 80;
-      const scaleX = targetWidth / designImg.width;
-      const scaleY = targetHeight / designImg.height;
-      const centerX = (fabricCanvas.width - targetWidth) / 2;
-      const centerY = (fabricCanvas.height - targetHeight) / 2;
+      const scaleX = designBackSize.width / designImg.width;
+      const scaleY = designBackSize.height / designImg.height;
+      // const centerX = (fabricCanvas.width - targetWidth) / 2;
+      // const centerY = (fabricCanvas.height - targetHeight) / 2;
 
       const fabricImg = new FabricImage(designImg);
       fabricImg.set({
-        left: centerX,
-        top: centerY,
+        left: designBackPosition.x,
+        top: designBackPosition.y,
         scaleX,
         scaleY,
         hasControls: false,
@@ -643,9 +718,35 @@ export default function AddDesignFitAdmin({
     setHoveredColor((prev) => ({ ...prev, [activeProductIndex]: colorOrNull }));
   };
 
+  // const handleFitToggle = (fit) => {
+  //   if (activeProductIndex === null) return;
+  //   toggleFitAtIndex(activeProductIndex, fit);
+  // };
   const handleFitToggle = (fit) => {
     if (activeProductIndex === null) return;
-    toggleFitAtIndex(activeProductIndex, fit);
+
+    setSelectedFitType((prev) => {
+      const current = prev[activeProductIndex] ?? [];
+      const exists = current.includes(fit);
+
+      const next = exists
+        ? current.filter((f) => f !== fit)
+        : [...current, fit];
+
+      return { ...prev, [activeProductIndex]: next };
+    });
+
+    setFitClickHistory((prev) => {
+      const history = prev[activeProductIndex] ?? [];
+
+      // 🔴 ALWAYS move checked fit to the end
+      const cleaned = history.filter((f) => f !== fit);
+
+      return {
+        ...prev,
+        [activeProductIndex]: [...cleaned, fit],
+      };
+    });
   };
 
   const handleColorToggle = (color) => {
@@ -1051,7 +1152,7 @@ export default function AddDesignFitAdmin({
                           className='file-upload__input'
                           hidden
                           onChange={handleFileChange}
-                          accept='image/*'
+                          accept='image/png'
                         />
                         {isLoading ? (
                           <div
@@ -1061,13 +1162,49 @@ export default function AddDesignFitAdmin({
                             <span className='visually-hidden'>Loading...</span>
                           </div>
                         ) : (
+                          // designImage && (
+                          //   <img
+                          //     src={designImage}
+                          //     alt='Uploaded Design'
+                          //     width={200}
+                          //     height={200}
+                          //   />
+                          // )
                           designImage && (
-                            <img
-                              src={designImage}
-                              alt='Uploaded Design'
-                              width={200}
-                              height={200}
-                            />
+                            <div className='position-relative d-inline-block'>
+                              <img
+                                src={designImage}
+                                alt='Uploaded Design'
+                                width={200}
+                                height={200}
+                                style={{ borderRadius: 6 }}
+                              />
+
+                              <button
+                                type='button'
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation(); // 🔴 THIS IS THE KEY
+                                  handleRemoveFrontDesign();
+                                }}
+                                className='btn btn-sm '
+                                style={{
+                                  position: "absolute",
+                                  top: -10,
+                                  right: -10,
+                                  borderRadius: "50%",
+                                  width: 28,
+                                  height: 28,
+                                  padding: 0,
+
+                                  background: "var(--commerce-base)",
+                                  color: "white",
+                                }}
+                                title='Remove design'
+                              >
+                                X
+                              </button>
+                            </div>
                           )
                         )}
 
@@ -1139,7 +1276,7 @@ export default function AddDesignFitAdmin({
                   <div className='item' key={item.id ?? index}>
                     <div className='product__item-two'>
                       <div className='product__item-two__img'>
-                        <a href='#' className='product__item-two__img__item'>
+                        <span className='product__item-two__img__item'>
                           <canvas
                             ref={(el) => {
                               if (el) canvasRefs.current[index] = el;
@@ -1149,7 +1286,7 @@ export default function AddDesignFitAdmin({
                               position: "relative",
                             }}
                           />
-                        </a>
+                        </span>
                       </div>
                       <div className='product__item-two__content'>
                         <h4 className='product__item-two__title'>
@@ -1193,6 +1330,41 @@ export default function AddDesignFitAdmin({
                       </div>
 
                       {isBackView ? (
+                        // <label htmlFor='backimage-upload'>
+                        //   <canvas
+                        //     ref={canvasBackRef}
+                        //     className={`front ${isBackView ? "" : "d-none"}`}
+                        //     style={{
+                        //       border: "1px solid #ddd",
+                        //       position: "relative",
+                        //     }}
+                        //   />
+
+                        //   {designBack && (
+                        //     <button
+                        //       type='button'
+                        //       onClick={handleRemoveBackDesign}
+                        //       className='btn btn-sm btn-danger'
+                        //       style={{
+                        //         position: "absolute",
+                        //         top: 10,
+                        //         right: 10,
+                        //         zIndex: 10,
+                        //       }}
+                        //     >
+                        //       Remove Back Design
+                        //     </button>
+                        //   )}
+                        //   <input
+                        //     type='file'
+                        //     id='backimage-upload'
+                        //     className='file-upload__input'
+                        //     hidden
+                        //     onChange={handleBackFileChange}
+                        //     disabled={!!designBack}
+                        //     accept='image/*'
+                        //   />
+                        // </label>
                         <label htmlFor='backimage-upload'>
                           <canvas
                             ref={canvasBackRef}
@@ -1202,6 +1374,29 @@ export default function AddDesignFitAdmin({
                               position: "relative",
                             }}
                           />
+
+                          {designBack && (
+                            <button
+                              type='button'
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation(); // 🔴 THIS IS THE KEY
+                                handleRemoveBackDesign();
+                              }}
+                              className='btn btn-sm '
+                              style={{
+                                position: "absolute",
+                                top: 10,
+                                right: 10,
+                                zIndex: 10,
+                                background: "var(--commerce-base)",
+                                color: "white",
+                              }}
+                            >
+                              X
+                            </button>
+                          )}
+
                           <input
                             type='file'
                             id='backimage-upload'
@@ -1209,7 +1404,7 @@ export default function AddDesignFitAdmin({
                             hidden
                             onChange={handleBackFileChange}
                             disabled={!!designBack}
-                            accept='image/*'
+                            accept='image/png'
                           />
                         </label>
                       ) : (

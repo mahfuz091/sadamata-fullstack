@@ -5,8 +5,10 @@ import info from "@/assets/images/shapes/info.svg";
 import Link from "next/link";
 import { registerUser } from "@/app/actions/auth/auth.actions";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const VendorSignup = () => {
+  const router = useRouter();
   // -----------------------
   // Validation Functions
   // -----------------------
@@ -139,6 +141,9 @@ const VendorSignup = () => {
 
       if (result.success) {
         toast.success(result.message);
+        setTimeout(() => {
+          router.push("/activation-notice");
+        }, 800);
         setSuccessMessage("Account created successfully!");
 
         setFormData({
@@ -173,7 +178,6 @@ const VendorSignup = () => {
           </div>
 
           <form className='user-login__form' onSubmit={handleSubmit}>
-            
             {/* NAME */}
             <div className='user-login__form-input-box'>
               <label htmlFor='name'>Your name</label>
@@ -202,7 +206,7 @@ const VendorSignup = () => {
               />
 
               {errors.contact && (
-                <p className="input-error-text">{errors.contact}</p>
+                <p className='input-error-text'>{errors.contact}</p>
               )}
             </div>
 
@@ -220,7 +224,7 @@ const VendorSignup = () => {
               />
 
               {errors.password && (
-                <p className="input-error-text">{errors.password}</p>
+                <p className='input-error-text'>{errors.password}</p>
               )}
 
               <p className='user-login__form__info'>
@@ -245,7 +249,7 @@ const VendorSignup = () => {
               />
 
               {errors.confirmPassword && (
-                <p className="input-error-text">{errors.confirmPassword}</p>
+                <p className='input-error-text'>{errors.confirmPassword}</p>
               )}
             </div>
 
@@ -265,12 +269,6 @@ const VendorSignup = () => {
               </p>
             </div>
           </form>
-
-          <div className='user-login__bottom'>
-            <Link href='#'>
-              Already have an account? <span>Sign in</span>
-            </Link>
-          </div>
         </div>
       </div>
     </section>

@@ -7,6 +7,7 @@ import info from "@/assets/images/shapes/info.svg";
 import { toast } from "sonner";
 import { registerUser } from "@/app/actions/auth/auth.actions";
 import { Col, Row } from "react-bootstrap";
+import { useRouter } from "next/navigation";
 
 /**
  * VendorRegister (full, two-step) with VendorLogin-style validation for ALL fields.
@@ -31,6 +32,7 @@ const isBDPhone = (val) =>
   /^(?:\+8801|01)[3-9][0-9]{8}$/.test((val || "").trim());
 
 export default function VendorRegister() {
+  const router = useRouter();
   const [step, setStep] = useState(1);
 
   // Step 1 state (account)
@@ -94,7 +96,10 @@ export default function VendorRegister() {
   });
 
   // derived
-  const phoneMode = useMemo(() => isBDPhone(account.contact), [account.contact]);
+  const phoneMode = useMemo(
+    () => isBDPhone(account.contact),
+    [account.contact]
+  );
 
   /* =========================
      Validation helpers
@@ -128,7 +133,8 @@ export default function VendorRegister() {
   // Step 2 validators (everything required as per user request)
   const validateRequired = (value, label = "This field") => {
     if (value === undefined || value === null) return ``;
-    if (typeof value === "string" && !value.trim()) return `${label} is required`;
+    if (typeof value === "string" && !value.trim())
+      return `${label} is required`;
     return "";
   };
 
@@ -173,7 +179,10 @@ export default function VendorRegister() {
           );
         }
         if (name === "confirmPassword") {
-          nextErr.confirmPassword = validateConfirmPassword(value, next.password);
+          nextErr.confirmPassword = validateConfirmPassword(
+            value,
+            next.password
+          );
         }
 
         return nextErr;
@@ -213,9 +222,12 @@ export default function VendorRegister() {
             nextErr.presentAddress = validateRequired(value, "Present address");
             break;
           case "permanentAddress":
-            nextErr.permanentAddress = validateRequired(value, "Permanent address");
+            nextErr.permanentAddress = validateRequired(
+              value,
+              "Permanent address"
+            );
             break;
-         
+
           case "bankName":
             nextErr.bankName = validateRequired(value, "Bank name");
             break;
@@ -231,7 +243,7 @@ export default function VendorRegister() {
           case "routingNumber":
             nextErr.routingNumber = validateRequired(value, "Routing number");
             break;
-          
+
           default:
             break;
         }
@@ -266,12 +278,7 @@ export default function VendorRegister() {
     setErrorsStep1(newErrors);
 
     // return boolean
-    return !(
-      nameErr ||
-      contactErr ||
-      passwordErr ||
-      confirmPasswordErr
-    );
+    return !(nameErr || contactErr || passwordErr || confirmPasswordErr);
   };
 
   const validateStep2 = () => {
@@ -281,17 +288,32 @@ export default function VendorRegister() {
     newErr.birthYard = validateRequired(profile.birthYard, "Date of birth");
     newErr.email = validateEmailField(profile.email);
     newErr.call = validatePhoneField(profile.call);
-    newErr.nidNumber = validateRequired(profile.nidNumber, "NID/Passport number");
-    newErr.presentAddress = validateRequired(profile.presentAddress, "Present address");
-    newErr.permanentAddress = validateRequired(profile.permanentAddress, "Permanent address");
+    newErr.nidNumber = validateRequired(
+      profile.nidNumber,
+      "NID/Passport number"
+    );
+    newErr.presentAddress = validateRequired(
+      profile.presentAddress,
+      "Present address"
+    );
+    newErr.permanentAddress = validateRequired(
+      profile.permanentAddress,
+      "Permanent address"
+    );
     newErr.portfolioLink = "";
-    newErr.webLink = ""
+    newErr.webLink = "";
 
     newErr.bankName = validateRequired(profile.bankName, "Bank name");
     newErr.branchName = validateRequired(profile.branchName, "Branch name");
     newErr.accountName = validateRequired(profile.accountName, "Account name");
-    newErr.accountNumber = validateRequired(profile.accountNumber, "Account number");
-    newErr.routingNumber = validateRequired(profile.routingNumber, "Routing number");
+    newErr.accountNumber = validateRequired(
+      profile.accountNumber,
+      "Account number"
+    );
+    newErr.routingNumber = validateRequired(
+      profile.routingNumber,
+      "Routing number"
+    );
 
     newErr.message = "";
 
@@ -307,7 +329,12 @@ export default function VendorRegister() {
 
   const canNextFromStep1 = useMemo(() => {
     // quick early check (fast): required fields present
-    if (!account.name || !account.contact || !account.password || !account.confirmPassword)
+    if (
+      !account.name ||
+      !account.contact ||
+      !account.password ||
+      !account.confirmPassword
+    )
       return false;
 
     // run validation (but don't mutate state here). We'll rely on errorsStep1 to reflect live state.
@@ -329,7 +356,8 @@ export default function VendorRegister() {
         validateName(account.name) === "" &&
         validateContact(account.contact) === "" &&
         validatePassword(account.password) === "" &&
-        validateConfirmPassword(account.confirmPassword, account.password) === ""
+        validateConfirmPassword(account.confirmPassword, account.password) ===
+          ""
       );
     }
 
@@ -342,20 +370,20 @@ export default function VendorRegister() {
 
     // quick pre-check: any empty required fields?
     const requiredFields = [
-  "fullName",
-  "birthYard",
-  "email",
-  "call",
-  "nidNumber",
-  "presentAddress",
-  "permanentAddress",
-  "bankName",
-  "branchName",
-  "accountName",
-  "accountNumber",
-  "routingNumber",
-];
-// portfolioLink, webLink, message are optional
+      "fullName",
+      "birthYard",
+      "email",
+      "call",
+      "nidNumber",
+      "presentAddress",
+      "permanentAddress",
+      "bankName",
+      "branchName",
+      "accountName",
+      "accountNumber",
+      "routingNumber",
+    ];
+    // portfolioLink, webLink, message are optional
 
     for (const f of requiredFields) {
       const v = profile[f];
@@ -440,16 +468,21 @@ export default function VendorRegister() {
       if (profile.email) fd.append("email", profile.email);
       if (profile.call) fd.append("call", profile.call);
       if (profile.nidNumber) fd.append("nid-number", profile.nidNumber);
-      if (profile.presentAddress) fd.append("present-address", profile.presentAddress);
-      if (profile.permanentAddress) fd.append("permanent-address", profile.permanentAddress);
-      if (profile.portfolioLink) fd.append("portfolio-link", profile.portfolioLink);
+      if (profile.presentAddress)
+        fd.append("present-address", profile.presentAddress);
+      if (profile.permanentAddress)
+        fd.append("permanent-address", profile.permanentAddress);
+      if (profile.portfolioLink)
+        fd.append("portfolio-link", profile.portfolioLink);
       if (profile.webLink) fd.append("web-link", profile.webLink);
 
       if (profile.bankName) fd.append("bank-name", profile.bankName);
       if (profile.branchName) fd.append("branch-name", profile.branchName);
       if (profile.accountName) fd.append("account-name", profile.accountName);
-      if (profile.accountNumber) fd.append("account-number", profile.accountNumber);
-      if (profile.routingNumber) fd.append("routing-number", profile.routingNumber);
+      if (profile.accountNumber)
+        fd.append("account-number", profile.accountNumber);
+      if (profile.routingNumber)
+        fd.append("routing-number", profile.routingNumber);
 
       if (profile.message) fd.append("message", profile.message);
 
@@ -457,6 +490,9 @@ export default function VendorRegister() {
 
       if (res?.success) {
         toast.success(res.message || "Registration submitted.");
+        setTimeout(() => {
+          router.push("/activation-notice");
+        }, 800);
 
         // reset
         setAccount({
@@ -532,285 +568,305 @@ export default function VendorRegister() {
      ========================= */
 
   return (
-    <section className="user-login user-login--two section-space">
-      <div className="container">
+    <section className='user-login user-login--two section-space'>
+      <div className='container'>
         <form onSubmit={handleSubmit}>
           {step === 1 && (
-            <div className="user-login user-login--two">
-              <div className="user-login__inner">
-                <div className="user-login__top">
-                  <h4 className="user-login__top__title">Create account</h4>
-                  <p className="user-login__top__text">All fields are required</p>
+            <div className='user-login user-login--two'>
+              <div className='user-login__inner'>
+                <div className='user-login__top'>
+                  <h4 className='user-login__top__title'>Create account</h4>
+                  <p className='user-login__top__text'>
+                    All fields are required
+                  </p>
                 </div>
 
-                <div className="user-login__form">
+                <div className='user-login__form'>
                   {/* Name */}
-                  <div className="user-login__form-input-box">
-                    <label htmlFor="name">Your name</label>
+                  <div className='user-login__form-input-box'>
+                    <label htmlFor='name'>Your name</label>
                     <input
                       className={inputClass(errorsStep1.name)}
-                      type="text"
-                      id="name"
-                      name="name"
-                      placeholder="Your full name"
+                      type='text'
+                      id='name'
+                      name='name'
+                      placeholder='Your full name'
                       value={account.name}
                       onChange={handleAccountChange}
                       required
                     />
                     {errorsStep1.name && (
-                      <p className="form-error">{errorsStep1.name}</p>
+                      <p className='form-error'>{errorsStep1.name}</p>
                     )}
                   </div>
 
                   {/* Contact */}
-                  <div className="user-login__form-input-box">
-                    <label htmlFor="contact">Email or Phone</label>
+                  <div className='user-login__form-input-box'>
+                    <label htmlFor='contact'>Email or Phone</label>
                     <input
                       className={inputClass(errorsStep1.contact)}
-                      type="text"
-                      id="contact"
-                      name="contact"
-                      placeholder="Enter your email or phone number"
+                      type='text'
+                      id='contact'
+                      name='contact'
+                      placeholder='Enter your email or phone number'
                       value={account.contact}
                       onChange={handleAccountChange}
                       required
                     />
                     {errorsStep1.contact && (
-                      <p className="form-error">{errorsStep1.contact}</p>
+                      <p className='form-error'>{errorsStep1.contact}</p>
                     )}
                   </div>
 
                   {/* Password */}
-                  <div className="user-login__form-input-box">
-                    <label htmlFor="password">Password</label>
+                  <div className='user-login__form-input-box'>
+                    <label htmlFor='password'>Password</label>
                     <input
                       className={inputClass(errorsStep1.password)}
-                      type="password"
-                      id="password"
-                      name="password"
-                      placeholder="Enter your new password"
+                      type='password'
+                      id='password'
+                      name='password'
+                      placeholder='Enter your new password'
                       value={account.password}
                       onChange={handleAccountChange}
                       required
                     />
-                    <p className="user-login__form__info">
-                      <span className="icon">
-                        <Image src={info} alt="icon" />
+                    <p className='user-login__form__info'>
+                      <span className='icon'>
+                        <Image src={info} alt='icon' />
                       </span>{" "}
                       Passwords must be at least 6 characters.
                     </p>
                     {errorsStep1.password && (
-                      <p className="form-error">{errorsStep1.password}</p>
+                      <p className='form-error'>{errorsStep1.password}</p>
                     )}
                   </div>
 
                   {/* Confirm */}
-                  <div className="user-login__form-input-box">
-                    <label htmlFor="confirmPassword">Re-enter password</label>
+                  <div className='user-login__form-input-box'>
+                    <label htmlFor='confirmPassword'>Re-enter password</label>
                     <input
                       className={inputClass(errorsStep1.confirmPassword)}
-                      type="password"
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      placeholder="Enter your new password again"
+                      type='password'
+                      id='confirmPassword'
+                      name='confirmPassword'
+                      placeholder='Enter your new password again'
                       value={account.confirmPassword}
                       onChange={handleAccountChange}
                       required
                     />
                     {errorsStep1.confirmPassword && (
-                      <p className="form-error">{errorsStep1.confirmPassword}</p>
+                      <p className='form-error'>
+                        {errorsStep1.confirmPassword}
+                      </p>
                     )}
                   </div>
 
-                  {errorMsg && <div className="user-login__form-error">{errorMsg}</div>}
+                  {errorMsg && (
+                    <div className='user-login__form-error'>{errorMsg}</div>
+                  )}
 
-                  <div className="user-login__form-input-box">
+                  <div className='user-login__form-input-box'>
                     <button
-                      type="button"
+                      type='button'
                       onClick={gotoNext}
-                      className="commerce-btn"
+                      className='commerce-btn'
                       disabled={!canNextFromStep1}
                     >
-                      Next: Profile <i className="icon-right-arrow" />
+                      Next: Profile <i className='icon-right-arrow' />
                     </button>
-                    <p className="mt-2">
+                    <p className='mt-2'>
                       By continuing, you agree to{" "}
-                      <Link href="#">conditions of use</Link> and{" "}
-                      <Link href="#">privacy notice</Link>.
+                      <Link href='#'>conditions of use</Link> and{" "}
+                      <Link href='#'>privacy notice</Link>.
                     </p>
                   </div>
-                </div>
-
-                <div className="user-login__bottom">
-                  <Link href="#">
-                    Already have an account? <span>Sign in</span>
-                  </Link>
                 </div>
               </div>
             </div>
           )}
 
           {step === 2 && (
-            <div className="brand-register">
-              <div className="form-one">
-                <h2 className="brand-register__title">Creator Information</h2>
+            <div className='brand-register'>
+              <div className='form-one'>
+                <h2 className='brand-register__title'>Creator Information</h2>
 
-                <Row className="gutter-y-30">
+                <Row className='gutter-y-30'>
                   <Col xs={12}>
                     {/* Personal */}
-                    <div className="brand-register__item">
-                      <h4 className="brand-register__item__title">Personal Information</h4>
-                      <div className="form-one__group">
-                        <div className="form-one__control">
-                          <label htmlFor="full-name">Full name</label>
+                    <div className='brand-register__item'>
+                      <h4 className='brand-register__item__title'>
+                        Personal Information
+                      </h4>
+                      <div className='form-one__group'>
+                        <div className='form-one__control'>
+                          <label htmlFor='full-name'>Full name</label>
                           <input
                             className={inputClass(errorsStep2.fullName)}
-                            type="text"
-                            id="full-name"
-                            name="fullName"
-                            placeholder="Your full name"
+                            type='text'
+                            id='full-name'
+                            name='fullName'
+                            placeholder='Your full name'
                             value={profile.fullName}
                             onChange={handleProfileChange}
                             required
                           />
                           {errorsStep2.fullName && (
-                            <p className="form-error">{errorsStep2.fullName}</p>
+                            <p className='form-error'>{errorsStep2.fullName}</p>
                           )}
                         </div>
 
-                        <div className="form-one__control">
-                          <label htmlFor="birth-yard">Date of birth</label>
+                        <div className='form-one__control'>
+                          <label htmlFor='birth-yard'>Date of birth</label>
                           <input
                             className={inputClass(errorsStep2.birthYard)}
-                            type="date"
-                            id="birth-yard"
-                            name="birthYard"
-                            placeholder="YYYY-MM-DD"
+                            type='date'
+                            id='birth-yard'
+                            name='birthYard'
+                            placeholder='YYYY-MM-DD'
                             value={profile.birthYard}
                             onChange={handleProfileChange}
                             required
                           />
                           {errorsStep2.birthYard && (
-                            <p className="form-error">{errorsStep2.birthYard}</p>
+                            <p className='form-error'>
+                              {errorsStep2.birthYard}
+                            </p>
                           )}
                         </div>
 
-                        <div className="form-one__control">
-                          <label htmlFor="email">Email address</label>
+                        <div className='form-one__control'>
+                          <label htmlFor='email'>Email address</label>
                           <input
                             className={inputClass(errorsStep2.email)}
-                            type="email"
-                            id="email"
-                            name="email"
-                            placeholder="Enter your email"
+                            type='email'
+                            id='email'
+                            name='email'
+                            placeholder='Enter your email'
                             value={profile.email}
                             onChange={handleProfileChange}
                             required
                           />
                           {errorsStep2.email && (
-                            <p className="form-error">{errorsStep2.email}</p>
+                            <p className='form-error'>{errorsStep2.email}</p>
                           )}
                         </div>
 
-                        <div className="form-one__control">
-                          <label htmlFor="call">Phone number</label>
+                        <div className='form-one__control'>
+                          <label htmlFor='call'>Phone number</label>
                           <input
                             className={inputClass(errorsStep2.call)}
-                            type="text"
-                            id="call"
-                            name="call"
-                            placeholder="Your phone number"
+                            type='text'
+                            id='call'
+                            name='call'
+                            placeholder='Your phone number'
                             value={profile.call}
                             onChange={handleProfileChange}
                             required
                           />
                           {errorsStep2.call && (
-                            <p className="form-error">{errorsStep2.call}</p>
+                            <p className='form-error'>{errorsStep2.call}</p>
                           )}
                         </div>
 
-                        <div className="form-one__control">
-                          <label htmlFor="nid-number">NID/Passport number</label>
+                        <div className='form-one__control'>
+                          <label htmlFor='nid-number'>
+                            NID/Passport number
+                          </label>
                           <input
                             className={inputClass(errorsStep2.nidNumber)}
-                            type="text"
-                            id="nid-number"
-                            name="nidNumber"
-                            placeholder="your NID or passport number"
+                            type='text'
+                            id='nid-number'
+                            name='nidNumber'
+                            placeholder='your NID or passport number'
                             value={profile.nidNumber}
                             onChange={handleProfileChange}
                             required
                           />
                           {errorsStep2.nidNumber && (
-                            <p className="form-error">{errorsStep2.nidNumber}</p>
+                            <p className='form-error'>
+                              {errorsStep2.nidNumber}
+                            </p>
                           )}
                         </div>
 
-                        <div className="form-one__control">
-                          <label htmlFor="present-address">Present address</label>
+                        <div className='form-one__control'>
+                          <label htmlFor='present-address'>
+                            Present address
+                          </label>
                           <input
                             className={inputClass(errorsStep2.presentAddress)}
-                            type="text"
-                            id="present-address"
-                            name="presentAddress"
-                            placeholder="Your full address"
+                            type='text'
+                            id='present-address'
+                            name='presentAddress'
+                            placeholder='Your full address'
                             value={profile.presentAddress}
                             onChange={handleProfileChange}
                             required
                           />
                           {errorsStep2.presentAddress && (
-                            <p className="form-error">{errorsStep2.presentAddress}</p>
+                            <p className='form-error'>
+                              {errorsStep2.presentAddress}
+                            </p>
                           )}
                         </div>
 
-                        <div className="form-one__control">
-                          <label htmlFor="permanent-address">Permanent address</label>
+                        <div className='form-one__control'>
+                          <label htmlFor='permanent-address'>
+                            Permanent address
+                          </label>
                           <input
                             className={inputClass(errorsStep2.permanentAddress)}
-                            type="text"
-                            id="permanent-address"
-                            name="permanentAddress"
-                            placeholder="Your full address"
+                            type='text'
+                            id='permanent-address'
+                            name='permanentAddress'
+                            placeholder='Your full address'
                             value={profile.permanentAddress}
                             onChange={handleProfileChange}
                             required
                           />
                           {errorsStep2.permanentAddress && (
-                            <p className="form-error">{errorsStep2.permanentAddress}</p>
+                            <p className='form-error'>
+                              {errorsStep2.permanentAddress}
+                            </p>
                           )}
                         </div>
 
-                        <div className="form-one__control">
-                          <label htmlFor="portfolio-link">Your portfolio link (If you have it)</label>
+                        <div className='form-one__control'>
+                          <label htmlFor='portfolio-link'>
+                            Your portfolio link (If you have it)
+                          </label>
                           <input
                             className={inputClass(errorsStep2.portfolioLink)}
-                            type="text"
-                            id="portfolio-link"
-                            name="portfolioLink"
-                            placeholder="Enter your portfolio"
+                            type='text'
+                            id='portfolio-link'
+                            name='portfolioLink'
+                            placeholder='Enter your portfolio'
                             value={profile.portfolioLink}
                             onChange={handleProfileChange}
-                          
                           />
                           {errorsStep2.portfolioLink && (
-                            <p className="form-error">{errorsStep2.portfolioLink}</p>
+                            <p className='form-error'>
+                              {errorsStep2.portfolioLink}
+                            </p>
                           )}
                         </div>
 
-                        <div className="form-one__control form-one__control--full">
-                          <label htmlFor="web-link">Your website (If you have it)</label>
+                        <div className='form-one__control form-one__control--full'>
+                          <label htmlFor='web-link'>
+                            Your website (If you have it)
+                          </label>
                           <input
                             className={inputClass(errorsStep2.webLink)}
-                            type="text"
-                            id="web-link"
-                            name="webLink"
-                            placeholder="Enter your website link"
+                            type='text'
+                            id='web-link'
+                            name='webLink'
+                            placeholder='Enter your website link'
                             value={profile.webLink}
                             onChange={handleProfileChange}
-                           
                           />
                           {errorsStep2.webLink && (
-                            <p className="form-error">{errorsStep2.webLink}</p>
+                            <p className='form-error'>{errorsStep2.webLink}</p>
                           )}
                         </div>
                       </div>
@@ -819,93 +875,107 @@ export default function VendorRegister() {
 
                   <Col xs={12}>
                     {/* Bank */}
-                    <div className="brand-register__item">
-                      <h4 className="brand-register__item__title">Add Your Bank Account</h4>
-                      <div className="form-one__group">
-                        <div className="form-one__control">
-                          <label htmlFor="bank-name">What is your bank name?</label>
+                    <div className='brand-register__item'>
+                      <h4 className='brand-register__item__title'>
+                        Add Your Bank Account
+                      </h4>
+                      <div className='form-one__group'>
+                        <div className='form-one__control'>
+                          <label htmlFor='bank-name'>
+                            What is your bank name?
+                          </label>
                           <input
                             className={inputClass(errorsStep2.bankName)}
-                            type="text"
-                            id="bank-name"
-                            name="bankName"
-                            placeholder="Select your bank"
+                            type='text'
+                            id='bank-name'
+                            name='bankName'
+                            placeholder='Select your bank'
                             value={profile.bankName}
                             onChange={handleProfileChange}
                             required
                           />
                           {errorsStep2.bankName && (
-                            <p className="form-error">{errorsStep2.bankName}</p>
+                            <p className='form-error'>{errorsStep2.bankName}</p>
                           )}
                         </div>
 
-                        <div className="form-one__control">
-                          <label htmlFor="branch-name">Where is the bank located?</label>
+                        <div className='form-one__control'>
+                          <label htmlFor='branch-name'>
+                            Where is the bank located?
+                          </label>
                           <input
                             className={inputClass(errorsStep2.branchName)}
-                            type="text"
-                            id="branch-name"
-                            name="branchName"
-                            placeholder="Enter your branch name"
+                            type='text'
+                            id='branch-name'
+                            name='branchName'
+                            placeholder='Enter your branch name'
                             value={profile.branchName}
                             onChange={handleProfileChange}
                             required
                           />
                           {errorsStep2.branchName && (
-                            <p className="form-error">{errorsStep2.branchName}</p>
+                            <p className='form-error'>
+                              {errorsStep2.branchName}
+                            </p>
                           )}
                         </div>
                       </div>
 
-                      <div className="form-one__group-two">
-                        <div className="form-one__control">
-                          <label htmlFor="account-name">Account Name</label>
+                      <div className='form-one__group-two'>
+                        <div className='form-one__control'>
+                          <label htmlFor='account-name'>Account Name</label>
                           <input
                             className={inputClass(errorsStep2.accountName)}
-                            type="text"
-                            id="account-name"
-                            name="accountName"
-                            placeholder="Your full name"
+                            type='text'
+                            id='account-name'
+                            name='accountName'
+                            placeholder='Your full name'
                             value={profile.accountName}
                             onChange={handleProfileChange}
                             required
                           />
                           {errorsStep2.accountName && (
-                            <p className="form-error">{errorsStep2.accountName}</p>
+                            <p className='form-error'>
+                              {errorsStep2.accountName}
+                            </p>
                           )}
                         </div>
 
-                        <div className="form-one__control">
-                          <label htmlFor="account-number">Account number</label>
+                        <div className='form-one__control'>
+                          <label htmlFor='account-number'>Account number</label>
                           <input
                             className={inputClass(errorsStep2.accountNumber)}
-                            type="text"
-                            id="account-number"
-                            name="accountNumber"
-                            placeholder="Your account number"
+                            type='text'
+                            id='account-number'
+                            name='accountNumber'
+                            placeholder='Your account number'
                             value={profile.accountNumber}
                             onChange={handleProfileChange}
                             required
                           />
                           {errorsStep2.accountNumber && (
-                            <p className="form-error">{errorsStep2.accountNumber}</p>
+                            <p className='form-error'>
+                              {errorsStep2.accountNumber}
+                            </p>
                           )}
                         </div>
 
-                        <div className="form-one__control form-one__control--full">
-                          <label htmlFor="routing-number">Routing number</label>
+                        <div className='form-one__control form-one__control--full'>
+                          <label htmlFor='routing-number'>Routing number</label>
                           <input
                             className={inputClass(errorsStep2.routingNumber)}
-                            type="text"
-                            id="routing-number"
-                            name="routingNumber"
-                            placeholder="Routing number"
+                            type='text'
+                            id='routing-number'
+                            name='routingNumber'
+                            placeholder='Routing number'
                             value={profile.routingNumber}
                             onChange={handleProfileChange}
                             required
                           />
                           {errorsStep2.routingNumber && (
-                            <p className="form-error">{errorsStep2.routingNumber}</p>
+                            <p className='form-error'>
+                              {errorsStep2.routingNumber}
+                            </p>
                           )}
                         </div>
                       </div>
@@ -914,22 +984,23 @@ export default function VendorRegister() {
 
                   <Col xs={12}>
                     {/* Additional */}
-                    <div className="brand-register__item">
-                      <h4 className="brand-register__item__title">Additional Information</h4>
-                      <div className="form-one__group">
-                        <div className="form-one__control form-one__control--full">
-                          <label htmlFor="message">Your Message</label>
+                    <div className='brand-register__item'>
+                      <h4 className='brand-register__item__title'>
+                        Additional Information
+                      </h4>
+                      <div className='form-one__group'>
+                        <div className='form-one__control form-one__control--full'>
+                          <label htmlFor='message'>Your Message</label>
                           <textarea
                             className={inputClass(errorsStep2.message)}
-                            id="message"
-                            name="message"
-                            placeholder="Write your message"
+                            id='message'
+                            name='message'
+                            placeholder='Write your message'
                             value={profile.message}
                             onChange={handleProfileChange}
-                            
                           />
                           {errorsStep2.message && (
-                            <p className="form-error">{errorsStep2.message}</p>
+                            <p className='form-error'>{errorsStep2.message}</p>
                           )}
                         </div>
                       </div>
@@ -938,19 +1009,25 @@ export default function VendorRegister() {
                 </Row>
 
                 {/* Actions */}
-                {errorMsg && <div className="user-login__form-error mb-4">{errorMsg}</div>}
+                {errorMsg && (
+                  <div className='user-login__form-error mb-4'>{errorMsg}</div>
+                )}
 
-                <div className="flex items-center justify-between">
-                  <button type="button" onClick={gotoBack} className="commerce-btn">
+                <div className='flex items-center justify-between'>
+                  <button
+                    type='button'
+                    onClick={gotoBack}
+                    className='commerce-btn'
+                  >
                     ← Back
                   </button>
                   <button
-                    type="submit"
-                    className="commerce-btn"
+                    type='submit'
+                    className='commerce-btn'
                     disabled={submitting || !canSubmitStep2}
                   >
                     {submitting ? "Submitting..." : "Submit Registration"}{" "}
-                    <i className="icon-right-arrow" />
+                    <i className='icon-right-arrow' />
                   </button>
                 </div>
               </div>

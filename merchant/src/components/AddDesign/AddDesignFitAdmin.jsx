@@ -1311,7 +1311,7 @@ export default function AddDesignFitAdmin({
                   <h2>Preview for {activeProduct.name}</h2>
 
                   <div className='row gutter-x-30 gutter-y-30'>
-                    <div className='col-lg-6'>
+                    <div className='col-lg-6 '>
                       <div className='product-preview-panel__view-toggle'>
                         <button
                           className={`toggle-btn ${
@@ -1328,97 +1328,101 @@ export default function AddDesignFitAdmin({
                           Back
                         </button>
                       </div>
+                      <div
+                        className='position-relative'
+                        style={{ maxWidth: "400px" }}
+                      >
+                        {isBackView ? (
+                          // <label htmlFor='backimage-upload'>
+                          //   <canvas
+                          //     ref={canvasBackRef}
+                          //     className={`front ${isBackView ? "" : "d-none"}`}
+                          //     style={{
+                          //       border: "1px solid #ddd",
+                          //       position: "relative",
+                          //     }}
+                          //   />
 
-                      {isBackView ? (
-                        // <label htmlFor='backimage-upload'>
-                        //   <canvas
-                        //     ref={canvasBackRef}
-                        //     className={`front ${isBackView ? "" : "d-none"}`}
-                        //     style={{
-                        //       border: "1px solid #ddd",
-                        //       position: "relative",
-                        //     }}
-                        //   />
-
-                        //   {designBack && (
-                        //     <button
-                        //       type='button'
-                        //       onClick={handleRemoveBackDesign}
-                        //       className='btn btn-sm btn-danger'
-                        //       style={{
-                        //         position: "absolute",
-                        //         top: 10,
-                        //         right: 10,
-                        //         zIndex: 10,
-                        //       }}
-                        //     >
-                        //       Remove Back Design
-                        //     </button>
-                        //   )}
-                        //   <input
-                        //     type='file'
-                        //     id='backimage-upload'
-                        //     className='file-upload__input'
-                        //     hidden
-                        //     onChange={handleBackFileChange}
-                        //     disabled={!!designBack}
-                        //     accept='image/*'
-                        //   />
-                        // </label>
-                        <label htmlFor='backimage-upload'>
-                          <canvas
-                            ref={canvasBackRef}
-                            className={`front ${isBackView ? "" : "d-none"}`}
-                            style={{
-                              border: "1px solid #ddd",
-                              position: "relative",
-                            }}
-                          />
-
-                          {designBack && (
-                            <button
-                              type='button'
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation(); // 🔴 THIS IS THE KEY
-                                handleRemoveBackDesign();
-                              }}
-                              className='btn btn-sm '
+                          //   {designBack && (
+                          //     <button
+                          //       type='button'
+                          //       onClick={handleRemoveBackDesign}
+                          //       className='btn btn-sm btn-danger'
+                          //       style={{
+                          //         position: "absolute",
+                          //         top: 10,
+                          //         right: 10,
+                          //         zIndex: 10,
+                          //       }}
+                          //     >
+                          //       Remove Back Design
+                          //     </button>
+                          //   )}
+                          //   <input
+                          //     type='file'
+                          //     id='backimage-upload'
+                          //     className='file-upload__input'
+                          //     hidden
+                          //     onChange={handleBackFileChange}
+                          //     disabled={!!designBack}
+                          //     accept='image/*'
+                          //   />
+                          // </label>
+                          <label htmlFor='backimage-upload'>
+                            <canvas
+                              ref={canvasBackRef}
+                              className={`front ${isBackView ? "" : "d-none"}`}
                               style={{
-                                position: "absolute",
-                                top: 10,
-                                right: 10,
-                                zIndex: 10,
-                                background: "var(--commerce-base)",
-                                color: "white",
+                                border: "1px solid #ddd",
+                                position: "relative",
                               }}
-                            >
-                              X
-                            </button>
-                          )}
+                            />
 
-                          <input
-                            type='file'
-                            id='backimage-upload'
-                            className='file-upload__input'
-                            hidden
-                            onChange={handleBackFileChange}
-                            disabled={!!designBack}
-                            accept='image/png'
-                          />
-                        </label>
-                      ) : (
-                        <div>
-                          <canvas
-                            ref={canvasRef}
-                            className={`front ${isBackView ? "d-none" : ""}`}
-                            style={{
-                              border: "1px solid #ddd",
-                              position: "relative",
-                            }}
-                          />
-                        </div>
-                      )}
+                            {designBack && (
+                              <button
+                                type='button'
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation(); // 🔴 THIS IS THE KEY
+                                  handleRemoveBackDesign();
+                                }}
+                                className='btn btn-sm '
+                                style={{
+                                  position: "absolute",
+                                  top: 10,
+                                  right: 10,
+                                  zIndex: 10,
+                                  background: "var(--commerce-base)",
+                                  color: "white",
+                                }}
+                              >
+                                X
+                              </button>
+                            )}
+
+                            <input
+                              type='file'
+                              id='backimage-upload'
+                              className='file-upload__input'
+                              hidden
+                              onChange={handleBackFileChange}
+                              disabled={!!designBack}
+                              accept='image/png'
+                            />
+                          </label>
+                        ) : (
+                          <div>
+                            <canvas
+                              ref={canvasRef}
+                              className={`front ${isBackView ? "d-none" : ""}`}
+                              style={{
+                                border: "1px solid #ddd",
+                                position: "relative",
+                              }}
+                            />
+                          </div>
+                        )}
+                      </div>
                     </div>
 
                     <div className='col-lg-6'>

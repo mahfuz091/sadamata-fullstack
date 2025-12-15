@@ -513,6 +513,7 @@ export async function createProduct(formData) {
     };
   } catch (error) {
     console.error("Error in product creation:", error);
+    console.log("Error in product creation:", error);
     return {
       success: false,
       message: error?.message || "Something went wrong, please try again.",

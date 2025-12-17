@@ -68,7 +68,18 @@ export default function DashboardManage({
     { value: "INACTIVE", label: "Inactive" },
   ];
   const [isDeleting, startDeleteTransition] = useTransition();
-
+  function confirmDelete(productId) {
+    toast.warning("Are you sure you want to delete this product?", {
+      description: "This action cannot be undone.",
+      action: {
+        label: "Delete",
+        onClick: () => handleDelete(productId),
+      },
+      cancel: {
+        label: "Cancel",
+      },
+    });
+  }
   async function handleDelete(productId) {
     const formData = new FormData();
     formData.append("merchantId", merchantId);
@@ -280,7 +291,7 @@ export default function DashboardManage({
                             <button
                               className='action-buttons__trash'
                               odisabled={isDeleting}
-                              onClick={() => handleDelete(product.id)}
+                              onClick={() => confirmDelete(product.id)}
                             >
                               <i className='fa fa-trash'></i>
                             </button>

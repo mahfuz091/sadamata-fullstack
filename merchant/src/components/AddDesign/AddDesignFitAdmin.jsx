@@ -90,6 +90,7 @@ export default function AddDesignFitAdmin({
   const [designBack, setDesignBack] = useState(false); // BACK design (data URL or false)
   const [designImageFile, setDesignImageFile] = useState(null);
   const [designBackFile, setDesignBackFile] = useState(null);
+  const [isPublishing, setIsPublishing] = useState(false);
 
   // Multi-select for fits/colors + hover preview
   const [selectedFitType, setSelectedFitType] = useState({});
@@ -125,12 +126,14 @@ export default function AddDesignFitAdmin({
     return selected[0] ?? fallback;
   };
 
-  const getActiveColor = (idx, fallback) => {
-    if (idx == null) return fallback;
+  const getActiveColor = (idx, fit, fallback) => {
+    if (idx == null || !fit) return fallback;
+
     const hover = hoveredColor[idx];
     if (hover) return hover;
-    const picked = selectedColor[idx];
-    return picked?.[0] ?? fallback;
+
+    const fitColors = selectedColor[idx]?.[fit];
+    return fitColors?.[0] ?? fallback;
   };
 
   const [canvas, setCanvas] = useState(null);
@@ -529,7 +532,12 @@ export default function AddDesignFitAdmin({
     const firstColor = colors[0];
 
     if (!selectedColor[activeProductIndex] && firstColor) {
-      setSelectedColor((p) => ({ ...p, [activeProductIndex]: [firstColor] }));
+      setSelectedColor((p) => ({
+        ...p,
+        [activeProductIndex]: {
+          [fit]: [firstColor],
+        },
+      }));
     }
   }, [
     activeProductIndex,
@@ -751,7 +759,27 @@ export default function AddDesignFitAdmin({
 
   const handleColorToggle = (color) => {
     if (activeProductIndex === null) return;
-    toggleColorAtIndex(activeProductIndex, color);
+
+    const fit = getActiveFit(activeProductIndex, activeFitList?.[0]);
+    if (!fit) return;
+
+    setSelectedColor((prev) => {
+      const productColors = prev[activeProductIndex] ?? {};
+      const fitColors = productColors[fit] ?? [];
+
+      const exists = fitColors.includes(color);
+      const nextColors = exists
+        ? fitColors.filter((c) => c !== color)
+        : [...fitColors, color];
+
+      return {
+        ...prev,
+        [activeProductIndex]: {
+          ...productColors,
+          [fit]: nextColors,
+        },
+      };
+    });
   };
 
   const handleBackButtonClick = () => setIsBackView(true);
@@ -1045,14 +1073,19 @@ export default function AddDesignFitAdmin({
 
     for (const fit of fitsToUse) {
       const allColors = conf.fits?.[fit]?.colors || [];
-      const chosenColors =
-        activeProductIndex !== null &&
-        selectedColor[activeProductIndex] &&
-        selectedColor[activeProductIndex].length
-          ? selectedColor[activeProductIndex].filter((c) =>
-              allColors.includes(c)
-            )
-          : allColors;
+      // const chosenColors =
+      //   activeProductIndex !== null &&
+      //   selectedColor[activeProductIndex] &&
+      //   selectedColor[activeProductIndex].length
+      //     ? selectedColor[activeProductIndex].filter((c) =>
+      //         allColors.includes(c)
+      //       )
+      //     : allColors;
+      const chosenColors = selectedColor[activeProductIndex]?.[fit]?.length
+        ? selectedColor[activeProductIndex][fit].filter((c) =>
+            allColors.includes(c)
+          )
+        : [];
 
       for (const color of chosenColors) {
         const frontSrc = conf.fits[fit]?.colorFront?.[color];
@@ -1098,7 +1131,9 @@ export default function AddDesignFitAdmin({
   const router = useRouter();
 
   const handleCreateProduct = async () => {
+    if (isPublishing) return;
     try {
+      setIsPublishing(true);
       const formData = await prepareMockupFiles();
       if (!formData) return;
 
@@ -1107,13 +1142,16 @@ export default function AddDesignFitAdmin({
       if (product.success) {
         toast.success("Product created!");
         router.push("/dashboard");
+        setIsPublishing(false);
       } else {
         console.error("Failed to create product:", product.message);
         toast.error(product.message || "Failed to create product.");
+        setIsPublishing(false);
       }
     } catch (error) {
       console.error("Error in handleCreateProduct:", error?.message || error);
       toast.error(error?.message || "Error creating product.");
+      setIsPublishing(false);
     }
   };
 
@@ -1466,7 +1504,7 @@ export default function AddDesignFitAdmin({
                           <div className='color-options d-flex gap-2 flex-wrap'>
                             {(activeColors ?? []).map((color) => {
                               const checked = (
-                                selectedColor[activeProductIndex] ?? []
+                                selectedColor[activeProductIndex]?.[uiFit] ?? []
                               ).includes(color);
                               return (
                                 <label
@@ -1882,9 +1920,28 @@ export default function AddDesignFitAdmin({
                     type='button'
                     className='commerce-btn ms-3'
                     onClick={handleCreateProduct}
+                    disabled={isPublishing}
+                    style={{
+                      opacity: isPublishing ? 0.6 : 1,
+                      cursor: isPublishing ? "not-allowed" : "pointer",
+                    }}
                   >
-                    Publish <i className='icon-right-arrow'></i>
+                    {isPublishing ? (
+                      <>
+                        <span
+                          className='spinner-border spinner-border-sm me-2'
+                          role='status'
+                          aria-hidden='true'
+                        ></span>
+                        Publishing...
+                      </>
+                    ) : (
+                      <>
+                        Publish <i className='icon-right-arrow'></i>
+                      </>
+                    )}
                   </button>
+
                   {/* Optional utilities:
                   <button className="commerce-btn ms-3" onClick={saveImage}>
                     Save Front Image

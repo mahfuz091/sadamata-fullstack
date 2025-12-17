@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import fs from "fs";
+import { revalidatePath } from "next/cache";
 import path from "path";
 
 export async function updateUserProfileImageFile(id, file) {
@@ -121,7 +122,7 @@ export async function updateUserProfile(userId, data) {
       },
       include: { userProfile: true },
     });
-
+    revalidatePath("/profile");
     return updated;
   } catch (err) {
     console.log(err);

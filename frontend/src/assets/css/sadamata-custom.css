@@ -462,3 +462,10 @@ button.profileImageButton img {
 .main-header .main-header__search__input-box {
   min-width: 100px;
 }
+.user-profile__info__menu__item a {
+  color: #585d64;
+  transition: all 0.3s;
+}
+.user-profile__info__menu__item:hover a {
+  color: #fff;
+}

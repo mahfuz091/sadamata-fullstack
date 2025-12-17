@@ -283,12 +283,27 @@ const Profile = ({ user, countries }) => {
 
                 <div className='user-profile__group__item'>
                   <label htmlFor='country'>Country</label>
+                  {editMode ? (
+                    <CountrySelect
+                      value={country}
+                      onChange={setCountry}
+                      placeHolder='Select Country'
+                    />
+                  ) : (
+                    <input
+                      type='text'
+                      name='country'
+                      id='country'
+                      value={user?.merchantProfile?.country}
+                      readOnly={!editMode}
+                    />
+                  )}
 
-                  <CountrySelect
+                  {/* <CountrySelect
                     value={country}
                     onChange={setCountry}
                     placeHolder='Select Country'
-                  />
+                  /> */}
                 </div>
 
                 <div className='user-profile__group__item'>

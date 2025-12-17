@@ -561,7 +561,7 @@ export default function AddDesignFitAdmin({
     if (!fit || !conf.fits[fit]) return;
 
     const colorFallback = conf.fits[fit].colors?.[0];
-    const color = getActiveColor(activeProductIndex, colorFallback);
+    const color = getActiveColor(activeProductIndex, fit, colorFallback);
     if (!color) return;
 
     const src = conf.fits[fit].colorFront[color];
@@ -607,7 +607,7 @@ export default function AddDesignFitAdmin({
     if (!fit || !conf.fits[fit]) return;
 
     const colorFallback = conf.fits[fit].colors?.[0];
-    const color = getActiveColor(activeProductIndex, colorFallback);
+    const color = getActiveColor(activeProductIndex, fit, colorFallback);
     if (!color) return;
 
     const src = conf.fits[fit].colorBack[color];
@@ -655,7 +655,7 @@ export default function AddDesignFitAdmin({
       const fit = getActiveFit(idx, conf.fitTypes?.[0]);
       if (!fit || !conf.fits[fit]) return;
 
-      const color = getActiveColor(idx, conf.fits[fit].colors?.[0]);
+      const color = getActiveColor(idx, fit, conf.fits[fit].colors?.[0]);
       if (!color) return;
 
       const src = conf.fits[fit].colorFront[color];

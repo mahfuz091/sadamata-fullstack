@@ -527,7 +527,7 @@ export default function ProductDetails2({ product }) {
                         })
                       }
                     >
-                      Add to Cart <i className='icon-right-arrow'></i>
+                      Buy Now <i className='icon-right-arrow'></i>
                     </button>
                   </div>
                   <div className='product-details__btn__item'>

@@ -167,7 +167,7 @@ const Header = ({ session }) => {
                   <i className='far fa-heart'></i>
                   <span>03</span>
                 </a>
-                <a href='#' className='main-header__info__item'>
+                <a href='/cart' className='main-header__info__item'>
                   <span>৳{cartTotal.toFixed(2)}</span>
                 </a>
               </div>

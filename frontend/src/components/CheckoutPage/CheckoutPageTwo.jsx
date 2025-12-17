@@ -8,7 +8,7 @@ import {
   addUserAddress,
   listUserAddresses,
 } from "@/app/actions/address/address.actions";
-import Select from 'react-select';
+import Select from "react-select";
 import { customStyles } from "@/lib/reactSelect";
 const COUPONS = { SAVE10: 0.1, SAVE20: 0.2, WELCOME5: 0.05 };
 
@@ -50,6 +50,7 @@ const CheckoutPageTwo = ({ user }) => {
     const meta = JSON.parse(localStorage.getItem("checkoutMeta") || "{}");
     if (meta?.appliedCoupon) setAppliedCoupon(meta.appliedCoupon);
   }, []);
+  console.log(cartItems, "cartItems");
 
   // normalize cart items to the payload shape (and drop invalid lines)
   const sanitizedCart = useMemo(() => {
@@ -153,49 +154,49 @@ const CheckoutPageTwo = ({ user }) => {
   }
   console.log(sanitizedCart, "sanitizedCart");
   return (
-    <section className="checkout-page">
-      <div className="container">
-        <div className="section__title__two">
-          <h2 className="section__title__two-title">Checkout Page</h2>
-          <p className="section__title__two-text">
+    <section className='checkout-page'>
+      <div className='container'>
+        <div className='section__title__two'>
+          <h2 className='section__title__two-title'>Checkout Page</h2>
+          <p className='section__title__two-text'>
             Showing your chosen products
           </p>
         </div>
 
-        <div className="row gutter-y-30">
-          <div className="col-xl-8">
+        <div className='row gutter-y-30'>
+          <div className='col-xl-8'>
             {/* Address block */}
-            <div className="cart-one__inner">
-              <div className="address-item">
-                <div className="address-item__content">
-                  <h3 className="address-title">Shipping Address</h3>
+            <div className='cart-one__inner'>
+              <div className='address-item'>
+                <div className='address-item__content'>
+                  <h3 className='address-title'>Shipping Address</h3>
 
                   {addresses.length === 0 ? (
-                    <div className="address-item__inner__content">
+                    <div className='address-item__inner__content'>
                       <p>No saved addresses.</p>
                     </div>
                   ) : (
                     <>
                       {selectedId && (
-                        <div className="address-item__inner">
-                          <div className="address-item__icon">
-                            <i className="icon-reshot-icon-pin-74U6KRPJEH"></i>
+                        <div className='address-item__inner'>
+                          <div className='address-item__icon'>
+                            <i className='icon-reshot-icon-pin-74U6KRPJEH'></i>
                           </div>
-                          <div className="address-item__inner__content">
+                          <div className='address-item__inner__content'>
                             {(() => {
                               const a = addresses.find(
                                 (x) => x.id === selectedId
                               );
                               return a ? (
                                 <>
-                                  <h3 className="address-item__name">
+                                  <h3 className='address-item__name'>
                                     {a.firstName} {a.lastName}{" "}
                                     {a.isDefault && <span>Main Address</span>}
                                   </h3>
-                                  <p className="address-item__call">
+                                  <p className='address-item__call'>
                                     {a.phone}
                                   </p>
-                                  <p className="address-item__info">
+                                  <p className='address-item__info'>
                                     {a.address}
                                   </p>
                                 </>
@@ -206,32 +207,36 @@ const CheckoutPageTwo = ({ user }) => {
                       )}
 
                       <div
-                        className="form-one__control form-one__control--full"
+                        className='form-one__control form-one__control--full'
                         style={{ marginTop: 12 }}
                       >
-                        <label className="form-one__label">
+                        <label className='form-one__label'>
                           Select address
                         </label>
                         <Select
-  options={addresses.map(a => ({
-    value: a.id,
-    label: `${a.firstName} ${a.lastName} — ${a.address}${a.isDefault ? " [Default]" : ""}`
-  }))}
-  styles={customStyles}
-  components={{ IndicatorSeparator: () => null }}
-  value={
-    addresses
-      .map(a => ({
-        value: a.id,
-        label: `${a.firstName} ${a.lastName} — ${a.address}${a.isDefault ? " [Default]" : ""}`
-      }))
-      .find(opt => opt.value === selectedId) || null
-  }
-  onChange={(opt) => setSelectedId(opt?.value || "")}
-  isClearable={false}
-  isSearchable={true}
-  placeholder="Select Shipping Address"
-/>
+                          options={addresses.map((a) => ({
+                            value: a.id,
+                            label: `${a.firstName} ${a.lastName} — ${
+                              a.address
+                            }${a.isDefault ? " [Default]" : ""}`,
+                          }))}
+                          styles={customStyles}
+                          components={{ IndicatorSeparator: () => null }}
+                          value={
+                            addresses
+                              .map((a) => ({
+                                value: a.id,
+                                label: `${a.firstName} ${a.lastName} — ${
+                                  a.address
+                                }${a.isDefault ? " [Default]" : ""}`,
+                              }))
+                              .find((opt) => opt.value === selectedId) || null
+                          }
+                          onChange={(opt) => setSelectedId(opt?.value || "")}
+                          isClearable={false}
+                          isSearchable={true}
+                          placeholder='Select Shipping Address'
+                        />
 
                         {/* <select
                           className="form-one__input"
@@ -250,10 +255,10 @@ const CheckoutPageTwo = ({ user }) => {
                   )}
                 </div>
 
-                <div className="address-item__btn">
+                <div className='address-item__btn'>
                   <button
-                    type="button"
-                    className="commerce-btn text-white"
+                    type='button'
+                    className='commerce-btn text-white'
                     onClick={() => setShowNewForm((v) => !v)}
                   >
                     {addresses.length === 0
@@ -261,7 +266,7 @@ const CheckoutPageTwo = ({ user }) => {
                       : showNewForm
                       ? "Close"
                       : "Add New Address"}
-                    <i className="icon-right-arrow"></i>
+                    <i className='icon-right-arrow'></i>
                   </button>
                 </div>
               </div>
@@ -269,92 +274,92 @@ const CheckoutPageTwo = ({ user }) => {
 
             {/* Add New Address form */}
             {showNewForm && (
-              <div className="cart-one__inner">
-                <div className="billing-address">
-                  <h3 className="billing-address-title">Add New Address</h3>
-                  <form className="form-one" onSubmit={handleCreateAddress}>
-                    <div className="form-one__group">
-                      <div className="form-one__control">
-                        <label className="form-one__label">First name</label>
-                        <div className="form-one__input-box">
+              <div className='cart-one__inner'>
+                <div className='billing-address'>
+                  <h3 className='billing-address-title'>Add New Address</h3>
+                  <form className='form-one' onSubmit={handleCreateAddress}>
+                    <div className='form-one__group'>
+                      <div className='form-one__control'>
+                        <label className='form-one__label'>First name</label>
+                        <div className='form-one__input-box'>
                           <input
-                          type="text"
+                            type='text'
                             value={firstName}
                             onChange={(e) => setFirstName(e.target.value)}
-                            placeholder="Enter your first name"
+                            placeholder='Enter your first name'
                           />
                         </div>
                       </div>
-                      <div className="form-one__control">
-                        <label className="form-one__label">Last name</label>
-                        <div className="form-one__input-box">
+                      <div className='form-one__control'>
+                        <label className='form-one__label'>Last name</label>
+                        <div className='form-one__input-box'>
                           <input
-                          type="text"
+                            type='text'
                             value={lastName}
                             onChange={(e) => setLastName(e.target.value)}
-                            placeholder="Enter your last name"
+                            placeholder='Enter your last name'
                           />
                         </div>
                       </div>
-                      <div className="form-one__control">
-                        <label className="form-one__label">Your phone</label>
-                        <div className="form-one__input-box">
+                      <div className='form-one__control'>
+                        <label className='form-one__label'>Your phone</label>
+                        <div className='form-one__input-box'>
                           <input
-                          type="tel"
+                            type='tel'
                             value={phone}
                             onChange={(e) => setPhone(e.target.value)}
-                            placeholder="01xxxxxxxxx"
+                            placeholder='01xxxxxxxxx'
                           />
                         </div>
                       </div>
-                      <div className="form-one__control">
-                        <label className="form-one__label">Your Email</label>
-                        <div className="form-one__input-box">
+                      <div className='form-one__control'>
+                        <label className='form-one__label'>Your Email</label>
+                        <div className='form-one__input-box'>
                           <input
-                            type="email"
+                            type='email'
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            placeholder="example@example.com"
+                            placeholder='example@example.com'
                           />
                         </div>
                       </div>
-                      <div className="form-one__control form-one__control--full">
-                        <label className="form-one__label">
+                      <div className='form-one__control form-one__control--full'>
+                        <label className='form-one__label'>
                           Shipping address
                         </label>
-                        <div className="form-one__input-box">
+                        <div className='form-one__input-box'>
                           <input
-                          type="text"
+                            type='text'
                             value={address}
                             onChange={(e) => setAddress(e.target.value)}
-                            placeholder="Street / Address line"
+                            placeholder='Street / Address line'
                           />
                         </div>
                       </div>
 
-                      <div className="form-one__control form-one__control--full">
-                        <div className="checkbox-item">
+                      <div className='form-one__control form-one__control--full'>
+                        <div className='checkbox-item'>
                           <input
-                            type="checkbox"
-                            className="checkbox-item__btn"
-                            id="makeDefault"
+                            type='checkbox'
+                            className='checkbox-item__btn'
+                            id='makeDefault'
                             checked={makeDefault}
                             onChange={(e) => setMakeDefault(e.target.checked)}
                           />
                           <label
-                            htmlFor="makeDefault"
-                            className="checkbox-item__title"
+                            htmlFor='makeDefault'
+                            className='checkbox-item__title'
                           >
                             <span>Save as Main Address</span>
                           </label>
                         </div>
                       </div>
 
-                      <div className="form-one__control" />
-                      <div className="form-one__control">
-                        <div className="form-one__btn">
-                          <button type="submit" className="commerce-btn">
-                            Save Now <i className="icon-right-arrow" />
+                      <div className='form-one__control' />
+                      <div className='form-one__control'>
+                        <div className='form-one__btn'>
+                          <button type='submit' className='commerce-btn'>
+                            Save Now <i className='icon-right-arrow' />
                           </button>
                         </div>
                       </div>
@@ -365,16 +370,16 @@ const CheckoutPageTwo = ({ user }) => {
             )}
 
             {/* Cart list (using sanitizedCart for amounts) */}
-            <div className="cart-one__inner">
-              <ul className="cart-one__list list-unstyled">
+            <div className='cart-one__inner'>
+              <ul className='cart-one__list list-unstyled'>
                 {sanitizedCart.map((item) => {
                   const key = `${item.productId}-${item.color ?? "nocolor"}-${
                     item.fit ?? "nofit"
                   }-${item.size ?? "nosize"}`;
                   return (
-                    <li className="cart-one__list__item" key={key}>
-                      <div className="cart-one__list__left">
-                        <div className="cart-one__list__image">
+                    <li className='cart-one__list__item' key={key}>
+                      <div className='cart-one__list__left'>
+                        <div className='cart-one__list__image'>
                           {item._img ? (
                             <Image
                               src={item._img}
@@ -386,26 +391,26 @@ const CheckoutPageTwo = ({ user }) => {
                             <span>No Image</span>
                           )}
                         </div>
-                        <div className="cart-one__list__content">
-                          <h3 className="cart-one__list__title">
+                        <div className='cart-one__list__content'>
+                          <h3 className='cart-one__list__title'>
                             {item.title}
                           </h3>
-                          <span className="cart-one__list__text">
+                          <span className='cart-one__list__text'>
                             {item._typeOrBrand}
                             {item.fit ? ` | ${item.fit}` : ""}
                             {item.size ? ` | ${item.size}` : ""}
                             {item.color ? ` | ${item.color}` : ""}
                           </span>
-                          <div className="cart-one__list__amount">
+                          <div className='cart-one__list__amount'>
                             ৳{(item.price * item.quantity).toFixed(2)}
                           </div>
                         </div>
                       </div>
 
-                      <div className="cart-one__list__right">
-                        <div className="quantity-box">
+                      <div className='cart-one__list__right'>
+                        <div className='quantity-box'>
                           <button
-                            type="button"
+                            type='button'
                             onClick={() => {
                               setCartItems((prev) =>
                                 prev.map((x) =>
@@ -423,13 +428,13 @@ const CheckoutPageTwo = ({ user }) => {
                                 )
                               );
                             }}
-                            className="sub"
+                            className='sub'
                           >
-                            <i className="fa fa-minus" />
+                            <i className='fa fa-minus' />
                           </button>
-                          <input type="text" readOnly value={item.quantity} />
+                          <input type='text' readOnly value={item.quantity} />
                           <button
-                            type="button"
+                            type='button'
                             onClick={() => {
                               setCartItems((prev) =>
                                 prev.map((x) =>
@@ -445,12 +450,12 @@ const CheckoutPageTwo = ({ user }) => {
                                 )
                               );
                             }}
-                            className="add"
+                            className='add'
                           >
-                            <i className="fa fa-plus" />
+                            <i className='fa fa-plus' />
                           </button>
                         </div>
-                        <div className="cart-one__list__close">
+                        <div className='cart-one__list__close'>
                           <button
                             onClick={() =>
                               setCartItems((prev) =>
@@ -460,7 +465,7 @@ const CheckoutPageTwo = ({ user }) => {
                                 )
                               )
                             }
-                            className="remove-btn"
+                            className='remove-btn'
                             style={{ background: "none", border: "none" }}
                           >
                             ✕
@@ -475,53 +480,53 @@ const CheckoutPageTwo = ({ user }) => {
           </div>
 
           {/* summary + pay */}
-          <div className="col-xl-4">
-            <div className="order-summary">
-              <div className="order-summary__top">
-                <span className="order-summary__top__title">
+          <div className='col-xl-4'>
+            <div className='order-summary'>
+              <div className='order-summary__top'>
+                <span className='order-summary__top__title'>
                   Have a coupon code?
                 </span>
-                <div className="input__coupon__box">
+                <div className='input__coupon__box'>
                   <input
-                    type="text"
-                    placeholder="Coupon code"
-                    className="form-one__input"
+                    type='text'
+                    placeholder='Coupon code'
+                    className='form-one__input'
                     value={couponInput}
                     onChange={(e) => setCouponInput(e.target.value)}
                   />
-                  <button type="button" onClick={applyCoupon}>
+                  <button type='button' onClick={applyCoupon}>
                     Apply
                   </button>
                 </div>
               </div>
 
-              <h3 className="order-summary__title">Product Summary</h3>
-              <ul className="order-summary__list list-unstyled">
+              <h3 className='order-summary__title'>Product Summary</h3>
+              <ul className='order-summary__list list-unstyled'>
                 <li>
-                  <span className="order-summary__text">Total Price</span>
-                  <span className="order-summary__text">
+                  <span className='order-summary__text'>Total Price</span>
+                  <span className='order-summary__text'>
                     ৳{summary.total.toFixed(2)}
                   </span>
                 </li>
                 <li>
-                  <span className="order-summary__text">
+                  <span className='order-summary__text'>
                     Discount {appliedCoupon ? `(${appliedCoupon})` : ""}
                   </span>
-                  <span className="order-summary__text">
+                  <span className='order-summary__text'>
                     -৳{summary.discount.toFixed(2)}
                   </span>
                 </li>
                 <li>
-                  <span className="order-summary__text">Tax & Fee</span>
-                  <span className="order-summary__text">
+                  <span className='order-summary__text'>Tax & Fee</span>
+                  <span className='order-summary__text'>
                     ৳{summary.tax.toFixed(2)}
                   </span>
                 </li>
               </ul>
 
-              <div className="order-summary__total">
-                <h3 className="order-summary__total__text">Total Price</h3>
-                <h3 className="order-summary__total__amount">
+              <div className='order-summary__total'>
+                <h3 className='order-summary__total__text'>Total Price</h3>
+                <h3 className='order-summary__total__amount'>
                   ৳{summary.grandTotal.toFixed(2)}
                 </h3>
               </div>
@@ -562,7 +567,7 @@ const CheckoutPageTwo = ({ user }) => {
                     }
                   })
                 }
-                className="commerce-btn"
+                className='commerce-btn'
               >
                 {pending
                   ? "Redirecting…"

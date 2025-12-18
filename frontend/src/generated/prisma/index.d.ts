@@ -131,7 +131,8 @@ export namespace $Enums {
   export const ProductStat: {
   UNDERREVIEW: 'UNDERREVIEW',
   PROCESSING: 'PROCESSING',
-  ACTIVE: 'ACTIVE'
+  ACTIVE: 'ACTIVE',
+  REJECT: 'REJECT'
 };
 
 export type ProductStat = (typeof ProductStat)[keyof typeof ProductStat]
@@ -13160,7 +13161,7 @@ export namespace Prisma {
     userId: string
     visibility: boolean
     backDesign: string | null
-    frontDesign: string
+    frontDesign: string | null
     brandCommissionPct: number | null
     merchantCommissionPct: number | null
     _count: ProductCountAggregateOutputType | null
@@ -13334,7 +13335,7 @@ export namespace Prisma {
       userId: string
       visibility: boolean
       backDesign: string | null
-      frontDesign: string
+      frontDesign: string | null
       brandCommissionPct: number | null
       merchantCommissionPct: number | null
     }, ExtArgs["result"]["product"]>
@@ -16896,7 +16897,7 @@ export namespace Prisma {
     productId: string
     color: string
     fitType: $Enums.FitType
-    frontImg: string
+    frontImg: string | null
     backImg: string | null
     _count: ProductVariantCountAggregateOutputType | null
     _min: ProductVariantMinAggregateOutputType | null
@@ -16977,7 +16978,7 @@ export namespace Prisma {
       productId: string
       color: string
       fitType: $Enums.FitType
-      frontImg: string
+      frontImg: string | null
       backImg: string | null
     }, ExtArgs["result"]["productVariant"]>
     composites: {}
@@ -21116,8 +21117,8 @@ export namespace Prisma {
     mockupId: string
     color: string
     fitType: $Enums.FitType
-    frontImg: string
-    backImg: string
+    frontImg: string | null
+    backImg: string | null
     _count: MockupVariantCountAggregateOutputType | null
     _min: MockupVariantMinAggregateOutputType | null
     _max: MockupVariantMaxAggregateOutputType | null
@@ -21197,8 +21198,8 @@ export namespace Prisma {
       mockupId: string
       color: string
       fitType: $Enums.FitType
-      frontImg: string
-      backImg: string
+      frontImg: string | null
+      backImg: string | null
     }, ExtArgs["result"]["mockupVariant"]>
     composites: {}
   }
@@ -22090,6 +22091,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     settledAt: Date | null
+    cancelledAt: Date | null
   }
 
   export type OrderMaxAggregateOutputType = {
@@ -22109,6 +22111,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     settledAt: Date | null
+    cancelledAt: Date | null
   }
 
   export type OrderCountAggregateOutputType = {
@@ -22128,6 +22131,7 @@ export namespace Prisma {
     createdAt: number
     updatedAt: number
     settledAt: number
+    cancelledAt: number
     _all: number
   }
 
@@ -22167,6 +22171,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     settledAt?: true
+    cancelledAt?: true
   }
 
   export type OrderMaxAggregateInputType = {
@@ -22186,6 +22191,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     settledAt?: true
+    cancelledAt?: true
   }
 
   export type OrderCountAggregateInputType = {
@@ -22205,6 +22211,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     settledAt?: true
+    cancelledAt?: true
     _all?: true
   }
 
@@ -22311,6 +22318,7 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     settledAt: Date | null
+    cancelledAt: Date | null
     _count: OrderCountAggregateOutputType | null
     _avg: OrderAvgAggregateOutputType | null
     _sum: OrderSumAggregateOutputType | null
@@ -22349,6 +22357,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     settledAt?: boolean
+    cancelledAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     address?: boolean | UserAddressDefaultArgs<ExtArgs>
     items?: boolean | Order$itemsArgs<ExtArgs>
@@ -22373,6 +22382,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     settledAt?: boolean
+    cancelledAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     address?: boolean | UserAddressDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["order"]>
@@ -22394,6 +22404,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     settledAt?: boolean
+    cancelledAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     address?: boolean | UserAddressDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["order"]>
@@ -22415,9 +22426,10 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     settledAt?: boolean
+    cancelledAt?: boolean
   }
 
-  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "addressId" | "currency" | "subtotal" | "discount" | "tax" | "shippingFee" | "grandTotal" | "couponCode" | "couponRate" | "status" | "tranId" | "createdAt" | "updatedAt" | "settledAt", ExtArgs["result"]["order"]>
+  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "addressId" | "currency" | "subtotal" | "discount" | "tax" | "shippingFee" | "grandTotal" | "couponCode" | "couponRate" | "status" | "tranId" | "createdAt" | "updatedAt" | "settledAt" | "cancelledAt", ExtArgs["result"]["order"]>
   export type OrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     address?: boolean | UserAddressDefaultArgs<ExtArgs>
@@ -22459,6 +22471,7 @@ export namespace Prisma {
       createdAt: Date
       updatedAt: Date
       settledAt: Date | null
+      cancelledAt: Date | null
     }, ExtArgs["result"]["order"]>
     composites: {}
   }
@@ -22902,6 +22915,7 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"Order", 'DateTime'>
     readonly updatedAt: FieldRef<"Order", 'DateTime'>
     readonly settledAt: FieldRef<"Order", 'DateTime'>
+    readonly cancelledAt: FieldRef<"Order", 'DateTime'>
   }
     
 
@@ -29554,7 +29568,8 @@ export namespace Prisma {
     tranId: 'tranId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    settledAt: 'settledAt'
+    settledAt: 'settledAt',
+    cancelledAt: 'cancelledAt'
   };
 
   export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum]
@@ -30637,7 +30652,7 @@ export namespace Prisma {
     userId?: StringFilter<"Product"> | string
     visibility?: BoolFilter<"Product"> | boolean
     backDesign?: StringNullableFilter<"Product"> | string | null
-    frontDesign?: StringFilter<"Product"> | string
+    frontDesign?: StringNullableFilter<"Product"> | string | null
     brandCommissionPct?: FloatNullableFilter<"Product"> | number | null
     merchantCommissionPct?: FloatNullableFilter<"Product"> | number | null
     Brand?: XOR<BrandNullableScalarRelationFilter, BrandWhereInput> | null
@@ -30666,7 +30681,7 @@ export namespace Prisma {
     userId?: SortOrder
     visibility?: SortOrder
     backDesign?: SortOrderInput | SortOrder
-    frontDesign?: SortOrder
+    frontDesign?: SortOrderInput | SortOrder
     brandCommissionPct?: SortOrderInput | SortOrder
     merchantCommissionPct?: SortOrderInput | SortOrder
     Brand?: BrandOrderByWithRelationInput
@@ -30698,7 +30713,7 @@ export namespace Prisma {
     userId?: StringFilter<"Product"> | string
     visibility?: BoolFilter<"Product"> | boolean
     backDesign?: StringNullableFilter<"Product"> | string | null
-    frontDesign?: StringFilter<"Product"> | string
+    frontDesign?: StringNullableFilter<"Product"> | string | null
     brandCommissionPct?: FloatNullableFilter<"Product"> | number | null
     merchantCommissionPct?: FloatNullableFilter<"Product"> | number | null
     Brand?: XOR<BrandNullableScalarRelationFilter, BrandWhereInput> | null
@@ -30727,7 +30742,7 @@ export namespace Prisma {
     userId?: SortOrder
     visibility?: SortOrder
     backDesign?: SortOrderInput | SortOrder
-    frontDesign?: SortOrder
+    frontDesign?: SortOrderInput | SortOrder
     brandCommissionPct?: SortOrderInput | SortOrder
     merchantCommissionPct?: SortOrderInput | SortOrder
     _count?: ProductCountOrderByAggregateInput
@@ -30756,7 +30771,7 @@ export namespace Prisma {
     userId?: StringWithAggregatesFilter<"Product"> | string
     visibility?: BoolWithAggregatesFilter<"Product"> | boolean
     backDesign?: StringNullableWithAggregatesFilter<"Product"> | string | null
-    frontDesign?: StringWithAggregatesFilter<"Product"> | string
+    frontDesign?: StringNullableWithAggregatesFilter<"Product"> | string | null
     brandCommissionPct?: FloatNullableWithAggregatesFilter<"Product"> | number | null
     merchantCommissionPct?: FloatNullableWithAggregatesFilter<"Product"> | number | null
   }
@@ -30938,7 +30953,7 @@ export namespace Prisma {
     productId?: StringFilter<"ProductVariant"> | string
     color?: StringFilter<"ProductVariant"> | string
     fitType?: EnumFitTypeFilter<"ProductVariant"> | $Enums.FitType
-    frontImg?: StringFilter<"ProductVariant"> | string
+    frontImg?: StringNullableFilter<"ProductVariant"> | string | null
     backImg?: StringNullableFilter<"ProductVariant"> | string | null
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
   }
@@ -30948,7 +30963,7 @@ export namespace Prisma {
     productId?: SortOrder
     color?: SortOrder
     fitType?: SortOrder
-    frontImg?: SortOrder
+    frontImg?: SortOrderInput | SortOrder
     backImg?: SortOrderInput | SortOrder
     product?: ProductOrderByWithRelationInput
   }
@@ -30962,7 +30977,7 @@ export namespace Prisma {
     productId?: StringFilter<"ProductVariant"> | string
     color?: StringFilter<"ProductVariant"> | string
     fitType?: EnumFitTypeFilter<"ProductVariant"> | $Enums.FitType
-    frontImg?: StringFilter<"ProductVariant"> | string
+    frontImg?: StringNullableFilter<"ProductVariant"> | string | null
     backImg?: StringNullableFilter<"ProductVariant"> | string | null
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
   }, "id" | "productId_color_fitType">
@@ -30972,7 +30987,7 @@ export namespace Prisma {
     productId?: SortOrder
     color?: SortOrder
     fitType?: SortOrder
-    frontImg?: SortOrder
+    frontImg?: SortOrderInput | SortOrder
     backImg?: SortOrderInput | SortOrder
     _count?: ProductVariantCountOrderByAggregateInput
     _max?: ProductVariantMaxOrderByAggregateInput
@@ -30987,7 +31002,7 @@ export namespace Prisma {
     productId?: StringWithAggregatesFilter<"ProductVariant"> | string
     color?: StringWithAggregatesFilter<"ProductVariant"> | string
     fitType?: EnumFitTypeWithAggregatesFilter<"ProductVariant"> | $Enums.FitType
-    frontImg?: StringWithAggregatesFilter<"ProductVariant"> | string
+    frontImg?: StringNullableWithAggregatesFilter<"ProductVariant"> | string | null
     backImg?: StringNullableWithAggregatesFilter<"ProductVariant"> | string | null
   }
 
@@ -31142,8 +31157,8 @@ export namespace Prisma {
     mockupId?: StringFilter<"MockupVariant"> | string
     color?: StringFilter<"MockupVariant"> | string
     fitType?: EnumFitTypeFilter<"MockupVariant"> | $Enums.FitType
-    frontImg?: StringFilter<"MockupVariant"> | string
-    backImg?: StringFilter<"MockupVariant"> | string
+    frontImg?: StringNullableFilter<"MockupVariant"> | string | null
+    backImg?: StringNullableFilter<"MockupVariant"> | string | null
     mockup?: XOR<MockupScalarRelationFilter, MockupWhereInput>
   }
 
@@ -31152,8 +31167,8 @@ export namespace Prisma {
     mockupId?: SortOrder
     color?: SortOrder
     fitType?: SortOrder
-    frontImg?: SortOrder
-    backImg?: SortOrder
+    frontImg?: SortOrderInput | SortOrder
+    backImg?: SortOrderInput | SortOrder
     mockup?: MockupOrderByWithRelationInput
   }
 
@@ -31166,8 +31181,8 @@ export namespace Prisma {
     mockupId?: StringFilter<"MockupVariant"> | string
     color?: StringFilter<"MockupVariant"> | string
     fitType?: EnumFitTypeFilter<"MockupVariant"> | $Enums.FitType
-    frontImg?: StringFilter<"MockupVariant"> | string
-    backImg?: StringFilter<"MockupVariant"> | string
+    frontImg?: StringNullableFilter<"MockupVariant"> | string | null
+    backImg?: StringNullableFilter<"MockupVariant"> | string | null
     mockup?: XOR<MockupScalarRelationFilter, MockupWhereInput>
   }, "id" | "mockupId_color_fitType">
 
@@ -31176,8 +31191,8 @@ export namespace Prisma {
     mockupId?: SortOrder
     color?: SortOrder
     fitType?: SortOrder
-    frontImg?: SortOrder
-    backImg?: SortOrder
+    frontImg?: SortOrderInput | SortOrder
+    backImg?: SortOrderInput | SortOrder
     _count?: MockupVariantCountOrderByAggregateInput
     _max?: MockupVariantMaxOrderByAggregateInput
     _min?: MockupVariantMinOrderByAggregateInput
@@ -31191,8 +31206,8 @@ export namespace Prisma {
     mockupId?: StringWithAggregatesFilter<"MockupVariant"> | string
     color?: StringWithAggregatesFilter<"MockupVariant"> | string
     fitType?: EnumFitTypeWithAggregatesFilter<"MockupVariant"> | $Enums.FitType
-    frontImg?: StringWithAggregatesFilter<"MockupVariant"> | string
-    backImg?: StringWithAggregatesFilter<"MockupVariant"> | string
+    frontImg?: StringNullableWithAggregatesFilter<"MockupVariant"> | string | null
+    backImg?: StringNullableWithAggregatesFilter<"MockupVariant"> | string | null
   }
 
   export type OrderWhereInput = {
@@ -31215,6 +31230,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Order"> | Date | string
     updatedAt?: DateTimeFilter<"Order"> | Date | string
     settledAt?: DateTimeNullableFilter<"Order"> | Date | string | null
+    cancelledAt?: DateTimeNullableFilter<"Order"> | Date | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     address?: XOR<UserAddressScalarRelationFilter, UserAddressWhereInput>
     items?: OrderItemListRelationFilter
@@ -31238,6 +31254,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     settledAt?: SortOrderInput | SortOrder
+    cancelledAt?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
     address?: UserAddressOrderByWithRelationInput
     items?: OrderItemOrderByRelationAggregateInput
@@ -31264,6 +31281,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Order"> | Date | string
     updatedAt?: DateTimeFilter<"Order"> | Date | string
     settledAt?: DateTimeNullableFilter<"Order"> | Date | string | null
+    cancelledAt?: DateTimeNullableFilter<"Order"> | Date | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     address?: XOR<UserAddressScalarRelationFilter, UserAddressWhereInput>
     items?: OrderItemListRelationFilter
@@ -31287,6 +31305,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     settledAt?: SortOrderInput | SortOrder
+    cancelledAt?: SortOrderInput | SortOrder
     _count?: OrderCountOrderByAggregateInput
     _avg?: OrderAvgOrderByAggregateInput
     _max?: OrderMaxOrderByAggregateInput
@@ -31314,6 +31333,7 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Order"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Order"> | Date | string
     settledAt?: DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
+    cancelledAt?: DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
   }
 
   export type OrderItemWhereInput = {
@@ -32660,7 +32680,7 @@ export namespace Prisma {
     brandName?: string | null
     visibility?: boolean
     backDesign?: string | null
-    frontDesign: string
+    frontDesign?: string | null
     brandCommissionPct?: number | null
     merchantCommissionPct?: number | null
     Brand?: BrandCreateNestedOneWithoutProductInput
@@ -32689,7 +32709,7 @@ export namespace Prisma {
     userId: string
     visibility?: boolean
     backDesign?: string | null
-    frontDesign: string
+    frontDesign?: string | null
     brandCommissionPct?: number | null
     merchantCommissionPct?: number | null
     features?: FeatureUncheckedCreateNestedManyWithoutProductInput
@@ -32712,7 +32732,7 @@ export namespace Prisma {
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
-    frontDesign?: StringFieldUpdateOperationsInput | string
+    frontDesign?: NullableStringFieldUpdateOperationsInput | string | null
     brandCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     merchantCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     Brand?: BrandUpdateOneWithoutProductNestedInput
@@ -32741,7 +32761,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
-    frontDesign?: StringFieldUpdateOperationsInput | string
+    frontDesign?: NullableStringFieldUpdateOperationsInput | string | null
     brandCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     merchantCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     features?: FeatureUncheckedUpdateManyWithoutProductNestedInput
@@ -32767,7 +32787,7 @@ export namespace Prisma {
     userId: string
     visibility?: boolean
     backDesign?: string | null
-    frontDesign: string
+    frontDesign?: string | null
     brandCommissionPct?: number | null
     merchantCommissionPct?: number | null
   }
@@ -32785,7 +32805,7 @@ export namespace Prisma {
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
-    frontDesign?: StringFieldUpdateOperationsInput | string
+    frontDesign?: NullableStringFieldUpdateOperationsInput | string | null
     brandCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     merchantCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
   }
@@ -32806,7 +32826,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
-    frontDesign?: StringFieldUpdateOperationsInput | string
+    frontDesign?: NullableStringFieldUpdateOperationsInput | string | null
     brandCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     merchantCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
   }
@@ -32986,7 +33006,7 @@ export namespace Prisma {
     id?: string
     color: string
     fitType: $Enums.FitType
-    frontImg: string
+    frontImg?: string | null
     backImg?: string | null
     product: ProductCreateNestedOneWithoutVariantsInput
   }
@@ -32996,7 +33016,7 @@ export namespace Prisma {
     productId: string
     color: string
     fitType: $Enums.FitType
-    frontImg: string
+    frontImg?: string | null
     backImg?: string | null
   }
 
@@ -33004,7 +33024,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     color?: StringFieldUpdateOperationsInput | string
     fitType?: EnumFitTypeFieldUpdateOperationsInput | $Enums.FitType
-    frontImg?: StringFieldUpdateOperationsInput | string
+    frontImg?: NullableStringFieldUpdateOperationsInput | string | null
     backImg?: NullableStringFieldUpdateOperationsInput | string | null
     product?: ProductUpdateOneRequiredWithoutVariantsNestedInput
   }
@@ -33014,7 +33034,7 @@ export namespace Prisma {
     productId?: StringFieldUpdateOperationsInput | string
     color?: StringFieldUpdateOperationsInput | string
     fitType?: EnumFitTypeFieldUpdateOperationsInput | $Enums.FitType
-    frontImg?: StringFieldUpdateOperationsInput | string
+    frontImg?: NullableStringFieldUpdateOperationsInput | string | null
     backImg?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -33023,7 +33043,7 @@ export namespace Prisma {
     productId: string
     color: string
     fitType: $Enums.FitType
-    frontImg: string
+    frontImg?: string | null
     backImg?: string | null
   }
 
@@ -33031,7 +33051,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     color?: StringFieldUpdateOperationsInput | string
     fitType?: EnumFitTypeFieldUpdateOperationsInput | $Enums.FitType
-    frontImg?: StringFieldUpdateOperationsInput | string
+    frontImg?: NullableStringFieldUpdateOperationsInput | string | null
     backImg?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -33040,7 +33060,7 @@ export namespace Prisma {
     productId?: StringFieldUpdateOperationsInput | string
     color?: StringFieldUpdateOperationsInput | string
     fitType?: EnumFitTypeFieldUpdateOperationsInput | $Enums.FitType
-    frontImg?: StringFieldUpdateOperationsInput | string
+    frontImg?: NullableStringFieldUpdateOperationsInput | string | null
     backImg?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -33187,8 +33207,8 @@ export namespace Prisma {
     id?: string
     color: string
     fitType: $Enums.FitType
-    frontImg: string
-    backImg: string
+    frontImg?: string | null
+    backImg?: string | null
     mockup: MockupCreateNestedOneWithoutVariantsInput
   }
 
@@ -33197,16 +33217,16 @@ export namespace Prisma {
     mockupId: string
     color: string
     fitType: $Enums.FitType
-    frontImg: string
-    backImg: string
+    frontImg?: string | null
+    backImg?: string | null
   }
 
   export type MockupVariantUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     color?: StringFieldUpdateOperationsInput | string
     fitType?: EnumFitTypeFieldUpdateOperationsInput | $Enums.FitType
-    frontImg?: StringFieldUpdateOperationsInput | string
-    backImg?: StringFieldUpdateOperationsInput | string
+    frontImg?: NullableStringFieldUpdateOperationsInput | string | null
+    backImg?: NullableStringFieldUpdateOperationsInput | string | null
     mockup?: MockupUpdateOneRequiredWithoutVariantsNestedInput
   }
 
@@ -33215,8 +33235,8 @@ export namespace Prisma {
     mockupId?: StringFieldUpdateOperationsInput | string
     color?: StringFieldUpdateOperationsInput | string
     fitType?: EnumFitTypeFieldUpdateOperationsInput | $Enums.FitType
-    frontImg?: StringFieldUpdateOperationsInput | string
-    backImg?: StringFieldUpdateOperationsInput | string
+    frontImg?: NullableStringFieldUpdateOperationsInput | string | null
+    backImg?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MockupVariantCreateManyInput = {
@@ -33224,16 +33244,16 @@ export namespace Prisma {
     mockupId: string
     color: string
     fitType: $Enums.FitType
-    frontImg: string
-    backImg: string
+    frontImg?: string | null
+    backImg?: string | null
   }
 
   export type MockupVariantUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     color?: StringFieldUpdateOperationsInput | string
     fitType?: EnumFitTypeFieldUpdateOperationsInput | $Enums.FitType
-    frontImg?: StringFieldUpdateOperationsInput | string
-    backImg?: StringFieldUpdateOperationsInput | string
+    frontImg?: NullableStringFieldUpdateOperationsInput | string | null
+    backImg?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MockupVariantUncheckedUpdateManyInput = {
@@ -33241,8 +33261,8 @@ export namespace Prisma {
     mockupId?: StringFieldUpdateOperationsInput | string
     color?: StringFieldUpdateOperationsInput | string
     fitType?: EnumFitTypeFieldUpdateOperationsInput | $Enums.FitType
-    frontImg?: StringFieldUpdateOperationsInput | string
-    backImg?: StringFieldUpdateOperationsInput | string
+    frontImg?: NullableStringFieldUpdateOperationsInput | string | null
+    backImg?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type OrderCreateInput = {
@@ -33260,6 +33280,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     settledAt?: Date | string | null
+    cancelledAt?: Date | string | null
     user: UserCreateNestedOneWithoutOrderInput
     address: UserAddressCreateNestedOneWithoutOrderInput
     items?: OrderItemCreateNestedManyWithoutOrderInput
@@ -33283,6 +33304,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     settledAt?: Date | string | null
+    cancelledAt?: Date | string | null
     items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     payment?: PaymentUncheckedCreateNestedOneWithoutOrderInput
   }
@@ -33302,6 +33324,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutOrderNestedInput
     address?: UserAddressUpdateOneRequiredWithoutOrderNestedInput
     items?: OrderItemUpdateManyWithoutOrderNestedInput
@@ -33325,6 +33348,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     payment?: PaymentUncheckedUpdateOneWithoutOrderNestedInput
   }
@@ -33346,6 +33370,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     settledAt?: Date | string | null
+    cancelledAt?: Date | string | null
   }
 
   export type OrderUpdateManyMutationInput = {
@@ -33363,6 +33388,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type OrderUncheckedUpdateManyInput = {
@@ -33382,6 +33408,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type OrderItemCreateInput = {
@@ -35006,6 +35033,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     settledAt?: SortOrder
+    cancelledAt?: SortOrder
   }
 
   export type OrderAvgOrderByAggregateInput = {
@@ -35034,6 +35062,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     settledAt?: SortOrder
+    cancelledAt?: SortOrder
   }
 
   export type OrderMinOrderByAggregateInput = {
@@ -35053,6 +35082,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     settledAt?: SortOrder
+    cancelledAt?: SortOrder
   }
 
   export type OrderSumOrderByAggregateInput = {
@@ -37435,7 +37465,7 @@ export namespace Prisma {
     brandName?: string | null
     visibility?: boolean
     backDesign?: string | null
-    frontDesign: string
+    frontDesign?: string | null
     brandCommissionPct?: number | null
     merchantCommissionPct?: number | null
     Brand?: BrandCreateNestedOneWithoutProductInput
@@ -37462,7 +37492,7 @@ export namespace Prisma {
     mockupId: string
     visibility?: boolean
     backDesign?: string | null
-    frontDesign: string
+    frontDesign?: string | null
     brandCommissionPct?: number | null
     merchantCommissionPct?: number | null
     features?: FeatureUncheckedCreateNestedManyWithoutProductInput
@@ -37663,6 +37693,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     settledAt?: Date | string | null
+    cancelledAt?: Date | string | null
     address: UserAddressCreateNestedOneWithoutOrderInput
     items?: OrderItemCreateNestedManyWithoutOrderInput
     payment?: PaymentCreateNestedOneWithoutOrderInput
@@ -37684,6 +37715,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     settledAt?: Date | string | null
+    cancelledAt?: Date | string | null
     items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     payment?: PaymentUncheckedCreateNestedOneWithoutOrderInput
   }
@@ -37868,7 +37900,7 @@ export namespace Prisma {
     userId?: StringFilter<"Product"> | string
     visibility?: BoolFilter<"Product"> | boolean
     backDesign?: StringNullableFilter<"Product"> | string | null
-    frontDesign?: StringFilter<"Product"> | string
+    frontDesign?: StringNullableFilter<"Product"> | string | null
     brandCommissionPct?: FloatNullableFilter<"Product"> | number | null
     merchantCommissionPct?: FloatNullableFilter<"Product"> | number | null
   }
@@ -38074,6 +38106,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Order"> | Date | string
     updatedAt?: DateTimeFilter<"Order"> | Date | string
     settledAt?: DateTimeNullableFilter<"Order"> | Date | string | null
+    cancelledAt?: DateTimeNullableFilter<"Order"> | Date | string | null
   }
 
   export type CommissionSettingUpsertWithWhereUniqueWithoutMerchantInput = {
@@ -38383,6 +38416,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     settledAt?: Date | string | null
+    cancelledAt?: Date | string | null
     user: UserCreateNestedOneWithoutOrderInput
     items?: OrderItemCreateNestedManyWithoutOrderInput
     payment?: PaymentCreateNestedOneWithoutOrderInput
@@ -38404,6 +38438,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     settledAt?: Date | string | null
+    cancelledAt?: Date | string | null
     items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     payment?: PaymentUncheckedCreateNestedOneWithoutOrderInput
   }
@@ -38674,7 +38709,7 @@ export namespace Prisma {
     brandName?: string | null
     visibility?: boolean
     backDesign?: string | null
-    frontDesign: string
+    frontDesign?: string | null
     brandCommissionPct?: number | null
     merchantCommissionPct?: number | null
     features?: FeatureCreateNestedManyWithoutProductInput
@@ -38701,7 +38736,7 @@ export namespace Prisma {
     userId: string
     visibility?: boolean
     backDesign?: string | null
-    frontDesign: string
+    frontDesign?: string | null
     brandCommissionPct?: number | null
     merchantCommissionPct?: number | null
     features?: FeatureUncheckedCreateNestedManyWithoutProductInput
@@ -39230,7 +39265,7 @@ export namespace Prisma {
     id?: string
     color: string
     fitType: $Enums.FitType
-    frontImg: string
+    frontImg?: string | null
     backImg?: string | null
   }
 
@@ -39238,7 +39273,7 @@ export namespace Prisma {
     id?: string
     color: string
     fitType: $Enums.FitType
-    frontImg: string
+    frontImg?: string | null
     backImg?: string | null
   }
 
@@ -39555,7 +39590,7 @@ export namespace Prisma {
     productId?: StringFilter<"ProductVariant"> | string
     color?: StringFilter<"ProductVariant"> | string
     fitType?: EnumFitTypeFilter<"ProductVariant"> | $Enums.FitType
-    frontImg?: StringFilter<"ProductVariant"> | string
+    frontImg?: StringNullableFilter<"ProductVariant"> | string | null
     backImg?: StringNullableFilter<"ProductVariant"> | string | null
   }
 
@@ -39690,7 +39725,7 @@ export namespace Prisma {
     brandName?: string | null
     visibility?: boolean
     backDesign?: string | null
-    frontDesign: string
+    frontDesign?: string | null
     brandCommissionPct?: number | null
     merchantCommissionPct?: number | null
     Brand?: BrandCreateNestedOneWithoutProductInput
@@ -39718,7 +39753,7 @@ export namespace Prisma {
     userId: string
     visibility?: boolean
     backDesign?: string | null
-    frontDesign: string
+    frontDesign?: string | null
     brandCommissionPct?: number | null
     merchantCommissionPct?: number | null
     features?: FeatureUncheckedCreateNestedManyWithoutProductInput
@@ -39975,7 +40010,7 @@ export namespace Prisma {
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
-    frontDesign?: StringFieldUpdateOperationsInput | string
+    frontDesign?: NullableStringFieldUpdateOperationsInput | string | null
     brandCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     merchantCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     Brand?: BrandUpdateOneWithoutProductNestedInput
@@ -40003,7 +40038,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
-    frontDesign?: StringFieldUpdateOperationsInput | string
+    frontDesign?: NullableStringFieldUpdateOperationsInput | string | null
     brandCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     merchantCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     features?: FeatureUncheckedUpdateManyWithoutProductNestedInput
@@ -40294,7 +40329,7 @@ export namespace Prisma {
     brandName?: string | null
     visibility?: boolean
     backDesign?: string | null
-    frontDesign: string
+    frontDesign?: string | null
     brandCommissionPct?: number | null
     merchantCommissionPct?: number | null
     Brand?: BrandCreateNestedOneWithoutProductInput
@@ -40322,7 +40357,7 @@ export namespace Prisma {
     userId: string
     visibility?: boolean
     backDesign?: string | null
-    frontDesign: string
+    frontDesign?: string | null
     brandCommissionPct?: number | null
     merchantCommissionPct?: number | null
     features?: FeatureUncheckedCreateNestedManyWithoutProductInput
@@ -40360,7 +40395,7 @@ export namespace Prisma {
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
-    frontDesign?: StringFieldUpdateOperationsInput | string
+    frontDesign?: NullableStringFieldUpdateOperationsInput | string | null
     brandCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     merchantCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     Brand?: BrandUpdateOneWithoutProductNestedInput
@@ -40388,7 +40423,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
-    frontDesign?: StringFieldUpdateOperationsInput | string
+    frontDesign?: NullableStringFieldUpdateOperationsInput | string | null
     brandCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     merchantCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     features?: FeatureUncheckedUpdateManyWithoutProductNestedInput
@@ -40410,7 +40445,7 @@ export namespace Prisma {
     brandName?: string | null
     visibility?: boolean
     backDesign?: string | null
-    frontDesign: string
+    frontDesign?: string | null
     brandCommissionPct?: number | null
     merchantCommissionPct?: number | null
     Brand?: BrandCreateNestedOneWithoutProductInput
@@ -40438,7 +40473,7 @@ export namespace Prisma {
     userId: string
     visibility?: boolean
     backDesign?: string | null
-    frontDesign: string
+    frontDesign?: string | null
     brandCommissionPct?: number | null
     merchantCommissionPct?: number | null
     tags?: TagUncheckedCreateNestedManyWithoutProductInput
@@ -40476,7 +40511,7 @@ export namespace Prisma {
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
-    frontDesign?: StringFieldUpdateOperationsInput | string
+    frontDesign?: NullableStringFieldUpdateOperationsInput | string | null
     brandCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     merchantCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     Brand?: BrandUpdateOneWithoutProductNestedInput
@@ -40504,7 +40539,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
-    frontDesign?: StringFieldUpdateOperationsInput | string
+    frontDesign?: NullableStringFieldUpdateOperationsInput | string | null
     brandCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     merchantCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     tags?: TagUncheckedUpdateManyWithoutProductNestedInput
@@ -40526,7 +40561,7 @@ export namespace Prisma {
     brandName?: string | null
     visibility?: boolean
     backDesign?: string | null
-    frontDesign: string
+    frontDesign?: string | null
     brandCommissionPct?: number | null
     merchantCommissionPct?: number | null
     Brand?: BrandCreateNestedOneWithoutProductInput
@@ -40554,7 +40589,7 @@ export namespace Prisma {
     userId: string
     visibility?: boolean
     backDesign?: string | null
-    frontDesign: string
+    frontDesign?: string | null
     brandCommissionPct?: number | null
     merchantCommissionPct?: number | null
     features?: FeatureUncheckedCreateNestedManyWithoutProductInput
@@ -40592,7 +40627,7 @@ export namespace Prisma {
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
-    frontDesign?: StringFieldUpdateOperationsInput | string
+    frontDesign?: NullableStringFieldUpdateOperationsInput | string | null
     brandCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     merchantCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     Brand?: BrandUpdateOneWithoutProductNestedInput
@@ -40620,7 +40655,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
-    frontDesign?: StringFieldUpdateOperationsInput | string
+    frontDesign?: NullableStringFieldUpdateOperationsInput | string | null
     brandCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     merchantCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     features?: FeatureUncheckedUpdateManyWithoutProductNestedInput
@@ -40633,16 +40668,16 @@ export namespace Prisma {
     id?: string
     color: string
     fitType: $Enums.FitType
-    frontImg: string
-    backImg: string
+    frontImg?: string | null
+    backImg?: string | null
   }
 
   export type MockupVariantUncheckedCreateWithoutMockupInput = {
     id?: string
     color: string
     fitType: $Enums.FitType
-    frontImg: string
-    backImg: string
+    frontImg?: string | null
+    backImg?: string | null
   }
 
   export type MockupVariantCreateOrConnectWithoutMockupInput = {
@@ -40668,7 +40703,7 @@ export namespace Prisma {
     brandName?: string | null
     visibility?: boolean
     backDesign?: string | null
-    frontDesign: string
+    frontDesign?: string | null
     brandCommissionPct?: number | null
     merchantCommissionPct?: number | null
     Brand?: BrandCreateNestedOneWithoutProductInput
@@ -40695,7 +40730,7 @@ export namespace Prisma {
     userId: string
     visibility?: boolean
     backDesign?: string | null
-    frontDesign: string
+    frontDesign?: string | null
     brandCommissionPct?: number | null
     merchantCommissionPct?: number | null
     features?: FeatureUncheckedCreateNestedManyWithoutProductInput
@@ -40739,8 +40774,8 @@ export namespace Prisma {
     mockupId?: StringFilter<"MockupVariant"> | string
     color?: StringFilter<"MockupVariant"> | string
     fitType?: EnumFitTypeFilter<"MockupVariant"> | $Enums.FitType
-    frontImg?: StringFilter<"MockupVariant"> | string
-    backImg?: StringFilter<"MockupVariant"> | string
+    frontImg?: StringNullableFilter<"MockupVariant"> | string | null
+    backImg?: StringNullableFilter<"MockupVariant"> | string | null
   }
 
   export type ProductUpsertWithWhereUniqueWithoutMockupInput = {
@@ -41125,6 +41160,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     settledAt?: Date | string | null
+    cancelledAt?: Date | string | null
     user: UserCreateNestedOneWithoutOrderInput
     address: UserAddressCreateNestedOneWithoutOrderInput
     payment?: PaymentCreateNestedOneWithoutOrderInput
@@ -41147,6 +41183,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     settledAt?: Date | string | null
+    cancelledAt?: Date | string | null
     payment?: PaymentUncheckedCreateNestedOneWithoutOrderInput
   }
 
@@ -41255,6 +41292,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutOrderNestedInput
     address?: UserAddressUpdateOneRequiredWithoutOrderNestedInput
     payment?: PaymentUpdateOneWithoutOrderNestedInput
@@ -41277,6 +41315,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     payment?: PaymentUncheckedUpdateOneWithoutOrderNestedInput
   }
 
@@ -41327,6 +41366,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     settledAt?: Date | string | null
+    cancelledAt?: Date | string | null
     user: UserCreateNestedOneWithoutOrderInput
     address: UserAddressCreateNestedOneWithoutOrderInput
     items?: OrderItemCreateNestedManyWithoutOrderInput
@@ -41349,6 +41389,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     settledAt?: Date | string | null
+    cancelledAt?: Date | string | null
     items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
   }
 
@@ -41383,6 +41424,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutOrderNestedInput
     address?: UserAddressUpdateOneRequiredWithoutOrderNestedInput
     items?: OrderItemUpdateManyWithoutOrderNestedInput
@@ -41405,6 +41447,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
   }
 
@@ -41541,7 +41584,7 @@ export namespace Prisma {
     brandName?: string | null
     visibility?: boolean
     backDesign?: string | null
-    frontDesign: string
+    frontDesign?: string | null
     brandCommissionPct?: number | null
     merchantCommissionPct?: number | null
     Brand?: BrandCreateNestedOneWithoutProductInput
@@ -41569,7 +41612,7 @@ export namespace Prisma {
     userId: string
     visibility?: boolean
     backDesign?: string | null
-    frontDesign: string
+    frontDesign?: string | null
     brandCommissionPct?: number | null
     merchantCommissionPct?: number | null
     features?: FeatureUncheckedCreateNestedManyWithoutProductInput
@@ -41739,7 +41782,7 @@ export namespace Prisma {
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
-    frontDesign?: StringFieldUpdateOperationsInput | string
+    frontDesign?: NullableStringFieldUpdateOperationsInput | string | null
     brandCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     merchantCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     Brand?: BrandUpdateOneWithoutProductNestedInput
@@ -41767,7 +41810,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
-    frontDesign?: StringFieldUpdateOperationsInput | string
+    frontDesign?: NullableStringFieldUpdateOperationsInput | string | null
     brandCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     merchantCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     features?: FeatureUncheckedUpdateManyWithoutProductNestedInput
@@ -42187,7 +42230,7 @@ export namespace Prisma {
     mockupId: string
     visibility?: boolean
     backDesign?: string | null
-    frontDesign: string
+    frontDesign?: string | null
     brandCommissionPct?: number | null
     merchantCommissionPct?: number | null
   }
@@ -42235,6 +42278,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     settledAt?: Date | string | null
+    cancelledAt?: Date | string | null
   }
 
   export type CommissionSettingCreateManyMerchantInput = {
@@ -42272,7 +42316,7 @@ export namespace Prisma {
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
-    frontDesign?: StringFieldUpdateOperationsInput | string
+    frontDesign?: NullableStringFieldUpdateOperationsInput | string | null
     brandCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     merchantCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     Brand?: BrandUpdateOneWithoutProductNestedInput
@@ -42299,7 +42343,7 @@ export namespace Prisma {
     mockupId?: StringFieldUpdateOperationsInput | string
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
-    frontDesign?: StringFieldUpdateOperationsInput | string
+    frontDesign?: NullableStringFieldUpdateOperationsInput | string | null
     brandCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     merchantCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     features?: FeatureUncheckedUpdateManyWithoutProductNestedInput
@@ -42324,7 +42368,7 @@ export namespace Prisma {
     mockupId?: StringFieldUpdateOperationsInput | string
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
-    frontDesign?: StringFieldUpdateOperationsInput | string
+    frontDesign?: NullableStringFieldUpdateOperationsInput | string | null
     brandCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     merchantCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
   }
@@ -42431,6 +42475,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     address?: UserAddressUpdateOneRequiredWithoutOrderNestedInput
     items?: OrderItemUpdateManyWithoutOrderNestedInput
     payment?: PaymentUpdateOneWithoutOrderNestedInput
@@ -42452,6 +42497,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     payment?: PaymentUncheckedUpdateOneWithoutOrderNestedInput
   }
@@ -42472,6 +42518,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type CommissionSettingUpdateWithoutMerchantInput = {
@@ -42556,6 +42603,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     settledAt?: Date | string | null
+    cancelledAt?: Date | string | null
   }
 
   export type OrderUpdateWithoutAddressInput = {
@@ -42573,6 +42621,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutOrderNestedInput
     items?: OrderItemUpdateManyWithoutOrderNestedInput
     payment?: PaymentUpdateOneWithoutOrderNestedInput
@@ -42594,6 +42643,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     payment?: PaymentUncheckedUpdateOneWithoutOrderNestedInput
   }
@@ -42614,6 +42664,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ProductCreateManyBrandInput = {
@@ -42631,7 +42682,7 @@ export namespace Prisma {
     userId: string
     visibility?: boolean
     backDesign?: string | null
-    frontDesign: string
+    frontDesign?: string | null
     brandCommissionPct?: number | null
     merchantCommissionPct?: number | null
   }
@@ -42684,7 +42735,7 @@ export namespace Prisma {
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
-    frontDesign?: StringFieldUpdateOperationsInput | string
+    frontDesign?: NullableStringFieldUpdateOperationsInput | string | null
     brandCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     merchantCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     features?: FeatureUpdateManyWithoutProductNestedInput
@@ -42711,7 +42762,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
-    frontDesign?: StringFieldUpdateOperationsInput | string
+    frontDesign?: NullableStringFieldUpdateOperationsInput | string | null
     brandCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     merchantCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     features?: FeatureUncheckedUpdateManyWithoutProductNestedInput
@@ -42736,7 +42787,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
-    frontDesign?: StringFieldUpdateOperationsInput | string
+    frontDesign?: NullableStringFieldUpdateOperationsInput | string | null
     brandCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     merchantCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
   }
@@ -42988,7 +43039,7 @@ export namespace Prisma {
     id?: string
     color: string
     fitType: $Enums.FitType
-    frontImg: string
+    frontImg?: string | null
     backImg?: string | null
   }
 
@@ -43052,7 +43103,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     color?: StringFieldUpdateOperationsInput | string
     fitType?: EnumFitTypeFieldUpdateOperationsInput | $Enums.FitType
-    frontImg?: StringFieldUpdateOperationsInput | string
+    frontImg?: NullableStringFieldUpdateOperationsInput | string | null
     backImg?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -43060,7 +43111,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     color?: StringFieldUpdateOperationsInput | string
     fitType?: EnumFitTypeFieldUpdateOperationsInput | $Enums.FitType
-    frontImg?: StringFieldUpdateOperationsInput | string
+    frontImg?: NullableStringFieldUpdateOperationsInput | string | null
     backImg?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -43068,7 +43119,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     color?: StringFieldUpdateOperationsInput | string
     fitType?: EnumFitTypeFieldUpdateOperationsInput | $Enums.FitType
-    frontImg?: StringFieldUpdateOperationsInput | string
+    frontImg?: NullableStringFieldUpdateOperationsInput | string | null
     backImg?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -43242,8 +43293,8 @@ export namespace Prisma {
     id?: string
     color: string
     fitType: $Enums.FitType
-    frontImg: string
-    backImg: string
+    frontImg?: string | null
+    backImg?: string | null
   }
 
   export type ProductCreateManyMockupInput = {
@@ -43261,7 +43312,7 @@ export namespace Prisma {
     userId: string
     visibility?: boolean
     backDesign?: string | null
-    frontDesign: string
+    frontDesign?: string | null
     brandCommissionPct?: number | null
     merchantCommissionPct?: number | null
   }
@@ -43270,24 +43321,24 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     color?: StringFieldUpdateOperationsInput | string
     fitType?: EnumFitTypeFieldUpdateOperationsInput | $Enums.FitType
-    frontImg?: StringFieldUpdateOperationsInput | string
-    backImg?: StringFieldUpdateOperationsInput | string
+    frontImg?: NullableStringFieldUpdateOperationsInput | string | null
+    backImg?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MockupVariantUncheckedUpdateWithoutMockupInput = {
     id?: StringFieldUpdateOperationsInput | string
     color?: StringFieldUpdateOperationsInput | string
     fitType?: EnumFitTypeFieldUpdateOperationsInput | $Enums.FitType
-    frontImg?: StringFieldUpdateOperationsInput | string
-    backImg?: StringFieldUpdateOperationsInput | string
+    frontImg?: NullableStringFieldUpdateOperationsInput | string | null
+    backImg?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MockupVariantUncheckedUpdateManyWithoutMockupInput = {
     id?: StringFieldUpdateOperationsInput | string
     color?: StringFieldUpdateOperationsInput | string
     fitType?: EnumFitTypeFieldUpdateOperationsInput | $Enums.FitType
-    frontImg?: StringFieldUpdateOperationsInput | string
-    backImg?: StringFieldUpdateOperationsInput | string
+    frontImg?: NullableStringFieldUpdateOperationsInput | string | null
+    backImg?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ProductUpdateWithoutMockupInput = {
@@ -43303,7 +43354,7 @@ export namespace Prisma {
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
-    frontDesign?: StringFieldUpdateOperationsInput | string
+    frontDesign?: NullableStringFieldUpdateOperationsInput | string | null
     brandCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     merchantCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     Brand?: BrandUpdateOneWithoutProductNestedInput
@@ -43330,7 +43381,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
-    frontDesign?: StringFieldUpdateOperationsInput | string
+    frontDesign?: NullableStringFieldUpdateOperationsInput | string | null
     brandCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     merchantCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     features?: FeatureUncheckedUpdateManyWithoutProductNestedInput
@@ -43355,7 +43406,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
-    frontDesign?: StringFieldUpdateOperationsInput | string
+    frontDesign?: NullableStringFieldUpdateOperationsInput | string | null
     brandCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     merchantCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
   }

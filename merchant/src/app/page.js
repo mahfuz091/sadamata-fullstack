@@ -6,8 +6,13 @@ import Faq from "@/components/Faq/Faq";
 import FeatureArea from "@/components/FeatureArea/FeatureArea";
 import Layout from "@/components/Layout/Layout";
 import RecurringProduct from "@/components/RecurringProduct/RecurringProduct";
+import { redirect } from "next/navigation";
 export default async function Home() {
   const session = await auth();
+
+  if (session?.user) {
+    redirect("/dashboard");
+  }
   return (
     <Layout session={session}>
       <ContentCreator />

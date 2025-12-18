@@ -129,7 +129,10 @@ const Analyze = ({
                 <div className='filter-section'>
                   <div className='filter-section__left'>
                     <div className='filter-item'>
-                      <CustomSelect options={options} />
+                      <CustomSelect
+                        options={options}
+                        instanceId='dashboard-analyze'
+                      />
                     </div>
                   </div>
                   <div className='filter-item'>

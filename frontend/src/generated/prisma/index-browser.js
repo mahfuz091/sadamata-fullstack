@@ -343,7 +343,8 @@ exports.Prisma.OrderScalarFieldEnum = {
   tranId: 'tranId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  settledAt: 'settledAt'
+  settledAt: 'settledAt',
+  cancelledAt: 'cancelledAt'
 };
 
 exports.Prisma.OrderItemScalarFieldEnum = {
@@ -441,7 +442,8 @@ exports.Role = exports.$Enums.Role = {
 exports.ProductStat = exports.$Enums.ProductStat = {
   UNDERREVIEW: 'UNDERREVIEW',
   PROCESSING: 'PROCESSING',
-  ACTIVE: 'ACTIVE'
+  ACTIVE: 'ACTIVE',
+  REJECT: 'REJECT'
 };
 
 exports.FitType = exports.$Enums.FitType = {

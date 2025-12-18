@@ -29,16 +29,20 @@ const customStyles = {
   }),
 };
 
-export default function CustomSelect({ options = [],
-  value,                 // <-- use controlled value
+export default function CustomSelect({
+  options = [],
+  instanceId,
+  value, // <-- use controlled value
   onChange,
   placeholder,
   isSearchable = false,
-  isClearable = true,}) {
+  isClearable = true,
+}) {
   return (
     <Select
+      instanceId={instanceId}
       options={options}
-      value={value}       // <-- controlled
+      value={value} // <-- controlled
       onChange={onChange}
       placeholder={placeholder}
       isClearable={isClearable}

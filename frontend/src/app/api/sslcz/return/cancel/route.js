@@ -8,7 +8,7 @@ export async function POST(req) {
   if (tranId) {
     await prisma.order.update({
       where: { tranId },
-      data: { status: "CANCELLED" },
+      data: { status: "CANCELLED", cancelledAt: new Date() },
     });
   }
   return NextResponse.redirect(

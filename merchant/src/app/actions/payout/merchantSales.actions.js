@@ -1,37 +1,39 @@
-'use server'
+"use server";
 
-import { prisma } from '@/lib/prisma'
+import { prisma } from "@/lib/prisma";
 
 // ======== Time helpers (Dhaka-aligned, UTC+6) ========
-const DHAKA_OFFSET_MS = 6 * 60 * 60 * 1000
+const DHAKA_OFFSET_MS = 6 * 60 * 60 * 1000;
 
 function nowDhaka() {
-  const now = new Date()
-  return new Date(now.getTime() + DHAKA_OFFSET_MS)
+  const now = new Date();
+  return new Date(now.getTime() + DHAKA_OFFSET_MS);
 }
 
 function startOfDhakaDay(d) {
-  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 0, 0, 0))
+  return new Date(
+    Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 0, 0, 0)
+  );
 }
 
 function addDays(date, days) {
-  const d = new Date(date.getTime())
-  d.setUTCDate(d.getUTCDate() + days)
-  return d
+  const d = new Date(date.getTime());
+  d.setUTCDate(d.getUTCDate() + days);
+  return d;
 }
 
 function toUTC(dateInDhakaLocalMidnight) {
-  return new Date(dateInDhakaLocalMidnight.getTime() - DHAKA_OFFSET_MS)
+  return new Date(dateInDhakaLocalMidnight.getTime() - DHAKA_OFFSET_MS);
 }
 
 function buildDhakaRanges() {
-  const nowD = nowDhaka()
-  const todayStartDhaka = startOfDhakaDay(nowD)
-  const tomorrowStartDhaka = addDays(todayStartDhaka, 1)
+  const nowD = nowDhaka();
+  const todayStartDhaka = startOfDhakaDay(nowD);
+  const tomorrowStartDhaka = addDays(todayStartDhaka, 1);
 
-  const last7StartDhaka = addDays(todayStartDhaka, -6)
-  const last30StartDhaka = addDays(todayStartDhaka, -29)
-  const last90StartDhaka = addDays(todayStartDhaka, -89)
+  const last7StartDhaka = addDays(todayStartDhaka, -6);
+  const last30StartDhaka = addDays(todayStartDhaka, -29);
+  const last90StartDhaka = addDays(todayStartDhaka, -89);
 
   return {
     today: {
@@ -50,7 +52,7 @@ function buildDhakaRanges() {
       startUTC: toUTC(last90StartDhaka),
       endUTC: toUTC(tomorrowStartDhaka),
     },
-  }
+  };
 }
 
 // ======== Core query helper ========
@@ -62,25 +64,26 @@ function buildDhakaRanges() {
 async function fetchSalesByRange({ merchantId, startUTC, endUTC }) {
   // 1) Group by productId & sum quantity
   const grouped = await prisma.sale.groupBy({
-    by: ['productId'],
+    by: ["productId"],
     where: {
       merchantId,
       createdAt: { gte: startUTC, lt: endUTC },
     },
     _sum: { quantity: true },
-  })
+  });
 
   if (grouped.length === 0) {
-    return { items: [], totalQty: 0 }
+    return { items: [], totalQty: 0 };
   }
 
   // 2) Fetch product titles + image (frontImg or first variant.frontImg)
-  const productIds = grouped.map(g => g.productId)
+  const productIds = grouped.map((g) => g.productId);
 
   const products = await prisma.product.findMany({
     where: { id: { in: productIds } },
     select: {
       id: true,
+      productId: true,
       title: true,
       frontDesign: true,
       variants: {
@@ -88,50 +91,52 @@ async function fetchSalesByRange({ merchantId, startUTC, endUTC }) {
         select: { frontImg: true },
       },
     },
-  })
+  });
 
   const productMap = new Map(
-    products.map(p => [
+    products.map((p) => [
       p.id,
       {
         title: p.title,
         image: p.frontImg || (p.variants[0]?.frontImg ?? null),
+        productId: p.productId,
       },
     ])
-  )
+  );
 
   // 3) Build rows, sort by qty desc
   const items = grouped
-    .map(g => {
-      const qty = Number(g._sum.quantity || 0)
-      const product = productMap.get(g.productId) || {}
+    .map((g) => {
+      const qty = Number(g._sum.quantity || 0);
+      const product = productMap.get(g.productId) || {};
       return {
-        productId: g.productId,
-        productName: product.title || 'Unknown Product',
+        productId: product.productId || null, // ✅ business productId
+        productDbId: g.productId,
+        productName: product.title || "Unknown Product",
         image: product.image,
         qty,
-      }
+      };
     })
-    .sort((a, b) => b.qty - a.qty)
+    .sort((a, b) => b.qty - a.qty);
 
-  const totalQty = items.reduce((acc, r) => acc + r.qty, 0)
+  const totalQty = items.reduce((acc, r) => acc + r.qty, 0);
 
-  return { items, totalQty }
+  return { items, totalQty };
 }
 
 // ======== Public Server Action ========
 
 export async function getMerchantSalesKpis(merchantId) {
-  if (!merchantId) throw new Error('merchantId is required')
+  if (!merchantId) throw new Error("merchantId is required");
 
-  const ranges = buildDhakaRanges()
+  const ranges = buildDhakaRanges();
 
   const [today, last7d, last30d, last90d] = await Promise.all([
     fetchSalesByRange({ merchantId, ...ranges.today }),
     fetchSalesByRange({ merchantId, ...ranges.last7d }),
     fetchSalesByRange({ merchantId, ...ranges.last30d }),
     fetchSalesByRange({ merchantId, ...ranges.last90d }),
-  ])
+  ]);
 
   return {
     merchantId,
@@ -141,5 +146,5 @@ export async function getMerchantSalesKpis(merchantId) {
       last30d,
       last90d,
     },
-  }
+  };
 }

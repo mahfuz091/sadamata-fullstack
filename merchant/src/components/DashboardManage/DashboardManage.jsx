@@ -161,6 +161,7 @@ export default function DashboardManage({
                   <div className='filter-section__left'>
                     <div className='filter-item'>
                       <CustomSelect
+                        instanceId='dashboard-manage-1'
                         options={options}
                         onChange={handleSelect}
                         placeholder='Marketplace: All'
@@ -168,6 +169,7 @@ export default function DashboardManage({
                     </div>
                     <div className='filter-item'>
                       <CustomSelect
+                        instanceId='dashboard-manage-2'
                         options={options2}
                         onChange={handleSelect}
                         placeholder='Product: 1 Selected'
@@ -175,6 +177,7 @@ export default function DashboardManage({
                     </div>
                     <div className='filter-item'>
                       <CustomSelect
+                        instanceId='dashboard-manage-3'
                         options={options3}
                         onChange={(opt) => setStatusFilter(opt.value)}
                         placeholder='Availability: All'
@@ -182,6 +185,7 @@ export default function DashboardManage({
                     </div>
                     <div className='filter-item'>
                       <CustomSelect
+                        instanceId='dashboard-manage-4'
                         options={options4}
                         onChange={(opt) => setVisibilityFilter(opt.value)}
                         placeholder='Availability: All'
@@ -290,7 +294,7 @@ export default function DashboardManage({
                             </button>
                             <button
                               className='action-buttons__trash'
-                              odisabled={isDeleting}
+                              disabled={isDeleting}
                               onClick={() => confirmDelete(product.id)}
                             >
                               <i className='fa fa-trash'></i>

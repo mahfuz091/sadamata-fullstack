@@ -16,7 +16,7 @@ import saleAvatar from "@/assets/images/resources/salse-avater.png";
 import Link from "next/link";
 import DashSidebar from "../DashSidebar/DashSidebar";
 import CustomSelect from "../CustomSelect/CustomSelect";
-
+const MAIN_URL = process.env.NEXT_PUBLIC_MAIN_URL;
 const options2 = [
   { label: "Today", value: "today" },
   { label: "Last 7 days", value: "last7d" },
@@ -38,6 +38,8 @@ const DashboardMain = ({
   const rangeKey = selected?.value ?? "today";
   const current = salesData?.ranges?.[rangeKey] ?? { items: [], totalQty: 0 };
   const hasSales = (current.items?.length ?? 0) > 0;
+  console.log(current, "current");
+
   useEffect(() => {
     if (!salesReport) return;
     // convert server data to UI structure
@@ -135,7 +137,7 @@ const DashboardMain = ({
 
     setMetrics(withPercent);
   }, [stats, today]);
-  console.log(metrics, "metrics");
+  console.log(stats, "metrics");
 
   return (
     <section className='dashboard-area section-space'>
@@ -155,15 +157,24 @@ const DashboardMain = ({
                     <p className='currency__title'>TIER</p>
                   </div>
                   <div className='currency__item'>
-                    <h3 className='currency__number'>0</h3>
+                    <h3 className='currency__number'>
+                      {" "}
+                      {stats?.totalUnderReviewProducts}
+                    </h3>
                     <p className='currency__title'>UR</p>
                   </div>
                   <div className='currency__item'>
-                    <h3 className='currency__number'>0</h3>
+                    <h3 className='currency__number'>
+                      {" "}
+                      {stats?.totalProcessingProducts}
+                    </h3>
                     <p className='currency__title'>PS</p>
                   </div>
                   <div className='currency__item'>
-                    <h3 className='currency__number'>0</h3>
+                    <h3 className='currency__number'>
+                      {" "}
+                      {stats?.totalRejectedProducts}
+                    </h3>
                     <p className='currency__title'>REJ</p>
                   </div>
                 </div>
@@ -331,6 +342,7 @@ const DashboardMain = ({
                         <h3 className='dashboard-dverview__title'>Sales</h3>
                         <div className='dashboard-dverview__right'>
                           <CustomSelect
+                            instanceId='dashboard-main'
                             options={options2}
                             value={selected}
                             onChange={(opt) => setSelected(opt)}
@@ -398,7 +410,15 @@ const DashboardMain = ({
                                   </div>
                                   <div className='dashboard-dverview__salse-li-meta'>
                                     <h4 className='dashboard-dverview__salse-li-title'>
-                                      {item.productName || "Unknown Product"}
+                                      <Link
+                                        href={`${MAIN_URL}/products/${item.productId}`}
+                                        target='_blank'
+                                      >
+                                        <span>
+                                          {item.productName ||
+                                            "Unknown Product"}
+                                        </span>
+                                      </Link>
                                     </h4>
                                   </div>
                                 </div>

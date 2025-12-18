@@ -62,7 +62,7 @@ export default function MerchantAdminActions({
 
         <div className='flex items-center justify-between'>
           <span>Tier</span>
-          <InputNumber min={0} max={100} value={tiar} onChange={setTiar} />
+          <InputNumber value={tiar} onChange={setTiar} />
         </div>
 
         <div className='flex items-center justify-between'>

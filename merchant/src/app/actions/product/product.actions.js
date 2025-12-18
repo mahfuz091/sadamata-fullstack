@@ -11,6 +11,16 @@ const uploadDesignDir = path.join(process.cwd(), "uploads", "designs");
 
 // Helper to save uploaded file from FormData
 
+function getTodayRange() {
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+
+  const end = new Date();
+  end.setHours(23, 59, 59, 999);
+
+  return { start, end };
+}
+
 async function resolveEffectiveCommissions({ merchantId, brandId }) {
   // 1️⃣ Merchant + Brand specific rule
   const pairRule = await prisma.commissionSetting.findFirst({
@@ -392,10 +402,8 @@ export async function createProduct(formData) {
       ? await saveDesignFile(backDesignFile, "backDesign")
       : null;
 
-    if (!frontDesignUrl) {
-      throw new Error(
-        "frontDesign is required (no file uploaded or zero size)."
-      );
+    if (!frontDesignUrl && !backDesignUrl) {
+      throw new Error("At least one design (front or back) must be uploaded.");
     }
 
     const tags = [];
@@ -442,6 +450,26 @@ export async function createProduct(formData) {
       v++;
     }
 
+    if (!variantsInput.length) {
+      throw new Error("No valid product variants were generated.");
+    }
+
+    // Ensure variants contain at least one valid image
+    const hasAnyImage = variantsInput.some((v) => v.frontImg || v.backImg);
+
+    if (!hasAnyImage) {
+      throw new Error(
+        "Variants must include at least one front or back image."
+      );
+    }
+
+    const normalizedVariants = variantsInput.map((v) => ({
+      color: v.color,
+      fitType: v.fitType,
+      frontImg: v.frontImg || null,
+      backImg: v.backImg || null,
+    }));
+
     const productId = generateBlogId(title);
 
     // ============ ATOMIC: product create + tiar decrement + leftTiar update ============
@@ -463,6 +491,40 @@ export async function createProduct(formData) {
       // 3) Balance check (only if we actually decrement)
       if (DECREMENT > 0 && merchantProfile.tiar < DECREMENT) {
         throw new Error("Insufficient tiar balance for this operation.");
+      }
+
+      const totalTiar = merchantProfile.tiar;
+
+      // 2️⃣ Hard lifetime limit
+      const totalProducts = await tx.product.count({
+        where: { userId },
+      });
+
+      if (totalProducts >= totalTiar) {
+        throw new Error(
+          `Upload limit reached. Maximum allowed products: ${totalTiar}.`
+        );
+      }
+
+      // 3️⃣ Daily limit = 10% of tiar
+      const dailyLimit = Math.ceil(totalTiar * 0.1);
+
+      const { start, end } = getTodayRange();
+
+      const todayUploads = await tx.product.count({
+        where: {
+          userId,
+          createdAt: {
+            gte: start,
+            lte: end,
+          },
+        },
+      });
+
+      if (todayUploads >= dailyLimit) {
+        throw new Error(
+          `Daily upload limit exceeded. You can upload only ${dailyLimit} product(s) per day.`
+        );
       }
 
       // 4) Create product
@@ -487,7 +549,7 @@ export async function createProduct(formData) {
           features: {
             create: features.filter(Boolean).map((content) => ({ content })),
           },
-          variants: { create: variantsInput },
+          variants: { create: normalizedVariants },
         },
       });
 

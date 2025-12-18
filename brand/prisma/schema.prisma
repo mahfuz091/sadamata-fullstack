@@ -227,7 +227,7 @@ model Product {
   // Design File
 
   backDesign  String?
-  frontDesign String
+  frontDesign String?
 
   // New: commission % settings
   brandCommissionPct    Float? // % goes to brand (if Brand attached)
@@ -294,7 +294,7 @@ model ProductVariant {
   color   String  @db.VarChar(24) // e.g. "black", "green"
   fitType FitType // e.g. MEN, WOMEN, YOUTH
 
-  frontImg String // required: front image
+  frontImg String? // required: front image
   backImg  String? // optional: back image
 
   // images ProductImage[] // <-- store multiple variant-specific images
@@ -335,8 +335,8 @@ model MockupVariant {
   color   String  @db.VarChar(24) // e.g. "black", "green"
   fitType FitType // e.g. MEN, WOMEN, YOUTH
 
-  frontImg String // required: front image
-  backImg  String // optional: back image
+  frontImg String? // required: front image
+  backImg  String? // optional: back image
 
   @@unique([mockupId, color, fitType]) // one row per (mockup, color, fitType)
 }

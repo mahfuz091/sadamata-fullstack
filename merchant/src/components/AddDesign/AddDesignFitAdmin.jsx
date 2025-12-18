@@ -144,11 +144,13 @@ export default function AddDesignFitAdmin({
     x: 100,
     y: 100,
   });
-  const [designSize, setDesignSize] = useState({ width: 200, height: 200 });
-  const [designBackSize, setDesignBackSize] = useState({
-    width: 200,
-    height: 200,
-  });
+  // const [designSize, setDesignSize] = useState({ width: 200, height: 200 });
+  const [designSize, setDesignSize] = useState(null);
+  // const [designBackSize, setDesignBackSize] = useState({
+  //   width: 200,
+  //   height: 200,
+  // });
+  const [designBackSize, setDesignBackSize] = useState(null);
 
   const [isLoading, setIsLoading] = useState(false);
   const [isBackLoading, setIsBackLoading] = useState(false);
@@ -273,7 +275,7 @@ export default function AddDesignFitAdmin({
 
     // reset design position & size (optional but recommended)
     setDesignPosition({ x: 100, y: 100 });
-    setDesignSize({ width: 200, height: 200 });
+    setDesignSize(null);
 
     // clear fabric canvas safely
     if (canvas) {
@@ -295,7 +297,7 @@ export default function AddDesignFitAdmin({
     setIsBackLoading(false);
 
     setDesignBackPosition({ x: 100, y: 100 });
-    setDesignBackSize({ width: 200, height: 200 });
+    setDesignBackSize(null);
 
     if (backCanvas) {
       safeClear(backCanvas);
@@ -449,71 +451,167 @@ export default function AddDesignFitAdmin({
   }, [backCanvas]);
 
   // add design on top of base
+  // const addDesignToCanvas = (fabricCanvas) => {
+  //   if (!fabricCanvas || !designImage) return;
+  //   loadHTMLImage(designImage).then((designImg) => {
+  //     if (!designImg) return;
+  //     const fabricImg = new FabricImage(designImg);
+  //     fabricImg.set({
+  //       left: designPosition.x,
+  //       top: designPosition.y,
+  //       scaleX: designSize.width / designImg.width,
+  //       scaleY: designSize.height / designImg.height,
+  //       hasControls: true,
+  //       lockUniScaling: true,
+  //       layer: 1,
+  //     });
+  //     fabricCanvas.add(fabricImg);
+  //     fabricCanvas.renderAll();
+  //   });
+  // };
+
+  const MAX_DESIGN_PX = 200;
+
   const addDesignToCanvas = (fabricCanvas) => {
     if (!fabricCanvas || !designImage) return;
+
     loadHTMLImage(designImage).then((designImg) => {
       if (!designImg) return;
-      const fabricImg = new FabricImage(designImg);
-      fabricImg.set({
-        left: designPosition.x,
-        top: designPosition.y,
-        scaleX: designSize.width / designImg.width,
-        scaleY: designSize.height / designImg.height,
+
+      const scale = Math.min(
+        1,
+        MAX_DESIGN_PX / designImg.width,
+        MAX_DESIGN_PX / designImg.height
+      );
+
+      const fabricImg = new FabricImage(designImg, {
+        left: (fabricCanvas.width - designImg.width * scale) / 2,
+        top: (fabricCanvas.height - designImg.height * scale) / 2,
+        scaleX: scale,
+        scaleY: scale,
         hasControls: true,
         lockUniScaling: true,
         layer: 1,
       });
+
       fabricCanvas.add(fabricImg);
+      fabricCanvas.setActiveObject(fabricImg);
       fabricCanvas.renderAll();
+
+      // store final rendered size (after cap)
+      setDesignSize({
+        width: designImg.width * scale,
+        height: designImg.height * scale,
+      });
     });
   };
+
+  // const addDesignToBackCanvas = (fabricCanvas) => {
+  //   if (!fabricCanvas || !designBack) return;
+  //   loadHTMLImage(designBack).then((designImg) => {
+  //     if (!designImg) return;
+  //     const fabricImg = new FabricImage(designImg);
+  //     fabricImg.set({
+  //       left: designBackPosition.x,
+  //       top: designBackPosition.y,
+  //       scaleX: designBackSize.width / designImg.width,
+  //       scaleY: designBackSize.height / designImg.height,
+  //       hasControls: true,
+  //       lockUniScaling: true,
+  //       layer: 1,
+  //     });
+  //     fabricCanvas.add(fabricImg);
+  //     fabricCanvas.renderAll();
+  //   });
+  // };
 
   const addDesignToBackCanvas = (fabricCanvas) => {
     if (!fabricCanvas || !designBack) return;
+
     loadHTMLImage(designBack).then((designImg) => {
       if (!designImg) return;
-      const fabricImg = new FabricImage(designImg);
-      fabricImg.set({
-        left: designBackPosition.x,
-        top: designBackPosition.y,
-        scaleX: designBackSize.width / designImg.width,
-        scaleY: designBackSize.height / designImg.height,
+
+      const scale = Math.min(
+        1,
+        MAX_DESIGN_PX / designImg.width,
+        MAX_DESIGN_PX / designImg.height
+      );
+
+      const fabricImg = new FabricImage(designImg, {
+        left: (fabricCanvas.width - designImg.width * scale) / 2,
+        top: (fabricCanvas.height - designImg.height * scale) / 2,
+        scaleX: scale,
+        scaleY: scale,
         hasControls: true,
         lockUniScaling: true,
         layer: 1,
       });
+
       fabricCanvas.add(fabricImg);
+      fabricCanvas.setActiveObject(fabricImg);
       fabricCanvas.renderAll();
-    });
-  };
 
-  const addDesignToSmallCanvas = (fabricCanvas) => {
-    if (!fabricCanvas || !designImage) return;
-    loadHTMLImage(designImage).then((designImg) => {
-      if (!designImg) return;
-      const targetWidth = 80;
-      const targetHeight = 80;
-      const scaleX = designBackSize.width / designImg.width;
-      const scaleY = designBackSize.height / designImg.height;
-      // const centerX = (fabricCanvas.width - targetWidth) / 2;
-      // const centerY = (fabricCanvas.height - targetHeight) / 2;
-
-      const fabricImg = new FabricImage(designImg);
-      fabricImg.set({
-        left: designBackPosition.x,
-        top: designBackPosition.y,
-        scaleX,
-        scaleY,
-        hasControls: false,
-        lockUniScaling: true,
-        layer: 1,
+      setDesignBackSize({
+        width: designImg.width * scale,
+        height: designImg.height * scale,
       });
-      fabricCanvas.add(fabricImg);
-      fabricCanvas.renderAll();
     });
   };
+
+  // const addDesignToSmallCanvas = (fabricCanvas) => {
+  //   if (!fabricCanvas || !designImage) return;
+  //   loadHTMLImage(designImage).then((designImg) => {
+  //     if (!designImg) return;
+  //     const targetWidth = 80;
+  //     const targetHeight = 80;
+  //     const scaleX = designBackSize.width / designImg.width;
+  //     const scaleY = designBackSize.height / designImg.height;
+  //     // const centerX = (fabricCanvas.width - targetWidth) / 2;
+  //     // const centerY = (fabricCanvas.height - targetHeight) / 2;
+
+  //     const fabricImg = new FabricImage(designImg);
+  //     fabricImg.set({
+  //       left: designBackPosition.x,
+  //       top: designBackPosition.y,
+  //       scaleX,
+  //       scaleY,
+  //       hasControls: false,
+  //       lockUniScaling: true,
+  //       layer: 1,
+  //     });
+  //     fabricCanvas.add(fabricImg);
+  //     fabricCanvas.renderAll();
+  //   });
+  // };
 
   // default selections when active product changes
+  const addDesignToSmallCanvas = (fabricCanvas) => {
+    if (!fabricCanvas || !designImage) return;
+
+    loadHTMLImage(designImage).then((designImg) => {
+      if (!designImg) return;
+
+      const MAX = 200;
+
+      // ✅ scale based on original image size
+      const scale = Math.min(MAX / designImg.width, MAX / designImg.height, 1);
+
+      const fabricImg = new FabricImage(designImg, {
+        left: (fabricCanvas.width - designImg.width * scale) / 2,
+        top: (fabricCanvas.height - designImg.height * scale) / 2,
+        scaleX: scale,
+        scaleY: scale,
+        hasControls: false,
+        selectable: false,
+        evented: false,
+        layer: 1,
+      });
+
+      fabricCanvas.add(fabricImg);
+      fabricCanvas.renderAll();
+    });
+  };
+
   useEffect(() => {
     if (activeProductIndex === null) return;
     const product = allMockup[activeProductIndex];
@@ -995,8 +1093,8 @@ export default function AddDesignFitAdmin({
       toast.error("No mockups found.");
       return null;
     }
-    if (!designImage) {
-      toast.error("Please upload the FRONT design first.");
+    if (!designImage && !designBack) {
+      toast.error("Please upload at least a FRONT or BACK design.");
       return null;
     }
     if (!currentUserId) {
@@ -1073,14 +1171,7 @@ export default function AddDesignFitAdmin({
 
     for (const fit of fitsToUse) {
       const allColors = conf.fits?.[fit]?.colors || [];
-      // const chosenColors =
-      //   activeProductIndex !== null &&
-      //   selectedColor[activeProductIndex] &&
-      //   selectedColor[activeProductIndex].length
-      //     ? selectedColor[activeProductIndex].filter((c) =>
-      //         allColors.includes(c)
-      //       )
-      //     : allColors;
+
       const chosenColors = selectedColor[activeProductIndex]?.[fit]?.length
         ? selectedColor[activeProductIndex][fit].filter((c) =>
             allColors.includes(c)
@@ -1094,7 +1185,8 @@ export default function AddDesignFitAdmin({
         formData.append(`variants[${vIndex}][color]`, String(color));
         formData.append(`variants[${vIndex}][fitType]`, String(fit));
 
-        if (frontSrc) {
+        // ✅ FRONT ONLY if front design exists
+        if (designImage && frontSrc) {
           const frontBlob = await composeSideToBlob(frontSrc, "FRONT");
           if (frontBlob) {
             formData.append(
@@ -1105,6 +1197,7 @@ export default function AddDesignFitAdmin({
           }
         }
 
+        // ✅ BACK ONLY if back design exists
         if (designBack && backSrc) {
           const backBlob = await composeSideToBlob(backSrc, "BACK");
           if (backBlob) {
@@ -1121,7 +1214,7 @@ export default function AddDesignFitAdmin({
     }
 
     if (vIndex === 0) {
-      toast.error("No valid fit/color combinations for the selected mockup.");
+      toast.error("No valid variants could be generated.");
       return null;
     }
 
@@ -1913,14 +2006,14 @@ export default function AddDesignFitAdmin({
                 </form>
 
                 <div className='product-details__btn-group'>
-                  <button type='button' className='commerce-btn'>
+                  {/* <button type='button' className='commerce-btn'>
                     Save draft<i className='icon-right-arrow'></i>
-                  </button>
+                  </button> */}
                   <button
                     type='button'
                     className='commerce-btn ms-3'
                     onClick={handleCreateProduct}
-                    disabled={isPublishing}
+                    disabled={isPublishing || (!designImage && !designBack)}
                     style={{
                       opacity: isPublishing ? 0.6 : 1,
                       cursor: isPublishing ? "not-allowed" : "pointer",

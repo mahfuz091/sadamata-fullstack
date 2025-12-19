@@ -5,12 +5,6 @@ const MOCKUP_ORIGIN =
 // In production set e.g. MOCKUP_ORIGIN="https://admin.sadamata.com"
 
 const nextConfig = {
-  webpack: (config, { dev }) => {
-    if (!dev) {
-      config.experiments = {};
-    }
-    return config;
-  },
   images: {
     remotePatterns: [
       {

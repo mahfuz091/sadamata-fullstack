@@ -688,15 +688,17 @@ export async function getProductById(id) {
   return await prisma.product.findUnique({
     where: { id },
     include: {
-      variants: {
-        include: { images: true },
-      },
+      variants: true,
       Brand: true,
       features: true,
       tags: true,
-      Mockup: true,
       User: true,
       sales: true,
+      Mockup: {
+        include: {
+          variants: true, // ✅ THIS WAS MISSING
+        },
+      },
     },
   });
 }

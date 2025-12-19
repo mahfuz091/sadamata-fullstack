@@ -77,6 +77,7 @@ export default function EditProductDesign({
   const [isLoading, setIsLoading] = useState(false);
   const inputFileRef = useRef(null);
   const [tags, setTags] = useState([]);
+  const tagLimit = 10;
   const [isPublishing, setIsPublishing] = useState(false);
   const [isBackLoading, setIsBackLoading] = useState(false);
   const [isBackView, setIsBackView] = useState(false);

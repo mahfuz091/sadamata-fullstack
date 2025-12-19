@@ -380,7 +380,7 @@ export async function createProduct(formData) {
     if (!title) throw new Error("title is required.");
     if (!Number.isFinite(price))
       throw new Error("price is required and must be a number.");
-
+    if (price <= 990) throw new Error("Minimum price is 990.");
     // Derive commissions on server
     const { brandPct, merchantPct, source } = await resolveEffectiveCommissions(
       {

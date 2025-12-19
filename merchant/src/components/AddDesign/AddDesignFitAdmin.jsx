@@ -91,7 +91,7 @@ export default function AddDesignFitAdmin({
   const [designImageFile, setDesignImageFile] = useState(null);
   const [designBackFile, setDesignBackFile] = useState(null);
   const [isPublishing, setIsPublishing] = useState(false);
-
+  const [isDragOver, setIsDragOver] = useState(false);
   // Multi-select for fits/colors + hover preview
   const [selectedFitType, setSelectedFitType] = useState({});
   const [hoveredFitType, setHoveredFitType] = useState({});
@@ -99,6 +99,7 @@ export default function AddDesignFitAdmin({
   const [hoveredColor, setHoveredColor] = useState({});
   const [activePreviewFit, setActivePreviewFit] = useState({});
   const [fitClickHistory, setFitClickHistory] = useState({});
+  const [designOriginalSize, setDesignOriginalSize] = useState(null);
 
   // const getActiveFit = (idx, fallback) => {
   //   if (idx == null) return fallback;
@@ -107,6 +108,27 @@ export default function AddDesignFitAdmin({
   //   const picked = selectedFitType[idx];
   //   return picked?.[0] ?? fallback;
   // };
+
+  const handleFrontFile = async (file) => {
+    if (!file) return;
+
+    const isValid = await validatePngFile(file, 4500, 5400);
+    if (!isValid) return;
+
+    setFileName(file.name);
+    setIsLoading(true);
+    setDesignImageFile(file);
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setTimeout(() => {
+        setDesignImage(String(reader.result));
+        setIsLoading(false);
+      }, 500);
+    };
+    reader.readAsDataURL(file);
+  };
+
   const getActiveFit = (idx, fallback) => {
     if (idx == null) return fallback;
 
@@ -217,11 +239,14 @@ export default function AddDesignFitAdmin({
   // ------------------ IMAGE UPLOAD HANDLERS ------------------
 
   // FRONT design upload (this is what you draw on top of mockups)
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     if (e.target.files?.[0]) {
       const file = e.target.files[0];
-      if (!validatePngFile(file)) {
-        e.target.value = ""; // reset input
+      await handleFrontFile(file);
+      e.target.value = ""; // allow re-upload of same file
+      const isValid = await validatePngFile(file, 4500, 5400);
+      if (!isValid) {
+        e.target.value = "";
         return;
       }
 
@@ -242,11 +267,12 @@ export default function AddDesignFitAdmin({
   };
 
   // BACK design upload (optional)
-  const handleBackFileChange = (e) => {
+  const handleBackFileChange = async (e) => {
     if (e.target.files?.[0]) {
       const file = e.target.files[0];
-      if (!validatePngFile(file)) {
-        e.target.value = ""; // reset input
+      const isValid = await validatePngFile(file, 4500, 5400);
+      if (!isValid) {
+        e.target.value = "";
         return;
       }
 
@@ -472,11 +498,41 @@ export default function AddDesignFitAdmin({
 
   const MAX_DESIGN_PX = 200;
 
+  useEffect(() => {
+    if (!canvas) return;
+
+    const clampScale = (e) => {
+      const obj = e.target;
+      if (!obj || obj.type !== "image" || obj.layer !== 1) return;
+      if (!designOriginalSize) return;
+
+      const maxScaleX = MAX_DESIGN_PX / designOriginalSize.width;
+      const maxScaleY = MAX_DESIGN_PX / designOriginalSize.height;
+      const maxScale = Math.min(maxScaleX, maxScaleY);
+
+      if (obj.scaleX > maxScale || obj.scaleY > maxScale) {
+        obj.set({
+          scaleX: maxScale,
+          scaleY: maxScale,
+        });
+        canvas.renderAll();
+      }
+    };
+
+    canvas.on("object:scaling", clampScale);
+    return () => canvas.off("object:scaling", clampScale);
+  }, [canvas, designOriginalSize]);
+
   const addDesignToCanvas = (fabricCanvas) => {
     if (!fabricCanvas || !designImage) return;
 
     loadHTMLImage(designImage).then((designImg) => {
       if (!designImg) return;
+
+      setDesignOriginalSize({
+        width: designImg.width,
+        height: designImg.height,
+      });
 
       const scale = Math.min(
         1,
@@ -489,8 +545,14 @@ export default function AddDesignFitAdmin({
         top: (fabricCanvas.height - designImg.height * scale) / 2,
         scaleX: scale,
         scaleY: scale,
-        hasControls: true,
+        // hasControls: true,
+        // lockUniScaling: true,
+        // layer: 1,
         lockUniScaling: true,
+        lockScalingFlip: true,
+        lockRotation: true, // optional but recommended
+        cornerStyle: "circle",
+        transparentCorners: false,
         layer: 1,
       });
 
@@ -542,8 +604,14 @@ export default function AddDesignFitAdmin({
         top: (fabricCanvas.height - designImg.height * scale) / 2,
         scaleX: scale,
         scaleY: scale,
-        hasControls: true,
+        // hasControls: true,
+        // lockUniScaling: true,
+        // layer: 1,
         lockUniScaling: true,
+        lockScalingFlip: true,
+        lockRotation: true, // optional but recommended
+        cornerStyle: "circle",
+        transparentCorners: false,
         layer: 1,
       });
 
@@ -971,7 +1039,70 @@ export default function AddDesignFitAdmin({
     };
   };
 
+  const MIN_OUTPUT_PX = 4500;
+
   // merge mockup + design into PNG blob (FRONT/BACK)
+  // const composeSideToBlob = async (baseSrc, side) => {
+  //   const overlayDataURL = side === "FRONT" ? designImage : designBack;
+  //   if (!baseSrc || !overlayDataURL) return null;
+
+  //   const baseImg = await loadHTMLImage(baseSrc);
+  //   if (!baseImg) return null;
+
+  //   const el = document.createElement("canvas");
+  //   el.width = baseImg.width;
+  //   el.height = baseImg.height;
+
+  //   const fc = new Canvas(el, {
+  //     width: el.width,
+  //     height: el.height,
+  //     selection: false,
+  //   });
+
+  //   const base = new FabricImage(baseImg, {
+  //     left: 0,
+  //     top: 0,
+  //     scaleX: fc.getWidth() / baseImg.width,
+  //     scaleY: fc.getHeight() / baseImg.height,
+  //     selectable: false,
+  //     evented: false,
+  //   });
+  //   fc.add(base);
+
+  //   const overlayImg = await loadHTMLImage(overlayDataURL);
+  //   if (!overlayImg) {
+  //     fc.dispose();
+  //     return null;
+  //   }
+
+  //   const norm = getNormalizedRect(side);
+
+  //   const targetW = Math.max(1, norm.w * fc.getWidth());
+  //   const targetH = Math.max(1, norm.h * fc.getHeight());
+  //   const left = norm.x * fc.getWidth();
+  //   const top = norm.y * fc.getHeight();
+
+  //   const overlay = new FabricImage(overlayImg, {
+  //     left,
+  //     top,
+  //     scaleX: targetW / overlayImg.width,
+  //     scaleY: targetH / overlayImg.height,
+  //     hasControls: false,
+  //     selectable: false,
+  //     evented: false,
+  //   });
+  //   fc.add(overlay);
+
+  //   fc.renderAll();
+
+  //   const blob = await new Promise((resolve) =>
+  //     el.toBlob(resolve, "image/png", 1)
+  //   );
+  //   fc.dispose();
+
+  //   return blob;
+  // };
+
   const composeSideToBlob = async (baseSrc, side) => {
     const overlayDataURL = side === "FRONT" ? designImage : designBack;
     if (!baseSrc || !overlayDataURL) return null;
@@ -979,26 +1110,38 @@ export default function AddDesignFitAdmin({
     const baseImg = await loadHTMLImage(baseSrc);
     if (!baseImg) return null;
 
+    // 🔥 SCALE FACTOR TO GUARANTEE ≥4500px
+    const scaleFactor = Math.max(
+      MIN_OUTPUT_PX / baseImg.width,
+      MIN_OUTPUT_PX / baseImg.height,
+      1
+    );
+
+    const outputW = Math.round(baseImg.width * scaleFactor);
+    const outputH = Math.round(baseImg.height * scaleFactor);
+
     const el = document.createElement("canvas");
-    el.width = baseImg.width;
-    el.height = baseImg.height;
+    el.width = outputW;
+    el.height = outputH;
 
     const fc = new Canvas(el, {
-      width: el.width,
-      height: el.height,
+      width: outputW,
+      height: outputH,
       selection: false,
     });
 
+    // 🔹 Base mockup
     const base = new FabricImage(baseImg, {
       left: 0,
       top: 0,
-      scaleX: fc.getWidth() / baseImg.width,
-      scaleY: fc.getHeight() / baseImg.height,
+      scaleX: scaleFactor,
+      scaleY: scaleFactor,
       selectable: false,
       evented: false,
     });
     fc.add(base);
 
+    // 🔹 Overlay design
     const overlayImg = await loadHTMLImage(overlayDataURL);
     if (!overlayImg) {
       fc.dispose();
@@ -1007,29 +1150,26 @@ export default function AddDesignFitAdmin({
 
     const norm = getNormalizedRect(side);
 
-    const targetW = Math.max(1, norm.w * fc.getWidth());
-    const targetH = Math.max(1, norm.h * fc.getHeight());
-    const left = norm.x * fc.getWidth();
-    const top = norm.y * fc.getHeight();
+    const overlayW = norm.w * outputW;
+    const overlayH = norm.h * outputH;
 
     const overlay = new FabricImage(overlayImg, {
-      left,
-      top,
-      scaleX: targetW / overlayImg.width,
-      scaleY: targetH / overlayImg.height,
-      hasControls: false,
+      left: norm.x * outputW,
+      top: norm.y * outputH,
+      scaleX: overlayW / overlayImg.width,
+      scaleY: overlayH / overlayImg.height,
       selectable: false,
       evented: false,
     });
-    fc.add(overlay);
 
+    fc.add(overlay);
     fc.renderAll();
 
     const blob = await new Promise((resolve) =>
-      el.toBlob(resolve, "image/png", 1)
+      el.toBlob(resolve, "image/png", 1.0)
     );
-    fc.dispose();
 
+    fc.dispose();
     return blob;
   };
 
@@ -1126,7 +1266,7 @@ export default function AddDesignFitAdmin({
     formData.append("title", designTitle);
     formData.append("description", features.description || "");
     formData.append("brandName", features.brandName || "");
-    formData.append("price", String(features.price ?? 500));
+    formData.append("price", String(features.price ?? 990));
     formData.append(
       "visibility",
       selected !== "non-searchable" ? "true" : "false"
@@ -1248,6 +1388,29 @@ export default function AddDesignFitAdmin({
     }
   };
 
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+  };
+
+  const handleDrop = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+
+    const file = e.dataTransfer.files?.[0];
+    if (!file) return;
+
+    await handleFrontFile(file);
+  };
+
   // ------------------ JSX ------------------
 
   return (
@@ -1271,7 +1434,14 @@ export default function AddDesignFitAdmin({
               <div className='dashboard-area__uplode'>
                 <div className='dashboard-area__uplode-box'>
                   <form>
-                    <div className='upload-area file-upload__area'>
+                    <div
+                      className={`upload-area file-upload__area ${
+                        isDragOver ? "is-drag-over" : ""
+                      }`}
+                      onDragOver={handleDragOver}
+                      onDragLeave={handleDragLeave}
+                      onDrop={handleDrop}
+                    >
                       <label
                         htmlFor='image-upload'
                         className='file-upload__label'
@@ -1655,7 +1825,7 @@ export default function AddDesignFitAdmin({
 
                         <div className='product-preview-panel__price-input-field'>
                           <label className='product-preview-panel__label'>
-                            Price (Minimum BDT 500):
+                            Price (Minimum BDT 990):
                           </label>
                           <input
                             type='text'
@@ -1663,7 +1833,7 @@ export default function AddDesignFitAdmin({
                             onChange={(e) =>
                               setFeatures((p) => ({
                                 ...p,
-                                price: Number(e.target.value) || 500,
+                                price: Number(e.target.value) || 990,
                               }))
                             }
                           />

@@ -586,78 +586,67 @@ export async function createProduct(formData) {
 // UPDATE PRODUCT
 export async function updateProduct(formData) {
   const id = formData.get("id");
+  if (!id) throw new Error("Product ID missing");
 
   const updateData = {};
+
+  // -------- BASIC FIELDS --------
   if (formData.get("title")) updateData.title = formData.get("title");
   if (formData.get("description"))
     updateData.description = formData.get("description");
-  if (formData.get("price"))
-    updateData.price = parseFloat(formData.get("price"));
-  if (formData.get("brandId")) updateData.brandId = formData.get("brandId");
-  if (formData.get("brandName")) updateData.brandId = formData.get("brandName");
-  if (formData.get("brandCommissionPct"))
-    updateData.brandCommissionPct = parseFloat(
-      formData.get("brandCommissionPct")
-    );
-  if (formData.get("merchantCommissionPct"))
-    updateData.merchantCommissionPct = parseFloat(
-      formData.get("merchantCommissionPct")
-    );
-  if (formData.get("mockupId")) updateData.mockupId = formData.get("mockupId");
-  if (formData.get("visibility"))
-    updateData.visibility = formData.get("visibility");
+  if (formData.get("price")) updateData.price = Number(formData.get("price"));
 
-  // Update existing product
-  const product = await prisma.product.update({
+  // ⚠️ FIXED BUG
+  if (formData.get("brandName"))
+    updateData.brandName = formData.get("brandName");
+
+  // -------- DESIGN FILES (ONLY IF CHANGED) --------
+  const frontDesignFile = formData.get("frontDesign");
+  const backDesignFile = formData.get("backDesign");
+
+  const isFile = (f) => f && typeof f.size === "number" && f.size > 0;
+
+  if (isFile(frontDesignFile)) {
+    updateData.frontDesign = await saveDesignFile(
+      frontDesignFile,
+      "frontDesign"
+    );
+  }
+
+  if (isFile(backDesignFile)) {
+    updateData.backDesign = await saveDesignFile(backDesignFile, "backDesign");
+  }
+
+  // -------- UPDATE PRODUCT ONLY ONCE --------
+  await prisma.product.update({
     where: { id },
     data: updateData,
   });
 
-  // Update Variants and Images
-  let index = 0;
-  while (formData.get(`variants[${index}][id]`)) {
-    const variantId = formData.get(`variants[${index}][id]`);
-    const variantData = {};
-    if (formData.get(`variants[${index}][color]`))
-      variantData.color = formData.get(`variants[${index}][color]`);
-    if (formData.get(`variants[${index}][fitType]`))
-      variantData.fitType = formData.get(`variants[${index}][fitType]`);
-    if (formData.get(`variants[${index}][price]`))
-      variantData.price = parseFloat(formData.get(`variants[${index}][price]`));
+  // -------- VARIANTS (POSITION / COLOR / FIT CHANGE) --------
+  // Strategy: replace variants (simple & correct)
 
-    // Update variant
-    await prisma.productVariant.update({
-      where: { id: variantId },
-      data: variantData,
+  await prisma.productVariant.deleteMany({
+    where: { productId: id },
+  });
+
+  const variants = [];
+  let i = 0;
+
+  while (formData.get(`variants[${i}][color]`)) {
+    variants.push({
+      productId: id,
+      fitType: formData.get(`variants[${i}][fitType]`),
+      color: formData.get(`variants[${i}][color]`),
     });
-
-    // Handle variant images
-    let imgIndex = 0;
-    while (formData.get(`variants[${index}][images][${imgIndex}][type]`)) {
-      const type = formData.get(
-        `variants[${index}][images][${imgIndex}][type]`
-      );
-      const file = formData.get(
-        `variants[${index}][images][${imgIndex}][file]`
-      );
-
-      if (file && file.size > 0) {
-        const url = await saveFile(file, `variant${index}-img${imgIndex}`);
-        await prisma.productImage.create({
-          data: {
-            variantId,
-            type,
-            url,
-          },
-        });
-      }
-      imgIndex++;
-    }
-
-    index++;
+    i++;
   }
 
-  return await getProductById(id);
+  if (variants.length) {
+    await prisma.productVariant.createMany({ data: variants });
+  }
+
+  return { success: true };
 }
 
 // DELETE PRODUCT

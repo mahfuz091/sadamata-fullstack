@@ -906,7 +906,7 @@ export default function EditProductDesign({
     if (!conf) return null;
 
     const fd = new FormData();
-    fd.append("productId", product.id);
+    fd.append("id", product.id);
     fd.append("title", features.title);
     fd.append("description", features.description);
     fd.append("price", String(features.price || 990));
@@ -949,6 +949,8 @@ export default function EditProductDesign({
       toast.success("Product updated successfully");
       router.push("/dashboard");
     } else {
+      console.log(res, "res");
+
       toast.error(res?.message || "Failed to update product");
     }
 

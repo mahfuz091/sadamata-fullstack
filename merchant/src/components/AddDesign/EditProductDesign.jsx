@@ -11,7 +11,13 @@ import { saveAs } from "file-saver";
 import BrandDropdown from "./BrandDropDown";
 import { useRouter } from "next/navigation";
 import { validatePngFile } from "@/utils/validation";
-
+const SPINNER_SVG_DATAURI =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(`
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 50 50">
+  <circle cx="25" cy="25" r="20" stroke="#3b82f6" stroke-width="5" fill="none" opacity="0.2"/>
+  <path fill="none" stroke="#3b82f6" stroke-width="5" d="M25 5 a20 20 0 0 1 0 40"/>
+</svg>`);
 const MAX_DESIGN_PX = 200;
 const MIN_OUTPUT_PX = 4500;
 

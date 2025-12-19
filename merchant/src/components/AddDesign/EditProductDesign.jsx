@@ -38,6 +38,17 @@ const buildImageUrl = (raw) => {
   }
   return `/mockup/${raw.replace(/^\/+mockups\//, "")}`;
 };
+const buildDesignImageUrl = (raw) => {
+  if (!raw) return "";
+  if (/^https?:\/\//i.test(raw)) {
+    const url = new URL(raw);
+    return `https://merch.sadamata.com/${url.pathname.replace(
+      /^\/+mockups\//,
+      ""
+    )}`;
+  }
+  return `https://merch.sadamata.com/${raw.replace(/^\/+mockups\//, "")}`;
+};
 
 const loadHTMLImage = (src) =>
   new Promise((resolve) => {
@@ -340,10 +351,10 @@ export default function EditProductDesign({
     setTags(product.tags?.map((t) => t.value) || []);
 
     if (product.frontDesign) {
-      setDesignImage(buildImageUrl(product.frontDesign));
+      setDesignImage(buildDesignImageUrl(product.frontDesign));
     }
     if (product.backDesign) {
-      setDesignBack(buildImageUrl(product.backDesign));
+      setDesignBack(buildDesignImageUrl(product.backDesign));
     }
 
     const fitMap = {};

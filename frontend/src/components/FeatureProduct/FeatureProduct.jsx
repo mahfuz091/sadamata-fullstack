@@ -20,6 +20,10 @@ import {
   getFeaturedProducts,
 } from "@/app/actions/product/product.actions";
 import Link from "next/link";
+import { getProductImage } from "@/lib/helper";
+import AddToCartModal from "./AddToCartModal";
+import { toast } from "sonner";
+
 const TABS = [
   { label: "All Products", key: "all" },
   { label: "New Arrivals", key: "new" },
@@ -35,13 +39,118 @@ const loaders = {
   featured: (args) => getFeaturedProducts({ ...args, featuredTag: "featured" }),
 };
 
+const FAVORITE_KEY = "favorite_products";
+const getFavorites = () => {
+  if (typeof window === "undefined") return [];
+  try {
+    return JSON.parse(localStorage.getItem(FAVORITE_KEY)) || [];
+  } catch {
+    return [];
+  }
+};
+
+const saveFavorites = (items) => {
+  localStorage.setItem(FAVORITE_KEY, JSON.stringify(items));
+};
+
 const FeatureProduct = () => {
   const [activeTab, setActiveTab] = useState("all");
   const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [isPending, startTransition] = useTransition();
+  const [favorites, setFavorites] = useState([]);
   const pageSize = 8;
+
+  useEffect(() => {
+    setFavorites(getFavorites());
+  }, []);
+
+  // const toggleFavorite = (product) => {
+  //   setFavorites((prev) => {
+  //     const exists = prev.find((p) => p.id === product.id);
+
+  //     let updated;
+
+  //     if (exists) {
+  //       updated = prev.filter((p) => p.id !== product.id);
+
+  //       toast.success("Removed from favorites", {
+  //         description: product.title,
+  //       });
+  //     } else {
+  //       updated = [
+  //         ...prev,
+  //         {
+  //           id: product.id,
+  //           productId: product.productId,
+  //           title: product.title,
+  //           price: product.price,
+  //           image: getProductImage(product),
+  //         },
+  //       ];
+
+  //       toast.success("Added to favorites", {
+  //         description: product.title,
+  //       });
+  //     }
+
+  //     localStorage.setItem("favorite_products", JSON.stringify(updated));
+
+  //     // 🔔 notify header instantly
+  //     setTimeout(() => {
+  //       window.dispatchEvent(new Event("favorite-updated"));
+  //     }, 0);
+
+  //     return updated;
+  //   });
+  // };
+  const toggleFavorite = (product) => {
+    let action = null;
+    let nextFavorites = [];
+
+    setFavorites((prev) => {
+      const exists = prev.some((p) => p.id === product.id);
+
+      if (exists) {
+        action = "remove";
+        nextFavorites = prev.filter((p) => p.id !== product.id);
+      } else {
+        action = "add";
+        nextFavorites = [
+          ...prev,
+          {
+            id: product.id,
+            productId: product.productId,
+            title: product.title,
+            price: product.price,
+            image: getProductImage(product),
+          },
+        ];
+      }
+
+      return nextFavorites; // ✅ PURE
+    });
+
+    // ✅ Side-effects AFTER render
+    queueMicrotask(() => {
+      localStorage.setItem("favorite_products", JSON.stringify(nextFavorites));
+
+      if (action === "add") {
+        toast.success("Added to favorites", {
+          description: product.title,
+        });
+      } else if (action === "remove") {
+        toast.success("Removed from favorites", {
+          description: product.title,
+        });
+      }
+
+      window.dispatchEvent(new Event("favorite-updated"));
+    });
+  };
 
   console.log(products, "products");
 
@@ -196,19 +305,21 @@ const FeatureProduct = () => {
 
         <Row className='g-4'>
           {products.map((product) => {
-            const rel = (product?.variants[0]?.frontImg || "").replace(
-              /^\/+/,
-              ""
-            ); // strip leading slash
+            const rawImg = getProductImage(product);
+            const rel = (rawImg || "").replace(/^\/+/, "");
             const imgSrc = rel
               ? `${ASSET_BASE}/${rel}`
               : `${ASSET_BASE}/uploads/placeholder.png`;
+            const isFavorite = favorites.some((p) => p.id === product.id);
 
             return (
               <Col key={product.id} md={6} lg={4} xl={3}>
                 <div className='product__item h-100 d-flex flex-column'>
                   <div className='product__item__img position-relative'>
-                    <a className='product__item__img__item d-block'>
+                    <Link
+                      href={`/products/${product.productId}`}
+                      className='product__item__img__item d-block'
+                    >
                       <Image
                         src={imgSrc}
                         alt={product.title || "Product image"}
@@ -217,9 +328,22 @@ const FeatureProduct = () => {
                         height={500}
                         unoptimized
                       />
-                    </a>
-                    <div className='product__item__btn position-absolute top-0 end-0 p-2'>
+                    </Link>
+                    {/* <div className='product__item__btn position-absolute top-0 end-0 p-2'>
                       <i className='far fa-heart'></i>
+                    </div> */}
+                    <div
+                      className='product__item__btn position-absolute top-0 end-0 p-2'
+                      style={{ cursor: "pointer" }}
+                      onClick={() => toggleFavorite(product)}
+                    >
+                      <div className={`heart ${isFavorite ? "active" : ""}`}>
+                        <i
+                          className={
+                            isFavorite ? "far fa-heart" : "far fa-heart"
+                          }
+                        ></i>
+                      </div>
                     </div>
                   </div>
 
@@ -251,18 +375,35 @@ const FeatureProduct = () => {
                       </div>
                     </div>
 
-                    <Link
+                    {/* <Link
                       href={`/products/${product.productId}`}
                       className='commerce-btn product__item__link mt-2'
                     >
                       Add to Cart <i className='icon-right-arrow'></i>
-                    </Link>
+                    </Link> */}
+                    <button
+                      className='commerce-btn product__item__link mt-2'
+                      onClick={() => {
+                        setSelectedProduct(product);
+                        setShowModal(true);
+                      }}
+                    >
+                      Add to Cart <i className='icon-right-arrow'></i>
+                    </button>
                   </div>
                 </div>
               </Col>
             );
           })}
         </Row>
+
+        {selectedProduct && (
+          <AddToCartModal
+            show={showModal}
+            onHide={() => setShowModal(false)}
+            product={selectedProduct}
+          />
+        )}
 
         {/* Pagination */}
         <div className='feature-product__pagination mt-4'>

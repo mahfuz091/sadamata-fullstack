@@ -37,7 +37,7 @@ const customStyles = {
     borderBottom: "1px solid grey",
   }),
 };
-const Header = ({ session }) => {
+const HeaderCloned = ({ session }) => {
   const scrollToTop = useScrollUp(500);
 
   useEffect;
@@ -141,7 +141,7 @@ const Header = ({ session }) => {
   const placeholder = useMemo(() => "All", []);
   return (
     <header
-      className={`main-header main-header--one sticky-header sticky-header--normal ${
+      className={`main-header main-header--one sticky-header sticky-header--normal sticky-header--cloned ${
         scrollToTop ? "active" : ""
       }`}
     >
@@ -201,20 +201,12 @@ const Header = ({ session }) => {
                   <i className='far fa-heart'></i>
                   <span>00</span>
                 </a> */}
-                <Link
-                  href='/favorites'
-                  prefetch={false}
-                  className='main-header__info__item'
-                >
+                <Link href='/favorites' className='main-header__info__item'>
                   <i className='far fa-heart'></i>
                   <span>{favoriteCount.toString().padStart(2, "0")}</span>
                 </Link>
 
-                <Link
-                  href='/cart'
-                  prefetch={false}
-                  className='main-header__info__item'
-                >
+                <Link href='/cart' className='main-header__info__item'>
                   <span>৳{cartTotal.toFixed(2)}</span>
                 </Link>
               </div>
@@ -277,52 +269,8 @@ const Header = ({ session }) => {
           </div>
         </div>
       </div>
-      <div className='main-header__bottom'>
-        <div className='container-fluid'>
-          <nav className='main-header__nav main-menu'>
-            <ul className='main-menu__list'>
-              <li>
-                <a href='#'>Best Sellers</a>
-              </li>
-              <li>
-                <a href='#'>Trending Today</a>
-              </li>
-              <li>
-                <a href='#'>Music</a>
-              </li>
-              <li>
-                <a href='#'>Movies</a>
-              </li>
-              <li>
-                <a href='#'>Sports</a>
-              </li>
-              <li>
-                <a href='#'>Anime</a>
-              </li>
-              <li>
-                <a href='#'>Sci-Fi</a>
-              </li>
-              <li>
-                <a href='#'>Vintage</a>
-              </li>
-              <li>
-                <a href='#'>Books</a>
-              </li>
-              <li>
-                <a href='#'>Food</a>
-              </li>
-              <li>
-                <a href='#'>Art</a>
-              </li>
-              <li>
-                <a href='#'>Gmaing</a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      </div>
     </header>
   );
 };
 
-export default Header;
+export default HeaderCloned;

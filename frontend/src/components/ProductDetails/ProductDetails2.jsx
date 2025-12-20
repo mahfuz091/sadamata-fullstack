@@ -1,8 +1,12 @@
 "use client";
+import dynamic from "next/dynamic";
 
+const Select = dynamic(() => import("react-select"), {
+  ssr: false,
+});
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import Select from "react-select";
+
 import { Container, Row, Col } from "react-bootstrap";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Thumbs } from "swiper/modules";
@@ -10,6 +14,8 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import user1 from "@/assets/images/resources/user-1-2.png";
+import { isLightColor } from "@/lib/helper";
+import { toast } from "sonner";
 // --------------- Helpers ---------------
 const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE_URL;
 
@@ -79,7 +85,7 @@ export default function ProductDetails2({ product }) {
   // const [fit, setFit] = useState(initialFit);
   const initialFit = availableFits[0] || "MEN";
   const [fit, setFit] = useState(initialFit);
-  const [size, setSize] = useState("S");
+  const [size, setSize] = useState("");
   useEffect(() => {
     if (!availableFits.length) return;
     setFit((prev) => (availableFits.includes(prev) ? prev : availableFits[0]));
@@ -160,6 +166,32 @@ export default function ProductDetails2({ product }) {
   console.log(galleryImages, "galleryImages");
 
   // --------------- Cart Helper ---------------
+
+  const handleBuyNow = () => {
+    if (!fit) {
+      toast.error("Please select fit type");
+      return;
+    }
+
+    if (!color) {
+      toast.error("Please select a color");
+      return;
+    }
+
+    if (!size) {
+      toast.error("Please select a size");
+      return;
+    }
+
+    addToCart(product, {
+      quantity,
+      color,
+      fit,
+      size,
+      image: currentVariant?.frontImg || "",
+    });
+  };
+
   const addToCart = (product, options) => {
     if (typeof window === "undefined") return;
 
@@ -202,7 +234,7 @@ export default function ProductDetails2({ product }) {
 
   // keep it controlled (same as your native select)
   const selectedFitOption = fitOptions.find((o) => o.value === fit) ?? null;
-  console.log(fit, "fit");
+  // console.log(fit, "fit");
   return (
     <>
       <section className='product-details py-5'>
@@ -333,34 +365,35 @@ export default function ProductDetails2({ product }) {
                   </p>
                 </div>
 
-                {!!product?.features?.length && (
-                  <div className='populer-feature'>
-                    <h4 className='populer-feature__title'>Product Features</h4>
-                    <ul className='populer-feature__list list-unstyled'>
-                      {product.features.map((f) => (
-                        <li key={f.id}>
-                          <i className='fas fa-check-circle' /> {f.content}
-                        </li>
-                      ))}
-                      <li>
-                        <i className='fas fa-check-circle'></i> Stunning matt
-                        finish
-                      </li>
-                      <li>
-                        <i className='fas fa-check-circle'></i> W500 x D340 x
-                        H168mm
-                      </li>
-                      <li>
-                        <i className='fas fa-check-circle'></i> Lifetime
-                        guarantee
-                      </li>
-                      <li>
-                        <i className='fas fa-check-circle'></i> No overflow -
-                        use unslotted basin waste
-                      </li>
-                    </ul>
-                  </div>
-                )}
+                <div className='populer-feature'>
+                  <h4 className='populer-feature__title'>Product Features</h4>
+                  <ul className='populer-feature__list list-unstyled'>
+                    {!!product?.features?.length && (
+                      <>
+                        {product.features.map((f) => (
+                          <li key={f.id}>
+                            <i className='fas fa-check-circle' /> {f.content}
+                          </li>
+                        ))}
+                      </>
+                    )}
+                    <li>
+                      <i className='fas fa-check-circle'></i> Stunning matt
+                      finish
+                    </li>
+                    <li>
+                      <i className='fas fa-check-circle'></i> W500 x D340 x
+                      H168mm
+                    </li>
+                    <li>
+                      <i className='fas fa-check-circle'></i> Lifetime guarantee
+                    </li>
+                    <li>
+                      <i className='fas fa-check-circle'></i> No overflow - use
+                      unslotted basin waste
+                    </li>
+                  </ul>
+                </div>
 
                 {/* Fit selector */}
                 <div className='product-details__box'>
@@ -396,11 +429,27 @@ export default function ProductDetails2({ product }) {
                     <h4 className='product-details__box__title'>
                       Product Size:
                     </h4>
+                    {/* <select
+                      className='form-select'
+                      value={size}
+                      onChange={(e) => setSize(e.target.value)}
+                    >
+                      <option>Select Size</option>
+                      {["S", "M", "L", "XL", "XXL", "3XL"].map((ft) => (
+                        <option key={ft} value={ft}>
+                          {ft}
+                        </option>
+                      ))}
+                    </select> */}
                     <select
                       className='form-select'
                       value={size}
                       onChange={(e) => setSize(e.target.value)}
                     >
+                      <option value='' disabled>
+                        Select Size
+                      </option>
+
                       {["S", "M", "L", "XL", "XXL", "3XL"].map((ft) => (
                         <option key={ft} value={ft}>
                           {ft}
@@ -474,32 +523,59 @@ export default function ProductDetails2({ product }) {
                     <h4 className='product-details__box__title'>Colors:</h4>
                     <div className='d-flex gap-2 flex-wrap'>
                       {fitColors.map((c) => (
-                        <button
+                        // <button
+                        //   key={c}
+                        //   type='button'
+                        //   onClick={() => {
+                        //     setColor(c);
+                        //     if (showAllForFit) {
+                        //       const idx = colorToIndex[c] ?? 0;
+                        //       if (mainSwiperRef.current)
+                        //         mainSwiperRef.current.slideTo(idx);
+                        //       if (thumbsSwiper?.slideTo)
+                        //         thumbsSwiper.slideTo(idx);
+                        //     }
+                        //   }}
+                        //   aria-label={`Select color ${hexToName(c)}`}
+                        //   title={hexToName(c)}
+                        //   style={{
+                        //     backgroundColor: c,
+                        //     width: 28,
+                        //     height: 28,
+                        //     borderRadius: "50%",
+                        //     border:
+                        //       color === c ? "2px solid #111" : "1px solid #ccc",
+                        //     outline: "none",
+                        //     cursor: "pointer",
+                        //   }}
+                        // />
+                        <label
                           key={c}
-                          type='button'
-                          onClick={() => {
-                            setColor(c);
-                            if (showAllForFit) {
-                              const idx = colorToIndex[c] ?? 0;
-                              if (mainSwiperRef.current)
-                                mainSwiperRef.current.slideTo(idx);
-                              if (thumbsSwiper?.slideTo)
-                                thumbsSwiper.slideTo(idx);
-                            }
-                          }}
-                          aria-label={`Select color ${hexToName(c)}`}
+                          className='color-radio'
                           title={hexToName(c)}
-                          style={{
-                            backgroundColor: c,
-                            width: 28,
-                            height: 28,
-                            borderRadius: "50%",
-                            border:
-                              color === c ? "2px solid #111" : "1px solid #ccc",
-                            outline: "none",
-                            cursor: "pointer",
-                          }}
-                        />
+                        >
+                          <input
+                            type='radio'
+                            name='color'
+                            checked={color === c}
+                            onChange={() => setColor(c)}
+                          />
+                          <span
+                            className='color-radio__swatch'
+                            style={{ backgroundColor: c }}
+                          >
+                            {color === c && (
+                              <span
+                                className='color-radio__tick'
+                                style={{
+                                  color: isLightColor(c) ? "#000" : "#fff",
+                                }}
+                              >
+                                ✓
+                              </span>
+                            )}
+                          </span>
+                        </label>
                       ))}
                     </div>
                   </div>
@@ -515,18 +591,7 @@ export default function ProductDetails2({ product }) {
                 {/* CTA */}
                 <div className='product-details__btn'>
                   <div className='product-details__btn__item'>
-                    <button
-                      className='commerce-btn'
-                      onClick={() =>
-                        addToCart(product, {
-                          quantity,
-                          color,
-                          fit,
-                          size,
-                          image: currentVariant?.frontImg || "",
-                        })
-                      }
-                    >
+                    <button className='commerce-btn' onClick={handleBuyNow}>
                       Buy Now <i className='icon-right-arrow'></i>
                     </button>
                   </div>

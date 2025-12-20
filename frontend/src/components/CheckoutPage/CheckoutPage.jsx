@@ -51,7 +51,7 @@ const CheckoutPage = ({ user }) => {
     );
     const discountRate = appliedCoupon ? COUPONS[appliedCoupon] || 0 : 0;
     const discount = total * discountRate;
-    const tax = total * 0.1; // 10% tax
+    const tax = 0; // 10% tax
     const grandTotal = total - discount + tax;
     return { total, discount, tax, grandTotal };
   }, [cartItems, appliedCoupon]);

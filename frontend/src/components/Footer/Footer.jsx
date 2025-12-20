@@ -1,3 +1,6 @@
+"use client";
+
+import ScrollToTop from "react-scroll-to-top";
 import Image from "next/image";
 import React from "react";
 import payment from "@/assets/images/shapes/payment.png";
@@ -43,11 +46,31 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        <div className='footer-cta__scroll-top'>
+        {/* <div className='footer-cta__scroll-top'>
           <p className='footer-cta__scroll-top__text'>
             Back on Top{" "}
             <span className='icon-reshot-icon-arrow-chevron-up-9ECRMJ2GNT'></span>
           </p>
+        </div> */}
+        <div className='footer-cta__scroll-top'>
+          <ScrollToTop
+            smooth
+            top={300}
+            component={
+              <p className='footer-cta__scroll-top__text'>
+                Back on Top{" "}
+                <span className='icon-reshot-icon-arrow-chevron-up-9ECRMJ2GNT'></span>
+              </p>
+            }
+            style={{
+              background: "none",
+              boxShadow: "none",
+              position: "relative",
+              width: "100%",
+              height: "fit-content",
+              bottom: "0",
+            }}
+          />
         </div>
       </section>
 

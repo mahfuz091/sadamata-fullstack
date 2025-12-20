@@ -22,7 +22,15 @@ export default function RootLayout({ children }) {
     <html lang='en'>
       <body>
         <div className='page-wrapper'>
-          <Toaster />
+          <Toaster
+            position='top-center'
+            richColors
+            closeButton
+            toastOptions={{
+              className: "my-toast",
+              descriptionClassName: "my-toast-desc",
+            }}
+          />
 
           {children}
         </div>

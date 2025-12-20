@@ -3,10 +3,12 @@ import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { GoTrash } from "react-icons/go";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const CartPage = ({ user }) => {
   const router = useRouter();
+
+  const pathname = usePathname();
 
   const [cartItems, setCartItems] = useState([]);
   const [summary, setSummary] = useState({
@@ -20,19 +22,21 @@ const CartPage = ({ user }) => {
 
   // no writer effect anymore
   const hydrated = useRef(false);
+  const skipPersist = useRef(true);
 
   const coupons = { SAVE10: 0.1, SAVE20: 0.2, WELCOME5: 0.05 };
 
-  // Hydrate once
   useEffect(() => {
     if (typeof window === "undefined") return;
+
     const savedCart = JSON.parse(localStorage.getItem("cart") || "[]");
-    setCartItems(savedCart);
+    setCartItems(Array.isArray(savedCart) ? savedCart : []);
 
     const savedMeta = JSON.parse(localStorage.getItem("checkoutMeta") || "{}");
     if (savedMeta?.appliedCoupon) setAppliedCoupon(savedMeta.appliedCoupon);
 
     hydrated.current = true;
+    skipPersist.current = true; // 👈 important
   }, []);
 
   // Recompute summary
@@ -44,7 +48,7 @@ const CartPage = ({ user }) => {
     );
     const discountRate = appliedCoupon ? coupons[appliedCoupon] || 0 : 0;
     const discount = total * discountRate;
-    const tax = total * 0.1;
+    const tax = 0;
     const grandTotal = total - discount + tax;
     setSummary({ total, discount, tax, grandTotal });
   }, [cartItems, appliedCoupon]);
@@ -58,12 +62,17 @@ const CartPage = ({ user }) => {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (!hydrated.current) return; // wait until initial load is done
+    if (!hydrated.current) return;
 
-    // save cart to localStorage
-    localStorage.setItem("cart", JSON.stringify(cartItems));
+    // ⛔ Skip first run after hydration
+    if (skipPersist.current) {
+      skipPersist.current = false;
+      return;
+    }
 
-    // notify header (and others) that cart changed
+    const safeCart = Array.isArray(cartItems) ? cartItems : [];
+    localStorage.setItem("cart", JSON.stringify(safeCart));
+
     window.dispatchEvent(new Event("cart-updated"));
   }, [cartItems]);
 
@@ -134,7 +143,7 @@ const CartPage = ({ user }) => {
                           <div className='cart-one__list__image'>
                             {item.image ? (
                               <Image
-                                src={`http://localhost:3001${item.image}`}
+                                src={`${process.env.NEXT_PUBLIC_MERCH_URL}/${item.image}`}
                                 alt={item.title}
                                 width={80}
                                 height={80}

@@ -469,3 +469,96 @@ button.profileImageButton img {
 .user-profile__info__menu__item:hover a {
   color: #fff;
 }
+
+.add-to-cart__modal img {
+  max-height: fit-content;
+}
+
+.color-radio {
+  position: relative;
+  cursor: pointer;
+}
+
+.color-radio input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.color-radio__swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border 0.15s ease, transform 0.15s ease;
+}
+
+.color-radio input:checked + .color-radio__swatch {
+  border: 2px solid var(--commerce-base);
+  transform: scale(1.05);
+}
+
+.color-radio__tick {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+
+/* Improve contrast for light colors */
+.color-radio__swatch[style*="background-color: #fff"],
+.color-radio__swatch[style*="background-color: #ffffff"] .color-radio__tick {
+  color: #000;
+}
+.btn-base {
+  background: var(--commerce-base);
+  color: var(--commerce-white);
+}
+.btn-base:hover {
+  background: var(--commerce-black);
+  color: var(--commerce-white);
+}
+.btn-outline-base {
+  border: 1px solid var(--commerce-base);
+  color: var(--commerce-black);
+  transition: all 400ms ease;
+}
+.btn-outline-base:hover {
+  background: var(--commerce-base);
+  color: var(--commerce-white);
+}
+.product__item__btn .heart {
+  background-color: var(--commerce-white);
+  width: 38px;
+  height: 38px;
+  color: var(--commerce-black);
+  border: 1px solid #e8effc;
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.4s ease-in-out;
+  display: flex;
+}
+.product__item__btn .heart.active {
+  background-color: var(--commerce-base);
+  color: var(--commerce-white);
+}
+.product__item__btn:hover .heart {
+  background-color: var(--commerce-base);
+  color: var(--commerce-white);
+}
+.sticky-header--cloned {
+  background: #131921;
+}
+.sticky-header--cloned.active {
+  transform: translateY(0px);
+  visibility: visible;
+  background: #131921;
+}
+
+.sticky-header.active {
+  background: #131921;
+}

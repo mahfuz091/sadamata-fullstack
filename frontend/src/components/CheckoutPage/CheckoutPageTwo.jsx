@@ -74,7 +74,9 @@ const CheckoutPageTwo = ({ user }) => {
           fit: i.fit || null,
           size: i.size || null,
           // keep a couple of raw fields for UI display
-          _img: i.image ? `http://localhost:3001${i.image}` : i.img,
+          _img: i.image
+            ? `${process.env.NEXT_PUBLIC_MERCH_URL}/${i.image}`
+            : i.img,
           _typeOrBrand: i.type || i.brand,
         };
       })
@@ -89,7 +91,7 @@ const CheckoutPageTwo = ({ user }) => {
     );
     const discountRate = appliedCoupon ? COUPONS[appliedCoupon] || 0 : 0;
     const discount = total * discountRate;
-    const tax = total * 0.1; // 10%
+    const tax = 0; // 10%
     const grandTotal = total - discount + tax;
     return { total, discount, tax, grandTotal };
   }, [sanitizedCart, appliedCoupon]);
@@ -152,7 +154,7 @@ const CheckoutPageTwo = ({ user }) => {
     setShowNewForm(false);
     await refreshAddresses();
   }
-  console.log(sanitizedCart, "sanitizedCart");
+  console.log(sanitizedCart, summary, "sanitizedCart");
   return (
     <section className='checkout-page'>
       <div className='container'>

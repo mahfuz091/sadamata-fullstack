@@ -6,6 +6,7 @@ import AddDesignFitAdmin from "@/components/AddDesign/AddDesignFitAdmin";
 import AddDesignFitNew from "@/components/AddDesign/AddDesignFitNew";
 import AddDesignFitNew2 from "@/components/AddDesign/AddDesignFitNew2";
 import AddDesignFitNewN from "@/components/AddDesign/AddDesignFitNewN";
+import DesignAdd from "@/components/DesignAdd";
 import { prisma } from "@/lib/prisma";
 
 import React from "react";
@@ -32,6 +33,12 @@ const page = async () => {
       brands={brands}
       user={user}
     />
+    // <DesignAdd
+    //   allMockup={allMockup}
+    //   currentUserId={currentUserId}
+    //   brands={brands}
+    //   user={user}
+    // />
   );
 };
 

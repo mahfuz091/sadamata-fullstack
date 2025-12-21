@@ -281,6 +281,7 @@ export default function DashboardManage({
                               {/* You can replace with a component or an icon library */}
                               <Link
                                 href={`/dashboard/product/edit/${product?.id}`}
+                                className='d-none'
                               >
                                 <svg
                                   xmlns='http://www.w3.org/2000/svg'

@@ -138,7 +138,7 @@ export default function EditMockup({ mockup }) {
 
       const res = await updateVariant(fd);
 
-      if (!res || res.success === false) {
+      if (!res || !res.success) {
         toast.error(res?.message || "Failed to update variant");
         return;
       }
@@ -237,6 +237,8 @@ export default function EditMockup({ mockup }) {
 
         {variants.map((v, index) => {
           const deleting = deletingIds.includes(v.id);
+          const frontSrc = v.frontImgUrl ? getImageUrl(v.frontImgUrl) : null;
+          const backSrc = v.backImgUrl ? getImageUrl(v.backImgUrl) : null;
           return (
             <div
               key={v.id}
@@ -312,9 +314,9 @@ export default function EditMockup({ mockup }) {
                   <span className='text-sm font-medium'>Front Image</span>
                   <label className='cursor-pointer inline-block'>
                     <div className='w-full h-40 border border-slate-200 rounded flex items-center justify-center overflow-hidden bg-white'>
-                      {v.frontImgUrl ? (
+                      {frontSrc ? (
                         <Image
-                          src={getImageUrl(v.frontImgUrl)}
+                          src={frontSrc}
                           alt='Front'
                           width={300}
                           height={160}
@@ -352,9 +354,9 @@ export default function EditMockup({ mockup }) {
                   </span>
                   <label className='cursor-pointer inline-block'>
                     <div className='w-full h-40 border border-slate-200 rounded flex items-center justify-center overflow-hidden bg-white'>
-                      {v.backImgUrl ? (
+                      {backSrc ? (
                         <Image
-                          src={getImageUrl(v.backImgUrl)}
+                          src={backSrc}
                           alt='Back'
                           width={300}
                           height={160}

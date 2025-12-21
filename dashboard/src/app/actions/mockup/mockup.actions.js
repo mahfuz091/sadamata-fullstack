@@ -108,26 +108,64 @@ export async function updateMockup(formData) {
 }
 
 // Update Mockup Variant
+// export async function updateVariant(formData) {
+//   const id = formData.get("id");
+//   const color = formData.get("color");
+//   const fitType = formData.get("fitType");
+//   const frontImg = formData.get("frontImg");
+//   const backImg = formData.get("backImg");
+
+//   const updateData = {};
+//   if (color) updateData.color = color;
+//   if (fitType) updateData.fitType = fitType;
+//   if (frontImg && frontImg.size > 0)
+//     updateData.frontImg = await saveFile(frontImg, "frontImg");
+//   if (backImg && backImg.size > 0)
+//     updateData.backImg = await saveFile(backImg, "backImg");
+
+//   const variant = await prisma.mockupVariant.update({
+//     where: { id },
+//     data: updateData,
+//   });
+//   return variant;
+// }
 export async function updateVariant(formData) {
-  const id = formData.get("id");
-  const color = formData.get("color");
-  const fitType = formData.get("fitType");
-  const frontImg = formData.get("frontImg");
-  const backImg = formData.get("backImg");
+  try {
+    const id = formData.get("id");
+    if (!id) {
+      return { success: false, message: "Variant id is required" };
+    }
 
-  const updateData = {};
-  if (color) updateData.color = color;
-  if (fitType) updateData.fitType = fitType;
-  if (frontImg && frontImg.size > 0)
-    updateData.frontImg = await saveFile(frontImg, "frontImg");
-  if (backImg && backImg.size > 0)
-    updateData.backImg = await saveFile(backImg, "backImg");
+    const updateData = {};
 
-  const variant = await prisma.mockupVariant.update({
-    where: { id },
-    data: updateData,
-  });
-  return variant;
+    const color = formData.get("color");
+    const fitType = formData.get("fitType");
+    const frontImg = formData.get("frontImg");
+    const backImg = formData.get("backImg");
+
+    if (color) updateData.color = color;
+    if (fitType) updateData.fitType = fitType;
+    if (frontImg && frontImg.size > 0)
+      updateData.frontImg = await saveFile(frontImg, "frontImg");
+    if (backImg && backImg.size > 0)
+      updateData.backImg = await saveFile(backImg, "backImg");
+
+    const variant = await prisma.mockupVariant.update({
+      where: { id },
+      data: updateData,
+    });
+
+    return {
+      success: true,
+      variant,
+    };
+  } catch (err) {
+    console.error("updateVariant error:", err);
+    return {
+      success: false,
+      message: err?.message || "Failed to update variant",
+    };
+  }
 }
 
 // Delete Mockup Variant

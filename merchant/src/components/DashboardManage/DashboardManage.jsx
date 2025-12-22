@@ -8,6 +8,7 @@ import CustomSelect from "../CustomSelect/CustomSelect";
 import DashSidebar from "../DashSidebar/DashSidebar";
 import { deleteMerchantProduct } from "@/app/actions/merchant/merchant-products.actions";
 import { toast } from "sonner";
+import { Spinner } from "react-bootstrap";
 const MAIN_URL = process.env.NEXT_PUBLIC_MAIN_URL;
 export default function DashboardManage({
   initialItems,
@@ -20,6 +21,8 @@ export default function DashboardManage({
   const [items, setItems] = useState(initialItems);
   const [page, setPage] = useState(initialPage);
   const [isPending, startTransition] = useTransition();
+  const [showSpinner, setShowSpinner] = useState(false);
+
   // console.log(items, "items");
 
   const [statusFilter, setStatusFilter] = useState("ALL");
@@ -29,14 +32,27 @@ export default function DashboardManage({
   const hasMore = page < totalPages;
 
   async function onLoadMore() {
-    if (!hasMore) return;
+    if (!hasMore || isPending) return;
+
     const formData = new FormData();
     formData.set("nextPage", String(page + 1));
 
+    setShowSpinner(true);
+    const startTime = Date.now();
+
     startTransition(async () => {
       const res = await loadMoreAction(undefined, formData);
+
       setItems((prev) => [...prev, ...res.items]);
       setPage(res.page);
+
+      // ensure spinner shows at least 1.5s
+      const elapsed = Date.now() - startTime;
+      const remaining = Math.max(1500 - elapsed, 0);
+
+      setTimeout(() => {
+        setShowSpinner(false);
+      }, remaining);
     });
   }
 
@@ -247,7 +263,8 @@ export default function DashboardManage({
                           <td>
                             <div className='d-flex align-items-center'>
                               <img
-                                src={product.previewImg}
+                                // src={product.previewImg}
+                                src={`${process.env.NEXT_PUBLIC_BASE_URL}/${product.previewImg}`}
                                 alt='Product Image'
                                 className='product-image me-2'
                                 width={80}
@@ -315,8 +332,26 @@ export default function DashboardManage({
               </div>
 
               <div className='dashboard-area__btn'>
-                <button onClick={onLoadMore}>
-                  Load More <i className='icon-right-arrow'></i>
+                <button
+                  onClick={onLoadMore}
+                  disabled={!hasMore || showSpinner}
+                  className=''
+                >
+                  {showSpinner ? (
+                    <>
+                      <Spinner
+                        animation='border'
+                        size='sm'
+                        role='status'
+                        aria-hidden='true'
+                      />
+                      Loading...
+                    </>
+                  ) : (
+                    <>
+                      Load More <i className='icon-right-arrow'></i>
+                    </>
+                  )}
                 </button>
               </div>
             </div>

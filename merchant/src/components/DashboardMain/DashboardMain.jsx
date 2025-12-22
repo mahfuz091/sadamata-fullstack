@@ -399,7 +399,7 @@ const DashboardMain = ({
                                   <div className='dashboard-dverview__salse-li-thumb'>
                                     {item.image ? (
                                       <Image
-                                        src={item.image}
+                                        src={`${process.env.NEXT_PUBLIC_BASE_URL}/${item.image}`}
                                         alt={item.productName || "Product"}
                                         width={64}
                                         height={64}

@@ -5,7 +5,7 @@
 // This is safe because we only fetch a page (e.g., 10-12 products) at a time.
 
 import { unstable_noStore as noStore } from "next/cache";
-import { prisma} from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 
 function buildDateRange(from, to) {
   const range = {};
@@ -24,7 +24,6 @@ export async function getMerchantProductSalesSummary({
 } = {}) {
   noStore();
   if (!merchantId) throw new Error("merchantId is required");
-  
 
   const take = Math.min(100, Math.max(1, pageSize));
   const skip = (Math.max(1, page) - 1) * take;
@@ -44,6 +43,7 @@ export async function getMerchantProductSalesSummary({
         productId: true,
         title: true,
         price: true,
+        isActive: true,
         updatedAt: true,
         brandName: true,
         Brand: { select: { id: true, name: true } },
@@ -54,7 +54,13 @@ export async function getMerchantProductSalesSummary({
 
   const ids = products.map((p) => p.id);
   if (ids.length === 0) {
-    return { items: [], page, pageSize: take, total, totalPages: Math.ceil(total / take) };
+    return {
+      items: [],
+      page,
+      pageSize: take,
+      total,
+      totalPages: Math.ceil(total / take),
+    };
   }
 
   // Build date filter once
@@ -71,12 +77,21 @@ export async function getMerchantProductSalesSummary({
         },
       },
     },
-    select: { productId: true, quantity: true, total: true, merchantEarning: true },
+    select: {
+      productId: true,
+      quantity: true,
+      total: true,
+      merchantEarning: true,
+    },
   });
 
   const paidMap = new Map(); // productId -> { purchasedQty, revenue, royalties }
   for (const r of saleRows) {
-    const cur = paidMap.get(r.productId) || { purchasedQty: 0, revenue: 0, royalties: 0 };
+    const cur = paidMap.get(r.productId) || {
+      purchasedQty: 0,
+      revenue: 0,
+      royalties: 0,
+    };
     cur.purchasedQty += r.quantity || 0;
     cur.revenue += Number(r.total || 0);
     cur.royalties += Number(r.merchantEarning || 0);
@@ -102,7 +117,11 @@ export async function getMerchantProductSalesSummary({
   }
 
   const items = products.map((p) => {
-    const paid = paidMap.get(p.id) || { purchasedQty: 0, revenue: 0, royalties: 0 };
+    const paid = paidMap.get(p.id) || {
+      purchasedQty: 0,
+      revenue: 0,
+      royalties: 0,
+    };
     const cancelledQty = cancelMap.get(p.id) || 0;
     return {
       id: p.id,
@@ -116,6 +135,7 @@ export async function getMerchantProductSalesSummary({
       royalties: Number(paid.royalties.toFixed(2)),
       updatedAt: p.updatedAt,
       previewImg: p.variants?.[0]?.frontImg || null,
+      isActive: p.isActive,
     };
   });
 

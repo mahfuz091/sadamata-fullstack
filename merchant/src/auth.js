@@ -80,9 +80,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             include: { addresses: true },
           });
 
-          const latestImage =
-            dbUser?.addresses?.[0]?.profileImage ?? token.profileImage;
-          token.profileImage = dbUser?.profileImage ?? latestImage;
+          token.profileImage = dbUser?.profileImage;
         } catch (err) {
           console.error("Failed to refresh profileImage in jwt callback", err);
         }

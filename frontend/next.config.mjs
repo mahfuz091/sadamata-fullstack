@@ -16,7 +16,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "merchant-chi.vercel.app",
+        hostname: "sadamata.com",
         pathname: "/**", // or "/uploads/**" if you want to restrict
       },
       {
@@ -26,9 +26,9 @@ const nextConfig = {
       },
     ],
   },
-    experimental: {
+  experimental: {
     serverActions: {
-      allowedOrigins: ['*'], // or narrow to your domains
+      allowedOrigins: ["*"], // or narrow to your domains
     },
   },
 };

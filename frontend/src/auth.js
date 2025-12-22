@@ -2,7 +2,6 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import prisma from "./lib/prisma";
 
-
 export const { handlers, signIn, signOut, auth } = NextAuth({
   secret: process.env.AUTH_SECRET,
   providers: [
@@ -26,6 +25,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           email: user?.email,
           phone: user?.phone,
           name: user.name,
+          profileImage: user.profileImage,
         };
       },
     }),
@@ -38,11 +38,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.profileImage = user.profileImage;
       }
       return token;
     },
     session({ session, token }) {
       session.user.id = token.id;
+      session.user.profileImage = token.profileImage;
       return session;
     },
   },

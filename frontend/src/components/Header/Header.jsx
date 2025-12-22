@@ -232,7 +232,7 @@ const Header = ({ session }) => {
                       <Image
                         src={
                           session.user.profileImage
-                            ? session.user.profileImage
+                            ? `${process.env.NEXT_PUBLIC_BASE_URL}/${session.user.profileImage}`
                             : "/avatar.png" // fallback image
                         }
                         width={40}

@@ -21,7 +21,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "merchant-chi.vercel.app",
+        hostname: "merch.sadamata.com",
         pathname: "/**",
       },
       {

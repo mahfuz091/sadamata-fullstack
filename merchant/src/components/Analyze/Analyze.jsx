@@ -1,10 +1,11 @@
 "use client";
 import React, { useTransition, useState } from "react";
 import DashSidebar from "../DashSidebar/DashSidebar";
-import cartImg from "@/assets/images/products/cart.png";
-import Image from "next/image";
-import CustomSelect from "../CustomSelect/CustomSelect";
 
+import CustomSelect from "../CustomSelect/CustomSelect";
+import { Spinner } from "react-bootstrap";
+import Link from "next/link";
+const MAIN_URL = process.env.NEXT_PUBLIC_MAIN_URL;
 const options = [
   { value: "chocolate", label: "Marketplace: All" },
   { value: "strawberry", label: "Marketplace: All" },
@@ -21,19 +22,43 @@ const Analyze = ({
   const [items, setItems] = useState(initialItems);
   const [page, setPage] = useState(initialPage);
   const [isPending, startTransition] = useTransition();
-
+  const [showSpinner, setShowSpinner] = useState(false);
   // console.log(initialItems, "initialItems");
 
   const hasMore = page < totalPages;
 
+  // async function onLoadMore() {
+  //   if (!hasMore) return;
+  //   const fd = new FormData();
+  //   fd.set("nextPage", String(page + 1));
+  //   startTransition(async () => {
+  //     const res = await loadMoreAction(undefined, fd);
+  //     setItems((prev) => [...prev, ...res.items]);
+  //     setPage(res.page);
+  //   });
+  // }
   async function onLoadMore() {
-    if (!hasMore) return;
-    const fd = new FormData();
-    fd.set("nextPage", String(page + 1));
+    if (!hasMore || isPending) return;
+
+    const formData = new FormData();
+    formData.set("nextPage", String(page + 1));
+
+    setShowSpinner(true);
+    const startTime = Date.now();
+
     startTransition(async () => {
-      const res = await loadMoreAction(undefined, fd);
+      const res = await loadMoreAction(undefined, formData);
+
       setItems((prev) => [...prev, ...res.items]);
       setPage(res.page);
+
+      // ensure spinner shows at least 1.5s
+      const elapsed = Date.now() - startTime;
+      const remaining = Math.max(1500 - elapsed, 0);
+
+      setTimeout(() => {
+        setShowSpinner(false);
+      }, remaining);
     });
   }
 
@@ -208,13 +233,22 @@ const Analyze = ({
                                 height={60}
                               /> */}
                               <img
-                                src={item?.previewImg}
+                                src={`${process.env.NEXT_PUBLIC_BASE_URL}/${item?.previewImg}`}
                                 alt={item.title}
                                 className='product-image me-2'
                                 width={80}
                                 height={80}
                               />
-                              {item.title}
+                              {item.isActive ? (
+                                <Link
+                                  href={`${MAIN_URL}/products/${item?.productId}`}
+                                  target='_blank'
+                                >
+                                  <span>{item?.title}</span>
+                                </Link>
+                              ) : (
+                                <span>{item?.title}</span>
+                              )}
                             </div>
                           </td>
                           <td>
@@ -244,9 +278,26 @@ const Analyze = ({
                 </div>
               </div>
               <div className='dashboard-area__btn'>
-                <button href='#' onClick={onLoadMore}>
-                  {" "}
-                  Load More <i className='icon-right-arrow'></i>
+                <button
+                  onClick={onLoadMore}
+                  disabled={!hasMore || showSpinner}
+                  className=''
+                >
+                  {showSpinner ? (
+                    <>
+                      <Spinner
+                        animation='border'
+                        size='sm'
+                        role='status'
+                        aria-hidden='true'
+                      />
+                      Loading...
+                    </>
+                  ) : (
+                    <>
+                      Load More <i className='icon-right-arrow'></i>
+                    </>
+                  )}
                 </button>
               </div>
             </div>

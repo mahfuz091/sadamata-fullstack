@@ -34,17 +34,38 @@ const Footer = () => {
                   <div className='footer-widget__social'>
                     <h4 className='footer-widget__social__title'>Follow Us</h4>
                     <div className='footer-widget__social__icon'>
-                      <a href='https://facebook.com'>
+                      <a
+                        href='https://www.facebook.com/sadamataplc'
+                        target='_blank'
+                      >
                         <i className='fab fa-facebook-f'></i>
                       </a>
-                      <a href='https://twitter.com'>
+                      <a href='https://x.com/Sadamatacl' target='_blank'>
                         <i className='icon-twitter'></i>
                       </a>
-                      <a href='https://instagram.com'>
+                      <a
+                        href='https://www.instagram.com/sadamata_com/'
+                        target='_blank'
+                      >
                         <i className='icon-instragram'></i>
                       </a>
-                      <a href='https://linkedin.com'>
-                        <i className='fab fa-linkedin-in'></i>
+                      <a
+                        href='https://www.tiktok.com/@sadamata.company.limited'
+                        target='_blank'
+                      >
+                        <i className='fab fa-tiktok'></i>
+                      </a>
+                      <a
+                        href='https://www.youtube.com/@SadamataCL'
+                        target='_blank'
+                      >
+                        <i className='fab fa-youtube'></i>
+                      </a>
+                      <a
+                        href='https://www.threads.com/@sadamata_com'
+                        target='_blank'
+                      >
+                        <i className='fab fa-threads'></i>
                       </a>
                     </div>
                   </div>
@@ -139,10 +160,10 @@ const Footer = () => {
                             Phone Number
                           </span>
                           <a
-                            href='tel:123-456 7890'
+                            href='tel:+8801717012170'
                             className='footer-widget__contact__link'
                           >
-                            (123) 456 7890
+                            +880 1717 012170
                           </a>
                         </div>
                       </div>
@@ -157,10 +178,11 @@ const Footer = () => {
                             Email :{" "}
                           </span>
                           <a
-                            href='mailto:info@tradenova.com'
+                            href='mailto:support@sadamata.com
+'
                             className='footer-widget__contact__link'
                           >
-                            info@tradenova.com
+                            support@sadamata.com
                           </a>
                         </div>
                       </div>
@@ -172,13 +194,14 @@ const Footer = () => {
                         </div>
                         <div className='footer-widget__contact__content'>
                           <span className='footer-widget__contact__title'>
-                            Phone Number
+                            Location
                           </span>
                           <a
                             href='https://www.google.com/maps'
                             className='footer-widget__contact__link'
                           >
-                            Channel Dike North 111, 5642 JA Eindhoven
+                            159/12, Mannan Soroni, West Shawrapara, Mirpur-1216,
+                            Dhaka, BD
                           </a>
                         </div>
                       </div>

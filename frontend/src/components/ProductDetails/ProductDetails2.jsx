@@ -16,14 +16,21 @@ import "swiper/css/thumbs";
 import user1 from "@/assets/images/resources/user-1-2.png";
 import { isLightColor } from "@/lib/helper";
 import { toast } from "sonner";
+import { useFavorites } from "@/hooks/useFavorites";
 // --------------- Helpers ---------------
 const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE_URL;
-
-const getBase = () => {
-  if (ASSET_BASE) return ASSET_BASE.replace(/\/+$/, "");
-  if (typeof window !== "undefined") return window.location.origin;
-  return "";
+const getImgSrc = (src) => {
+  if (!src) return `${ASSET_BASE}/uploads/placeholder.png`;
+  return `${ASSET_BASE}/${src.replace(/^\/+/, "")}`;
 };
+
+const getShareUrl = () => {
+  if (typeof window === "undefined") return "";
+  return window.location.href;
+};
+
+const getShareText = (product) =>
+  `${product?.title || "Check this product"} – ${getShareUrl()}`;
 
 export const toPublicUrl = (path) => {
   if (!path) return `/uploads/placeholder.png`;
@@ -68,7 +75,12 @@ const colorsForFit = (vs = []) => {
 
 // --------------- Component ---------------
 export default function ProductDetails2({ product }) {
+  const { favorites, toggleFavorite, isFavorite } = useFavorites();
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
+
+  const [activeImage, setActiveImage] = useState(null);
+  const [lockedImage, setLockedImage] = useState(null);
+
   const mainSwiperRef = useRef(null);
 
   const grouped = useMemo(
@@ -103,6 +115,37 @@ export default function ProductDetails2({ product }) {
 
   const currentVariant =
     fitVariants.find((v) => v.color === color) || fitVariants[0] || null;
+
+  const variantImages = useMemo(() => {
+    if (!currentVariant) return [];
+
+    const images = [];
+
+    if (currentVariant.frontImg) {
+      images.push({
+        key: "front",
+        label: "Front",
+        src: currentVariant.frontImg,
+      });
+    }
+
+    if (currentVariant.backImg) {
+      images.push({
+        key: "back",
+        label: "Back",
+        src: currentVariant.backImg,
+      });
+    }
+
+    return images;
+  }, [currentVariant]);
+
+  useEffect(() => {
+    if (variantImages.length) {
+      setLockedImage(variantImages[0]);
+      setActiveImage(variantImages[0]);
+    }
+  }, [variantImages]);
 
   // Rule: MEN + exactly 4 colors => show all MEN colors (front only)
   //   const showAllForFit = fit === "MEN" && fitColors.length === 4;
@@ -235,6 +278,57 @@ export default function ProductDetails2({ product }) {
   // keep it controlled (same as your native select)
   const selectedFitOption = fitOptions.find((o) => o.value === fit) ?? null;
   // console.log(fit, "fit");
+
+  const [shareOpen, setShareOpen] = useState(false);
+  const shareRef = useRef(null);
+
+  useEffect(() => {
+    const close = (e) => {
+      if (shareRef.current && !shareRef.current.contains(e.target)) {
+        setShareOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
+  }, []);
+
+  const handleShare = (type) => {
+    const url = encodeURIComponent(getShareUrl());
+    const text = encodeURIComponent(getShareText(product));
+
+    let shareUrl = "";
+
+    switch (type) {
+      case "email":
+        shareUrl = `mailto:?subject=${text}&body=${url}`;
+        break;
+
+      case "facebook":
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+        break;
+
+      case "twitter":
+        shareUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
+        break;
+
+      case "pinterest":
+        shareUrl = `https://pinterest.com/pin/create/button/?url=${url}&description=${text}`;
+        break;
+
+      case "copy":
+        navigator.clipboard.writeText(getShareUrl());
+        toast.success("Link copied to clipboard");
+        setShareOpen(false);
+        return;
+
+      default:
+        return;
+    }
+
+    window.open(shareUrl, "_blank", "noopener,noreferrer");
+    setShareOpen(false);
+  };
+
   return (
     <>
       <section className='product-details py-5'>
@@ -254,13 +348,11 @@ export default function ProductDetails2({ product }) {
 
           <Row>
             {/* -------- Left: Gallery (front-only) -------- */}
-            <Col lg={6} className='mb-4 mb-lg-0'>
+            {/* <Col lg={6} className='mb-4 mb-lg-0'>
               <div className='product-details__product'>
-                {/* Main Carousel */}
                 <Swiper
                   modules={[Navigation, Thumbs]}
                   navigation
-                  // thumbs={{ swiper: thumbsSwiper }}
                   thumbs={
                     thumbsSwiper && !thumbsSwiper.destroyed
                       ? { swiper: thumbsSwiper }
@@ -271,7 +363,7 @@ export default function ProductDetails2({ product }) {
                   key={`${fit}-${showAllForFit ? "all" : "one"}`}
                 >
                   {galleryImages.map(({ src, alt, key }, idx) => {
-                    const rel = (src || "").replace(/^\/+/, ""); // strip leading slash
+                    const rel = (src || "").replace(/^\/+/, "");
                     const imgSrc = rel
                       ? `${ASSET_BASE}/${rel}`
                       : `${ASSET_BASE}/uploads/placeholder.png`;
@@ -294,7 +386,6 @@ export default function ProductDetails2({ product }) {
                   })}
                 </Swiper>
 
-                {/* Thumbnails */}
                 <Swiper
                   onSwiper={setThumbsSwiper}
                   slidesPerView={4}
@@ -304,7 +395,7 @@ export default function ProductDetails2({ product }) {
                   freeMode
                 >
                   {galleryImages.map(({ src, alt, key, color }, idx) => {
-                    const rel = (src || "").replace(/^\/+/, ""); // strip leading slash
+                    const rel = (src || "").replace(/^\/+/, "");
                     const imgSrc = rel
                       ? `${ASSET_BASE}/${rel}`
                       : `${ASSET_BASE}/uploads/placeholder.png`;
@@ -312,7 +403,6 @@ export default function ProductDetails2({ product }) {
                       <SwiperSlide
                         key={`${key}-thumb`}
                         onClick={() => {
-                          // manually sync both swipers and selected color
                           mainSwiperRef.current?.slideTo(idx);
                           thumbsSwiper?.slideTo?.(idx);
                           setColor(color);
@@ -332,6 +422,50 @@ export default function ProductDetails2({ product }) {
                     );
                   })}
                 </Swiper>
+              </div>
+            </Col> */}
+            <Col lg={6} className='mb-4 mb-lg-0'>
+              <div className='product-details__product image-hover-layout'>
+                {/* SMALL IMAGES */}
+                <div className='thumbnail-column d-flex'>
+                  {variantImages.map((img) => (
+                    <div
+                      key={img.key}
+                      className={`thumbnail-item ${
+                        lockedImage?.key === img.key ? "active" : ""
+                      }`}
+                      onMouseEnter={() => setActiveImage(img)}
+                      onMouseLeave={() => setActiveImage(lockedImage)}
+                      onClick={() => {
+                        setLockedImage(img);
+                        setActiveImage(img);
+                      }}
+                    >
+                      <Image
+                        src={getImgSrc(img.src)}
+                        alt={img.label}
+                        width={80}
+                        height={80}
+                        unoptimized
+                      />
+                    </div>
+                  ))}
+                </div>
+                {/* BIG IMAGE */}
+                <div className='main-image-box'>
+                  {activeImage && (
+                    <Image
+                      src={getImgSrc(activeImage.src)}
+                      alt={activeImage.label}
+                      width={720}
+                      height={720}
+                      priority
+                      unoptimized
+                      className='img-fluid'
+                    />
+                  )}
+                  {/* <span className='image-badge'>{activeImage?.label}</span> */}
+                </div>
               </div>
             </Col>
 
@@ -353,7 +487,7 @@ export default function ProductDetails2({ product }) {
                 </p>
 
                 {/* Rating */}
-                <div className='product-details__start'>
+                <div className='product-details__start d-none'>
                   <div className='product-details__start__item'>
                     {Array.from({ length: 5 }).map((_, i) => (
                       <i key={i} className='fas fa-star'></i>
@@ -597,19 +731,58 @@ export default function ProductDetails2({ product }) {
                   </div>
                   <div className='product-details__btn__item'>
                     <button
-                      className='product-details__btn__info'
+                      className={`product-details__btn__info ${
+                        isFavorite(product.id) ? "active" : ""
+                      }`}
                       aria-label='Add to wishlist'
+                      onClick={() => toggleFavorite(product)}
                     >
                       <i className='far fa-heart'></i>
                     </button>
                   </div>
-                  <div className='product-details__btn__item'>
+                  {/* <div className='product-details__btn__item'>
                     <button
                       className='product-details__btn__info'
                       aria-label='Share'
                     >
                       <i className='fas fa-share-alt'></i>
                     </button>
+                  </div> */}
+                  <div
+                    className='product-details__btn__item position-relative'
+                    ref={shareRef}
+                  >
+                    <button
+                      className='product-details__btn__info'
+                      aria-label='Share'
+                      onClick={() => setShareOpen((o) => !o)}
+                    >
+                      <i className='fas fa-share-alt'></i>
+                    </button>
+
+                    {shareOpen && (
+                      <div className='share-dropdown'>
+                        <button onClick={() => handleShare("email")}>
+                          <i className='fas fa-envelope'></i> Email
+                        </button>
+
+                        <button onClick={() => handleShare("pinterest")}>
+                          <i className='fab fa-pinterest'></i> Pinterest
+                        </button>
+
+                        <button onClick={() => handleShare("facebook")}>
+                          <i className='fab fa-facebook'></i> Facebook
+                        </button>
+
+                        <button onClick={() => handleShare("twitter")}>
+                          <i className='fab fa-x-twitter'></i> X
+                        </button>
+
+                        <button onClick={() => handleShare("copy")}>
+                          <i className='fas fa-link'></i> Copy Link
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -660,18 +833,7 @@ export default function ProductDetails2({ product }) {
                   {product?.title || "Untitled"}
                 </h2>
                 <p className='product-info__text'>
-                  After tragically losing his father, King Mufasa to his
-                  treacherous uncle Scar, Simba narrowly escapes a hyena attack
-                  and flees for his life. Simba might be growing up in exile,
-                  but he isn’t alone. Along with his two best friends, Timon the
-                  meerkat and Pumbaa the warthog, life is pretty good. But his
-                  past won’t stay hidden forever, and their peaceful existence
-                  is shattered when childhood friend Nala stumbles upon the trio
-                  while hunting for food. When he hears the kingdom is starving
-                  and his family believes him dead, Simba must decide if he can
-                  go back, face his fears, and fulfill his destiny as his
-                  father’s heir. Get your officially Licensed The Lion King
-                  graphic tees, hoodies, sweatshirts and more!
+                  {product?.description || "No description"}
                 </p>
                 <div className='product-info__list__info'>
                   <h3 className='product-info__list__title'>About this item</h3>

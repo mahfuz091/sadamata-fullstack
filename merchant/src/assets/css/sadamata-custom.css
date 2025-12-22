@@ -587,3 +587,26 @@ button.profileImageButton {
 .my-toast-desc {
   opacity: 0.8;
 }
+
+.dashboard-area .dashboard-area__btn button {
+  background: var(--commerce-white);
+  color: #585d64;
+  text-align: center;
+  letter-spacing: -0.08px;
+  border: 1px solid #818b9c;
+  border-radius: 100px;
+  align-items: center;
+  gap: 3px;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 160%;
+  transition: all 0.4s ease-in-out;
+  display: inline-flex;
+}
+
+.dashboard-area .dashboard-area__btn button:hover {
+  background-color: var(--commerce-black);
+  color: var(--commerce-white);
+}

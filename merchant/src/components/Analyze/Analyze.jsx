@@ -36,6 +36,9 @@ const Analyze = ({
       setPage(res.page);
     });
   }
+
+  console.log(items);
+
   return (
     <section className='dashboard-area section-space'>
       <div className='container'>
@@ -198,11 +201,18 @@ const Analyze = ({
                           </td>
                           <td>
                             <div className='d-flex align-items-center gap-2'>
-                              <Image
+                              {/* <Image
                                 src={item?.previewImg}
                                 alt={item.title}
                                 width={50}
                                 height={60}
+                              /> */}
+                              <img
+                                src={item?.previewImg}
+                                alt={item.title}
+                                className='product-image me-2'
+                                width={80}
+                                height={80}
                               />
                               {item.title}
                             </div>
@@ -234,10 +244,10 @@ const Analyze = ({
                 </div>
               </div>
               <div className='dashboard-area__btn'>
-                <a href='#'>
+                <button href='#' onClick={onLoadMore}>
                   {" "}
                   Load More <i className='icon-right-arrow'></i>
-                </a>
+                </button>
               </div>
             </div>
           </div>

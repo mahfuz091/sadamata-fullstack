@@ -138,6 +138,8 @@ export default function DashboardManage({
     return true;
   });
 
+  console.log(filteredItems, "filter");
+
   return (
     <section className='dashboard-area section-space'>
       <div className='container'>
@@ -313,9 +315,9 @@ export default function DashboardManage({
               </div>
 
               <div className='dashboard-area__btn'>
-                <Link href='#'>
+                <button onClick={onLoadMore}>
                   Load More <i className='icon-right-arrow'></i>
-                </Link>
+                </button>
               </div>
             </div>
           </div>

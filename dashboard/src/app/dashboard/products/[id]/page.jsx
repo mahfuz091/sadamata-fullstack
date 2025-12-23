@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import ProductCategoriesSection from "../_components/ProductCategoriesSection";
 
 export const metadata = {
   title: "Product Details",
@@ -22,7 +23,12 @@ export default async function ProductDetailsPage({ params }) {
       features: true,
       tags: true,
       variants: true,
+      categories: true,
     },
+  });
+
+  const allCategories = await prisma.productCategory.findMany({
+    orderBy: { name: "asc" },
   });
 
   if (!product) notFound();
@@ -148,6 +154,15 @@ export default async function ProductDetailsPage({ params }) {
             </span>
           ))
         )}
+      </Section>
+
+      {/* Categories */}
+      <Section title='Product Categories'>
+        <ProductCategoriesSection
+          productId={product.id}
+          selectedCategories={product.categories}
+          allCategories={allCategories}
+        />
       </Section>
     </div>
   );

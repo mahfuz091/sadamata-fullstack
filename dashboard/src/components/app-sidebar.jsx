@@ -126,6 +126,11 @@ const data = {
       url: "/dashboard/products",
       icon: Shirt,
     },
+    {
+      title: "Products Categories",
+      url: "/dashboard/product-categories",
+      icon: IconInnerShadowTop,
+    },
   ],
   navClouds: [
     {

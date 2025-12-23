@@ -236,6 +236,19 @@ model Product {
   sales Sale[] // track product sales
 
   CommissionSetting CommissionSetting[]
+
+  // ✅ many-to-many
+  categories ProductCategory[] @relation("ProductCategories")
+}
+
+model ProductCategory {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // ✅ many-to-many
+  products Product[] @relation("ProductCategories")
 }
 
 enum ProductStat {
@@ -338,7 +351,11 @@ model MockupVariant {
   frontImg String? // required: front image
   backImg  String? // optional: back image
 
+  // ✅ template-level visibility
+  isVisible Boolean? @default(true)
+
   @@unique([mockupId, color, fitType]) // one row per (mockup, color, fitType)
+  @@index([mockupId, isVisible])
 }
 
 model Order {

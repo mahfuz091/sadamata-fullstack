@@ -6,7 +6,7 @@ const Select = dynamic(() => import("react-select"), {
 });
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-
+import sizeChartImage from "@/assets/images/resources/size-chart.jpeg";
 import { Container, Row, Col } from "react-bootstrap";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Thumbs } from "swiper/modules";
@@ -17,11 +17,27 @@ import user1 from "@/assets/images/resources/user-1-2.png";
 import { isLightColor } from "@/lib/helper";
 import { toast } from "sonner";
 import { useFavorites } from "@/hooks/useFavorites";
+import AddToCartModal from "../FeatureProduct/AddToCartModal";
 // --------------- Helpers ---------------
 const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE_URL;
+// const getImgSrc = (src) => {
+//   if (!src) return `${ASSET_BASE}/uploads/placeholder.png`;
+//   return `${ASSET_BASE}/${src.replace(/^\/+/, "")}`;
+// };
 const getImgSrc = (src) => {
   if (!src) return `${ASSET_BASE}/uploads/placeholder.png`;
-  return `${ASSET_BASE}/${src.replace(/^\/+/, "")}`;
+
+  // ✅ If Next.js static image import
+  if (typeof src === "object" && src.src) {
+    return src.src;
+  }
+
+  // ✅ Normal string path from backend
+  if (typeof src === "string") {
+    return `${ASSET_BASE}/${src.replace(/^\/+/, "")}`;
+  }
+
+  return `${ASSET_BASE}/uploads/placeholder.png`;
 };
 
 const getShareUrl = () => {
@@ -77,6 +93,9 @@ const colorsForFit = (vs = []) => {
 export default function ProductDetails2({ product }) {
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
+
+  const [showModal, setShowModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const [activeImage, setActiveImage] = useState(null);
   const [lockedImage, setLockedImage] = useState(null);
@@ -295,6 +314,7 @@ export default function ProductDetails2({ product }) {
   const handleShare = (type) => {
     const url = encodeURIComponent(getShareUrl());
     const text = encodeURIComponent(getShareText(product));
+    console.log(url);
 
     let shareUrl = "";
 
@@ -327,6 +347,53 @@ export default function ProductDetails2({ product }) {
 
     window.open(shareUrl, "_blank", "noopener,noreferrer");
     setShareOpen(false);
+  };
+
+  const handleAddToCartOnly = () => {
+    if (!fit) return toast.error("Please select fit type");
+    if (!color) return toast.error("Please select color");
+    if (!size) return toast.error("Please select size");
+
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    const item = {
+      id: product.id,
+      title: product.title,
+      brand: product?.Brand?.name || product?.brandName || "—",
+      price: product.price,
+      quantity,
+      fit,
+      color,
+      size,
+      image: currentVariant?.frontImg || "",
+    };
+
+    const index = cart.findIndex(
+      (i) =>
+        i.id === item.id &&
+        i.fit === item.fit &&
+        i.color === item.color &&
+        i.size === item.size
+    );
+
+    if (index > -1) {
+      cart[index].quantity += quantity;
+    } else {
+      cart.push(item);
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    // 🔔 notify header/cart icon
+    window.dispatchEvent(new Event("cart-updated"));
+
+    toast.success("Added to cart");
+  };
+
+  const staticAllImage = {
+    key: "all",
+    label: "All Views",
+    src: sizeChartImage,
   };
 
   return (
@@ -428,7 +495,7 @@ export default function ProductDetails2({ product }) {
               <div className='product-details__product image-hover-layout'>
                 {/* SMALL IMAGES */}
                 <div className='thumbnail-column d-flex'>
-                  {variantImages.map((img) => (
+                  {[...variantImages, staticAllImage].map((img) => (
                     <div
                       key={img.key}
                       className={`thumbnail-item ${
@@ -724,6 +791,14 @@ export default function ProductDetails2({ product }) {
 
                 {/* CTA */}
                 <div className='product-details__btn'>
+                  <div className='product-details__btn__item'>
+                    <button
+                      className='commerce-btn'
+                      onClick={handleAddToCartOnly}
+                    >
+                      Add To Cart <i className='icon-right-arrow'></i>
+                    </button>
+                  </div>
                   <div className='product-details__btn__item'>
                     <button className='commerce-btn' onClick={handleBuyNow}>
                       Buy Now <i className='icon-right-arrow'></i>

@@ -38,7 +38,7 @@ const DashboardMain = ({
   const rangeKey = selected?.value ?? "today";
   const current = salesData?.ranges?.[rangeKey] ?? { items: [], totalQty: 0 };
   const hasSales = (current.items?.length ?? 0) > 0;
-  console.log(current, "current");
+  console.log(salesReport, "current");
 
   useEffect(() => {
     if (!salesReport) return;
@@ -47,9 +47,9 @@ const DashboardMain = ({
       {
         label: "Yesterday",
         date: salesReport.yesterday?.label || "",
-        count: salesReport.yesterday?.soldOrders || 0,
+        count: salesReport.yesterday?.soldUnits || 0,
         money: `৳${(salesReport.yesterday?.merchantRoyalty || 0).toFixed(2)}`,
-        orders: `${salesReport.yesterday?.soldOrders || 0}-${
+        orders: `${salesReport.yesterday?.soldUnits || 0}-${
           salesReport.yesterday?.canceledOrders || 0
         } (${salesReport.yesterday?.refundedUnits || 0})`,
         col: "6",
@@ -57,9 +57,9 @@ const DashboardMain = ({
       {
         label: "Last 7 Days",
         date: salesReport.last7?.label || "",
-        count: salesReport.last7?.soldOrders || 0,
-        money: `৳${(salesReport.last7?.gmerchantRoyalty || 0).toFixed(2)}`,
-        orders: `${salesReport.last7?.soldOrders || 0}-${
+        count: salesReport.last7?.soldUnits || 0,
+        money: `৳${(salesReport.last7?.merchantRoyalty || 0).toFixed(2)}`,
+        orders: `${salesReport.last7?.soldUnits || 0}-${
           salesReport.last7?.canceledOrders || 0
         } (${salesReport.last7?.refundedUnits || 0})`,
         col: "6",
@@ -67,9 +67,9 @@ const DashboardMain = ({
       {
         label: "This Month",
         date: salesReport.thisMonth?.label || "",
-        count: salesReport.thisMonth?.soldOrders || 0,
+        count: salesReport.thisMonth?.soldUnits || 0,
         money: `৳${(salesReport.thisMonth?.merchantRoyalty || 0).toFixed(2)}`,
-        orders: `${salesReport.thisMonth?.soldOrders || 0}-${
+        orders: `${salesReport.thisMonth?.soldUnits || 0}-${
           salesReport.thisMonth?.canceledOrders || 0
         } (${salesReport.thisMonth?.refundedUnits || 0})`,
         col: "6",
@@ -77,9 +77,9 @@ const DashboardMain = ({
       {
         label: "Previous Month",
         date: salesReport.prevMonth?.label || "",
-        count: salesReport.prevMonth?.soldOrders || 0,
+        count: salesReport.prevMonth?.soldUnits || 0,
         money: `৳${(salesReport.prevMonth?.merchantRoyalty || 0).toFixed(2)}`,
-        orders: `${salesReport.prevMonth?.soldOrders || 0}-${
+        orders: `${salesReport.prevMonth?.soldUnits || 0}-${
           salesReport.prevMonth?.canceledOrders || 0
         } (${salesReport.prevMonth?.refundedUnits || 0})`,
         col: "6",
@@ -87,9 +87,9 @@ const DashboardMain = ({
       {
         label: "All Time",
         date: salesReport.allTime?.label || "",
-        count: salesReport.allTime?.soldOrders || 0,
+        count: salesReport.allTime?.soldUnits || 0,
         money: `৳${(salesReport.allTime?.merchantRoyalty || 0).toFixed(2)}`,
-        orders: `${salesReport.allTime?.soldOrders || 0}-${
+        orders: `${salesReport.allTime?.soldUnits || 0}-${
           salesReport.allTime?.canceledOrders || 0
         } (${salesReport.allTime?.refundedUnits || 0})`,
         col: "12",
@@ -185,9 +185,11 @@ const DashboardMain = ({
                         <div className='flag__img'>
                           <Image src={flag} alt={`flag ${index + 1}`} />
                         </div>
-                        <p className='flag__title'>
-                          <span>Upcoming</span>
-                        </p>
+                        {index === 0 ? null : (
+                          <p className='flag__title'>
+                            <span>Upcoming</span>
+                          </p>
+                        )}
                       </div>
                     )
                   )}
@@ -289,7 +291,7 @@ const DashboardMain = ({
                         <div className='col-12'>
                           <div className='dashboard-dverview__count'>
                             <h2 className='dashboard-dverview__count-text'>
-                              {report?.soldOrders}
+                              {report?.soldUnits}
                             </h2>
                           </div>
                         </div>
@@ -307,7 +309,7 @@ const DashboardMain = ({
                           (label, i) => {
                             let value = 0;
 
-                            if (label === "Sold") value = report?.soldOrders;
+                            if (label === "Sold") value = report?.soldUnits;
                             else if (label === "Cancelled")
                               value = report?.canceledOrders;
                             // note: spelling ‘canceledOrders’
@@ -444,70 +446,6 @@ const DashboardMain = ({
                       </div>
                       <div className='dashboard-dverview__receved'>
                         <div className='row gutter-y-9 gutter-x-20'>
-                          {/* {[
-                            {
-                              label: "Yesterday",
-                              date: "7/4",
-                              count: 0,
-                              money: "৳0.00",
-                              orders: "1-0 (0)",
-                              col: "6",
-                            },
-                            {
-                              label: "Last 7 Days",
-                              date: "6/28-7/5",
-                              count: 1,
-                              money: "৳0.00",
-                              orders: "1-0 (0)",
-                              col: "6",
-                            },
-                            {
-                              label: "This Month",
-                              date: "7/1-7/5",
-                              count: 1,
-                              money: "৳0.00",
-                              orders: "1-0 (0)",
-                              col: "6",
-                            },
-                            {
-                              label: "Previous Month",
-                              date: "Jun 25",
-                              count: 8,
-                              money: "৳0.00",
-                              orders: "7-0 (1)",
-                              col: "6",
-                            },
-                            {
-                              label: "All Time",
-                              date: "",
-                              count: 1,
-                              money: "৳47.00",
-                              orders: "23-0 (4)",
-                              col: "12",
-                            },
-                          ].map((item, i) => (
-                            <div className={`col-sm-${item.col}`} key={i}>
-                              <div className='receved__item'>
-                                <h5 className='receved__title'>
-                                  {item.label}
-                                  {item.date && <span> {item.date}</span>}
-                                </h5>
-                                <div className='receved__item__box'>
-                                  <h3 className='receved__item__number'>
-                                    {item.count}
-                                  </h3>
-                                  <div className='receved__item__right'>
-                                    <span className='receved__item__money'>
-                                      {item.money}
-                                    </span>
-                                    <span className='receved__item__order'>
-                                      {item.orders}
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          ))} */}
                           {data.map((item, i) => (
                             <div className={`col-sm-${item.col}`} key={i}>
                               <div className='receved__item'>

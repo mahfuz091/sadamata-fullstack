@@ -565,7 +565,7 @@ button.profileImageButton img {
 }
 .image-hover-layout {
   display: flex;
-  gap: 16px;
+  gap: 30px;
 }
 
 .thumbnail-column {
@@ -667,4 +667,16 @@ button.profileImageButton img {
 
 .share-dropdown i {
   width: 18px;
+}
+.product-details__btn {
+  justify-content: flex-start;
+  gap: 10px;
+}
+.product-details__btn__item .commerce-btn {
+  max-width: 480px;
+  min-width: 245px;
+  width: 100%;
+}
+.product-details {
+  z-index: 2;
 }

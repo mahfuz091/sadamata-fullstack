@@ -27,7 +27,9 @@ const Profile = ({ user, countries }) => {
   }, [user, countries]);
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(
-    user?.addresses[0]?.profileImage || "/assets/images/resources/avater.png"
+    user?.profileImage
+      ? `${process.env.NEXT_PUBLIC_BASE_URL}${user.profileImage}`
+      : "/assets/images/resources/avater.png"
   );
   const [formData, setFormData] = useState({
     firstName: user.userProfile?.firstName

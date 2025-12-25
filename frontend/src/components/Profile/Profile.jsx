@@ -59,11 +59,9 @@ const Profile = ({ user, countries }) => {
     setFile(selectedFile);
 
     try {
-      const updated = await updateUserProfileImageFile(
-        user.addresses[0].id,
-        selectedFile
-      );
-      setPreview(updated.profileImage);
+      const updated = await updateUserProfileImageFile(user.id, selectedFile);
+      // setPreview(updated.profileImage);
+      setPreview(`${process.env.NEXT_PUBLIC_BASE_URL}${updated.profileImage}`);
       toast.success("Profile image updated!");
     } catch (err) {
       console.error(err);

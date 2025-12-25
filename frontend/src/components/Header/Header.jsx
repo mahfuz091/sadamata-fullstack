@@ -229,7 +229,7 @@ const Header = ({ session, categories }) => {
                       className='profileImageButton'
                       onClick={() => setOpen((prev) => !prev)}
                     >
-                      <img
+                      <Image
                         src={
                           session.user.profileImage
                             ? `${process.env.NEXT_PUBLIC_BASE_URL}/${session.user.profileImage}`

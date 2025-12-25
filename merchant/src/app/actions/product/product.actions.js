@@ -11,6 +11,136 @@ const uploadDesignDir = path.join(process.cwd(), "uploads", "designs");
 
 // Helper to save uploaded file from FormData
 
+// --- Title helpers ---
+
+const STOP_WORDS = new Set([
+  "a",
+  "an",
+  "the",
+  "and",
+  "or",
+  "for",
+  "to",
+  "of",
+  "with",
+  "in",
+  "on",
+  "at",
+  "from",
+  "by",
+  "as",
+  "is",
+  "are",
+]);
+
+const AMAZON_LOWERCASE_WORDS = new Set([...STOP_WORDS, "vs", "via", "per"]);
+
+function isBanglaText(s = "") {
+  // Bangla unicode block: \u0980-\u09FF
+  return /[\u0980-\u09FF]/.test(s);
+}
+
+// "Standard T-Shirt" -> "T-Shirt"
+// optional: strip known prefixes like Men/Women/Standard/Premium etc.
+function getProductTypeFromMockup(mockupName = "") {
+  let name = String(mockupName).trim();
+
+  // remove common leading descriptors if you want
+  name = name.replace(/^(men|women|kids|standard|premium|classic)\s+/i, "");
+
+  const parts = name.split(/\s+/).filter(Boolean);
+  if (parts.length <= 1) return name;
+
+  // if you didn't strip prefixes above, this will drop the first token only:
+  // return parts.slice(1).join(" ");
+
+  return parts.join(" "); // since we stripped prefixes, keep remaining
+}
+
+// Amazon-like title casing (English only-ish)
+function amazonTitleCase(input = "") {
+  const s = String(input).trim().replace(/\s+/g, " ");
+  if (!s) return "";
+
+  const words = s.split(" ");
+
+  return words
+    .map((w, i) => {
+      // keep tokens like "T-Shirt", "XL", "iPhone", "2025", "BDT" as-is-ish
+      const hasNonLetters = /[^a-zA-Z]/.test(w);
+      const isAllCaps = /^[A-Z0-9-]+$/.test(w);
+
+      // If Bangla detected in the word, keep it as-is
+      if (isBanglaText(w)) return w;
+
+      if (isAllCaps) return w; // e.g. "XL", "BDT"
+      if (hasNonLetters) {
+        // Title-case subparts split by hyphen
+        return w
+          .split("-")
+          .map((p) => {
+            if (!p) return p;
+            const lower = p.toLowerCase();
+            const shouldLower = i !== 0 && AMAZON_LOWERCASE_WORDS.has(lower);
+            if (shouldLower) return lower;
+            return lower.charAt(0).toUpperCase() + lower.slice(1);
+          })
+          .join("-");
+      }
+
+      const lower = w.toLowerCase();
+      const shouldLower = i !== 0 && AMAZON_LOWERCASE_WORDS.has(lower);
+      if (shouldLower) return lower;
+
+      return lower.charAt(0).toUpperCase() + lower.slice(1);
+    })
+    .join(" ");
+}
+
+// --- Slug helpers ---
+
+function slugify(input = "") {
+  const s = String(input)
+    .trim()
+    .toLowerCase()
+    // Replace & with 'and' for nicer slugs
+    .replace(/&/g, " and ")
+    // Remove apostrophes
+    .replace(/['’]/g, "")
+    // Replace non-alphanumeric with dashes (keep unicode? We’ll drop for safety)
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/-+/g, "-");
+
+  return s || "product";
+}
+
+// Ensures uniqueness by checking DB and suffixing -2, -3...
+async function ensureUniqueProductId(tx, baseSlug) {
+  let slug = baseSlug;
+  let n = 2;
+
+  while (true) {
+    const exists = await tx.product.findFirst({
+      where: { productId: slug },
+      select: { id: true },
+    });
+
+    if (!exists) return slug;
+    slug = `${baseSlug}-${n++}`;
+  }
+}
+
+// --- Bangla + English auto-merge ---
+// If you have two fields, merge like: "Cute Girl T-Shirt | কিউট গার্ল টি-শার্ট"
+function mergeBnEnTitle({ enTitle, bnTitle }) {
+  const en = String(enTitle || "").trim();
+  const bn = String(bnTitle || "").trim();
+
+  if (en && bn) return `${en} | ${bn}`;
+  return en || bn || "";
+}
+
 function getTodayRange() {
   const start = new Date();
   start.setHours(0, 0, 0, 0);
@@ -472,6 +602,35 @@ export async function createProduct(formData) {
 
     const productId = generateBlogId(title);
 
+    const mockup = await prisma.mockup.findUnique({
+      where: { id: mockupId },
+      select: { name: true },
+    });
+
+    if (!mockup?.name) {
+      throw new Error("Invalid mockup selected.");
+    }
+
+    // 2) Build product type from mockup name
+    const productType = getProductTypeFromMockup(mockup.name); // e.g. "T-Shirt"
+
+    // 3) Bangla + English (optional)
+    // If you only have one title field today, keep it like this:
+    const designTitleRaw = title.trim();
+
+    // If in future you pass titleEn + titleBn in formData, you can do:
+    // const titleEn = (formData.get("titleEn") || "").toString();
+    // const titleBn = (formData.get("titleBn") || "").toString();
+    // const designTitleRaw = mergeBnEnTitle({ enTitle: titleEn, bnTitle: titleBn });
+
+    // 4) Final product title = design + type
+    const finalTitleRaw = `${designTitleRaw} ${productType}`.trim();
+
+    // 5) Amazon-style formatting (won’t change Bangla parts)
+    const finalTitle = amazonTitleCase(finalTitleRaw);
+
+    // NOTE: productId should match title logic (use finalTitleRaw or finalTitle)
+    const baseSlug = slugify(finalTitleRaw);
     // ============ ATOMIC: product create + tiar decrement + leftTiar update ============
     await prisma.$transaction(async (tx) => {
       // 1) Total products BEFORE creation
@@ -527,10 +686,12 @@ export async function createProduct(formData) {
         );
       }
 
+      const productId = await ensureUniqueProductId(tx, baseSlug);
+
       // 4) Create product
       await tx.product.create({
         data: {
-          title,
+          title: finalTitle,
           productId,
           description,
           price,

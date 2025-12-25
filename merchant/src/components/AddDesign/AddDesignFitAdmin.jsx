@@ -162,10 +162,40 @@ export default function AddDesignFitAdmin({
   const [selectedFitType, setSelectedFitType] = useState({});
   const [hoveredFitType, setHoveredFitType] = useState({});
   const [selectedColor, setSelectedColor] = useState({});
+  const [colorClickHistory, setColorClickHistory] = useState({});
   const [hoveredColor, setHoveredColor] = useState({});
   const [activePreviewFit, setActivePreviewFit] = useState({});
   const [fitClickHistory, setFitClickHistory] = useState({});
   const [designOriginalSize, setDesignOriginalSize] = useState(null);
+  const getGlobalColors = (productIndex) => {
+    const val = selectedColor?.[productIndex];
+
+    // ✅ new structure (array)
+    if (Array.isArray(val)) return val;
+
+    // ✅ old structure (object: { MEN: [...], WOMEN: [...] })
+    if (val && typeof val === "object") {
+      const merged = Object.values(val).flat().filter(Boolean);
+      return [...new Set(merged)]; // unique
+    }
+
+    return [];
+  };
+
+  const getGlobalColor = (productIdx, fit, fallback) => {
+    const val = selectedColor?.[productIdx];
+
+    // new global array
+    if (Array.isArray(val)) return val[0] ?? fallback;
+
+    // old object per-fit
+    if (val && typeof val === "object" && fit) {
+      const arr = val?.[fit];
+      if (Array.isArray(arr) && arr.length) return arr[0];
+    }
+
+    return fallback;
+  };
 
   // const getActiveFit = (idx, fallback) => {
   //   if (idx == null) return fallback;
@@ -231,14 +261,53 @@ export default function AddDesignFitAdmin({
     return [black, ...rest];
   };
 
-  const getActiveColor = (idx, fit, fallback) => {
-    if (idx == null || !fit) return fallback;
+  // const getActiveColor = (idx, fit, fallback) => {
+  //   if (idx == null || !fit) return fallback;
 
-    const hover = hoveredColor[idx];
+  //   const hover = hoveredColor[idx];
+  //   if (hover) return hover;
+
+  //   const fitColors = selectedColor[idx]?.[fit];
+  //   return fitColors?.[0] ?? fallback;
+  // };
+  // const getActiveColor = (idx, fallback) => {
+  //   if (idx == null) return fallback;
+
+  //   const hover = hoveredColor[idx];
+  //   if (hover) return hover;
+
+  //   const colors = selectedColor[idx] ?? [];
+  //   return colors?.[0] ?? fallback;
+  // };
+
+  const getActiveColor = (idx, fallback) => {
+    if (idx == null) return fallback;
+
+    // hover has highest priority
+    const hover = hoveredColor?.[idx];
     if (hover) return hover;
 
-    const fitColors = selectedColor[idx]?.[fit];
-    return fitColors?.[0] ?? fallback;
+    const raw = selectedColor?.[idx];
+
+    // 🔐 ALWAYS normalize to array
+    const selected = Array.isArray(raw)
+      ? raw
+      : raw && typeof raw === "object"
+      ? [...new Set(Object.values(raw).flat().filter(Boolean))]
+      : [];
+
+    const history = Array.isArray(colorClickHistory?.[idx])
+      ? colorClickHistory[idx]
+      : [];
+
+    // ✅ last clicked & still selected
+    for (let i = history.length - 1; i >= 0; i--) {
+      const c = history[i];
+      if (selected.indexOf(c) !== -1) return c;
+    }
+
+    // fallback: last selected or provided fallback
+    return selected[selected.length - 1] ?? fallback;
   };
 
   const [canvas, setCanvas] = useState(null);
@@ -985,9 +1054,7 @@ export default function AddDesignFitAdmin({
     if (!selectedColor[activeProductIndex] && firstColor) {
       setSelectedColor((p) => ({
         ...p,
-        [activeProductIndex]: {
-          [fit]: normalizeColors([firstColor]),
-        },
+        [activeProductIndex]: normalizeColors([firstColor]),
       }));
     }
   }, [
@@ -1013,7 +1080,7 @@ export default function AddDesignFitAdmin({
 
     const prioritizedColors = getPrioritizedColorsForFit(fit);
     const colorFallback = prioritizedColors[0];
-    const color = getActiveColor(activeProductIndex, fit, colorFallback);
+    const color = getActiveColor(activeProductIndex, colorFallback);
 
     // const colorFallback = conf.fits[fit].colors?.[0];
     // const color = getActiveColor(activeProductIndex, fit, colorFallback);
@@ -1065,7 +1132,7 @@ export default function AddDesignFitAdmin({
     // const color = getActiveColor(activeProductIndex, fit, colorFallback);
     const prioritizedColors = getPrioritizedColorsForFit(fit);
     const colorFallback = prioritizedColors[0];
-    const color = getActiveColor(activeProductIndex, fit, colorFallback);
+    const color = getActiveColor(activeProductIndex, colorFallback);
 
     if (!color) return;
 
@@ -1114,7 +1181,10 @@ export default function AddDesignFitAdmin({
       const fit = getActiveFit(idx, conf.fitTypes?.[0]);
       if (!fit || !conf.fits[fit]) return;
 
-      const color = getActiveColor(idx, fit, conf.fits[fit].colors?.[0]);
+      // const color = getActiveColor(idx, fit, conf.fits[fit].colors?.[0]);
+      // if (!color) return;
+      const fallbackColor = conf.fits[fit]?.colors?.[0];
+      const color = getActiveColor(idx, fallbackColor);
       if (!color) return;
 
       const src = conf.fits[fit].colorFront[color];
@@ -1189,55 +1259,174 @@ export default function AddDesignFitAdmin({
   //   if (activeProductIndex === null) return;
   //   toggleFitAtIndex(activeProductIndex, fit);
   // };
+  // const handleFitToggle = (fit) => {
+  //   if (activeProductIndex === null) return;
+
+  //   setSelectedFitType((prev) => {
+  //     const current = prev[activeProductIndex] ?? [];
+  //     const exists = current.includes(fit);
+
+  //     const next = exists
+  //       ? current.filter((f) => f !== fit)
+  //       : [...current, fit];
+
+  //     return { ...prev, [activeProductIndex]: next };
+  //   });
+
+  //   setFitClickHistory((prev) => {
+  //     const history = prev[activeProductIndex] ?? [];
+
+  //     // 🔴 ALWAYS move checked fit to the end
+  //     const cleaned = history.filter((f) => f !== fit);
+
+  //     return {
+  //       ...prev,
+  //       [activeProductIndex]: [...cleaned, fit],
+  //     };
+  //   });
+  // };
   const handleFitToggle = (fit) => {
     if (activeProductIndex === null) return;
 
-    setSelectedFitType((prev) => {
-      const current = prev[activeProductIndex] ?? [];
-      const exists = current.includes(fit);
+    const conf = activeConfig; // current product config
+    if (!conf) return;
 
-      const next = exists
-        ? current.filter((f) => f !== fit)
-        : [...current, fit];
+    const currentFits = selectedFitType[activeProductIndex] ?? [];
+    const exists = currentFits.includes(fit);
 
-      return { ...prev, [activeProductIndex]: next };
-    });
+    const nextFits = exists
+      ? currentFits.filter((f) => f !== fit)
+      : [...currentFits, fit];
 
+    // ✅ update fits
+    setSelectedFitType((prev) => ({
+      ...prev,
+      [activeProductIndex]: nextFits,
+    }));
+
+    // ✅ keep click history
     setFitClickHistory((prev) => {
       const history = prev[activeProductIndex] ?? [];
-
-      // 🔴 ALWAYS move checked fit to the end
       const cleaned = history.filter((f) => f !== fit);
-
       return {
         ...prev,
         [activeProductIndex]: [...cleaned, fit],
       };
     });
-  };
 
-  const handleColorToggle = (color) => {
-    if (activeProductIndex === null) return;
-
-    const fit = getActiveFit(activeProductIndex, activeFitList?.[0]);
-    if (!fit) return;
-
+    // ✅ IMPORTANT: Sync colors across fits when a new fit is added
     setSelectedColor((prev) => {
       const productColors = prev[activeProductIndex] ?? {};
-      const fitColors = productColors[fit] ?? [];
+      const nextProductColors = { ...productColors };
 
-      const exists = fitColors.includes(color);
-      let nextColors = exists
-        ? fitColors.filter((c) => c !== color)
-        : [...fitColors, color];
-      nextColors = normalizeColors(nextColors);
+      if (!exists) {
+        // 👉 adding a new fit: copy colors from a base fit
+        const baseFit =
+          getActiveFit(activeProductIndex, conf.fitTypes?.[0]) ??
+          nextFits[0] ??
+          fit;
+
+        const baseColors = nextProductColors[baseFit] ?? [];
+
+        // only keep colors that exist in this newly added fit
+        const validColorsForNewFit = conf.fits?.[fit]?.colors ?? [];
+        nextProductColors[fit] = normalizeColors(
+          baseColors.filter((c) => validColorsForNewFit.includes(c))
+        );
+      } else {
+        // 👉 removing fit: optionally remove its colors entry
+        delete nextProductColors[fit];
+      }
 
       return {
         ...prev,
-        [activeProductIndex]: {
-          ...productColors,
-          [fit]: nextColors,
-        },
+        [activeProductIndex]: nextProductColors,
+      };
+    });
+  };
+
+  // const handleColorToggle = (color) => {
+  //   if (activeProductIndex === null) return;
+
+  //   const fit = getActiveFit(activeProductIndex, activeFitList?.[0]);
+  //   if (!fit) return;
+
+  //   setSelectedColor((prev) => {
+  //     const productColors = prev[activeProductIndex] ?? {};
+  //     const fitColors = productColors[fit] ?? [];
+
+  //     const exists = fitColors.includes(color);
+  //     let nextColors = exists
+  //       ? fitColors.filter((c) => c !== color)
+  //       : [...fitColors, color];
+  //     nextColors = normalizeColors(nextColors);
+
+  //     return {
+  //       ...prev,
+  //       [activeProductIndex]: {
+  //         ...productColors,
+  //         [fit]: nextColors,
+  //       },
+  //     };
+  //   });
+  // };
+  // const handleColorToggle = (color) => {
+  //   if (activeProductIndex === null) return;
+
+  //   setSelectedColor((prev) => {
+  //     const currentVal = prev?.[activeProductIndex];
+
+  //     // ✅ normalize current to array
+  //     const current = Array.isArray(currentVal)
+  //       ? currentVal
+  //       : currentVal && typeof currentVal === "object"
+  //       ? [...new Set(Object.values(currentVal).flat().filter(Boolean))]
+  //       : [];
+
+  //     const exists = current.includes(color);
+  //     const next = exists
+  //       ? current.filter((c) => c !== color)
+  //       : [...current, color];
+
+  //     return {
+  //       ...prev,
+  //       [activeProductIndex]: normalizeColors(next),
+  //     };
+  //   });
+  // };
+  const handleColorToggle = (color) => {
+    if (activeProductIndex === null) return;
+
+    // 1️⃣ selectedColor update
+    setSelectedColor((prev) => {
+      const currentVal = prev?.[activeProductIndex];
+
+      // 🔐 always normalize to ARRAY
+      const current = Array.isArray(currentVal)
+        ? currentVal
+        : currentVal && typeof currentVal === "object"
+        ? [...new Set(Object.values(currentVal).flat().filter(Boolean))]
+        : [];
+
+      const exists = current.includes(color);
+      const next = exists
+        ? current.filter((c) => c !== color)
+        : [...current, color];
+
+      return {
+        ...prev,
+        [activeProductIndex]: next, // ❌ normalizeColors দেবেন না
+      };
+    });
+
+    // 2️⃣ color click history update
+    setColorClickHistory((prev) => {
+      const history = prev[activeProductIndex] ?? [];
+      const cleaned = history.filter((c) => c !== color);
+
+      return {
+        ...prev,
+        [activeProductIndex]: [...cleaned, color], // ✅ last clicked always last
       };
     });
   };
@@ -1640,12 +1829,15 @@ export default function AddDesignFitAdmin({
 
     for (const fit of fitsToUse) {
       const allColors = conf.fits?.[fit]?.colors || [];
-
-      const chosenColors = selectedColor[activeProductIndex]?.[fit]?.length
-        ? selectedColor[activeProductIndex][fit].filter((c) =>
-            allColors.includes(c)
-          )
-        : [];
+      const idx = activeProductIndex ?? 0;
+      // const chosenColors = selectedColor[activeProductIndex]?.[fit]?.length
+      //   ? selectedColor[activeProductIndex][fit].filter((c) =>
+      //       allColors.includes(c)
+      //     )
+      //   : [];
+      const chosenColors = getGlobalColors(activeProductIndex).filter((c) =>
+        allColors.includes(c)
+      );
 
       for (const color of chosenColors) {
         const frontSrc = conf.fits[fit]?.colorFront?.[color];
@@ -1703,10 +1895,10 @@ export default function AddDesignFitAdmin({
       return false;
     }
 
-    if (!features.description || features.description.trim().length < 75) {
-      toast.error("Description must be at least 75 characters.");
-      return false;
-    }
+    // if (!features.description || features.description.trim().length < 75) {
+    //   toast.error("Description must be at least 75 characters.");
+    //   return false;
+    // }
 
     if (
       activeProductIndex === null ||
@@ -1717,8 +1909,7 @@ export default function AddDesignFitAdmin({
     }
 
     const fit = getActiveFit(activeProductIndex, activeFitList?.[0]);
-    const colors = selectedColor[activeProductIndex]?.[fit] ?? [];
-
+    const colors = selectedColor[activeProductIndex] ?? [];
     if (!colors.length) {
       toast.error("Select at least one color.");
       return false;
@@ -1726,6 +1917,21 @@ export default function AddDesignFitAdmin({
 
     return true;
   };
+
+  useEffect(() => {
+    if (activeProductIndex === null) return;
+
+    setSelectedColor((prev) => {
+      const val = prev?.[activeProductIndex];
+      if (Array.isArray(val)) return prev;
+
+      if (val && typeof val === "object") {
+        const merged = [...new Set(Object.values(val).flat().filter(Boolean))];
+        return { ...prev, [activeProductIndex]: merged };
+      }
+      return prev;
+    });
+  }, [activeProductIndex]);
 
   const handleCreateProduct = async () => {
     if (isPublishing) return;
@@ -2131,56 +2337,33 @@ export default function AddDesignFitAdmin({
                           </p>
                           <div className='color-options d-flex gap-2 flex-wrap'>
                             {(activeColors ?? []).map((color) => {
-                              const checked = (
-                                selectedColor[activeProductIndex]?.[uiFit] ?? []
-                              ).includes(color);
+                              const checked =
+                                getGlobalColors(activeProductIndex).includes(
+                                  color
+                                );
+
                               return (
                                 <label
                                   key={color}
                                   className='color-option'
-                                  style={{ position: "relative" }}
+                                  onMouseEnter={() => handleHoverColor(color)}
+                                  onMouseLeave={() => handleHoverColor(null)}
                                 >
                                   <input
                                     type='checkbox'
-                                    name='productColor'
-                                    value={color}
                                     checked={checked}
                                     onChange={() => handleColorToggle(color)}
                                     style={{ display: "none" }}
                                   />
+
                                   <span
                                     className={`color-circle ${
                                       checked ? "is-checked" : ""
                                     }`}
-                                    style={{
-                                      backgroundColor: color,
-                                      width: 36,
-                                      height: 36,
-                                      display: "inline-block",
-                                      borderRadius: "50%",
-                                      cursor: "pointer",
-                                      position: "relative",
-                                    }}
-                                    onMouseEnter={() => handleHoverColor(color)}
-                                    onMouseLeave={() => handleHoverColor(null)}
+                                    style={{ backgroundColor: color }}
                                     title={color}
                                   >
-                                    {checked && (
-                                      <span
-                                        style={{
-                                          position: "absolute",
-                                          top: "50%",
-                                          left: "50%",
-                                          transform: "translate(-50%, -50%)",
-                                          color: "white",
-                                          fontSize: "18px",
-                                          fontWeight: "bold",
-                                          textShadow: "0 0 2px rgba(0,0,0,0.5)",
-                                        }}
-                                      >
-                                        ✓
-                                      </span>
-                                    )}
+                                    {/* {checked && "✓"} */}
                                   </span>
                                 </label>
                               );
@@ -2478,7 +2661,7 @@ export default function AddDesignFitAdmin({
               <div className='product-details__availability'>
                 <div className='product-details__form-top'>
                   <h2 className='product-details__form-title'>
-                    Product availability on Amazon
+                    Product availability on Sadamata
                   </h2>
                   <button
                     className='tag-box-button'
@@ -2506,6 +2689,7 @@ export default function AddDesignFitAdmin({
                             className='sr-only'
                             checked={selected === "non-searchable"}
                             onChange={() => setSelected("non-searchable")}
+                            hidden
                           />
                           <span
                             className={`custom-radio-circle ${
@@ -2541,6 +2725,7 @@ export default function AddDesignFitAdmin({
                             className='sr-only'
                             checked={selected === "searchable"}
                             onChange={() => setSelected("searchable")}
+                            hidden
                           />
                           <span
                             className={`custom-radio-circle ${
@@ -2552,7 +2737,7 @@ export default function AddDesignFitAdmin({
                               Searchable
                             </h3>
                             <p className='availability__item__text'>
-                              Appears in Amazon search results
+                              Appears in Sadamata search results
                             </p>
                             <p className='availability__item__text'>
                               Customers can find these products through Sadamata

@@ -610,3 +610,6 @@ button.profileImageButton {
   background-color: var(--commerce-black);
   color: var(--commerce-white);
 }
+.product-details__availability .custom-radio-circle {
+  margin-top: 6px;
+}

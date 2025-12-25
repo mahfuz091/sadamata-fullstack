@@ -37,7 +37,7 @@ const customStyles = {
     borderBottom: "1px solid grey",
   }),
 };
-const Header = ({ session }) => {
+const Header = ({ session, categories }) => {
   const scrollToTop = useScrollUp(500);
 
   useEffect;
@@ -281,42 +281,11 @@ const Header = ({ session }) => {
         <div className='container-fluid'>
           <nav className='main-header__nav main-menu'>
             <ul className='main-menu__list'>
-              <li>
-                <a href='#'>Best Sellers</a>
-              </li>
-              <li>
-                <a href='#'>Trending Today</a>
-              </li>
-              <li>
-                <a href='#'>Music</a>
-              </li>
-              <li>
-                <a href='#'>Movies</a>
-              </li>
-              <li>
-                <a href='#'>Sports</a>
-              </li>
-              <li>
-                <a href='#'>Anime</a>
-              </li>
-              <li>
-                <a href='#'>Sci-Fi</a>
-              </li>
-              <li>
-                <a href='#'>Vintage</a>
-              </li>
-              <li>
-                <a href='#'>Books</a>
-              </li>
-              <li>
-                <a href='#'>Food</a>
-              </li>
-              <li>
-                <a href='#'>Art</a>
-              </li>
-              <li>
-                <a href='#'>Gmaing</a>
-              </li>
+              {categories.map((category) => (
+                <li key={category.id}>
+                  <a href='#'>{category.name}</a>
+                </li>
+              ))}
             </ul>
           </nav>
         </div>

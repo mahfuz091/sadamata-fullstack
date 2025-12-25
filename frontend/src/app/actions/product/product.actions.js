@@ -1,9 +1,8 @@
 "use server";
 
-import  prisma  from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 // Adjust this path to match your Prisma client output.
 // From your schema it looks like: output = "../src/generated/prisma"
-
 
 /**
  * getProducts(input)
@@ -24,28 +23,25 @@ import  prisma  from "@/lib/prisma";
  */
 /** Common include for product cards/lists */
 const commonProductInclude = {
- 
-       Brand: {
-          select: {
-            id: true,
-            name: true,
-            // add more Brand fields if you need them
-          },
-        },
-        User: { select: { id: true, name: true } },
-        Mockup: true,
-        features: true,
-        tags: true,
-        variants: true,
-      
+  Brand: {
+    select: {
+      id: true,
+      name: true,
+      // add more Brand fields if you need them
+    },
+  },
+  User: { select: { id: true, name: true } },
+  Mockup: true,
+  features: true,
+  tags: true,
+  variants: true,
 };
 
-export async function getAllProducts({ page = 1, pageSize = 12 } = {}) {
+export async function getAllProducts({ page = 1, pageSize = 24 } = {}) {
   const skip = (Math.max(1, page) - 1) * Math.max(1, pageSize);
   const take = Math.max(1, pageSize);
 
-   const where = { isActive: true, visibility: true }; // tweak if you want to show inactive/hidden too
-
+  const where = { isActive: true, visibility: true }; // tweak if you want to show inactive/hidden too
 
   const [total, items] = await Promise.all([
     prisma.product.count({ where }),
@@ -55,7 +51,7 @@ export async function getAllProducts({ page = 1, pageSize = 12 } = {}) {
       take,
       orderBy: { createdAt: "desc" },
       include: {
-       Brand: {
+        Brand: {
           select: {
             id: true,
             name: true,
@@ -68,7 +64,7 @@ export async function getAllProducts({ page = 1, pageSize = 12 } = {}) {
         tags: true,
         variants: true,
       },
-    // include: commonProductInclude,
+      // include: commonProductInclude,
     }),
   ]);
 
@@ -196,7 +192,13 @@ export async function getProducts(input = {}) {
     ? await prisma.sale.groupBy({
         by: ["productId"],
         where: { productId: { in: productIds } },
-        _sum: { quantity: true, total: true, brandEarning: true, merchantEarning: true, platformEarning: true },
+        _sum: {
+          quantity: true,
+          total: true,
+          brandEarning: true,
+          merchantEarning: true,
+          platformEarning: true,
+        },
       })
     : [];
 
@@ -260,15 +262,11 @@ export async function getProductOptions({ q, limit = 20 } = {}) {
   return rows;
 }
 
-
-
-
-
 /**
  * NEW ARRIVALS
  * Sorted by createdAt DESC, paginated.
  */
-export async function getNewArrivals({ page = 1, pageSize = 12 } = {}) {
+export async function getNewArrivals({ page = 1, pageSize = 24 } = {}) {
   const take = Math.max(1, pageSize);
   const skip = (Math.max(1, page) - 1) * take;
 
@@ -300,20 +298,26 @@ export async function getNewArrivals({ page = 1, pageSize = 12 } = {}) {
  * Ranked by total quantity sold (sum of Sale.quantity), paginated.
  * If you prefer by number of orders, change to _count instead of _sum.
  */
-export async function getBestSellers({ page = 1, pageSize = 12 } = {}) {
+export async function getBestSellers({ page = 1, pageSize = 24 } = {}) {
   const take = Math.max(1, pageSize);
   const skip = (Math.max(1, page) - 1) * take;
 
   // 1) Get productIds ordered by total sold
   const totals = await prisma.sale.groupBy({
     by: ["productId"],
-    _sum: { quantity: true, total: true, brandEarning: true, merchantEarning: true, platformEarning: true },
+    _sum: {
+      quantity: true,
+      total: true,
+      brandEarning: true,
+      merchantEarning: true,
+      platformEarning: true,
+    },
     orderBy: { _sum: { quantity: "desc" } },
     skip,
     take,
   });
 
-  const productIds = totals.map(t => t.productId);
+  const productIds = totals.map((t) => t.productId);
 
   // Total distinct products that have at least one sale (for pagination)
   const [{ count: totalProductsWithSales }] = await prisma.$queryRawUnsafe(`
@@ -340,7 +344,7 @@ export async function getBestSellers({ page = 1, pageSize = 12 } = {}) {
 
   // 3) Attach aggregates and preserve ranking order
   const aggMap = new Map(
-    totals.map(t => [
+    totals.map((t) => [
       t.productId,
       {
         totalSold: t._sum.quantity || 0,
@@ -353,10 +357,19 @@ export async function getBestSellers({ page = 1, pageSize = 12 } = {}) {
   );
 
   const items = productIds
-    .map(id => {
-      const p = products.find(x => x.id === id);
+    .map((id) => {
+      const p = products.find((x) => x.id === id);
       if (!p) return null;
-      return { ...p, salesAggregates: aggMap.get(id) || { totalSold: 0, grossRevenue: 0, brandEarning: 0, merchantEarning: 0, platformEarning: 0 } };
+      return {
+        ...p,
+        salesAggregates: aggMap.get(id) || {
+          totalSold: 0,
+          grossRevenue: 0,
+          brandEarning: 0,
+          merchantEarning: 0,
+          platformEarning: 0,
+        },
+      };
     })
     .filter(Boolean);
 
@@ -365,7 +378,10 @@ export async function getBestSellers({ page = 1, pageSize = 12 } = {}) {
     page,
     pageSize: take,
     total: totalProductsWithSales || productIds.length,
-    totalPages: Math.max(1, Math.ceil((totalProductsWithSales || productIds.length) / take)),
+    totalPages: Math.max(
+      1,
+      Math.ceil((totalProductsWithSales || productIds.length) / take)
+    ),
     items,
   };
 }
@@ -375,7 +391,11 @@ export async function getBestSellers({ page = 1, pageSize = 12 } = {}) {
  * Uses a Tag with value 'featured' (case-insensitive) to mark featured items.
  * Adjust if you keep a different convention.
  */
-export async function getFeaturedProducts({ page = 1, pageSize = 12, featuredTag = "featured" } = {}) {
+export async function getFeaturedProducts({
+  page = 1,
+  pageSize = 24,
+  featuredTag = "featured",
+} = {}) {
   const take = Math.max(1, pageSize);
   const skip = (Math.max(1, page) - 1) * take;
 

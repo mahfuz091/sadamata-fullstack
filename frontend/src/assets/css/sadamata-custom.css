@@ -461,7 +461,7 @@ button.profileImageButton img {
   display: none;
 }
 .main-header .main-header__search__input-box {
-  min-width: 100px;
+  min-width: 150px;
 }
 .user-profile__info__menu__item a {
   color: #585d64;
@@ -679,4 +679,24 @@ button.profileImageButton img {
 }
 .product-details {
   z-index: 2;
+}
+
+.post-pagination-list li button {
+  background-color: var(--commerce-white);
+  color: var(--commerce-text);
+  text-transform: capitalize;
+  text-align: center;
+  letter-spacing: -0.1px;
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+  width: 44px;
+  height: 44px;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 150%;
+  transition: all 0.4s;
+  display: flex;
+  border: 1px solid #e8effc;
 }

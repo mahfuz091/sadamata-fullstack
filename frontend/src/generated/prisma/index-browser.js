@@ -266,6 +266,13 @@ exports.Prisma.ProductScalarFieldEnum = {
   merchantCommissionPct: 'merchantCommissionPct'
 };
 
+exports.Prisma.ProductCategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SaleScalarFieldEnum = {
   id: 'id',
   orderItemId: 'orderItemId',
@@ -324,7 +331,8 @@ exports.Prisma.MockupVariantScalarFieldEnum = {
   color: 'color',
   fitType: 'fitType',
   frontImg: 'frontImg',
-  backImg: 'backImg'
+  backImg: 'backImg',
+  isVisible: 'isVisible'
 };
 
 exports.Prisma.OrderScalarFieldEnum = {
@@ -467,6 +475,7 @@ exports.Prisma.ModelName = {
   Brand: 'Brand',
   BrandCategory: 'BrandCategory',
   Product: 'Product',
+  ProductCategory: 'ProductCategory',
   Sale: 'Sale',
   SaleItem: 'SaleItem',
   ProductVariant: 'ProductVariant',

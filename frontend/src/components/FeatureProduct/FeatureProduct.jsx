@@ -2,7 +2,7 @@
 "use client";
 const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE_URL;
 import Image from "next/image";
-import { useState, useEffect, useTransition } from "react";
+import { useState, useEffect, useTransition, useRef } from "react";
 import {
   Container,
   Row,
@@ -23,6 +23,7 @@ import Link from "next/link";
 import { getProductImage } from "@/lib/helper";
 import AddToCartModal from "./AddToCartModal";
 import { toast } from "sonner";
+import { DOTS, getPaginationRange } from "@/utils/helper";
 
 const TABS = [
   { label: "All Products", key: "all" },
@@ -54,6 +55,7 @@ const saveFavorites = (items) => {
 };
 
 const FeatureProduct = () => {
+  const sectionRef = useRef(null);
   const [activeTab, setActiveTab] = useState("all");
   const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
@@ -62,7 +64,16 @@ const FeatureProduct = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isPending, startTransition] = useTransition();
   const [favorites, setFavorites] = useState([]);
-  const pageSize = 8;
+  const pageSize = 32;
+
+  const paginationRange = getPaginationRange(totalPages, page, 1);
+
+  useEffect(() => {
+    if (isPending) return;
+    if (!sectionRef.current) return;
+
+    sectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [isPending, page, activeTab]);
 
   useEffect(() => {
     setFavorites(getFavorites());
@@ -276,7 +287,7 @@ const FeatureProduct = () => {
     //     </div>
     //   </Container>
     // </section>
-    <section className='feature-product py-5'>
+    <section className='feature-product py-5' ref={sectionRef}>
       <Container>
         <div className='feature-product__top text-center mb-4'>
           <h2 className='feature-product__title mb-3'>
@@ -406,27 +417,63 @@ const FeatureProduct = () => {
         )}
 
         {/* Pagination */}
+
         <div className='feature-product__pagination mt-4'>
-          <Pagination className='justify-content-center'>
-            <Pagination.Prev
+          <div className='post-pagination'>
+            <button
+              className='previous'
               disabled={page <= 1 || isPending}
               onClick={handlePrev}
-            />
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
-              <Pagination.Item
-                key={n}
-                active={n === page}
-                onClick={() => setPage(n)}
-                disabled={isPending}
-              >
-                {n}
-              </Pagination.Item>
-            ))}
-            <Pagination.Next
+            >
+              <i className='icon-left-arrow'></i> Previous
+            </button>
+
+            {/* <ul className='post-pagination-list justify-content-center'>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+                <li key={n}>
+                  <button
+                    type='button'
+                    className={n === page ? "active" : ""}
+                    onClick={() => setPage(n)}
+                  >
+                    {n}
+                  </button>
+                </li>
+              ))}
+            </ul> */}
+            <ul className='post-pagination-list justify-content-center'>
+              {paginationRange.map((item, idx) => {
+                if (item === DOTS) {
+                  return (
+                    <li key={`dots-${idx}`}>
+                      <span className='dots'>…</span>
+                    </li>
+                  );
+                }
+
+                return (
+                  <li key={item}>
+                    <button
+                      type='button'
+                      className={item === page ? "active" : ""}
+                      onClick={() => setPage(item)}
+                      disabled={isPending}
+                    >
+                      {item}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+
+            <button
+              className='next'
               disabled={page >= totalPages || isPending}
               onClick={handleNext}
-            />
-          </Pagination>
+            >
+              Next <i className='icon-right-arrow'></i>
+            </button>
+          </div>
         </div>
       </Container>
     </section>

@@ -1,4 +1,3 @@
-
 import Layout from "@/components/Layout/Layout";
 import Hero from "@/components/Hero/Hero";
 import BrandInfo from "@/components/BrandInfo/BrandInfo";
@@ -12,10 +11,12 @@ import TopMovieBrandTshirt from "@/components/TopMovieBrandTshirt/TopMovieBrandT
 import TopNatokBrandTshirt from "@/components/TopNatokBrandTshirt/TopNatokBrandTshirt";
 import { getNewArrivals } from "./actions/product/product.actions";
 import { auth } from "@/auth";
+import prisma from "@/lib/prisma";
 
 export default async function Home() {
   // const newA  =  await getNewArrivals()
-const session = await auth();
+
+  const session = await auth();
   console.log(session, "session");
   return (
     <Layout session={session}>

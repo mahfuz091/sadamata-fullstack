@@ -3,11 +3,12 @@ import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import HeaderCloned from "../Header/HeaderCloned";
 
-const Layout = ({ children, session }) => {
+const Layout = async ({ children, session }) => {
+  const categories = await prisma.productCategory.findMany();
   return (
     <>
-      <Header session={session} />
-      <HeaderCloned session={session} />
+      <Header session={session} categories={categories} />
+      <HeaderCloned session={session} categories={categories} />
       {children}
       <Footer />
     </>

@@ -43,7 +43,8 @@ export async function updateUserProfileImageFile(id, file) {
     if (!file) throw new Error("No file provided");
 
     // Ensure the directory exists
-    const uploadDir = path.join(process.cwd(), "public/uploads/profileImage");
+    const uploadDir = path.join(process.cwd(), "uploads/profileImage");
+
     // Note: Usually better to serve from 'public' if using Next.js
 
     if (!fs.existsSync(uploadDir)) {

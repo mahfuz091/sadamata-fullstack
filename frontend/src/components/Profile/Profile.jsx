@@ -28,7 +28,7 @@ const Profile = ({ user, countries }) => {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(
     user?.profileImage
-      ? `${process.env.NEXT_PUBLIC_BASE_URL}${user.profileImage}`
+      ? `${process.env.NEXT_PUBLIC_BASE_URL}/${user?.profileImage}`
       : "/assets/images/resources/avater.png"
   );
   const [formData, setFormData] = useState({
@@ -95,6 +95,8 @@ const Profile = ({ user, countries }) => {
     }
     setLoading(false);
   };
+
+  console.log(user, "user", preview);
 
   return (
     <section className='user-profile'>

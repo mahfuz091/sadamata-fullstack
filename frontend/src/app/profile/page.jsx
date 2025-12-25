@@ -26,6 +26,7 @@ const page = async () => {
       phone: true,
       userProfile: true, // must match your relation field name in schema
       addresses: true,
+      profileImage: true,
     },
   });
   return (

@@ -68,16 +68,26 @@ const FeatureProduct = () => {
 
   const paginationRange = getPaginationRange(totalPages, page, 1);
 
-  useEffect(() => {
-    if (isPending) return;
-    if (!sectionRef.current) return;
+  // useEffect(() => {
+  //   if (isPending) return;
+  //   if (!sectionRef.current) return;
 
-    sectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [isPending, page, activeTab]);
+  //   sectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+  // }, [isPending, page, activeTab]);
 
   useEffect(() => {
     setFavorites(getFavorites());
   }, []);
+
+  const scrollToSectionTop = () => {
+    const el = sectionRef.current;
+    if (!el) return;
+
+    const headerOffset = 90; // তোমার navbar height অনুযায়ী adjust করো
+    const y = el.getBoundingClientRect().top + window.scrollY - headerOffset;
+
+    window.scrollTo({ top: y, behavior: "smooth" });
+  };
 
   // const toggleFavorite = (product) => {
   //   setFavorites((prev) => {
@@ -423,7 +433,10 @@ const FeatureProduct = () => {
             <button
               className='previous'
               disabled={page <= 1 || isPending}
-              onClick={handlePrev}
+              onClick={() => {
+                handlePrev();
+                requestAnimationFrame(() => scrollToSectionTop());
+              }}
             >
               <i className='icon-left-arrow'></i> Previous
             </button>
@@ -456,7 +469,10 @@ const FeatureProduct = () => {
                     <button
                       type='button'
                       className={item === page ? "active" : ""}
-                      onClick={() => setPage(item)}
+                      onClick={() => {
+                        setPage(item);
+                        requestAnimationFrame(() => scrollToSectionTop());
+                      }}
                       disabled={isPending}
                     >
                       {item}
@@ -469,7 +485,10 @@ const FeatureProduct = () => {
             <button
               className='next'
               disabled={page >= totalPages || isPending}
-              onClick={handleNext}
+              onClick={() => {
+                handleNext();
+                requestAnimationFrame(() => scrollToSectionTop());
+              }}
             >
               Next <i className='icon-right-arrow'></i>
             </button>

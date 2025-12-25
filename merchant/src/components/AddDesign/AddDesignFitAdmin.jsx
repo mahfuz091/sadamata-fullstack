@@ -1534,7 +1534,8 @@ export default function AddDesignFitAdmin({
     };
   };
 
-  const MIN_OUTPUT_PX = 4500;
+  const MIN_OUTPUT_PX = 800;
+  const MIN_HEIGHT_OUTPUT_PX = 900;
 
   // merge mockup + design into PNG blob (FRONT/BACK)
   // const composeSideToBlob = async (baseSrc, side) => {
@@ -1608,7 +1609,7 @@ export default function AddDesignFitAdmin({
     // 🔥 SCALE FACTOR TO GUARANTEE ≥4500px
     const scaleFactor = Math.max(
       MIN_OUTPUT_PX / baseImg.width,
-      MIN_OUTPUT_PX / baseImg.height,
+      MIN_HEIGHT_OUTPUT_PX / baseImg.height,
       1
     );
 

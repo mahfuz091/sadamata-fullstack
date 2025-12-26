@@ -206,14 +206,14 @@ export default function AddMockup() {
               <div className='flex flex-col gap-2'>
                 <span className='text-sm font-medium'>Front Image *</span>
                 <label className='cursor-pointer inline-block'>
-                  <div className='w-full h-40 border border-slate-200 rounded flex items-center justify-center overflow-hidden bg-white'>
+                  <div className='w-full h-50 border border-slate-200 rounded flex items-center justify-center overflow-hidden bg-white'>
                     {variant.frontImg ? (
                       <Image
                         src={URL.createObjectURL(variant.frontImg)}
                         alt='Front preview'
-                        width={300}
+                        width={160}
                         height={160}
-                        className='object-cover w-full h-full'
+                        className='object-cover'
                       />
                     ) : (
                       <Image
@@ -246,14 +246,14 @@ export default function AddMockup() {
                   Back Image (optional)
                 </span>
                 <label className='cursor-pointer inline-block'>
-                  <div className='w-full h-40 border border-slate-200 rounded flex items-center justify-center overflow-hidden bg-white'>
+                  <div className='w-full h-50 border border-slate-200 rounded flex items-center justify-center overflow-hidden bg-white'>
                     {variant.backImg ? (
                       <Image
                         src={URL.createObjectURL(variant.backImg)}
                         alt='Back preview'
-                        width={300}
+                        width={160}
                         height={160}
-                        className='object-cover w-full h-full'
+                        className='object-cover '
                       />
                     ) : (
                       <Image
@@ -283,19 +283,21 @@ export default function AddMockup() {
           </div>
         ))}
 
-        <button
-          type='button'
-          onClick={addVariant}
-          className='px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700'
-        >
-          + Add Variant
-        </button>
+        <div className='flex justify-end'>
+          <button
+            type='button'
+            onClick={addVariant}
+            className='px-4 py-2 bg-[#f37927] text-white! rounded-lg text-sm hover:bg-[#000] transition cursor-pointer!'
+          >
+            + Add Variant
+          </button>
+        </div>
       </div>
 
       <button
         disabled={loading}
         type='submit'
-        className='mt-8 cursor-pointer !text-[#fff] transition rounded-[10px] text-[16px] bg-[#0B7956] py-[10px] px-[25px] hover:bg-[#000] disabled:opacity-60 disabled:cursor-not-allowed'
+        className='mt-8 cursor-pointer !text-[#fff] transition rounded-[10px] text-[16px] bg-[#f37927] py-[10px] px-[25px] hover:bg-[#000] disabled:opacity-60 disabled:cursor-not-allowed'
       >
         {loading ? "Creating..." : "Create Mockup"}
       </button>

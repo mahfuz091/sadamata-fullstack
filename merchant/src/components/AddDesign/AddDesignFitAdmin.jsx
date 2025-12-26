@@ -972,6 +972,41 @@ export default function AddDesignFitAdmin({
 
   // default selections when active product changes
 
+  // const addDesignToBackCanvas = (fabricCanvas, fit) => {
+  //   if (!fabricCanvas || !designBack || !fit) return;
+
+  //   loadHTMLImage(designBack).then((img) => {
+  //     if (!img) return;
+
+  //     const stored = designPositions?.BACK?.[fit];
+
+  //     const placement = stored
+  //       ? {
+  //           left: stored.x,
+  //           top: stored.y,
+  //           scale: stored.w / img.width,
+  //         }
+  //       : getCenteredPlacement(fabricCanvas, img);
+
+  //     const fabricImg = new FabricImage(img, {
+  //       left: placement.left,
+  //       top: placement.top,
+  //       scaleX: placement.scale,
+  //       scaleY: placement.scale,
+  //       lockUniScaling: true,
+  //       lockScalingFlip: true,
+  //       lockRotation: true,
+  //       cornerStyle: "circle",
+  //       transparentCorners: false,
+  //       layer: 1,
+  //     });
+
+  //     fabricCanvas.add(fabricImg);
+  //     fabricCanvas.setActiveObject(fabricImg);
+  //     fabricCanvas.renderAll();
+  //   });
+  // };
+
   const addDesignToBackCanvas = (fabricCanvas, fit) => {
     if (!fabricCanvas || !designBack || !fit) return;
 
@@ -985,8 +1020,10 @@ export default function AddDesignFitAdmin({
             left: stored.x,
             top: stored.y,
             scale: stored.w / img.width,
+            width: stored.w,
+            height: stored.h ?? img.height * (stored.w / img.width),
           }
-        : getCenteredPlacement(fabricCanvas, img);
+        : getCenteredPlacement(fabricCanvas, img); // returns {left,top,scale,width,height}
 
       const fabricImg = new FabricImage(img, {
         left: placement.left,
@@ -1004,6 +1041,22 @@ export default function AddDesignFitAdmin({
       fabricCanvas.add(fabricImg);
       fabricCanvas.setActiveObject(fabricImg);
       fabricCanvas.renderAll();
+
+      // ✅ IMPORTANT: store initial placement so export works
+      if (!stored) {
+        setDesignPositions((prev) => ({
+          ...prev,
+          BACK: {
+            ...prev.BACK,
+            [fit]: {
+              x: placement.left,
+              y: placement.top,
+              w: placement.width,
+              h: placement.height,
+            },
+          },
+        }));
+      }
     });
   };
 
@@ -1051,10 +1104,19 @@ export default function AddDesignFitAdmin({
     const colors = fit ? conf.fits[fit]?.colors ?? [] : [];
     const firstColor = colors[0];
 
-    if (!selectedColor[activeProductIndex] && firstColor) {
+    // if (!selectedColor[activeProductIndex] && firstColor) {
+    //   setSelectedColor((p) => ({
+    //     ...p,
+    //     [activeProductIndex]: normalizeColors([firstColor]),
+    //   }));
+    // }
+    if (!selectedColor[activeProductIndex] && firstColor && fit) {
       setSelectedColor((p) => ({
         ...p,
-        [activeProductIndex]: normalizeColors([firstColor]),
+        [activeProductIndex]: {
+          ...(p[activeProductIndex] ?? {}),
+          [fit]: normalizeColors([firstColor]),
+        },
       }));
     }
   }, [
@@ -1285,10 +1347,13 @@ export default function AddDesignFitAdmin({
   //     };
   //   });
   // };
+
+  const asArray = (v) => (Array.isArray(v) ? v : v ? [v] : []);
+
   const handleFitToggle = (fit) => {
     if (activeProductIndex === null) return;
 
-    const conf = activeConfig; // current product config
+    const conf = activeConfig;
     if (!conf) return;
 
     const currentFits = selectedFitType[activeProductIndex] ?? [];
@@ -1298,50 +1363,45 @@ export default function AddDesignFitAdmin({
       ? currentFits.filter((f) => f !== fit)
       : [...currentFits, fit];
 
-    // ✅ update fits
     setSelectedFitType((prev) => ({
       ...prev,
       [activeProductIndex]: nextFits,
     }));
 
-    // ✅ keep click history
     setFitClickHistory((prev) => {
       const history = prev[activeProductIndex] ?? [];
       const cleaned = history.filter((f) => f !== fit);
-      return {
-        ...prev,
-        [activeProductIndex]: [...cleaned, fit],
-      };
+      return { ...prev, [activeProductIndex]: [...cleaned, fit] };
     });
 
-    // ✅ IMPORTANT: Sync colors across fits when a new fit is added
     setSelectedColor((prev) => {
       const productColors = prev[activeProductIndex] ?? {};
       const nextProductColors = { ...productColors };
 
       if (!exists) {
-        // 👉 adding a new fit: copy colors from a base fit
+        // choose a base fit that already has colors
         const baseFit =
-          getActiveFit(activeProductIndex, conf.fitTypes?.[0]) ??
+          currentFits.find((f) => nextProductColors[f]?.length) ??
+          conf.fitTypes?.[0] ??
           nextFits[0] ??
           fit;
 
-        const baseColors = nextProductColors[baseFit] ?? [];
+        const baseColors = asArray(nextProductColors[baseFit]);
 
-        // only keep colors that exist in this newly added fit
         const validColorsForNewFit = conf.fits?.[fit]?.colors ?? [];
         nextProductColors[fit] = normalizeColors(
           baseColors.filter((c) => validColorsForNewFit.includes(c))
         );
       } else {
-        // 👉 removing fit: optionally remove its colors entry
         delete nextProductColors[fit];
       }
 
-      return {
-        ...prev,
-        [activeProductIndex]: nextProductColors,
-      };
+      // ✅ IMPORTANT: remove that wrong numeric key if it exists
+      // (optional but strongly recommended)
+      delete nextProductColors[0];
+      delete nextProductColors["0"];
+
+      return { ...prev, [activeProductIndex]: nextProductColors };
     });
   };
 
@@ -1394,40 +1454,48 @@ export default function AddDesignFitAdmin({
   //     };
   //   });
   // };
+
+  useEffect(() => {
+    setSelectedColor((prev) => ({
+      ...prev,
+      0: {
+        ...(prev[0] ?? {}),
+        MEN: ["#000"],
+      },
+    }));
+  }, []);
+
   const handleColorToggle = (color) => {
     if (activeProductIndex === null) return;
+    const conf = activeConfig;
+    if (!conf) return;
 
-    // 1️⃣ selectedColor update
+    // fits currently selected for this product (ex: ["MEN","WOMEN"])
+    const fits = selectedFitType[activeProductIndex] ?? [];
+    if (fits.length === 0) return;
+
     setSelectedColor((prev) => {
-      const currentVal = prev?.[activeProductIndex];
+      const productColors = prev[activeProductIndex] ?? {};
+      const nextProductColors = { ...productColors };
 
-      // 🔐 always normalize to ARRAY
-      const current = Array.isArray(currentVal)
-        ? currentVal
-        : currentVal && typeof currentVal === "object"
-        ? [...new Set(Object.values(currentVal).flat().filter(Boolean))]
-        : [];
+      // remove any wrong numeric keys like "0", "1", etc (optional but recommended)
+      Object.keys(nextProductColors).forEach((k) => {
+        if (!isNaN(Number(k))) delete nextProductColors[k];
+      });
 
-      const exists = current.includes(color);
-      const next = exists
-        ? current.filter((c) => c !== color)
-        : [...current, color];
+      fits.forEach((fit) => {
+        const validColors = conf.fits?.[fit]?.colors ?? [];
+        if (!validColors.includes(color)) return;
 
-      return {
-        ...prev,
-        [activeProductIndex]: next, // ❌ normalizeColors দেবেন না
-      };
-    });
+        const current = asArray(nextProductColors[fit]);
+        const exists = current.includes(color);
 
-    // 2️⃣ color click history update
-    setColorClickHistory((prev) => {
-      const history = prev[activeProductIndex] ?? [];
-      const cleaned = history.filter((c) => c !== color);
+        nextProductColors[fit] = exists
+          ? current.filter((c) => c !== color)
+          : [...current, color];
+      });
 
-      return {
-        ...prev,
-        [activeProductIndex]: [...cleaned, color], // ✅ last clicked always last
-      };
+      return { ...prev, [activeProductIndex]: nextProductColors };
     });
   };
 
@@ -1885,6 +1953,8 @@ export default function AddDesignFitAdmin({
 
   const router = useRouter();
 
+  console.log(selectedColor, "select, rem");
+
   const validateBeforePublish = () => {
     if (!designImage && !designBack) {
       toast.error("Upload at least one design (front or back).");
@@ -1910,7 +1980,11 @@ export default function AddDesignFitAdmin({
     }
 
     const fit = getActiveFit(activeProductIndex, activeFitList?.[0]);
-    const colors = selectedColor[activeProductIndex] ?? [];
+
+    // const colors = selectedColor[activeProductIndex] ?? [];
+    const colors = getGlobalColors(activeProductIndex);
+    console.log(colors, activeProductIndex, "colors check");
+
     if (!colors.length) {
       toast.error("Select at least one color.");
       return false;
@@ -1919,20 +1993,20 @@ export default function AddDesignFitAdmin({
     return true;
   };
 
-  useEffect(() => {
-    if (activeProductIndex === null) return;
+  // useEffect(() => {
+  //   if (activeProductIndex === null) return;
 
-    setSelectedColor((prev) => {
-      const val = prev?.[activeProductIndex];
-      if (Array.isArray(val)) return prev;
+  //   setSelectedColor((prev) => {
+  //     const val = prev?.[activeProductIndex];
+  //     if (Array.isArray(val)) return prev;
 
-      if (val && typeof val === "object") {
-        const merged = [...new Set(Object.values(val).flat().filter(Boolean))];
-        return { ...prev, [activeProductIndex]: merged };
-      }
-      return prev;
-    });
-  }, [activeProductIndex]);
+  //     if (val && typeof val === "object") {
+  //       const merged = [...new Set(Object.values(val).flat().filter(Boolean))];
+  //       return { ...prev, [activeProductIndex]: merged };
+  //     }
+  //     return prev;
+  //   });
+  // }, [activeProductIndex]);
 
   const handleCreateProduct = async () => {
     if (isPublishing) return;

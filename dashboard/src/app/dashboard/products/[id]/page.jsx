@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import ProductCategoriesSection from "../_components/ProductCategoriesSection";
+import ProductStatusControl from "../_components/ProductStatusControl";
+import DownloadButton from "../_components/DownloadButton";
 
 export const metadata = {
   title: "Product Details",
@@ -38,11 +40,27 @@ export default async function ProductDetailsPage({ params }) {
       <h1 className='text-2xl font-semibold'>Product Details</h1>
 
       {/* Basic Info */}
-      <Section title='Basic Information'>
+      {/* <Section title='Basic Information'>
         <Item label='Title' value={product.title} />
         <Item label='Price' value={`৳${product.price}`} />
         <Item label='Status' value={product.status} />
         <Item label='Visibility' value={product.isActive ? "Live" : "Hidden"} />
+        <Item label='Created At' value={product.createdAt.toDateString()} />
+      </Section> */}
+
+      <Section title='Basic Information'>
+        <Item label='Title' value={product.title} />
+        <Item label='Price' value={`৳${product.price}`} />
+
+        <div>
+          <p className='text-sm text-muted-foreground'>Status / Visibility</p>
+          <ProductStatusControl
+            productId={product.id}
+            initialStatus={product.status}
+            initialIsActive={product.isActive}
+          />
+        </div>
+
         <Item label='Created At' value={product.createdAt.toDateString()} />
       </Section>
 
@@ -66,7 +84,7 @@ export default async function ProductDetailsPage({ params }) {
       </Section>
 
       {/* Design Files */}
-      <Section title='Design Files'>
+      {/* <Section title='Design Files'>
         <div className='grid grid-cols-2 gap-4'>
           <div>
             <p className='text-sm text-muted-foreground mb-1'>Front Design</p>
@@ -89,6 +107,49 @@ export default async function ProductDetailsPage({ params }) {
                 alt='Back Design'
                 className='w-full max-w-sm rounded border'
               />
+            ) : (
+              <p>-</p>
+            )}
+          </div>
+        </div>
+      </Section> */}
+      <Section title='Design Files'>
+        <div className='grid grid-cols-2 gap-4'>
+          <div>
+            <p className='text-sm text-muted-foreground mb-1'>Front Design</p>
+
+            {product.frontDesign ? (
+              <>
+                <img
+                  src={imgSrc(product.frontDesign)}
+                  alt='Front Design'
+                  className='w-full max-w-sm rounded border'
+                />
+                <DownloadButton
+                  url={imgSrc(product.frontDesign)}
+                  filename={`front-design-${product.id}.png`}
+                />
+              </>
+            ) : (
+              <p>-</p>
+            )}
+          </div>
+
+          <div>
+            <p className='text-sm text-muted-foreground mb-1'>Back Design</p>
+
+            {product.backDesign ? (
+              <>
+                <img
+                  src={imgSrc(product.backDesign)}
+                  alt='Back Design'
+                  className='w-full max-w-sm rounded border'
+                />
+                <DownloadButton
+                  url={imgSrc(product.backDesign)}
+                  filename={`back-design-${product.id}.png`}
+                />
+              </>
             ) : (
               <p>-</p>
             )}

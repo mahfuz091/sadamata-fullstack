@@ -1,4 +1,3 @@
-// app/dashboard/mockups/edit/[id]/edit-mockup-client.jsx
 "use client";
 
 import React, { useState } from "react";
@@ -11,6 +10,8 @@ import {
   updateMockup,
   updateVariant,
   deleteVariant,
+  addVariant,
+  createVariant,
 } from "@/app/actions/mockup/mockup.actions";
 import { assets } from "@/assets/assets";
 
@@ -18,9 +19,21 @@ const FIT_TYPES = ["MEN", "WOMEN", "YOUTH"];
 
 const API_BASE = process.env.NEXT_PUBLIC_BASE_URL || "";
 
+// function getImageUrl(path) {
+//   if (!path) return undefined;
+//   if (path.startsWith("http")) return path;
+//   const normalized = path.replace(/\\/g, "/").replace(/^\/+/, "");
+//   return `${API_BASE.replace(/\/+$/, "")}/${normalized}`;
+// }
 function getImageUrl(path) {
   if (!path) return undefined;
+
+  // ✅ keep blob/data urls as-is (for previews)
+  if (path.startsWith("blob:") || path.startsWith("data:")) return path;
+
+  // existing remote
   if (path.startsWith("http")) return path;
+
   const normalized = path.replace(/\\/g, "/").replace(/^\/+/, "");
   return `${API_BASE.replace(/\/+$/, "")}/${normalized}`;
 }
@@ -46,8 +59,25 @@ export default function EditMockup({ mockup }) {
 
   const [deletingIds, setDeletingIds] = useState([]);
 
-  /* ========== helpers ========== */
+  // Add a new empty variant to the state
+  const addVariant = () => {
+    setVariants((prev) => [
+      ...prev,
+      {
+        tempId: crypto.randomUUID(), // ✅ local key
+        isNew: true, // ✅ mark as new
+        color: "",
+        fitType: "MEN",
+        frontImgUrl: null,
+        backImgUrl: null,
+        frontFile: null,
+        backFile: null,
+        saving: false,
+      },
+    ]);
+  };
 
+  // Handle variant changes (color, fitType, image files)
   const handleVariantFieldChange = (index, field, value) => {
     setVariants((prev) => {
       const next = [...prev];
@@ -76,84 +106,61 @@ export default function EditMockup({ mockup }) {
     });
   };
 
-  /* ========== update mockup name ========== */
-
-  const handleSaveName = async (e) => {
-    e.preventDefault();
-    if (!name.trim()) {
-      toast.error("Mockup name is required");
-      return;
-    }
-
-    setSavingName(true);
-    try {
-      const fd = new FormData();
-      fd.append("id", mockup.id);
-      fd.append("name", name.trim());
-
-      const res = await updateMockup(fd);
-
-      if (!res || res.success === false) {
-        toast.error(res?.message || "Failed to update mockup");
-        return;
-      }
-
-      toast.success("Mockup updated");
-      router.refresh();
-    } catch (err) {
-      console.error("updateMockup error:", err);
-      toast.error(err?.message || "Failed to update mockup");
-    } finally {
-      setSavingName(false);
-    }
-  };
-
-  /* ========== update single variant ========== */
-
+  // Save a variant (send it to the backend)
   const handleSaveVariant = async (index) => {
     const v = variants[index];
-    if (!v.color.trim()) {
-      toast.error("Color is required");
-      return;
+
+    if (!v.color.trim()) return toast.error("Color is required");
+
+    // ✅ new variant হলে front image required
+    if (v.isNew && !(v.frontFile instanceof File)) {
+      return toast.error("Front image is required for new variant");
     }
 
-    try {
-      setVariants((prev) => {
-        const next = [...prev];
-        next[index] = { ...next[index], saving: true };
-        return next;
-      });
+    setVariants((prev) => {
+      const next = [...prev];
+      next[index] = { ...next[index], saving: true };
+      return next;
+    });
 
+    try {
       const fd = new FormData();
-      fd.append("id", v.id);
       fd.append("color", v.color.trim());
       fd.append("fitType", v.fitType);
 
-      if (v.frontFile instanceof File) {
+      if (v.frontFile instanceof File)
         fd.append("frontImg", v.frontFile, v.frontFile.name);
-      }
-      if (v.backFile instanceof File) {
+      if (v.backFile instanceof File)
         fd.append("backImg", v.backFile, v.backFile.name);
+
+      let res;
+
+      if (v.isNew) {
+        // ✅ CREATE (add new variant under this mockup)
+        fd.append("mockupId", mockup.id);
+        res = await createVariant(fd);
+      } else {
+        // ✅ UPDATE (existing)
+        fd.append("id", v.id);
+        res = await updateVariant(fd);
       }
 
-      const res = await updateVariant(fd);
-
-      if (!res || !res.success) {
-        toast.error(res?.message || "Failed to update variant");
+      if (!res?.success) {
+        toast.error(res?.message || "Failed");
         return;
       }
 
-      // if your updateVariant returns { id, color, fitType, frontImg, backImg }
-      const updated = res.variant || res;
+      const saved = res.variant;
 
       setVariants((prev) => {
         const next = [...prev];
         next[index] = {
-          ...next[index],
-          color: updated.color ?? v.color,
-          fitType: updated.fitType ?? v.fitType,
-          frontImgUrl: updated.frontImg ?? v.frontImgUrl,
-          backImgUrl: updated.backImg ?? v.backImgUrl,
+          id: saved.id,
+          isNew: false,
+          color: saved.color,
+          fitType: saved.fitType,
+          frontImgUrl: saved.frontImg,
+          backImgUrl: saved.backImg,
           frontFile: null,
           backFile: null,
           saving: false,
@@ -161,11 +168,12 @@ export default function EditMockup({ mockup }) {
         return next;
       });
 
-      toast.success("Variant updated");
+      toast.success(v.isNew ? "Variant added" : "Variant updated");
       router.refresh();
     } catch (err) {
-      console.error("updateVariant error:", err);
-      toast.error(err?.message || "Failed to update variant");
+      console.error(err);
+      toast.error(err?.message || "Error");
+    } finally {
       setVariants((prev) => {
         const next = [...prev];
         next[index] = { ...next[index], saving: false };
@@ -174,8 +182,7 @@ export default function EditMockup({ mockup }) {
     }
   };
 
-  /* ========== delete variant ========== */
-
+  // Delete a variant
   const handleDeleteVariant = async (variantId) => {
     setDeletingIds((prev) => [...prev, variantId]);
     try {
@@ -197,7 +204,15 @@ export default function EditMockup({ mockup }) {
     }
   };
 
-  /* ========== render ========== */
+  const handleDeleteVariantClick = async (v) => {
+    if (v.isNew) {
+      setVariants((prev) =>
+        prev.filter((x) => (x.id ?? x.tempId) !== (v.id ?? v.tempId))
+      );
+      return;
+    }
+    await handleDeleteVariant(v.id);
+  };
 
   return (
     <div className='text-slate-500 mb-28 mx-auto max-w-4xl'>
@@ -206,7 +221,7 @@ export default function EditMockup({ mockup }) {
       </h1>
 
       {/* Mockup name form */}
-      <form onSubmit={handleSaveName} className='mb-8'>
+      <form className='mb-8'>
         <label className='flex flex-col gap-2 my-4'>
           Mockup Name
           <input
@@ -219,11 +234,11 @@ export default function EditMockup({ mockup }) {
         </label>
 
         <button
-          type='submit'
+          type='button'
           disabled={savingName}
-          className='cursor-pointer !text-[#fff] transition rounded-[10px] text-[15px] bg-[#0B7956] py-[8px] px-[18px] hover:bg-[#000] disabled:opacity-60 disabled:cursor-not-allowed'
+          className='cursor-pointer !text-[#fff] transition rounded-[10px] text-[15px] bg-[#f37927] py-[8px] px-[18px] hover:bg-[#000] disabled:opacity-60 disabled:cursor-not-allowed'
         >
-          {savingName ? "Saving..." : "Save Mockup"}
+          Save Mockup
         </button>
       </form>
 
@@ -241,27 +256,19 @@ export default function EditMockup({ mockup }) {
           const backSrc = v.backImgUrl ? getImageUrl(v.backImgUrl) : null;
           return (
             <div
-              key={v.id}
+              key={v.id ?? v.tempId}
               className='border border-slate-200 rounded-lg p-4 bg-slate-50 space-y-4'
             >
               <div className='flex items-center justify-between'>
                 <h3 className='font-semibold text-slate-800'>
                   Variant {index + 1}
                 </h3>
-                {/* <button
-                  type='button'
-                  onClick={() => handleDeleteVariant(v.id)}
-                  className='text-red-600 text-sm hover:underline disabled:opacity-60'
-                  disabled={deleting}
-                >
-                  {deleting ? "Deleting..." : "Delete"}
-                </button> */}
                 <Popconfirm
                   title='Delete this variant?'
                   description='This action cannot be undone.'
                   okText='Yes'
                   cancelText='No'
-                  onConfirm={() => handleDeleteVariant(v.id)}
+                  onConfirm={() => handleDeleteVariantClick(v)}
                   disabled={deleting}
                 >
                   <button
@@ -317,10 +324,11 @@ export default function EditMockup({ mockup }) {
                       {frontSrc ? (
                         <Image
                           src={frontSrc}
+                          // src={URL.createObjectURL(frontSrc)}
                           alt='Front'
-                          width={300}
+                          width={160}
                           height={160}
-                          className='object-cover w-full h-full'
+                          className='object-cover '
                         />
                       ) : (
                         <Image
@@ -358,9 +366,9 @@ export default function EditMockup({ mockup }) {
                         <Image
                           src={backSrc}
                           alt='Back'
-                          width={300}
+                          width={160}
                           height={160}
-                          className='object-cover w-full h-full'
+                          className='object-cover '
                         />
                       ) : (
                         <Image
@@ -392,13 +400,24 @@ export default function EditMockup({ mockup }) {
                 type='button'
                 onClick={() => handleSaveVariant(index)}
                 disabled={v.saving}
-                className='mt-2 cursor-pointer !text-[#fff] transition rounded-[8px] text-[14px] bg-[#0B7956] py-[7px] px-[16px] hover:bg-[#000] disabled:opacity-60 disabled:cursor-not-allowed'
+                className='mt-2 cursor-pointer !text-[#fff] transition rounded-[8px] text-[14px] bg-[#f37927] py-[7px] px-[16px] hover:bg-[#000] disabled:opacity-60 disabled:cursor-not-allowed'
               >
                 {v.saving ? "Saving..." : "Save Variant"}
               </button>
             </div>
           );
         })}
+      </div>
+
+      <div className='flex justify-end mt-4'>
+        {/* Add Variant button */}
+        <button
+          type='button'
+          onClick={addVariant}
+          className='px-4 py-2 bg-[#f37927] text-white! rounded-lg text-sm hover:bg-[#000] transition cursor-pointer!'
+        >
+          + Add Variant
+        </button>
       </div>
     </div>
   );

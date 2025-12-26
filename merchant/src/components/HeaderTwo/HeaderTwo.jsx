@@ -23,7 +23,7 @@ const HeaderTwo = ({ session }) => {
     };
   }, []);
 
-  console.log(session, "session in header");
+  // console.log(session, "session in header");
 
   return (
     <header className='main-header main-header--two sticky-header sticky-header--normal'>

@@ -142,7 +142,7 @@ const loadHTMLImage = (src) =>
     img.src = src;
   });
 
-export default function AddDesignFitAdmin({
+export default function AddDesignFitAdminBack({
   allMockup,
   currentUserId,
   brands,
@@ -196,6 +196,14 @@ export default function AddDesignFitAdmin({
 
     return fallback;
   };
+
+  // const getActiveFit = (idx, fallback) => {
+  //   if (idx == null) return fallback;
+  //   const hover = hoveredFitType[idx];
+  //   if (hover) return hover;
+  //   const picked = selectedFitType[idx];
+  //   return picked?.[0] ?? fallback;
+  // };
 
   const handleFrontFile = async (file) => {
     if (!file) return;
@@ -252,6 +260,25 @@ export default function AddDesignFitAdmin({
 
     return [black, ...rest];
   };
+
+  // const getActiveColor = (idx, fit, fallback) => {
+  //   if (idx == null || !fit) return fallback;
+
+  //   const hover = hoveredColor[idx];
+  //   if (hover) return hover;
+
+  //   const fitColors = selectedColor[idx]?.[fit];
+  //   return fitColors?.[0] ?? fallback;
+  // };
+  // const getActiveColor = (idx, fallback) => {
+  //   if (idx == null) return fallback;
+
+  //   const hover = hoveredColor[idx];
+  //   if (hover) return hover;
+
+  //   const colors = selectedColor[idx] ?? [];
+  //   return colors?.[0] ?? fallback;
+  // };
 
   const getActiveColor = (idx, fallback) => {
     if (idx == null) return fallback;
@@ -404,7 +431,6 @@ export default function AddDesignFitAdmin({
   };
 
   // BACK design upload (optional)
-
   const handleBackFileChange = async (e) => {
     if (e.target.files?.[0]) {
       const file = e.target.files[0];
@@ -421,44 +447,12 @@ export default function AddDesignFitAdmin({
       const reader = new FileReader();
       reader.onloadend = () => {
         setTimeout(() => {
-          setDesignBack(String(reader.result)); // Set the back design
+          setDesignBack(String(reader.result));
           setIsBackLoading(false);
-
-          // Apply the back design to all selected fits (not just the last selected one)
-          applyDesignToAllFits(); // This will apply the design to all selected fits
         }, 1000);
       };
       reader.readAsDataURL(file);
     }
-  };
-
-  const applyDesignToAllFits = () => {
-    const fits = selectedFitType[activeProductIndex] || [];
-
-    // Loop through all selected fits (men, women, etc.)
-    fits.forEach((fit) => {
-      const fitColors =
-        mockupsByProduct[activeProduct?.name.toLowerCase()]?.fits[fit]
-          ?.colors || [];
-
-      fitColors.forEach((color) => {
-        const backSrc =
-          mockupsByProduct[activeProduct?.name.toLowerCase()]?.fits[fit]
-            ?.colorBack[color];
-
-        if (backSrc) {
-          // Ensure the back design is applied to each selected fit (both "men" and "women")
-          loadHTMLImage(backSrc).then((img) => {
-            if (!img) return;
-
-            const fabricCanvas = fit === "women" ? backCanvas : canvas; // Choose the correct canvas based on the fit
-            addDesignToBackCanvas(fabricCanvas, fit); // Apply back design on the correct canvas for each fit
-
-            fabricCanvas.renderAll();
-          });
-        }
-      });
-    });
   };
 
   // ------------------ REMOVE DESIGN HANDLERS ------------------
@@ -639,7 +633,35 @@ export default function AddDesignFitAdmin({
   };
 
   // update design rect from Fabric drag/resize
-
+  // useEffect(() => {
+  //   if (!canvas) return;
+  //   const handler = (e) => {
+  //     const fit = getActiveFit(activeProductIndex, activeFitList?.[0]);
+  //     if (!fit) return;
+  //     const obj = e.target;
+  //     if (obj && obj.type === "image" && obj.layer === 1) {
+  //       setDesignPositions((prev) => ({
+  //         ...prev,
+  //         FRONT: {
+  //           ...prev.FRONT,
+  //           [fit]: {
+  //             x: obj.left,
+  //             y: obj.top,
+  //             w: obj.width * obj.scaleX,
+  //             h: obj.height * obj.scaleY,
+  //           },
+  //         },
+  //       }));
+  //       // setDesignPosition({ x: obj.left, y: obj.top });
+  //       setDesignSize({
+  //         width: obj.width * obj.scaleX,
+  //         height: obj.height * obj.scaleY,
+  //       });
+  //     }
+  //   };
+  //   canvas.on("object:modified", handler);
+  //   return () => canvas.off("object:modified", handler);
+  // }, [canvas]);
   useEffect(() => {
     if (!canvas) return;
 
@@ -671,6 +693,23 @@ export default function AddDesignFitAdmin({
     return () => canvas.off("object:modified", handler);
   }, [canvas, activeProductIndex, activeFitList]);
 
+  // useEffect(() => {
+  //   if (!backCanvas) return;
+  //   const handler = (e) => {
+  //     const obj = e.target;
+  //     const fit = getActiveFit(activeProductIndex, activeFitList?.[0]);
+  //     if (!fit) return;
+  //     if (obj && obj.type === "image" && obj.layer === 1) {
+  //       setDesignBackPosition({ x: obj.left, y: obj.top });
+  //       setDesignBackSize({
+  //         width: obj.width * obj.scaleX,
+  //         height: obj.height * obj.scaleY,
+  //       });
+  //     }
+  //   };
+  //   backCanvas.on("object:modified", handler);
+  //   return () => backCanvas.off("object:modified", handler);
+  // }, [backCanvas]);
   useEffect(() => {
     if (!backCanvas) return;
 
@@ -704,6 +743,24 @@ export default function AddDesignFitAdmin({
   }, [backCanvas, activeProductIndex, activeFitList]);
 
   // add design on top of base
+  // const addDesignToCanvas = (fabricCanvas) => {
+  //   if (!fabricCanvas || !designImage) return;
+  //   loadHTMLImage(designImage).then((designImg) => {
+  //     if (!designImg) return;
+  //     const fabricImg = new FabricImage(designImg);
+  //     fabricImg.set({
+  //       left: designPosition.x,
+  //       top: designPosition.y,
+  //       scaleX: designSize.width / designImg.width,
+  //       scaleY: designSize.height / designImg.height,
+  //       hasControls: true,
+  //       lockUniScaling: true,
+  //       layer: 1,
+  //     });
+  //     fabricCanvas.add(fabricImg);
+  //     fabricCanvas.renderAll();
+  //   });
+  // };
 
   useEffect(() => {
     if (!canvas) return;
@@ -729,6 +786,55 @@ export default function AddDesignFitAdmin({
     canvas.on("object:scaling", clampScale);
     return () => canvas.off("object:scaling", clampScale);
   }, [canvas, designOriginalSize]);
+
+  // const addDesignToCanvas = (fabricCanvas, fit) => {
+  //   if (!fabricCanvas || !designImage) return;
+
+  //   loadHTMLImage(designImage).then((designImg) => {
+  //     if (!designImg) return;
+  //     const pos = getDesignPositionFor(fit, "FRONT");
+
+  //     setDesignOriginalSize({
+  //       width: designImg.width,
+  //       height: designImg.height,
+  //     });
+
+  //     const scale = Math.min(
+  //       1,
+  //       MAX_DESIGN_PX / designImg.width,
+  //       MAX_DESIGN_PX / designImg.height
+  //     );
+
+  //     const fabricImg = new FabricImage(designImg, {
+  //       // left: (fabricCanvas.width - designImg.width * scale) / 2,
+  //       // top: (fabricCanvas.height - designImg.height * scale) / 2,
+  //       left: pos.x,
+  //       top: pos.y,
+  //       scaleX: scale,
+  //       scaleY: scale,
+  //       // hasControls: true,
+  //       // lockUniScaling: true,
+  //       // layer: 1,
+  //       lockUniScaling: true,
+  //       lockScalingFlip: true,
+  //       lockRotation: true, // optional but recommended
+  //       cornerStyle: "circle",
+  //       transparentCorners: false,
+  //       layer: 1,
+  //     });
+
+  //     fabricCanvas.add(fabricImg);
+  //     fabricCanvas.setActiveObject(fabricImg);
+  //     fabricCanvas.renderAll();
+
+  //     setDesignPosition(pos);
+  //     // store final rendered size (after cap)
+  //     setDesignSize({
+  //       width: designImg.width * scale,
+  //       height: designImg.height * scale,
+  //     });
+  //   });
+  // };
 
   // const addDesignToBackCanvas = (fabricCanvas) => {
   //   if (!fabricCanvas || !designBack) return;
@@ -801,6 +907,78 @@ export default function AddDesignFitAdmin({
   };
 
   // const addDesignToBackCanvas = (fabricCanvas, fit) => {
+  //   if (!fabricCanvas || !designBack) return;
+
+  //   loadHTMLImage(designBack).then((designImg) => {
+  //     if (!designImg) return;
+  //     const pos = getDesignPositionFor(fit, "BACK");
+  //     const scale = Math.min(
+  //       1,
+  //       MAX_DESIGN_PX / designImg.width,
+  //       MAX_DESIGN_PX / designImg.height
+  //     );
+
+  //     console.log(pos, "pos");
+
+  //     const fabricImg = new FabricImage(designImg, {
+  //       // left: (fabricCanvas.width - designImg.width * scale) / 2,
+  //       // top: (fabricCanvas.height - designImg.height * scale) / 2,
+  //       left: pos.x,
+  //       top: pos.y,
+  //       scaleX: scale,
+  //       scaleY: scale,
+  //       // hasControls: true,
+  //       // lockUniScaling: true,
+  //       // layer: 1,
+  //       lockUniScaling: true,
+  //       lockScalingFlip: true,
+  //       lockRotation: true, // optional but recommended
+  //       cornerStyle: "circle",
+  //       transparentCorners: false,
+  //       layer: 1,
+  //     });
+
+  //     fabricCanvas.add(fabricImg);
+  //     fabricCanvas.setActiveObject(fabricImg);
+  //     fabricCanvas.renderAll();
+  //     setDesignBackPosition(pos);
+
+  //     setDesignBackSize({
+  //       width: designImg.width * scale,
+  //       height: designImg.height * scale,
+  //     });
+  //   });
+  // };
+
+  // const addDesignToSmallCanvas = (fabricCanvas) => {
+  //   if (!fabricCanvas || !designImage) return;
+  //   loadHTMLImage(designImage).then((designImg) => {
+  //     if (!designImg) return;
+  //     const targetWidth = 80;
+  //     const targetHeight = 80;
+  //     const scaleX = designBackSize.width / designImg.width;
+  //     const scaleY = designBackSize.height / designImg.height;
+  //     // const centerX = (fabricCanvas.width - targetWidth) / 2;
+  //     // const centerY = (fabricCanvas.height - targetHeight) / 2;
+
+  //     const fabricImg = new FabricImage(designImg);
+  //     fabricImg.set({
+  //       left: designBackPosition.x,
+  //       top: designBackPosition.y,
+  //       scaleX,
+  //       scaleY,
+  //       hasControls: false,
+  //       lockUniScaling: true,
+  //       layer: 1,
+  //     });
+  //     fabricCanvas.add(fabricImg);
+  //     fabricCanvas.renderAll();
+  //   });
+  // };
+
+  // default selections when active product changes
+
+  // const addDesignToBackCanvas = (fabricCanvas, fit) => {
   //   if (!fabricCanvas || !designBack || !fit) return;
 
   //   loadHTMLImage(designBack).then((img) => {
@@ -813,10 +991,8 @@ export default function AddDesignFitAdmin({
   //           left: stored.x,
   //           top: stored.y,
   //           scale: stored.w / img.width,
-  //           width: stored.w,
-  //           height: stored.h ?? img.height * (stored.w / img.width),
   //         }
-  //       : getCenteredPlacement(fabricCanvas, img); // returns {left,top,scale,width,height}
+  //       : getCenteredPlacement(fabricCanvas, img);
 
   //     const fabricImg = new FabricImage(img, {
   //       left: placement.left,
@@ -834,22 +1010,6 @@ export default function AddDesignFitAdmin({
   //     fabricCanvas.add(fabricImg);
   //     fabricCanvas.setActiveObject(fabricImg);
   //     fabricCanvas.renderAll();
-
-  //     // ✅ IMPORTANT: store initial placement so export works
-  //     if (!stored) {
-  //       setDesignPositions((prev) => ({
-  //         ...prev,
-  //         BACK: {
-  //           ...prev.BACK,
-  //           [fit]: {
-  //             x: placement.left,
-  //             y: placement.top,
-  //             w: placement.width,
-  //             h: placement.height,
-  //           },
-  //         },
-  //       }));
-  //     }
   //   });
   // };
 
@@ -869,7 +1029,7 @@ export default function AddDesignFitAdmin({
             width: stored.w,
             height: stored.h ?? img.height * (stored.w / img.width),
           }
-        : getCenteredPlacement(fabricCanvas, img);
+        : getCenteredPlacement(fabricCanvas, img); // returns {left,top,scale,width,height}
 
       const fabricImg = new FabricImage(img, {
         left: placement.left,
@@ -888,6 +1048,7 @@ export default function AddDesignFitAdmin({
       fabricCanvas.setActiveObject(fabricImg);
       fabricCanvas.renderAll();
 
+      // ✅ IMPORTANT: store initial placement so export works
       if (!stored) {
         setDesignPositions((prev) => ({
           ...prev,
@@ -1162,63 +1323,38 @@ export default function AddDesignFitAdmin({
     setHoveredColor((prev) => ({ ...prev, [activeProductIndex]: colorOrNull }));
   };
 
-  const asArray = (v) => (Array.isArray(v) ? v : v ? [v] : []);
-
+  // const handleFitToggle = (fit) => {
+  //   if (activeProductIndex === null) return;
+  //   toggleFitAtIndex(activeProductIndex, fit);
+  // };
   // const handleFitToggle = (fit) => {
   //   if (activeProductIndex === null) return;
 
-  //   const conf = activeConfig;
-  //   if (!conf) return;
+  //   setSelectedFitType((prev) => {
+  //     const current = prev[activeProductIndex] ?? [];
+  //     const exists = current.includes(fit);
 
-  //   // Get the currently selected fits
-  //   const currentFits = selectedFitType[activeProductIndex] ?? [];
-  //   const exists = currentFits.includes(fit);
+  //     const next = exists
+  //       ? current.filter((f) => f !== fit)
+  //       : [...current, fit];
 
-  //   const nextFits = exists
-  //     ? currentFits.filter((f) => f !== fit)
-  //     : [...currentFits, fit];
-
-  //   setSelectedFitType((prev) => ({
-  //     ...prev,
-  //     [activeProductIndex]: nextFits,
-  //   }));
+  //     return { ...prev, [activeProductIndex]: next };
+  //   });
 
   //   setFitClickHistory((prev) => {
   //     const history = prev[activeProductIndex] ?? [];
+
+  //     // 🔴 ALWAYS move checked fit to the end
   //     const cleaned = history.filter((f) => f !== fit);
-  //     return { ...prev, [activeProductIndex]: [...cleaned, fit] };
+
+  //     return {
+  //       ...prev,
+  //       [activeProductIndex]: [...cleaned, fit],
+  //     };
   //   });
-
-  //   setSelectedColor((prev) => {
-  //     const productColors = prev[activeProductIndex] ?? {};
-  //     const nextProductColors = { ...productColors };
-
-  //     // Choose a base fit that already has colors for the new fit
-  //     if (!exists) {
-  //       const baseFit =
-  //         currentFits.find((f) => nextProductColors[f]?.length) ??
-  //         nextFits[0] ??
-  //         fit;
-
-  //       const baseColors = asArray(nextProductColors[baseFit]);
-
-  //       const validColorsForNewFit = conf.fits?.[fit]?.colors ?? [];
-  //       nextProductColors[fit] = normalizeColors(
-  //         baseColors.filter((c) => validColorsForNewFit.includes(c))
-  //       );
-  //     } else {
-  //       delete nextProductColors[fit];
-  //     }
-
-  //     delete nextProductColors[0];
-  //     delete nextProductColors["0"];
-
-  //     return { ...prev, [activeProductIndex]: nextProductColors };
-  //   });
-
-  //   // Refresh canvas to re-apply the design based on new fit selection
-  //   refreshCanvasForFit(fit);
   // };
+
+  const asArray = (v) => (Array.isArray(v) ? v : v ? [v] : []);
 
   const handleFitToggle = (fit) => {
     if (activeProductIndex === null) return;
@@ -1226,7 +1362,6 @@ export default function AddDesignFitAdmin({
     const conf = activeConfig;
     if (!conf) return;
 
-    // Get the currently selected fits
     const currentFits = selectedFitType[activeProductIndex] ?? [];
     const exists = currentFits.includes(fit);
 
@@ -1234,28 +1369,26 @@ export default function AddDesignFitAdmin({
       ? currentFits.filter((f) => f !== fit)
       : [...currentFits, fit];
 
-    // Update the selected fit state
     setSelectedFitType((prev) => ({
       ...prev,
       [activeProductIndex]: nextFits,
     }));
 
-    // Update the fit click history for toggling
     setFitClickHistory((prev) => {
       const history = prev[activeProductIndex] ?? [];
       const cleaned = history.filter((f) => f !== fit);
       return { ...prev, [activeProductIndex]: [...cleaned, fit] };
     });
 
-    // Update the selected color for each fit
     setSelectedColor((prev) => {
       const productColors = prev[activeProductIndex] ?? {};
       const nextProductColors = { ...productColors };
 
-      // Update colors based on the newly selected fit
       if (!exists) {
+        // choose a base fit that already has colors
         const baseFit =
           currentFits.find((f) => nextProductColors[f]?.length) ??
+          conf.fitTypes?.[0] ??
           nextFits[0] ??
           fit;
 
@@ -1269,50 +1402,40 @@ export default function AddDesignFitAdmin({
         delete nextProductColors[fit];
       }
 
+      // ✅ IMPORTANT: remove that wrong numeric key if it exists
+      // (optional but strongly recommended)
+      delete nextProductColors[0];
+      delete nextProductColors["0"];
+
       return { ...prev, [activeProductIndex]: nextProductColors };
     });
-
-    // Refresh the canvas for the newly selected fit
-    refreshCanvasForFit(fit);
   };
 
-  const refreshCanvasForFit = (fit) => {
-    if (!canvas || !activeProduct) return;
+  // const handleColorToggle = (color) => {
+  //   if (activeProductIndex === null) return;
 
-    const conf = mockupsByProduct[activeProduct.name.toLowerCase()];
-    if (!conf) return;
+  //   const fit = getActiveFit(activeProductIndex, activeFitList?.[0]);
+  //   if (!fit) return;
 
-    const color = getActiveColor(
-      activeProductIndex,
-      conf.fits[fit]?.colors?.[0] || ""
-    );
+  //   setSelectedColor((prev) => {
+  //     const productColors = prev[activeProductIndex] ?? {};
+  //     const fitColors = productColors[fit] ?? [];
 
-    if (!color) return;
+  //     const exists = fitColors.includes(color);
+  //     let nextColors = exists
+  //       ? fitColors.filter((c) => c !== color)
+  //       : [...fitColors, color];
+  //     nextColors = normalizeColors(nextColors);
 
-    const src = conf.fits[fit].colorFront[color];
-    if (!src) return;
-
-    loadHTMLImage(src).then((img) => {
-      if (!img) return;
-
-      // Clear the previous design
-      if (!safeClear(canvas)) return;
-
-      const base = new FabricImage(img);
-      base.set({
-        left: 0,
-        top: 0,
-        scaleX: canvas.width / img.width,
-        scaleY: canvas.height / img.height,
-        selectable: false,
-        evented: false,
-      });
-      canvas.add(base);
-      addDesignToCanvas(canvas, fit);
-      canvas.renderAll();
-    });
-  };
-
+  //     return {
+  //       ...prev,
+  //       [activeProductIndex]: {
+  //         ...productColors,
+  //         [fit]: nextColors,
+  //       },
+  //     };
+  //   });
+  // };
   // const handleColorToggle = (color) => {
   //   if (activeProductIndex === null) return;
 
@@ -1350,36 +1473,56 @@ export default function AddDesignFitAdmin({
 
   // lastly, updated to support multiple fits per product
 
+  // const handleColorToggle = (color) => {
+  //   if (activeProductIndex === null) return;
+  //   const conf = activeConfig;
+  //   if (!conf) return;
+
+  //   // fits currently selected for this product (ex: ["MEN","WOMEN"])
+  //   const fits = selectedFitType[activeProductIndex] ?? [];
+  //   if (fits.length === 0) return;
+
+  //   setSelectedColor((prev) => {
+  //     const productColors = prev[activeProductIndex] ?? {};
+  //     const nextProductColors = { ...productColors };
+
+  //     // remove any wrong numeric keys like "0", "1", etc (optional but recommended)
+  //     Object.keys(nextProductColors).forEach((k) => {
+  //       if (!isNaN(Number(k))) delete nextProductColors[k];
+  //     });
+
+  //     fits.forEach((fit) => {
+  //       const validColors = conf.fits?.[fit]?.colors ?? [];
+  //       if (!validColors.includes(color)) return;
+
+  //       const current = asArray(nextProductColors[fit]);
+  //       const exists = current.includes(color);
+
+  //       nextProductColors[fit] = exists
+  //         ? current.filter((c) => c !== color)
+  //         : [...current, color];
+  //     });
+
+  //     return { ...prev, [activeProductIndex]: nextProductColors };
+  //   });
+  // };
   const handleColorToggle = (color) => {
     if (activeProductIndex === null) return;
-    const conf = activeConfig;
-    if (!conf) return;
-
-    // fits currently selected for this product (ex: ["MEN","WOMEN"])
-    const fits = selectedFitType[activeProductIndex] ?? [];
-    if (fits.length === 0) return;
 
     setSelectedColor((prev) => {
       const productColors = prev[activeProductIndex] ?? {};
       const nextProductColors = { ...productColors };
 
-      // remove any wrong numeric keys like "0", "1", etc (optional but recommended)
-      Object.keys(nextProductColors).forEach((k) => {
-        if (!isNaN(Number(k))) delete nextProductColors[k];
-      });
+      // Make sure the colors are always normalized to an array format
+      const current = Array.isArray(nextProductColors)
+        ? nextProductColors
+        : [nextProductColors];
 
-      fits.forEach((fit) => {
-        const validColors = conf.fits?.[fit]?.colors ?? [];
-        if (!validColors.includes(color)) return;
-
-        const current = asArray(nextProductColors[fit]);
-        const exists = current.includes(color);
-
-        nextProductColors[fit] = exists
-          ? current.filter((c) => c !== color)
-          : [...current, color];
-      });
-
+      // Add/remove the selected color
+      const exists = current.includes(color);
+      nextProductColors[activeProductIndex] = exists
+        ? current.filter((c) => c !== color)
+        : [...current, color];
       return { ...prev, [activeProductIndex]: nextProductColors };
     });
   };
@@ -1552,88 +1695,6 @@ export default function AddDesignFitAdmin({
   //   return blob;
   // };
 
-  // const composeSideToBlob = async (baseSrc, side, fit) => {
-  //   const overlayDataURL = side === "FRONT" ? designImage : designBack;
-  //   if (!baseSrc || !overlayDataURL) return null;
-
-  //   const baseImg = await loadHTMLImage(baseSrc);
-  //   if (!baseImg) return null;
-
-  //   // 🔥 SCALE FACTOR TO GUARANTEE ≥4500px
-  //   const scaleFactor = Math.max(
-  //     MIN_OUTPUT_PX / baseImg.width,
-  //     MIN_HEIGHT_OUTPUT_PX / baseImg.height,
-  //     1
-  //   );
-
-  //   const outputW = Math.round(baseImg.width * scaleFactor);
-  //   const outputH = Math.round(baseImg.height * scaleFactor);
-
-  //   const el = document.createElement("canvas");
-  //   el.width = outputW;
-  //   el.height = outputH;
-
-  //   const fc = new Canvas(el, {
-  //     width: outputW,
-  //     height: outputH,
-  //     selection: false,
-  //   });
-
-  //   // 🔹 Base mockup
-  //   const base = new FabricImage(baseImg, {
-  //     left: 0,
-  //     top: 0,
-  //     scaleX: scaleFactor,
-  //     scaleY: scaleFactor,
-  //     selectable: false,
-  //     evented: false,
-  //   });
-  //   fc.add(base);
-
-  //   // 🔹 Overlay design
-  //   const overlayImg = await loadHTMLImage(overlayDataURL);
-  //   if (!overlayImg) {
-  //     fc.dispose();
-  //     return null;
-  //   }
-
-  //   // const norm = getNormalizedRect(side);
-
-  //   // const overlayW = norm.w * outputW;
-  //   // const overlayH = norm.h * outputH;
-
-  //   // const overlay = new FabricImage(overlayImg, {
-  //   //   left: norm.x * outputW,
-  //   //   top: norm.y * outputH,
-  //   //   scaleX: overlayW / overlayImg.width,
-  //   //   scaleY: overlayH / overlayImg.height,
-  //   //   selectable: false,
-  //   //   evented: false,
-  //   // });
-  //   const norm = getNormalizedRect(side, fit);
-
-  //   const overlayW = norm.w * outputW;
-  //   const overlayH = norm.h * outputH;
-
-  //   const overlay = new FabricImage(overlayImg, {
-  //     left: norm.x * outputW,
-  //     top: norm.y * outputH,
-  //     scaleX: overlayW / overlayImg.width,
-  //     scaleY: overlayH / overlayImg.height,
-  //     selectable: false,
-  //     evented: false,
-  //   });
-
-  //   fc.add(overlay);
-  //   fc.renderAll();
-
-  //   const blob = await new Promise((resolve) =>
-  //     el.toBlob(resolve, "image/png", 1.0)
-  //   );
-
-  //   fc.dispose();
-  //   return blob;
-  // };
   const composeSideToBlob = async (baseSrc, side, fit) => {
     const overlayDataURL = side === "FRONT" ? designImage : designBack;
     if (!baseSrc || !overlayDataURL) return null;
@@ -1772,298 +1833,6 @@ export default function AddDesignFitAdmin({
   };
 
   // SINGLE-product FormData for createProduct
-  // const prepareMockupFiles = async () => {
-  //   if (!Array.isArray(allMockup) || allMockup.length === 0) {
-  //     toast.error("No mockups found.");
-  //     return null;
-  //   }
-  //   if (!designImage && !designBack) {
-  //     toast.error("Please upload at least a FRONT or BACK design.");
-  //     return null;
-  //   }
-  //   if (!currentUserId) {
-  //     toast.error("Missing userId.");
-  //     return null;
-  //   }
-
-  //   const chosenMockup = activeProduct?.id
-  //     ? { id: activeProduct.id, name: activeProduct.name || "mockup" }
-  //     : allMockup[0];
-
-  //   if (!chosenMockup?.id) {
-  //     toast.error("No mockupId available.");
-  //     return null;
-  //   }
-
-  //   const conf = chosenMockup?.name
-  //     ? mockupsByProduct[chosenMockup.name.toLowerCase()]
-  //     : null;
-
-  //   if (!conf) {
-  //     toast.error("No configuration found for the selected mockup.");
-  //     return null;
-  //   }
-
-  //   const formData = new FormData();
-  //   const designTitle = (features.title || "design").trim() || "design";
-
-  //   formData.append("title", designTitle);
-  //   formData.append("description", features.description || "");
-  //   formData.append("brandName", features.brandName || "");
-  //   formData.append("price", String(features.price ?? 990));
-  //   formData.append(
-  //     "visibility",
-  //     selected !== "non-searchable" ? "true" : "false"
-  //   );
-  //   formData.append("userId", String(currentUserId));
-  //   formData.append("mockupId", String(chosenMockup.id));
-
-  //   if (designImageFile)
-  //     formData.append(
-  //       "frontDesign",
-  //       designImageFile,
-  //       designImageFile.name,
-  //       "designFront"
-  //     );
-  //   if (designBackFile)
-  //     formData.append(
-  //       "backDesign",
-  //       designBackFile,
-  //       designBackFile.name,
-  //       "designBack"
-  //     );
-
-  //   if (brandId) formData.append("brandId", brandId);
-  //   if (features.brandCommissionPct != null) {
-  //     formData.append(
-  //       "brandCommissionPct",
-  //       String(features.brandCommissionPct)
-  //     );
-  //   }
-  //   if (features.merchantCommissionPct != null) {
-  //     formData.append(
-  //       "merchantCommissionPct",
-  //       String(features.merchantCommissionPct)
-  //     );
-  //   }
-
-  //   (tags || []).forEach((tag, i) => {
-  //     if (tag) formData.append(`tags[${i}]`, String(tag));
-  //   });
-  //   [features.feature1, features.feature2].filter(Boolean).forEach((f, i) => {
-  //     formData.append(`features[${i}]`, String(f));
-  //   });
-
-  //   const fitsToUse =
-  //     activeProductIndex !== null &&
-  //     selectedFitType[activeProductIndex] &&
-  //     selectedFitType[activeProductIndex].length
-  //       ? selectedFitType[activeProductIndex]
-  //       : conf.fitTypes || [];
-
-  //   let vIndex = 0;
-
-  //   for (const fit of fitsToUse) {
-  //     const allColors = conf.fits?.[fit]?.colors || [];
-  //     const idx = activeProductIndex ?? 0;
-  //     // const chosenColors = selectedColor[activeProductIndex]?.[fit]?.length
-  //     //   ? selectedColor[activeProductIndex][fit].filter((c) =>
-  //     //       allColors.includes(c)
-  //     //     )
-  //     //   : [];
-  //     const chosenColors = getGlobalColors(activeProductIndex).filter((c) =>
-  //       allColors.includes(c)
-  //     );
-
-  //     for (const color of chosenColors) {
-  //       const frontSrc = conf.fits[fit]?.colorFront?.[color];
-  //       const backSrc = conf.fits[fit]?.colorBack?.[color];
-
-  //       formData.append(`variants[${vIndex}][color]`, String(color));
-  //       formData.append(`variants[${vIndex}][fitType]`, String(fit));
-
-  //       // ✅ FRONT ONLY if front design exists
-  //       if (designImage && frontSrc) {
-  //         const frontBlob = await composeSideToBlob(frontSrc, "FRONT", fit);
-  //         if (frontBlob) {
-  //           formData.append(
-  //             `variants[${vIndex}][frontImg]`,
-  //             frontBlob,
-  //             `${designTitle}_${chosenMockup.name}_${fit}_${color}_front.png`
-  //           );
-  //         }
-  //       }
-
-  //       // ✅ BACK ONLY if back design exists
-  //       if (designBack && backSrc) {
-  //         const backBlob = await composeSideToBlob(backSrc, "BACK", fit);
-  //         if (backBlob) {
-  //           formData.append(
-  //             `variants[${vIndex}][backImg]`,
-  //             backBlob,
-  //             `${designTitle}_${chosenMockup.name}_${fit}_${color}_back.png`
-  //           );
-  //         }
-  //       }
-
-  //       vIndex++;
-  //     }
-  //   }
-
-  //   if (vIndex === 0) {
-  //     toast.error("No valid variants could be generated.");
-  //     return null;
-  //   }
-
-  //   return formData;
-  // };
-
-  // const prepareMockupFiles = async () => {
-  //   if (!Array.isArray(allMockup) || allMockup.length === 0) {
-  //     toast.error("No mockups found.");
-  //     return null;
-  //   }
-  //   if (!designImage && !designBack) {
-  //     toast.error("Please upload at least a FRONT or BACK design.");
-  //     return null;
-  //   }
-  //   if (!currentUserId) {
-  //     toast.error("Missing userId.");
-  //     return null;
-  //   }
-
-  //   const chosenMockup = activeProduct?.id
-  //     ? { id: activeProduct.id, name: activeProduct.name || "mockup" }
-  //     : allMockup[0];
-
-  //   if (!chosenMockup?.id) {
-  //     toast.error("No mockupId available.");
-  //     return null;
-  //   }
-
-  //   const conf = chosenMockup?.name
-  //     ? mockupsByProduct[chosenMockup.name.toLowerCase()]
-  //     : null;
-
-  //   if (!conf) {
-  //     toast.error("No configuration found for the selected mockup.");
-  //     return null;
-  //   }
-
-  //   const formData = new FormData();
-  //   const designTitle = (features.title || "design").trim() || "design";
-
-  //   formData.append("title", designTitle);
-  //   formData.append("description", features.description || "");
-  //   formData.append("brandName", features.brandName || "");
-  //   formData.append("price", String(features.price ?? 990));
-  //   formData.append(
-  //     "visibility",
-  //     selected !== "non-searchable" ? "true" : "false"
-  //   );
-  //   formData.append("userId", String(currentUserId));
-  //   formData.append("mockupId", String(chosenMockup.id));
-
-  //   if (designImageFile)
-  //     formData.append(
-  //       "frontDesign",
-  //       designImageFile,
-  //       designImageFile.name,
-  //       "designFront"
-  //     );
-  //   if (designBackFile)
-  //     formData.append(
-  //       "backDesign",
-  //       designBackFile,
-  //       designBackFile.name,
-  //       "designBack"
-  //     );
-
-  //   if (brandId) formData.append("brandId", brandId);
-  //   if (features.brandCommissionPct != null) {
-  //     formData.append(
-  //       "brandCommissionPct",
-  //       String(features.brandCommissionPct)
-  //     );
-  //   }
-  //   if (features.merchantCommissionPct != null) {
-  //     formData.append(
-  //       "merchantCommissionPct",
-  //       String(features.merchantCommissionPct)
-  //     );
-  //   }
-
-  //   (tags || []).forEach((tag, i) => {
-  //     if (tag) formData.append(`tags[${i}]`, String(tag));
-  //   });
-  //   [features.feature1, features.feature2].filter(Boolean).forEach((f, i) => {
-  //     formData.append(`features[${i}]`, String(f));
-  //   });
-
-  //   const fitsToUse =
-  //     activeProductIndex !== null &&
-  //     selectedFitType[activeProductIndex] &&
-  //     selectedFitType[activeProductIndex].length
-  //       ? selectedFitType[activeProductIndex]
-  //       : conf.fitTypes || [];
-
-  //   let vIndex = 0;
-
-  //   for (const fit of fitsToUse) {
-  //     const allColors = conf.fits?.[fit]?.colors || [];
-  //     const idx = activeProductIndex ?? 0;
-
-  //     const chosenColors = getGlobalColors(activeProductIndex).filter((c) =>
-  //       allColors.includes(c)
-  //     );
-
-  //     for (const color of activeColors) {
-  //       const frontSrc = conf.fits[fit]?.colorFront?.[color];
-  //       const backSrc = conf.fits[fit]?.colorBack?.[color];
-
-  //       formData.append(`variants[${vIndex}][color]`, String(color));
-  //       formData.append(`variants[${vIndex}][fitType]`, String(fit));
-
-  //       // Add the isActive flag based on the selected color
-  //       const isActive = chosenColors.includes(color) ? true : false;
-  //       formData.append(`variants[${vIndex}][isActive]`, isActive);
-
-  //       // ✅ FRONT ONLY if front design exists
-  //       if (designImage && frontSrc) {
-  //         const frontBlob = await composeSideToBlob(frontSrc, "FRONT", fit);
-  //         if (frontBlob) {
-  //           formData.append(
-  //             `variants[${vIndex}][frontImg]`,
-  //             frontBlob,
-  //             `${designTitle}_${chosenMockup.name}_${fit}_${color}_front.png`
-  //           );
-  //         }
-  //       }
-
-  //       // ✅ BACK ONLY if back design exists
-  //       if (designBack && backSrc) {
-  //         const backBlob = await composeSideToBlob(backSrc, "BACK", fit);
-  //         if (backBlob) {
-  //           formData.append(
-  //             `variants[${vIndex}][backImg]`,
-  //             backBlob,
-  //             `${designTitle}_${chosenMockup.name}_${fit}_${color}_back.png`
-  //           );
-  //         }
-  //       }
-
-  //       vIndex++;
-  //     }
-  //   }
-
-  //   if (vIndex === 0) {
-  //     toast.error("No valid variants could be generated.");
-  //     return null;
-  //   }
-
-  //   return formData;
-  // };
-
   const prepareMockupFiles = async () => {
     if (!Array.isArray(allMockup) || allMockup.length === 0) {
       toast.error("No mockups found.");
@@ -2155,25 +1924,24 @@ export default function AddDesignFitAdmin({
 
     let vIndex = 0;
 
-    // Iterate over all selected fits
     for (const fit of fitsToUse) {
       const allColors = conf.fits?.[fit]?.colors || [];
       const idx = activeProductIndex ?? 0;
-
+      // const chosenColors = selectedColor[activeProductIndex]?.[fit]?.length
+      //   ? selectedColor[activeProductIndex][fit].filter((c) =>
+      //       allColors.includes(c)
+      //     )
+      //   : [];
       const chosenColors = getGlobalColors(activeProductIndex).filter((c) =>
         allColors.includes(c)
       );
 
-      for (const color of activeColors) {
+      for (const color of chosenColors) {
         const frontSrc = conf.fits[fit]?.colorFront?.[color];
         const backSrc = conf.fits[fit]?.colorBack?.[color];
 
         formData.append(`variants[${vIndex}][color]`, String(color));
         formData.append(`variants[${vIndex}][fitType]`, String(fit));
-
-        // Add the isActive flag based on the selected color
-        const isActive = chosenColors.includes(color) ? true : false;
-        formData.append(`variants[${vIndex}][isActive]`, isActive);
 
         // ✅ FRONT ONLY if front design exists
         if (designImage && frontSrc) {
@@ -2711,7 +2479,7 @@ export default function AddDesignFitAdmin({
                             Price (Minimum BDT 990):
                           </label>
                           <input
-                            type='number'
+                            type='text'
                             placeholder='BDT 0.00'
                             onChange={(e) =>
                               setFeatures((p) => ({
@@ -3085,7 +2853,7 @@ export default function AddDesignFitAdmin({
                   </div>
                 </form>
 
-                <div className='product-details__btn-group d-flex justify-content-end'>
+                <div className='product-details__btn-group'>
                   {/* <button type='button' className='commerce-btn'>
                     Save draft<i className='icon-right-arrow'></i>
                   </button> */}
@@ -3114,6 +2882,18 @@ export default function AddDesignFitAdmin({
                       </>
                     )}
                   </button>
+
+                  {/* Optional utilities:
+                  <button className="commerce-btn ms-3" onClick={saveImage}>
+                    Save Front Image
+                  </button>
+                  <button
+                    className="commerce-btn ms-3"
+                    onClick={downloadAllMockups}
+                    disabled={isDownloading || !designImage}
+                  >
+                    {isDownloading ? "Preparing ZIP..." : "Download All Images (ZIP)"}
+                  </button> */}
                 </div>
 
                 <p className='product-details__availability__text'>

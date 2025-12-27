@@ -2,6 +2,7 @@
 
 import path from "path";
 import fs from "fs/promises";
+import sharp from "sharp";
 import { prisma } from "@/lib/prisma";
 import generateBlogId from "@/utils/generateTitle";
 
@@ -38,6 +39,92 @@ const AMAZON_LOWERCASE_WORDS = new Set([...STOP_WORDS, "vs", "via", "per"]);
 function isBanglaText(s = "") {
   // Bangla unicode block: \u0980-\u09FF
   return /[\u0980-\u09FF]/.test(s);
+}
+
+// Helper function to resize and compress image (preserving transparency)
+// async function resizeAndCompressImage(
+//   inputFilePath,
+//   outputFilePath,
+//   width = 500,
+//   height = 600
+// ) {
+//   const image = sharp(inputFilePath);
+
+//   // Resize the image and preserve transparency
+//   const tempOutputFilePath = path.join(
+//     path.dirname(outputFilePath),
+//     `${Date.now()}_temp.png`
+//   );
+
+//   await image
+//     .resize(width, height)
+//     .toFormat("png") // Ensure the output format is PNG (supports transparency)
+//     .png({ quality: 60 }) // Adjust quality for better compression while keeping transparency
+//     .toFile(tempOutputFilePath);
+
+//   const stats = await fs.stat(tempOutputFilePath); // Check file size
+//   const fileSizeInKB = stats.size / 1024; // Size in KB
+
+//   // If the file is still larger than 100KB, reduce quality further
+//   if (fileSizeInKB > 100) {
+//     await image
+//       .resize(width, height)
+//       .toFormat("png")
+//       .png({ quality: 50 }) // Further reduce quality for smaller file size
+//       .toFile(tempOutputFilePath);
+//   }
+
+//   // After resizing, rename temp file to final destination
+//   await fs.rename(tempOutputFilePath, outputFilePath);
+
+//   return { filePath: outputFilePath, sizeInKB: fileSizeInKB };
+// }
+
+async function resizeAndCompressImage(
+  inputFilePath,
+  outputFilePath,
+  width = 500,
+  height = 600
+) {
+  const image = sharp(inputFilePath);
+
+  // Create a temporary file path for the processed image
+  const tempOutputFilePath = path.join(
+    path.dirname(outputFilePath),
+    `${Date.now()}_temp.png`
+  );
+
+  // Resize the image to fit within the given dimensions (500x600) while maintaining the aspect ratio
+  const { width: originalWidth, height: originalHeight } =
+    await image.metadata();
+
+  // Resize and keep aspect ratio
+  await image
+    .resize(width, height, {
+      fit: "inside", // Ensures that the image fits within the target dimensions while keeping the aspect ratio
+    })
+    .toFormat("png") // Keep the transparency with PNG format
+    .png({ quality: 85 }) // Compress to maintain size
+    .toFile(tempOutputFilePath);
+
+  const stats = await fs.stat(tempOutputFilePath); // Check file size
+  const fileSizeInKB = stats.size / 1024; // Size in KB
+
+  // If the file is still larger than 100KB, reduce quality further
+  if (fileSizeInKB > 100) {
+    await image
+      .resize(width, height, {
+        fit: "inside", // Ensure it fits within the target size
+      })
+      .toFormat("png")
+      .png({ quality: 80 }) // Further reduce quality for smaller file size
+      .toFile(tempOutputFilePath);
+  }
+
+  // After resizing and compression, move the temporary file to the final destination
+  await fs.rename(tempOutputFilePath, outputFilePath);
+
+  return { filePath: outputFilePath, sizeInKB: fileSizeInKB };
 }
 
 // "Standard T-Shirt" -> "T-Shirt"
@@ -227,8 +314,24 @@ async function saveFile(file, fieldName) {
   return `/uploads/${filename}`;
 }
 // Helper to save uploaded file from FormData
+// async function saveProductFile(file, fieldName) {
+//   if (!file) return null;
+//   const bytes = await file.arrayBuffer();
+//   const buffer = Buffer.from(bytes);
+//   const ext = path.extname(file.name) || ".jpg";
+//   const filename = `${Date.now()}-${fieldName}${ext}`;
+//   const filepath = path.join(uploadProductDir, filename);
+
+//   await fs.mkdir(uploadProductDir, { recursive: true });
+//   await fs.writeFile(filepath, buffer);
+
+//   return `/uploads/products/${filename}`;
+// }
+
+// Function to save and resize product images
 async function saveProductFile(file, fieldName) {
   if (!file) return null;
+
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
   const ext = path.extname(file.name) || ".jpg";
@@ -237,7 +340,16 @@ async function saveProductFile(file, fieldName) {
 
   await fs.mkdir(uploadProductDir, { recursive: true });
   await fs.writeFile(filepath, buffer);
-  return `/uploads/products/${filename}`;
+
+  // Resize and compress image to the desired dimensions and file size
+  const resizedFilePath = await resizeAndCompressImage(
+    filepath,
+    filepath,
+    500,
+    600
+  );
+
+  return `/uploads/products/${path.basename(resizedFilePath.filePath)}`;
 }
 async function saveDesignFile(file, fieldName) {
   if (!file) return null;
@@ -569,12 +681,15 @@ export async function createProduct(formData) {
         backImgFile && backImgFile.size > 0
           ? await saveProductFile(backImgFile, "backImg")
           : null;
+      const isActiveStr = formData.get(`variants[${v}][isActive]`) || "false";
+      const isActive = isActiveStr.toString() === "true";
 
       variantsInput.push({
         color,
         fitType,
         frontImg: frontImgUrl,
         backImg: backImgUrl,
+        isActive,
       });
 
       v++;
@@ -598,6 +713,7 @@ export async function createProduct(formData) {
       fitType: v.fitType,
       frontImg: v.frontImg || null,
       backImg: v.backImg || null,
+      isActive: v.isActive || false,
     }));
 
     const productId = generateBlogId(title);

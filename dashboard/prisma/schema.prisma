@@ -310,6 +310,8 @@ model ProductVariant {
   frontImg String? // required: front image
   backImg  String? // optional: back image
 
+  isActive Boolean? @default(false) // Add isActive field
+
   // images ProductImage[] // <-- store multiple variant-specific images
 
   @@unique([productId, color, fitType]) // <- change this

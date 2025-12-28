@@ -3,12 +3,29 @@ import { notFound } from "next/navigation";
 import ProductCategoriesSection from "../_components/ProductCategoriesSection";
 import ProductStatusControl from "../_components/ProductStatusControl";
 import DownloadButton from "../_components/DownloadButton";
+import ProductVariantActiveToggle from "../_components/ProductVariantActiveToggle";
 
 export const metadata = {
   title: "Product Details",
 };
 
 const BASE_URL = process.env.NEXT_PUBLIC_ASSET_BASE_URL || "";
+
+const COLOR_ORDER = [
+  "#000",
+  "#fff",
+  "#192252",
+  "#636B2F",
+  "#895129",
+  "#4CBB17",
+  "#708090",
+  "#24357a",
+  "#4f3065",
+  "#595855",
+  "#669f51",
+  "#c1daf7",
+  "#f7a5bb",
+].map((c) => c.toLowerCase());
 
 const imgSrc = (path) => {
   if (!path) return null;
@@ -27,6 +44,27 @@ export default async function ProductDetailsPage({ params }) {
       variants: true,
       categories: true,
     },
+  });
+
+  const sortedVariants = [...product.variants].sort((a, b) => {
+    const ca = (a.color || "").trim().toLowerCase();
+    const cb = (b.color || "").trim().toLowerCase();
+
+    const ia = COLOR_ORDER.indexOf(ca);
+    const ib = COLOR_ORDER.indexOf(cb);
+
+    // colors that are not in COLOR_ORDER go to the end
+    const ra = ia === -1 ? 9999 : ia;
+    const rb = ib === -1 ? 9999 : ib;
+
+    // first sort by color order, then by fitType, then by color string (stable-ish)
+    if (ra !== rb) return ra - rb;
+
+    const fa = (a.fitType || "").toString();
+    const fb = (b.fitType || "").toString();
+    if (fa !== fb) return fa.localeCompare(fb);
+
+    return ca.localeCompare(cb);
   });
 
   const allCategories = await prisma.productCategory.findMany({
@@ -163,11 +201,18 @@ export default async function ProductDetailsPage({ params }) {
           <p className='text-sm text-muted-foreground'>No variants</p>
         ) : (
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-            {product.variants.map((v) => (
+            {sortedVariants.map((v) => (
               <div key={v.id} className='border rounded p-3 space-y-2'>
-                <p className='font-medium'>
-                  {v.color} • {v.fitType}
-                </p>
+                <div className='flex items-center justify-between gap-3'>
+                  <p className='font-medium'>
+                    {v.color} • {v.fitType}
+                  </p>
+
+                  <ProductVariantActiveToggle
+                    variantId={v.id}
+                    initialIsActive={v.isActive}
+                  />
+                </div>
 
                 <div className='flex gap-3'>
                   {v.frontImg && (

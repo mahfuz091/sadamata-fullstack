@@ -215,8 +215,8 @@ model Product {
   // Relations
   features Feature[]
   tags     Tag[]
-  mockupId String
-  Mockup   Mockup           @relation(fields: [mockupId], references: [id])
+  mockupId String?
+  Mockup   Mockup?          @relation(fields: [mockupId], references: [id], onDelete: SetNull)
   variants ProductVariant[] // <-- each product has multiple variants
 
   userId String
@@ -309,6 +309,8 @@ model ProductVariant {
 
   frontImg String? // required: front image
   backImg  String? // optional: back image
+
+  isActive Boolean? @default(false) // Add isActive field
 
   // images ProductImage[] // <-- store multiple variant-specific images
 

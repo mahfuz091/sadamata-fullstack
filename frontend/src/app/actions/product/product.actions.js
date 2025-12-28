@@ -1,6 +1,10 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import {
+  PUBLIC_PRODUCT_INCLUDE,
+  PUBLIC_PRODUCT_WHERE,
+} from "@/lib/productQuery";
 // Adjust this path to match your Prisma client output.
 // From your schema it looks like: output = "../src/generated/prisma"
 
@@ -22,6 +26,8 @@ import prisma from "@/lib/prisma";
  * @param {"newest"|"oldest"|"price_asc"|"price_desc"|"title_asc"|"title_desc"|"best_selling"} [input.sort="newest"]
  */
 /** Common include for product cards/lists */
+
+const publicVariantWhere = { isActive: true };
 const commonProductInclude = {
   Brand: {
     select: {
@@ -41,12 +47,16 @@ export async function getAllProducts({ page = 1, pageSize = 24 } = {}) {
   const skip = (Math.max(1, page) - 1) * Math.max(1, pageSize);
   const take = Math.max(1, pageSize);
 
-  const where = { isActive: true, visibility: true }; // tweak if you want to show inactive/hidden too
+  const where = {
+    isActive: true,
+    visibility: true,
+    variants: { where: { isActive: true } },
+  }; // tweak if you want to show inactive/hidden too
 
   const [total, items] = await Promise.all([
-    prisma.product.count({ where }),
+    prisma.product.count({ where: PUBLIC_PRODUCT_WHERE }),
     prisma.product.findMany({
-      where,
+      where: PUBLIC_PRODUCT_WHERE,
       skip,
       take,
       orderBy: { createdAt: "desc" },
@@ -99,30 +109,47 @@ export async function getProducts(input = {}) {
       ]
     : undefined;
 
+  // const variantsFilter =
+  //   (Array.isArray(fitType) && fitType.length) ||
+  //   (Array.isArray(colors) && colors.length)
+  //     ? {
+  //         some: {
+  //           AND: [
+  //             Array.isArray(fitType) && fitType.length
+  //               ? { fitType: { in: fitType } }
+  //               : {},
+  //             Array.isArray(colors) && colors.length
+  //               ? { color: { in: colors } }
+  //               : {},
+  //           ],
+  //         },
+  //       }
+  //     : undefined;
   const variantsFilter =
-    (Array.isArray(fitType) && fitType.length) ||
-    (Array.isArray(colors) && colors.length)
+    fitType?.length || colors?.length
       ? {
           some: {
-            AND: [
-              Array.isArray(fitType) && fitType.length
-                ? { fitType: { in: fitType } }
-                : {},
-              Array.isArray(colors) && colors.length
-                ? { color: { in: colors } }
-                : {},
-            ],
+            ...PUBLIC_VARIANT_WHERE,
+            ...(fitType?.length && { fitType: { in: fitType } }),
+            ...(colors?.length && { color: { in: colors } }),
           },
         }
       : undefined;
 
   const where = {
     AND: [
-      orSearch ? { OR: orSearch } : {},
-      brandId !== null ? { brandId: brandId || null } : {},
-      userId !== null ? { userId: userId || null } : {},
-      isActive !== null ? { isActive } : {},
-      visibility !== null ? { visibility } : {},
+      PUBLIC_PRODUCT_WHERE,
+      q
+        ? {
+            OR: [
+              { title: { contains: q, mode: "insensitive" } },
+              { description: { contains: q, mode: "insensitive" } },
+              {
+                tags: { some: { value: { contains: q, mode: "insensitive" } } },
+              },
+            ],
+          }
+        : {},
       variantsFilter ? { variants: variantsFilter } : {},
     ],
   };
@@ -173,6 +200,7 @@ export async function getProducts(input = {}) {
       features: { select: { id: true, content: true } },
       tags: { select: { id: true, value: true } },
       variants: {
+        where: { isActive: true },
         select: {
           id: true,
           color: true,
@@ -273,9 +301,9 @@ export async function getNewArrivals({ page = 1, pageSize = 24 } = {}) {
   const where = { isActive: true, visibility: true }; // tweak if you want to show inactive/hidden too
 
   const [total, items] = await Promise.all([
-    prisma.product.count({ where }),
+    prisma.product.count({ where: PUBLIC_PRODUCT_WHERE }),
     prisma.product.findMany({
-      where,
+      where: PUBLIC_PRODUCT_WHERE,
       orderBy: { createdAt: "desc" },
       skip,
       take,
@@ -301,7 +329,7 @@ export async function getNewArrivals({ page = 1, pageSize = 24 } = {}) {
 export async function getBestSellers({ page = 1, pageSize = 24 } = {}) {
   const take = Math.max(1, pageSize);
   const skip = (Math.max(1, page) - 1) * take;
-
+  const productWhere = PUBLIC_PRODUCT_WHERE;
   // 1) Get productIds ordered by total sold
   const totals = await prisma.sale.groupBy({
     by: ["productId"],
@@ -338,8 +366,11 @@ export async function getBestSellers({ page = 1, pageSize = 24 } = {}) {
 
   // 2) Fetch those products
   const products = await prisma.product.findMany({
-    where: { id: { in: productIds }, isActive: true, visibility: true },
-    include: commonProductInclude,
+    where: {
+      id: { in: productIds },
+      ...productWhere,
+    },
+    include: PUBLIC_PRODUCT_INCLUDE,
   });
 
   // 3) Attach aggregates and preserve ranking order
@@ -399,10 +430,22 @@ export async function getFeaturedProducts({
   const take = Math.max(1, pageSize);
   const skip = (Math.max(1, page) - 1) * take;
 
+  // const where = {
+  //   isActive: true,
+  //   visibility: true,
+  //   tags: { some: { value: { equals: featuredTag, mode: "insensitive" } } },
+  // };
   const where = {
-    isActive: true,
-    visibility: true,
-    tags: { some: { value: { equals: featuredTag, mode: "insensitive" } } },
+    AND: [
+      PUBLIC_PRODUCT_WHERE,
+      {
+        tags: {
+          some: {
+            value: { equals: featuredTag, mode: "insensitive" },
+          },
+        },
+      },
+    ],
   };
 
   const [total, items] = await Promise.all([
@@ -426,28 +469,23 @@ export async function getFeaturedProducts({
   };
 }
 export async function getProductsByProductId(productId) {
-  if (!productId) {
-    throw new Error("productId is required");
-  }
+  if (!productId) throw new Error("productId is required");
 
-  const product = await prisma.product.findUnique({
-    where: { productId },
-    include: commonProductInclude, // reuse same includes as getBestSellers
-  });
-
-  if (!product) {
-    return {
-      kind: "product_by_id",
+  const product = await prisma.product.findFirst({
+    where: {
       productId,
-      found: false,
-      item: null,
-    };
-  }
+      isActive: true,
+      visibility: true,
+      variants: {
+        some: { isActive: true },
+      },
+    },
+    include: PUBLIC_PRODUCT_INCLUDE,
+  });
 
   return {
     kind: "product_by_id",
-    productId,
-    found: true,
+    found: !!product,
     item: product,
   };
 }

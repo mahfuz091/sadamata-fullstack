@@ -13288,7 +13288,7 @@ export namespace Prisma {
     status: $Enums.ProductStat | null
     brandName: string | null
     brandId: string | null
-    mockupId: string
+    mockupId: string | null
     userId: string
     visibility: boolean
     backDesign: string | null
@@ -13338,7 +13338,7 @@ export namespace Prisma {
     Brand?: boolean | Product$BrandArgs<ExtArgs>
     features?: boolean | Product$featuresArgs<ExtArgs>
     tags?: boolean | Product$tagsArgs<ExtArgs>
-    Mockup?: boolean | MockupDefaultArgs<ExtArgs>
+    Mockup?: boolean | Product$MockupArgs<ExtArgs>
     variants?: boolean | Product$variantsArgs<ExtArgs>
     User?: boolean | UserDefaultArgs<ExtArgs>
     sales?: boolean | Product$salesArgs<ExtArgs>
@@ -13367,7 +13367,7 @@ export namespace Prisma {
     brandCommissionPct?: boolean
     merchantCommissionPct?: boolean
     Brand?: boolean | Product$BrandArgs<ExtArgs>
-    Mockup?: boolean | MockupDefaultArgs<ExtArgs>
+    Mockup?: boolean | Product$MockupArgs<ExtArgs>
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["product"]>
 
@@ -13391,7 +13391,7 @@ export namespace Prisma {
     brandCommissionPct?: boolean
     merchantCommissionPct?: boolean
     Brand?: boolean | Product$BrandArgs<ExtArgs>
-    Mockup?: boolean | MockupDefaultArgs<ExtArgs>
+    Mockup?: boolean | Product$MockupArgs<ExtArgs>
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["product"]>
 
@@ -13421,7 +13421,7 @@ export namespace Prisma {
     Brand?: boolean | Product$BrandArgs<ExtArgs>
     features?: boolean | Product$featuresArgs<ExtArgs>
     tags?: boolean | Product$tagsArgs<ExtArgs>
-    Mockup?: boolean | MockupDefaultArgs<ExtArgs>
+    Mockup?: boolean | Product$MockupArgs<ExtArgs>
     variants?: boolean | Product$variantsArgs<ExtArgs>
     User?: boolean | UserDefaultArgs<ExtArgs>
     sales?: boolean | Product$salesArgs<ExtArgs>
@@ -13431,12 +13431,12 @@ export namespace Prisma {
   }
   export type ProductIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Brand?: boolean | Product$BrandArgs<ExtArgs>
-    Mockup?: boolean | MockupDefaultArgs<ExtArgs>
+    Mockup?: boolean | Product$MockupArgs<ExtArgs>
     User?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type ProductIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Brand?: boolean | Product$BrandArgs<ExtArgs>
-    Mockup?: boolean | MockupDefaultArgs<ExtArgs>
+    Mockup?: boolean | Product$MockupArgs<ExtArgs>
     User?: boolean | UserDefaultArgs<ExtArgs>
   }
 
@@ -13446,7 +13446,7 @@ export namespace Prisma {
       Brand: Prisma.$BrandPayload<ExtArgs> | null
       features: Prisma.$FeaturePayload<ExtArgs>[]
       tags: Prisma.$TagPayload<ExtArgs>[]
-      Mockup: Prisma.$MockupPayload<ExtArgs>
+      Mockup: Prisma.$MockupPayload<ExtArgs> | null
       variants: Prisma.$ProductVariantPayload<ExtArgs>[]
       User: Prisma.$UserPayload<ExtArgs>
       sales: Prisma.$SalePayload<ExtArgs>[]
@@ -13465,7 +13465,7 @@ export namespace Prisma {
       status: $Enums.ProductStat | null
       brandName: string | null
       brandId: string | null
-      mockupId: string
+      mockupId: string | null
       userId: string
       visibility: boolean
       backDesign: string | null
@@ -13869,7 +13869,7 @@ export namespace Prisma {
     Brand<T extends Product$BrandArgs<ExtArgs> = {}>(args?: Subset<T, Product$BrandArgs<ExtArgs>>): Prisma__BrandClient<$Result.GetResult<Prisma.$BrandPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     features<T extends Product$featuresArgs<ExtArgs> = {}>(args?: Subset<T, Product$featuresArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FeaturePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     tags<T extends Product$tagsArgs<ExtArgs> = {}>(args?: Subset<T, Product$tagsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    Mockup<T extends MockupDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MockupDefaultArgs<ExtArgs>>): Prisma__MockupClient<$Result.GetResult<Prisma.$MockupPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    Mockup<T extends Product$MockupArgs<ExtArgs> = {}>(args?: Subset<T, Product$MockupArgs<ExtArgs>>): Prisma__MockupClient<$Result.GetResult<Prisma.$MockupPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     variants<T extends Product$variantsArgs<ExtArgs> = {}>(args?: Subset<T, Product$variantsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductVariantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     User<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     sales<T extends Product$salesArgs<ExtArgs> = {}>(args?: Subset<T, Product$salesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -14382,6 +14382,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TagScalarFieldEnum | TagScalarFieldEnum[]
+  }
+
+  /**
+   * Product.Mockup
+   */
+  export type Product$MockupArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Mockup
+     */
+    select?: MockupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Mockup
+     */
+    omit?: MockupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MockupInclude<ExtArgs> | null
+    where?: MockupWhereInput
   }
 
   /**
@@ -17986,6 +18005,7 @@ export namespace Prisma {
     fitType: $Enums.FitType | null
     frontImg: string | null
     backImg: string | null
+    isActive: boolean | null
   }
 
   export type ProductVariantMaxAggregateOutputType = {
@@ -17995,6 +18015,7 @@ export namespace Prisma {
     fitType: $Enums.FitType | null
     frontImg: string | null
     backImg: string | null
+    isActive: boolean | null
   }
 
   export type ProductVariantCountAggregateOutputType = {
@@ -18004,6 +18025,7 @@ export namespace Prisma {
     fitType: number
     frontImg: number
     backImg: number
+    isActive: number
     _all: number
   }
 
@@ -18015,6 +18037,7 @@ export namespace Prisma {
     fitType?: true
     frontImg?: true
     backImg?: true
+    isActive?: true
   }
 
   export type ProductVariantMaxAggregateInputType = {
@@ -18024,6 +18047,7 @@ export namespace Prisma {
     fitType?: true
     frontImg?: true
     backImg?: true
+    isActive?: true
   }
 
   export type ProductVariantCountAggregateInputType = {
@@ -18033,6 +18057,7 @@ export namespace Prisma {
     fitType?: true
     frontImg?: true
     backImg?: true
+    isActive?: true
     _all?: true
   }
 
@@ -18115,6 +18140,7 @@ export namespace Prisma {
     fitType: $Enums.FitType
     frontImg: string | null
     backImg: string | null
+    isActive: boolean | null
     _count: ProductVariantCountAggregateOutputType | null
     _min: ProductVariantMinAggregateOutputType | null
     _max: ProductVariantMaxAggregateOutputType | null
@@ -18141,6 +18167,7 @@ export namespace Prisma {
     fitType?: boolean
     frontImg?: boolean
     backImg?: boolean
+    isActive?: boolean
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["productVariant"]>
 
@@ -18151,6 +18178,7 @@ export namespace Prisma {
     fitType?: boolean
     frontImg?: boolean
     backImg?: boolean
+    isActive?: boolean
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["productVariant"]>
 
@@ -18161,6 +18189,7 @@ export namespace Prisma {
     fitType?: boolean
     frontImg?: boolean
     backImg?: boolean
+    isActive?: boolean
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["productVariant"]>
 
@@ -18171,9 +18200,10 @@ export namespace Prisma {
     fitType?: boolean
     frontImg?: boolean
     backImg?: boolean
+    isActive?: boolean
   }
 
-  export type ProductVariantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productId" | "color" | "fitType" | "frontImg" | "backImg", ExtArgs["result"]["productVariant"]>
+  export type ProductVariantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productId" | "color" | "fitType" | "frontImg" | "backImg" | "isActive", ExtArgs["result"]["productVariant"]>
   export type ProductVariantInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }
@@ -18196,6 +18226,7 @@ export namespace Prisma {
       fitType: $Enums.FitType
       frontImg: string | null
       backImg: string | null
+      isActive: boolean | null
     }, ExtArgs["result"]["productVariant"]>
     composites: {}
   }
@@ -18626,6 +18657,7 @@ export namespace Prisma {
     readonly fitType: FieldRef<"ProductVariant", 'FitType'>
     readonly frontImg: FieldRef<"ProductVariant", 'String'>
     readonly backImg: FieldRef<"ProductVariant", 'String'>
+    readonly isActive: FieldRef<"ProductVariant", 'Boolean'>
   }
     
 
@@ -30745,7 +30777,8 @@ export namespace Prisma {
     color: 'color',
     fitType: 'fitType',
     frontImg: 'frontImg',
-    backImg: 'backImg'
+    backImg: 'backImg',
+    isActive: 'isActive'
   };
 
   export type ProductVariantScalarFieldEnum = (typeof ProductVariantScalarFieldEnum)[keyof typeof ProductVariantScalarFieldEnum]
@@ -31888,7 +31921,7 @@ export namespace Prisma {
     status?: EnumProductStatNullableFilter<"Product"> | $Enums.ProductStat | null
     brandName?: StringNullableFilter<"Product"> | string | null
     brandId?: StringNullableFilter<"Product"> | string | null
-    mockupId?: StringFilter<"Product"> | string
+    mockupId?: StringNullableFilter<"Product"> | string | null
     userId?: StringFilter<"Product"> | string
     visibility?: BoolFilter<"Product"> | boolean
     backDesign?: StringNullableFilter<"Product"> | string | null
@@ -31898,7 +31931,7 @@ export namespace Prisma {
     Brand?: XOR<BrandNullableScalarRelationFilter, BrandWhereInput> | null
     features?: FeatureListRelationFilter
     tags?: TagListRelationFilter
-    Mockup?: XOR<MockupScalarRelationFilter, MockupWhereInput>
+    Mockup?: XOR<MockupNullableScalarRelationFilter, MockupWhereInput> | null
     variants?: ProductVariantListRelationFilter
     User?: XOR<UserScalarRelationFilter, UserWhereInput>
     sales?: SaleListRelationFilter
@@ -31918,7 +31951,7 @@ export namespace Prisma {
     status?: SortOrderInput | SortOrder
     brandName?: SortOrderInput | SortOrder
     brandId?: SortOrderInput | SortOrder
-    mockupId?: SortOrder
+    mockupId?: SortOrderInput | SortOrder
     userId?: SortOrder
     visibility?: SortOrder
     backDesign?: SortOrderInput | SortOrder
@@ -31951,7 +31984,7 @@ export namespace Prisma {
     status?: EnumProductStatNullableFilter<"Product"> | $Enums.ProductStat | null
     brandName?: StringNullableFilter<"Product"> | string | null
     brandId?: StringNullableFilter<"Product"> | string | null
-    mockupId?: StringFilter<"Product"> | string
+    mockupId?: StringNullableFilter<"Product"> | string | null
     userId?: StringFilter<"Product"> | string
     visibility?: BoolFilter<"Product"> | boolean
     backDesign?: StringNullableFilter<"Product"> | string | null
@@ -31961,7 +31994,7 @@ export namespace Prisma {
     Brand?: XOR<BrandNullableScalarRelationFilter, BrandWhereInput> | null
     features?: FeatureListRelationFilter
     tags?: TagListRelationFilter
-    Mockup?: XOR<MockupScalarRelationFilter, MockupWhereInput>
+    Mockup?: XOR<MockupNullableScalarRelationFilter, MockupWhereInput> | null
     variants?: ProductVariantListRelationFilter
     User?: XOR<UserScalarRelationFilter, UserWhereInput>
     sales?: SaleListRelationFilter
@@ -31981,7 +32014,7 @@ export namespace Prisma {
     status?: SortOrderInput | SortOrder
     brandName?: SortOrderInput | SortOrder
     brandId?: SortOrderInput | SortOrder
-    mockupId?: SortOrder
+    mockupId?: SortOrderInput | SortOrder
     userId?: SortOrder
     visibility?: SortOrder
     backDesign?: SortOrderInput | SortOrder
@@ -32010,7 +32043,7 @@ export namespace Prisma {
     status?: EnumProductStatNullableWithAggregatesFilter<"Product"> | $Enums.ProductStat | null
     brandName?: StringNullableWithAggregatesFilter<"Product"> | string | null
     brandId?: StringNullableWithAggregatesFilter<"Product"> | string | null
-    mockupId?: StringWithAggregatesFilter<"Product"> | string
+    mockupId?: StringNullableWithAggregatesFilter<"Product"> | string | null
     userId?: StringWithAggregatesFilter<"Product"> | string
     visibility?: BoolWithAggregatesFilter<"Product"> | boolean
     backDesign?: StringNullableWithAggregatesFilter<"Product"> | string | null
@@ -32248,6 +32281,7 @@ export namespace Prisma {
     fitType?: EnumFitTypeFilter<"ProductVariant"> | $Enums.FitType
     frontImg?: StringNullableFilter<"ProductVariant"> | string | null
     backImg?: StringNullableFilter<"ProductVariant"> | string | null
+    isActive?: BoolNullableFilter<"ProductVariant"> | boolean | null
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
   }
 
@@ -32258,6 +32292,7 @@ export namespace Prisma {
     fitType?: SortOrder
     frontImg?: SortOrderInput | SortOrder
     backImg?: SortOrderInput | SortOrder
+    isActive?: SortOrderInput | SortOrder
     product?: ProductOrderByWithRelationInput
   }
 
@@ -32272,6 +32307,7 @@ export namespace Prisma {
     fitType?: EnumFitTypeFilter<"ProductVariant"> | $Enums.FitType
     frontImg?: StringNullableFilter<"ProductVariant"> | string | null
     backImg?: StringNullableFilter<"ProductVariant"> | string | null
+    isActive?: BoolNullableFilter<"ProductVariant"> | boolean | null
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
   }, "id" | "productId_color_fitType">
 
@@ -32282,6 +32318,7 @@ export namespace Prisma {
     fitType?: SortOrder
     frontImg?: SortOrderInput | SortOrder
     backImg?: SortOrderInput | SortOrder
+    isActive?: SortOrderInput | SortOrder
     _count?: ProductVariantCountOrderByAggregateInput
     _max?: ProductVariantMaxOrderByAggregateInput
     _min?: ProductVariantMinOrderByAggregateInput
@@ -32297,6 +32334,7 @@ export namespace Prisma {
     fitType?: EnumFitTypeWithAggregatesFilter<"ProductVariant"> | $Enums.FitType
     frontImg?: StringNullableWithAggregatesFilter<"ProductVariant"> | string | null
     backImg?: StringNullableWithAggregatesFilter<"ProductVariant"> | string | null
+    isActive?: BoolNullableWithAggregatesFilter<"ProductVariant"> | boolean | null
   }
 
   export type FeatureWhereInput = {
@@ -33984,7 +34022,7 @@ export namespace Prisma {
     Brand?: BrandCreateNestedOneWithoutProductInput
     features?: FeatureCreateNestedManyWithoutProductInput
     tags?: TagCreateNestedManyWithoutProductInput
-    Mockup: MockupCreateNestedOneWithoutProductInput
+    Mockup?: MockupCreateNestedOneWithoutProductInput
     variants?: ProductVariantCreateNestedManyWithoutProductInput
     User: UserCreateNestedOneWithoutProductsInput
     sales?: SaleCreateNestedManyWithoutProductInput
@@ -34004,7 +34042,7 @@ export namespace Prisma {
     status?: $Enums.ProductStat | null
     brandName?: string | null
     brandId?: string | null
-    mockupId: string
+    mockupId?: string | null
     userId: string
     visibility?: boolean
     backDesign?: string | null
@@ -34038,7 +34076,7 @@ export namespace Prisma {
     Brand?: BrandUpdateOneWithoutProductNestedInput
     features?: FeatureUpdateManyWithoutProductNestedInput
     tags?: TagUpdateManyWithoutProductNestedInput
-    Mockup?: MockupUpdateOneRequiredWithoutProductNestedInput
+    Mockup?: MockupUpdateOneWithoutProductNestedInput
     variants?: ProductVariantUpdateManyWithoutProductNestedInput
     User?: UserUpdateOneRequiredWithoutProductsNestedInput
     sales?: SaleUpdateManyWithoutProductNestedInput
@@ -34058,7 +34096,7 @@ export namespace Prisma {
     status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     brandId?: NullableStringFieldUpdateOperationsInput | string | null
-    mockupId?: StringFieldUpdateOperationsInput | string
+    mockupId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
@@ -34085,7 +34123,7 @@ export namespace Prisma {
     status?: $Enums.ProductStat | null
     brandName?: string | null
     brandId?: string | null
-    mockupId: string
+    mockupId?: string | null
     userId: string
     visibility?: boolean
     backDesign?: string | null
@@ -34124,7 +34162,7 @@ export namespace Prisma {
     status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     brandId?: NullableStringFieldUpdateOperationsInput | string | null
-    mockupId?: StringFieldUpdateOperationsInput | string
+    mockupId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
@@ -34363,6 +34401,7 @@ export namespace Prisma {
     fitType: $Enums.FitType
     frontImg?: string | null
     backImg?: string | null
+    isActive?: boolean | null
     product: ProductCreateNestedOneWithoutVariantsInput
   }
 
@@ -34373,6 +34412,7 @@ export namespace Prisma {
     fitType: $Enums.FitType
     frontImg?: string | null
     backImg?: string | null
+    isActive?: boolean | null
   }
 
   export type ProductVariantUpdateInput = {
@@ -34381,6 +34421,7 @@ export namespace Prisma {
     fitType?: EnumFitTypeFieldUpdateOperationsInput | $Enums.FitType
     frontImg?: NullableStringFieldUpdateOperationsInput | string | null
     backImg?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: NullableBoolFieldUpdateOperationsInput | boolean | null
     product?: ProductUpdateOneRequiredWithoutVariantsNestedInput
   }
 
@@ -34391,6 +34432,7 @@ export namespace Prisma {
     fitType?: EnumFitTypeFieldUpdateOperationsInput | $Enums.FitType
     frontImg?: NullableStringFieldUpdateOperationsInput | string | null
     backImg?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
   export type ProductVariantCreateManyInput = {
@@ -34400,6 +34442,7 @@ export namespace Prisma {
     fitType: $Enums.FitType
     frontImg?: string | null
     backImg?: string | null
+    isActive?: boolean | null
   }
 
   export type ProductVariantUpdateManyMutationInput = {
@@ -34408,6 +34451,7 @@ export namespace Prisma {
     fitType?: EnumFitTypeFieldUpdateOperationsInput | $Enums.FitType
     frontImg?: NullableStringFieldUpdateOperationsInput | string | null
     backImg?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
   export type ProductVariantUncheckedUpdateManyInput = {
@@ -34417,6 +34461,7 @@ export namespace Prisma {
     fitType?: EnumFitTypeFieldUpdateOperationsInput | $Enums.FitType
     frontImg?: NullableStringFieldUpdateOperationsInput | string | null
     backImg?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
   export type FeatureCreateInput = {
@@ -35900,9 +35945,9 @@ export namespace Prisma {
     none?: TagWhereInput
   }
 
-  export type MockupScalarRelationFilter = {
-    is?: MockupWhereInput
-    isNot?: MockupWhereInput
+  export type MockupNullableScalarRelationFilter = {
+    is?: MockupWhereInput | null
+    isNot?: MockupWhereInput | null
   }
 
   export type ProductVariantListRelationFilter = {
@@ -36224,6 +36269,11 @@ export namespace Prisma {
     not?: NestedEnumFitTypeFilter<$PrismaModel> | $Enums.FitType
   }
 
+  export type BoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  }
+
   export type ProductVariantProductIdColorFitTypeCompoundUniqueInput = {
     productId: string
     color: string
@@ -36237,6 +36287,7 @@ export namespace Prisma {
     fitType?: SortOrder
     frontImg?: SortOrder
     backImg?: SortOrder
+    isActive?: SortOrder
   }
 
   export type ProductVariantMaxOrderByAggregateInput = {
@@ -36246,6 +36297,7 @@ export namespace Prisma {
     fitType?: SortOrder
     frontImg?: SortOrder
     backImg?: SortOrder
+    isActive?: SortOrder
   }
 
   export type ProductVariantMinOrderByAggregateInput = {
@@ -36255,6 +36307,7 @@ export namespace Prisma {
     fitType?: SortOrder
     frontImg?: SortOrder
     backImg?: SortOrder
+    isActive?: SortOrder
   }
 
   export type EnumFitTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -36265,6 +36318,14 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumFitTypeFilter<$PrismaModel>
     _max?: NestedEnumFitTypeFilter<$PrismaModel>
+  }
+
+  export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
   export type FeatureCountOrderByAggregateInput = {
@@ -36334,9 +36395,9 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type BoolNullableFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
-    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  export type MockupScalarRelationFilter = {
+    is?: MockupWhereInput
+    isNot?: MockupWhereInput
   }
 
   export type MockupVariantMockupIdColorFitTypeCompoundUniqueInput = {
@@ -36373,14 +36434,6 @@ export namespace Prisma {
     frontImg?: SortOrder
     backImg?: SortOrder
     isVisible?: SortOrder
-  }
-
-  export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
-    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedBoolNullableFilter<$PrismaModel>
-    _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
   export type DecimalNullableFilter<$PrismaModel = never> = {
@@ -37714,10 +37767,12 @@ export namespace Prisma {
     deleteMany?: TagScalarWhereInput | TagScalarWhereInput[]
   }
 
-  export type MockupUpdateOneRequiredWithoutProductNestedInput = {
+  export type MockupUpdateOneWithoutProductNestedInput = {
     create?: XOR<MockupCreateWithoutProductInput, MockupUncheckedCreateWithoutProductInput>
     connectOrCreate?: MockupCreateOrConnectWithoutProductInput
     upsert?: MockupUpsertWithoutProductInput
+    disconnect?: MockupWhereInput | boolean
+    delete?: MockupWhereInput | boolean
     connect?: MockupWhereUniqueInput
     update?: XOR<XOR<MockupUpdateToOneWithWhereWithoutProductInput, MockupUpdateWithoutProductInput>, MockupUncheckedUpdateWithoutProductInput>
   }
@@ -38080,6 +38135,10 @@ export namespace Prisma {
     set?: $Enums.FitType
   }
 
+  export type NullableBoolFieldUpdateOperationsInput = {
+    set?: boolean | null
+  }
+
   export type ProductUpdateOneRequiredWithoutVariantsNestedInput = {
     create?: XOR<ProductCreateWithoutVariantsInput, ProductUncheckedCreateWithoutVariantsInput>
     connectOrCreate?: ProductCreateOrConnectWithoutVariantsInput
@@ -38204,10 +38263,6 @@ export namespace Prisma {
     create?: XOR<MockupCreateWithoutVariantsInput, MockupUncheckedCreateWithoutVariantsInput>
     connectOrCreate?: MockupCreateOrConnectWithoutVariantsInput
     connect?: MockupWhereUniqueInput
-  }
-
-  export type NullableBoolFieldUpdateOperationsInput = {
-    set?: boolean | null
   }
 
   export type MockupUpdateOneRequiredWithoutVariantsNestedInput = {
@@ -38822,6 +38877,11 @@ export namespace Prisma {
     not?: NestedEnumFitTypeFilter<$PrismaModel> | $Enums.FitType
   }
 
+  export type NestedBoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  }
+
   export type NestedEnumFitTypeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.FitType | EnumFitTypeFieldRefInput<$PrismaModel>
     in?: $Enums.FitType[] | ListEnumFitTypeFieldRefInput<$PrismaModel>
@@ -38830,11 +38890,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumFitTypeFilter<$PrismaModel>
     _max?: NestedEnumFitTypeFilter<$PrismaModel>
-  }
-
-  export type NestedBoolNullableFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
-    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
   }
 
   export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -38973,7 +39028,7 @@ export namespace Prisma {
     Brand?: BrandCreateNestedOneWithoutProductInput
     features?: FeatureCreateNestedManyWithoutProductInput
     tags?: TagCreateNestedManyWithoutProductInput
-    Mockup: MockupCreateNestedOneWithoutProductInput
+    Mockup?: MockupCreateNestedOneWithoutProductInput
     variants?: ProductVariantCreateNestedManyWithoutProductInput
     sales?: SaleCreateNestedManyWithoutProductInput
     CommissionSetting?: CommissionSettingCreateNestedManyWithoutProductInput
@@ -38992,7 +39047,7 @@ export namespace Prisma {
     status?: $Enums.ProductStat | null
     brandName?: string | null
     brandId?: string | null
-    mockupId: string
+    mockupId?: string | null
     visibility?: boolean
     backDesign?: string | null
     frontDesign?: string | null
@@ -39400,7 +39455,7 @@ export namespace Prisma {
     status?: EnumProductStatNullableFilter<"Product"> | $Enums.ProductStat | null
     brandName?: StringNullableFilter<"Product"> | string | null
     brandId?: StringNullableFilter<"Product"> | string | null
-    mockupId?: StringFilter<"Product"> | string
+    mockupId?: StringNullableFilter<"Product"> | string | null
     userId?: StringFilter<"Product"> | string
     visibility?: BoolFilter<"Product"> | boolean
     backDesign?: StringNullableFilter<"Product"> | string | null
@@ -40218,7 +40273,7 @@ export namespace Prisma {
     merchantCommissionPct?: number | null
     features?: FeatureCreateNestedManyWithoutProductInput
     tags?: TagCreateNestedManyWithoutProductInput
-    Mockup: MockupCreateNestedOneWithoutProductInput
+    Mockup?: MockupCreateNestedOneWithoutProductInput
     variants?: ProductVariantCreateNestedManyWithoutProductInput
     User: UserCreateNestedOneWithoutProductsInput
     sales?: SaleCreateNestedManyWithoutProductInput
@@ -40237,7 +40292,7 @@ export namespace Prisma {
     isActive?: boolean
     status?: $Enums.ProductStat | null
     brandName?: string | null
-    mockupId: string
+    mockupId?: string | null
     userId: string
     visibility?: boolean
     backDesign?: string | null
@@ -40773,6 +40828,7 @@ export namespace Prisma {
     fitType: $Enums.FitType
     frontImg?: string | null
     backImg?: string | null
+    isActive?: boolean | null
   }
 
   export type ProductVariantUncheckedCreateWithoutProductInput = {
@@ -40781,6 +40837,7 @@ export namespace Prisma {
     fitType: $Enums.FitType
     frontImg?: string | null
     backImg?: string | null
+    isActive?: boolean | null
   }
 
   export type ProductVariantCreateOrConnectWithoutProductInput = {
@@ -41117,6 +41174,7 @@ export namespace Prisma {
     fitType?: EnumFitTypeFilter<"ProductVariant"> | $Enums.FitType
     frontImg?: StringNullableFilter<"ProductVariant"> | string | null
     backImg?: StringNullableFilter<"ProductVariant"> | string | null
+    isActive?: BoolNullableFilter<"ProductVariant"> | boolean | null
   }
 
   export type UserUpsertWithoutProductsInput = {
@@ -41251,7 +41309,7 @@ export namespace Prisma {
     Brand?: BrandCreateNestedOneWithoutProductInput
     features?: FeatureCreateNestedManyWithoutProductInput
     tags?: TagCreateNestedManyWithoutProductInput
-    Mockup: MockupCreateNestedOneWithoutProductInput
+    Mockup?: MockupCreateNestedOneWithoutProductInput
     variants?: ProductVariantCreateNestedManyWithoutProductInput
     User: UserCreateNestedOneWithoutProductsInput
     sales?: SaleCreateNestedManyWithoutProductInput
@@ -41270,7 +41328,7 @@ export namespace Prisma {
     status?: $Enums.ProductStat | null
     brandName?: string | null
     brandId?: string | null
-    mockupId: string
+    mockupId?: string | null
     userId: string
     visibility?: boolean
     backDesign?: string | null
@@ -41355,7 +41413,7 @@ export namespace Prisma {
     Brand?: BrandCreateNestedOneWithoutProductInput
     features?: FeatureCreateNestedManyWithoutProductInput
     tags?: TagCreateNestedManyWithoutProductInput
-    Mockup: MockupCreateNestedOneWithoutProductInput
+    Mockup?: MockupCreateNestedOneWithoutProductInput
     variants?: ProductVariantCreateNestedManyWithoutProductInput
     User: UserCreateNestedOneWithoutProductsInput
     CommissionSetting?: CommissionSettingCreateNestedManyWithoutProductInput
@@ -41374,7 +41432,7 @@ export namespace Prisma {
     status?: $Enums.ProductStat | null
     brandName?: string | null
     brandId?: string | null
-    mockupId: string
+    mockupId?: string | null
     userId: string
     visibility?: boolean
     backDesign?: string | null
@@ -41642,7 +41700,7 @@ export namespace Prisma {
     Brand?: BrandUpdateOneWithoutProductNestedInput
     features?: FeatureUpdateManyWithoutProductNestedInput
     tags?: TagUpdateManyWithoutProductNestedInput
-    Mockup?: MockupUpdateOneRequiredWithoutProductNestedInput
+    Mockup?: MockupUpdateOneWithoutProductNestedInput
     variants?: ProductVariantUpdateManyWithoutProductNestedInput
     User?: UserUpdateOneRequiredWithoutProductsNestedInput
     CommissionSetting?: CommissionSettingUpdateManyWithoutProductNestedInput
@@ -41661,7 +41719,7 @@ export namespace Prisma {
     status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     brandId?: NullableStringFieldUpdateOperationsInput | string | null
-    mockupId?: StringFieldUpdateOperationsInput | string
+    mockupId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
@@ -41963,7 +42021,7 @@ export namespace Prisma {
     Brand?: BrandCreateNestedOneWithoutProductInput
     features?: FeatureCreateNestedManyWithoutProductInput
     tags?: TagCreateNestedManyWithoutProductInput
-    Mockup: MockupCreateNestedOneWithoutProductInput
+    Mockup?: MockupCreateNestedOneWithoutProductInput
     User: UserCreateNestedOneWithoutProductsInput
     sales?: SaleCreateNestedManyWithoutProductInput
     CommissionSetting?: CommissionSettingCreateNestedManyWithoutProductInput
@@ -41982,7 +42040,7 @@ export namespace Prisma {
     status?: $Enums.ProductStat | null
     brandName?: string | null
     brandId?: string | null
-    mockupId: string
+    mockupId?: string | null
     userId: string
     visibility?: boolean
     backDesign?: string | null
@@ -42031,7 +42089,7 @@ export namespace Prisma {
     Brand?: BrandUpdateOneWithoutProductNestedInput
     features?: FeatureUpdateManyWithoutProductNestedInput
     tags?: TagUpdateManyWithoutProductNestedInput
-    Mockup?: MockupUpdateOneRequiredWithoutProductNestedInput
+    Mockup?: MockupUpdateOneWithoutProductNestedInput
     User?: UserUpdateOneRequiredWithoutProductsNestedInput
     sales?: SaleUpdateManyWithoutProductNestedInput
     CommissionSetting?: CommissionSettingUpdateManyWithoutProductNestedInput
@@ -42050,7 +42108,7 @@ export namespace Prisma {
     status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     brandId?: NullableStringFieldUpdateOperationsInput | string | null
-    mockupId?: StringFieldUpdateOperationsInput | string
+    mockupId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
@@ -42082,7 +42140,7 @@ export namespace Prisma {
     merchantCommissionPct?: number | null
     Brand?: BrandCreateNestedOneWithoutProductInput
     tags?: TagCreateNestedManyWithoutProductInput
-    Mockup: MockupCreateNestedOneWithoutProductInput
+    Mockup?: MockupCreateNestedOneWithoutProductInput
     variants?: ProductVariantCreateNestedManyWithoutProductInput
     User: UserCreateNestedOneWithoutProductsInput
     sales?: SaleCreateNestedManyWithoutProductInput
@@ -42102,7 +42160,7 @@ export namespace Prisma {
     status?: $Enums.ProductStat | null
     brandName?: string | null
     brandId?: string | null
-    mockupId: string
+    mockupId?: string | null
     userId: string
     visibility?: boolean
     backDesign?: string | null
@@ -42150,7 +42208,7 @@ export namespace Prisma {
     merchantCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     Brand?: BrandUpdateOneWithoutProductNestedInput
     tags?: TagUpdateManyWithoutProductNestedInput
-    Mockup?: MockupUpdateOneRequiredWithoutProductNestedInput
+    Mockup?: MockupUpdateOneWithoutProductNestedInput
     variants?: ProductVariantUpdateManyWithoutProductNestedInput
     User?: UserUpdateOneRequiredWithoutProductsNestedInput
     sales?: SaleUpdateManyWithoutProductNestedInput
@@ -42170,7 +42228,7 @@ export namespace Prisma {
     status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     brandId?: NullableStringFieldUpdateOperationsInput | string | null
-    mockupId?: StringFieldUpdateOperationsInput | string
+    mockupId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
@@ -42202,7 +42260,7 @@ export namespace Prisma {
     merchantCommissionPct?: number | null
     Brand?: BrandCreateNestedOneWithoutProductInput
     features?: FeatureCreateNestedManyWithoutProductInput
-    Mockup: MockupCreateNestedOneWithoutProductInput
+    Mockup?: MockupCreateNestedOneWithoutProductInput
     variants?: ProductVariantCreateNestedManyWithoutProductInput
     User: UserCreateNestedOneWithoutProductsInput
     sales?: SaleCreateNestedManyWithoutProductInput
@@ -42222,7 +42280,7 @@ export namespace Prisma {
     status?: $Enums.ProductStat | null
     brandName?: string | null
     brandId?: string | null
-    mockupId: string
+    mockupId?: string | null
     userId: string
     visibility?: boolean
     backDesign?: string | null
@@ -42270,7 +42328,7 @@ export namespace Prisma {
     merchantCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     Brand?: BrandUpdateOneWithoutProductNestedInput
     features?: FeatureUpdateManyWithoutProductNestedInput
-    Mockup?: MockupUpdateOneRequiredWithoutProductNestedInput
+    Mockup?: MockupUpdateOneWithoutProductNestedInput
     variants?: ProductVariantUpdateManyWithoutProductNestedInput
     User?: UserUpdateOneRequiredWithoutProductsNestedInput
     sales?: SaleUpdateManyWithoutProductNestedInput
@@ -42290,7 +42348,7 @@ export namespace Prisma {
     status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     brandId?: NullableStringFieldUpdateOperationsInput | string | null
-    mockupId?: StringFieldUpdateOperationsInput | string
+    mockupId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
@@ -43235,7 +43293,7 @@ export namespace Prisma {
     Brand?: BrandCreateNestedOneWithoutProductInput
     features?: FeatureCreateNestedManyWithoutProductInput
     tags?: TagCreateNestedManyWithoutProductInput
-    Mockup: MockupCreateNestedOneWithoutProductInput
+    Mockup?: MockupCreateNestedOneWithoutProductInput
     variants?: ProductVariantCreateNestedManyWithoutProductInput
     User: UserCreateNestedOneWithoutProductsInput
     sales?: SaleCreateNestedManyWithoutProductInput
@@ -43254,7 +43312,7 @@ export namespace Prisma {
     status?: $Enums.ProductStat | null
     brandName?: string | null
     brandId?: string | null
-    mockupId: string
+    mockupId?: string | null
     userId: string
     visibility?: boolean
     backDesign?: string | null
@@ -43435,7 +43493,7 @@ export namespace Prisma {
     Brand?: BrandUpdateOneWithoutProductNestedInput
     features?: FeatureUpdateManyWithoutProductNestedInput
     tags?: TagUpdateManyWithoutProductNestedInput
-    Mockup?: MockupUpdateOneRequiredWithoutProductNestedInput
+    Mockup?: MockupUpdateOneWithoutProductNestedInput
     variants?: ProductVariantUpdateManyWithoutProductNestedInput
     User?: UserUpdateOneRequiredWithoutProductsNestedInput
     sales?: SaleUpdateManyWithoutProductNestedInput
@@ -43454,7 +43512,7 @@ export namespace Prisma {
     status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     brandId?: NullableStringFieldUpdateOperationsInput | string | null
-    mockupId?: StringFieldUpdateOperationsInput | string
+    mockupId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
@@ -43876,7 +43934,7 @@ export namespace Prisma {
     status?: $Enums.ProductStat | null
     brandName?: string | null
     brandId?: string | null
-    mockupId: string
+    mockupId?: string | null
     visibility?: boolean
     backDesign?: string | null
     frontDesign?: string | null
@@ -43971,7 +44029,7 @@ export namespace Prisma {
     Brand?: BrandUpdateOneWithoutProductNestedInput
     features?: FeatureUpdateManyWithoutProductNestedInput
     tags?: TagUpdateManyWithoutProductNestedInput
-    Mockup?: MockupUpdateOneRequiredWithoutProductNestedInput
+    Mockup?: MockupUpdateOneWithoutProductNestedInput
     variants?: ProductVariantUpdateManyWithoutProductNestedInput
     sales?: SaleUpdateManyWithoutProductNestedInput
     CommissionSetting?: CommissionSettingUpdateManyWithoutProductNestedInput
@@ -43990,7 +44048,7 @@ export namespace Prisma {
     status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     brandId?: NullableStringFieldUpdateOperationsInput | string | null
-    mockupId?: StringFieldUpdateOperationsInput | string
+    mockupId?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
     frontDesign?: NullableStringFieldUpdateOperationsInput | string | null
@@ -44016,7 +44074,7 @@ export namespace Prisma {
     status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     brandId?: NullableStringFieldUpdateOperationsInput | string | null
-    mockupId?: StringFieldUpdateOperationsInput | string
+    mockupId?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
     frontDesign?: NullableStringFieldUpdateOperationsInput | string | null
@@ -44329,7 +44387,7 @@ export namespace Prisma {
     isActive?: boolean
     status?: $Enums.ProductStat | null
     brandName?: string | null
-    mockupId: string
+    mockupId?: string | null
     userId: string
     visibility?: boolean
     backDesign?: string | null
@@ -44391,7 +44449,7 @@ export namespace Prisma {
     merchantCommissionPct?: NullableFloatFieldUpdateOperationsInput | number | null
     features?: FeatureUpdateManyWithoutProductNestedInput
     tags?: TagUpdateManyWithoutProductNestedInput
-    Mockup?: MockupUpdateOneRequiredWithoutProductNestedInput
+    Mockup?: MockupUpdateOneWithoutProductNestedInput
     variants?: ProductVariantUpdateManyWithoutProductNestedInput
     User?: UserUpdateOneRequiredWithoutProductsNestedInput
     sales?: SaleUpdateManyWithoutProductNestedInput
@@ -44410,7 +44468,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
-    mockupId?: StringFieldUpdateOperationsInput | string
+    mockupId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
@@ -44436,7 +44494,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
-    mockupId?: StringFieldUpdateOperationsInput | string
+    mockupId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
@@ -44694,6 +44752,7 @@ export namespace Prisma {
     fitType: $Enums.FitType
     frontImg?: string | null
     backImg?: string | null
+    isActive?: boolean | null
   }
 
   export type SaleCreateManyProductInput = {
@@ -44758,6 +44817,7 @@ export namespace Prisma {
     fitType?: EnumFitTypeFieldUpdateOperationsInput | $Enums.FitType
     frontImg?: NullableStringFieldUpdateOperationsInput | string | null
     backImg?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
   export type ProductVariantUncheckedUpdateWithoutProductInput = {
@@ -44766,6 +44826,7 @@ export namespace Prisma {
     fitType?: EnumFitTypeFieldUpdateOperationsInput | $Enums.FitType
     frontImg?: NullableStringFieldUpdateOperationsInput | string | null
     backImg?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
   export type ProductVariantUncheckedUpdateManyWithoutProductInput = {
@@ -44774,6 +44835,7 @@ export namespace Prisma {
     fitType?: EnumFitTypeFieldUpdateOperationsInput | $Enums.FitType
     frontImg?: NullableStringFieldUpdateOperationsInput | string | null
     backImg?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
   export type SaleUpdateWithoutProductInput = {
@@ -44898,7 +44960,7 @@ export namespace Prisma {
     Brand?: BrandUpdateOneWithoutProductNestedInput
     features?: FeatureUpdateManyWithoutProductNestedInput
     tags?: TagUpdateManyWithoutProductNestedInput
-    Mockup?: MockupUpdateOneRequiredWithoutProductNestedInput
+    Mockup?: MockupUpdateOneWithoutProductNestedInput
     variants?: ProductVariantUpdateManyWithoutProductNestedInput
     User?: UserUpdateOneRequiredWithoutProductsNestedInput
     sales?: SaleUpdateManyWithoutProductNestedInput
@@ -44917,7 +44979,7 @@ export namespace Prisma {
     status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     brandId?: NullableStringFieldUpdateOperationsInput | string | null
-    mockupId?: StringFieldUpdateOperationsInput | string
+    mockupId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null
@@ -44943,7 +45005,7 @@ export namespace Prisma {
     status?: NullableEnumProductStatFieldUpdateOperationsInput | $Enums.ProductStat | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     brandId?: NullableStringFieldUpdateOperationsInput | string | null
-    mockupId?: StringFieldUpdateOperationsInput | string
+    mockupId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
     visibility?: BoolFieldUpdateOperationsInput | boolean
     backDesign?: NullableStringFieldUpdateOperationsInput | string | null

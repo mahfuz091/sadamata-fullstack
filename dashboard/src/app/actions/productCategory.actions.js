@@ -12,22 +12,29 @@ export async function createProductCategory(name) {
   }
 
   try {
+    // ✅ find current last sortOrder
+    const last = await prisma.productCategory.findFirst({
+      orderBy: { sortOrder: "desc" },
+      select: { sortOrder: true },
+    });
+
+    const nextOrder = (last?.sortOrder ?? -1) + 1;
+
     const category = await prisma.productCategory.create({
       data: {
         name: name.trim(),
+        sortOrder: nextOrder, // ✅ new category always at the end
       },
     });
 
     revalidatePath("/dashboard/product-categories");
-
     return { success: true, data: category };
   } catch (error) {
-    if (error.code === "P2002") {
+    if (error?.code === "P2002") {
       return { success: false, message: "Category already exists" };
     }
 
     console.log(error);
-
     return { success: false, message: "Failed to create category" };
   }
 }
@@ -38,7 +45,7 @@ export async function createProductCategory(name) {
 export async function getAllProductCategories() {
   try {
     const categories = await prisma.productCategory.findMany({
-      orderBy: { createdAt: "desc" },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
     });
 
     return { success: true, data: categories };
@@ -156,5 +163,31 @@ export async function removeCategoryFromProduct(productId, categoryId) {
     return { success: true };
   } catch (error) {
     return { success: false, message: "Failed to remove category" };
+  }
+}
+
+// ProductCategory.actions.js
+
+export async function reorderProductCategories(orderedIds = []) {
+  try {
+    if (!Array.isArray(orderedIds) || orderedIds.length === 0) {
+      return { success: false, message: "No categories provided" };
+    }
+
+    // ✅ fast + safe: single transaction with many updates
+    await prisma.$transaction(
+      orderedIds.map((id, index) =>
+        prisma.productCategory.update({
+          where: { id },
+          data: { sortOrder: index },
+        })
+      )
+    );
+
+    revalidatePath("/dashboard/product-categories");
+    return { success: true, message: "Categories reordered successfully" };
+  } catch (error) {
+    console.error("Error reordering categories:", error);
+    return { success: false, message: "Failed to reorder categories" };
   }
 }

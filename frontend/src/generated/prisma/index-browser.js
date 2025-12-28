@@ -303,7 +303,8 @@ exports.Prisma.ProductVariantScalarFieldEnum = {
   color: 'color',
   fitType: 'fitType',
   frontImg: 'frontImg',
-  backImg: 'backImg'
+  backImg: 'backImg',
+  isActive: 'isActive'
 };
 
 exports.Prisma.FeatureScalarFieldEnum = {

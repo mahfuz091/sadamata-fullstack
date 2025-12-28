@@ -165,3 +165,50 @@ export async function deleteProduct(_, { productId }) {
     };
   }
 }
+
+/* -----------------------------
+   UPDATE PRODUCT VARIANT ACTIVE
+--------------------------------*/
+
+export async function updateProductVariantActive(_, { variantId, isActive }) {
+  try {
+    if (!variantId || typeof isActive !== "boolean") {
+      return {
+        success: false,
+        msg: "variantId and isActive are required",
+      };
+    }
+
+    const variant = await prisma.productVariant.update({
+      where: { id: variantId },
+      data: {
+        isActive,
+      },
+      include: {
+        product: {
+          select: {
+            id: true,
+            title: true,
+          },
+        },
+      },
+    });
+
+    return {
+      success: true,
+      data: {
+        id: variant.id,
+        isActive: variant.isActive,
+        color: variant.color,
+        fitType: variant.fitType,
+        product: variant.product,
+      },
+    };
+  } catch (err) {
+    console.error("updateProductVariantActive error:", err);
+    return {
+      success: false,
+      msg: "Failed to update product variant status",
+    };
+  }
+}

@@ -31,7 +31,7 @@ export default function RootLayout({ children }) {
         <BlogProvider>
           <PressProvider>
             {children}
-            <Toaster richColors position='bottom-right' />
+            <Toaster richColors position='top-center' />
           </PressProvider>
         </BlogProvider>
       </body>

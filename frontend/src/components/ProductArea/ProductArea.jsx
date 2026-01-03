@@ -45,7 +45,7 @@ const ProductArea = ({ result: initialResult, slug, q, brands, mockups }) => {
   // server pagination (cursor)
   const [cursorStack, setCursorStack] = useState([null]); // stack of cursors for Prev
   const [cursor, setCursor] = useState(null);
-  const [hasLoadedOnce, setHasLoadedOnce] = useState(true);
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
 
   const pageSize = 12;
   const [isPending, startTransition] = useTransition();
@@ -110,6 +110,31 @@ const ProductArea = ({ result: initialResult, slug, q, brands, mockups }) => {
     );
   };
 
+  const queryKey = useMemo(() => {
+    return JSON.stringify({
+      q: q || null,
+      slug: activeSlug || null,
+      brandId: activeBrandId || null,
+      minPrice: minPrice || null,
+      maxPrice: maxPrice || null,
+      fitType: activeFitType || null,
+      sort: sortBy,
+      pageSize,
+      cursor: null, // filter change করলে always first page
+    });
+  }, [
+    q,
+    activeSlug,
+    activeBrandId,
+    minPrice,
+    maxPrice,
+    activeFitType,
+    sortBy,
+    pageSize,
+  ]);
+
+  const lastQueryKeyRef = useRef("");
+
   // const fetchPage = (nextCursor, pushStack = true) => {
   //   startTransition(async () => {
   //     const res = await searchProducts({
@@ -136,56 +161,62 @@ const ProductArea = ({ result: initialResult, slug, q, brands, mockups }) => {
   const fetchPage = (nextCursor, pushStack = true) => {
     const myReqId = ++reqIdRef.current;
 
+    // ✅ capture current queryKey
+    const myKey = queryKey;
+
+    console.log("FETCH PARAMS", {
+      activeFitType,
+      activeSlug,
+      activeBrandId,
+      minPrice,
+      maxPrice,
+    });
+
     startTransition(async () => {
-      try {
-        const res = await searchProducts({
-          q: q ? String(q) : undefined,
-          slug: activeSlug ?? undefined,
-          brandId: activeBrandId ?? undefined,
-          minPrice: minPrice || null,
-          maxPrice: maxPrice || null,
-          fitType: activeFitType ?? undefined,
-          sort: sortBy,
-          pageSize,
-          cursor: nextCursor ? JSON.stringify(nextCursor) : null,
-        });
+      const res = await searchProducts({
+        q: q ? String(q) : undefined,
+        slug: activeSlug ?? undefined,
+        brandId: activeBrandId ?? undefined,
+        minPrice: minPrice || null,
+        maxPrice: maxPrice || null,
+        fitType: activeFitType ?? undefined,
+        sort: sortBy,
+        pageSize,
+        cursor: nextCursor ? JSON.stringify(nextCursor) : null,
+      });
 
-        // ✅ ignore old/stale responses
-        if (myReqId !== reqIdRef.current) return;
+      // ✅ ignore stale req OR stale queryKey
+      if (myReqId !== reqIdRef.current) return;
+      if (myKey !== queryKey) return;
 
-        // ✅ if server returned nothing, don't nuke UI
-        if (!res || !Array.isArray(res.items)) {
-          console.warn("searchProducts returned invalid:", res);
-          toast.error("Search failed (invalid response)");
-          return;
-        }
+      if (!res || !Array.isArray(res.items)) return;
 
-        setResult(res);
-        setHasLoadedOnce(true);
+      setResult(res);
+      setHasLoadedOnce(true);
 
-        if (pushStack) setCursorStack((s) => [...s, nextCursor]);
-        setCursor(nextCursor);
-      } catch (e) {
-        console.error(e);
-        if (myReqId !== reqIdRef.current) return;
-        toast.error("Search failed");
-        // ✅ don't clear existing products
-        setHasLoadedOnce(true);
-      }
+      if (pushStack) setCursorStack((s) => [...s, nextCursor]);
+      setCursor(nextCursor);
     });
   };
 
-  // when filters/sort change -> reset to first page
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
-      return; // ⛔ initial server data overwrite করো না
+      return;
     }
+
+    // ✅ prevent duplicate fetch for same query
+    if (lastQueryKeyRef.current === queryKey) return;
+    lastQueryKeyRef.current = queryKey;
+
     setCursorStack([null]);
     setCursor(null);
+
     fetchPage(null, false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [q, activeSlug, activeBrandId, minPrice, maxPrice, activeFitType, sortBy]);
+  }, [queryKey]);
+
+  // when filters/sort change -> reset to first page
 
   const safeItems = result?.items || [];
   const hasMore = !!result?.hasMore;

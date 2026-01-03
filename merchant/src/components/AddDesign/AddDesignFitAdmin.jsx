@@ -1338,15 +1338,15 @@ export default function AddDesignFitAdmin({
   //   });
   // };
 
-  useEffect(() => {
-    setSelectedColor((prev) => ({
-      ...prev,
-      0: {
-        ...(prev[0] ?? {}),
-        MEN: ["#000"],
-      },
-    }));
-  }, []);
+  // useEffect(() => {
+  //   setSelectedColor((prev) => ({
+  //     ...prev,
+  //     0: {
+  //       ...(prev[0] ?? {}),
+  //       MEN: ["#000"],
+  //     },
+  //   }));
+  // }, []);
 
   // lastly, updated to support multiple fits per product
 
@@ -2160,11 +2160,15 @@ export default function AddDesignFitAdmin({
       const allColors = conf.fits?.[fit]?.colors || [];
       const idx = activeProductIndex ?? 0;
 
-      const chosenColors = getGlobalColors(activeProductIndex).filter((c) =>
-        allColors.includes(c)
-      );
+      // ✅ user যেগুলো select করেছে, শুধু সেগুলো
+      const selectedColorsForThisFit = getGlobalColors(
+        activeProductIndex
+      ).filter((c) => allColors.includes(c));
 
-      for (const color of activeColors) {
+      // ✅ যদি কোন fit এ কিছুই select না থাকে, skip
+      if (!selectedColorsForThisFit.length) continue;
+
+      for (const color of selectedColorsForThisFit) {
         const frontSrc = conf.fits[fit]?.colorFront?.[color];
         const backSrc = conf.fits[fit]?.colorBack?.[color];
 
@@ -2172,8 +2176,11 @@ export default function AddDesignFitAdmin({
         formData.append(`variants[${vIndex}][fitType]`, String(fit));
 
         // Add the isActive flag based on the selected color
-        const isActive = chosenColors.includes(color) ? true : false;
-        formData.append(`variants[${vIndex}][isActive]`, isActive);
+        const isActive = selectedColorsForThisFit.includes(color)
+          ? true
+          : false;
+        // ✅ user selected => always active
+        formData.append(`variants[${vIndex}][isActive]`, "true");
 
         // ✅ FRONT ONLY if front design exists
         if (designImage && frontSrc) {
@@ -2249,7 +2256,10 @@ export default function AddDesignFitAdmin({
       toast.error("Select at least one color.");
       return false;
     }
-
+    if (features.price < 990) {
+      toast.error("Price must be at least 990.");
+      return false;
+    }
     return true;
   };
 
@@ -2273,6 +2283,10 @@ export default function AddDesignFitAdmin({
     if (!validateBeforePublish()) return;
     try {
       setIsPublishing(true);
+      // ✅ 3 sec পর redirect (validation pass হলে)
+      const t = setTimeout(() => {
+        router.push("/dashboard");
+      }, 3000);
       const formData = await prepareMockupFiles();
       if (!formData) return;
 
@@ -2280,7 +2294,6 @@ export default function AddDesignFitAdmin({
 
       if (product.success) {
         toast.success("Product created!");
-        router.push("/dashboard");
         setIsPublishing(false);
       } else {
         console.error("Failed to create product:", product.message);
@@ -2671,7 +2684,7 @@ export default function AddDesignFitAdmin({
                             Choose colors:
                           </p>
                           <div className='color-options d-flex gap-2 flex-wrap'>
-                            {(activeColorsForUI ?? []).map((color) => {
+                            {(activeColors ?? []).map((color) => {
                               const checked =
                                 getGlobalColors(activeProductIndex).includes(
                                   color

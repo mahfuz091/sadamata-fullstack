@@ -105,11 +105,11 @@ const HeaderTwo = ({ session }) => {
                   )}
                 </div>
               </div>
-              <div className='mobile-nav__btn mobile-nav__toggler'>
+              {/* <div className='mobile-nav__btn mobile-nav__toggler'>
                 <span></span>
                 <span></span>
                 <span></span>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

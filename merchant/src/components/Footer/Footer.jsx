@@ -223,13 +223,13 @@ const Footer = () => {
               data-wow-delay='500ms'
             >
               <p className='main-footer__copyright'>
-                {" "}
-                &copy; Copyright <span className='dynamic-year'></span>{" "}
-                <span className='name'> Logohere</span> All rights reserved. 
+                &copy; Copyright {new Date().getFullYear()}
+                <span className='name'> Sadmata PLC</span> All rights reserved.
               </p>
-              <div className='main-footer__bottom__payment'>
+
+              {/* <div className='main-footer__bottom__payment'>
                 <Image src={payment} alt='images' />
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

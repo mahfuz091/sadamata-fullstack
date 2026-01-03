@@ -649,11 +649,7 @@ button.profileImageButton {
   top: auto;
   margin-left: -22px;
   margin-top: 1px;
-  -webkit-animation: rotate 1s infinite linear;
-  -moz-animation: rotate 1s infinite linear;
-  -ms-animation: rotate 1s infinite linear;
-  -o-animation: rotate 1s infinite linear;
-  animation: rotate 1s infinite linear;
+
   border: 1px solid rgba(0, 0, 0, 0.1);
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
@@ -674,6 +670,11 @@ button.profileImageButton {
   -ms-border-radius: 50%;
   -o-border-radius: 50%;
   border-radius: 50%;
+  -webkit-animation: rotate 1s infinite linear;
+  -moz-animation: rotate 1s infinite linear;
+  -ms-animation: rotate 1s infinite linear;
+  -o-animation: rotate 1s infinite linear;
+  animation: rotate 1s infinite linear;
 }
 @-webkit-keyframes rotate {
   0% {

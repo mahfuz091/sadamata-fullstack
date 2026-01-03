@@ -10,7 +10,7 @@ const page = async ({ params }) => {
   const { id } = await params;
   //   console.log(id);
   const product = await getProductsByProductId(id);
-  //   console.log(product);
+  console.log(product);
 
   return (
     //    <ProductDetails product={product}/>

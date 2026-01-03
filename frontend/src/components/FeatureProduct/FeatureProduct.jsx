@@ -89,45 +89,6 @@ const FeatureProduct = () => {
     window.scrollTo({ top: y, behavior: "smooth" });
   };
 
-  // const toggleFavorite = (product) => {
-  //   setFavorites((prev) => {
-  //     const exists = prev.find((p) => p.id === product.id);
-
-  //     let updated;
-
-  //     if (exists) {
-  //       updated = prev.filter((p) => p.id !== product.id);
-
-  //       toast.success("Removed from favorites", {
-  //         description: product.title,
-  //       });
-  //     } else {
-  //       updated = [
-  //         ...prev,
-  //         {
-  //           id: product.id,
-  //           productId: product.productId,
-  //           title: product.title,
-  //           price: product.price,
-  //           image: getProductImage(product),
-  //         },
-  //       ];
-
-  //       toast.success("Added to favorites", {
-  //         description: product.title,
-  //       });
-  //     }
-
-  //     localStorage.setItem("favorite_products", JSON.stringify(updated));
-
-  //     // 🔔 notify header instantly
-  //     setTimeout(() => {
-  //       window.dispatchEvent(new Event("favorite-updated"));
-  //     }, 0);
-
-  //     return updated;
-  //   });
-  // };
   const toggleFavorite = (product) => {
     let action = null;
     let nextFavorites = [];

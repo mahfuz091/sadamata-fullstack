@@ -45,7 +45,10 @@ const toImg = (path) => {
 /* ---------------- COMPONENT ---------------- */
 
 export default function AddToCartModal({ show, onHide, product }) {
-  const grouped = useMemo(() => groupByFit(product?.variants || []), [product]);
+  const grouped = useMemo(
+    () => groupByFit(product?.variants || []),
+    [product?.variants]
+  );
 
   const availableFits = useMemo(
     () => Object.keys(grouped).filter((f) => grouped[f].length),
@@ -54,7 +57,7 @@ export default function AddToCartModal({ show, onHide, product }) {
 
   /* -------- State (NO DEFAULTS) -------- */
 
-  const [fit, setFit] = useState(null);
+  const [fit, setFit] = useState(availableFits[0] || null);
   const [color, setColor] = useState(null);
   const [size, setSize] = useState(null);
   const [qty, setQty] = useState(1);
@@ -62,19 +65,48 @@ export default function AddToCartModal({ show, onHide, product }) {
   /* -------- Auto-select FIT if only one -------- */
 
   useEffect(() => {
-    if (availableFits.length === 1) {
-      setFit(availableFits[0]);
-    } else {
-      setFit(null);
-    }
+    if (!availableFits.length) return;
+
+    // keep previous if still valid, otherwise set first
+    setFit((prev) =>
+      prev && availableFits.includes(prev) ? prev : availableFits[0]
+    );
   }, [availableFits]);
+
+  // console.log(availableFits, availableFits[0], fit, "avail");
 
   /* -------- Colors for selected fit -------- */
 
-  const fitColors = useMemo(() => {
-    if (!fit) return [];
-    return uniqueColors(grouped[fit]);
-  }, [grouped, fit]);
+  // const fitColors = useMemo(() => {
+  //   if (!fit) return [];
+  //   return uniqueColors(grouped[fit]);
+  // }, [grouped, fit]);
+  const colorsForFit = (vs = []) => {
+    const seen = new Set();
+    const list = [];
+    vs.forEach((v) => {
+      if (v?.color && !seen.has(v.color)) {
+        seen.add(v.color);
+        list.push(v.color);
+      }
+    });
+    return list;
+  };
+  const BLACK_SET = new Set(["black", "#000", "#000000"]);
+
+  const blackFirst = (colors = []) => {
+    const isBlack = (c) => BLACK_SET.has(String(c).toLowerCase());
+    return [...colors].sort(
+      (a, b) => (isBlack(b) ? 1 : 0) - (isBlack(a) ? 1 : 0)
+    );
+  };
+
+  const fitVariants = grouped[fit] || [];
+  // const fitColors = useMemo(() => colorsForFit(fitVariants), [fitVariants]);
+  const fitColors = useMemo(
+    () => blackFirst(colorsForFit(fitVariants)),
+    [fitVariants]
+  );
 
   /* -------- Auto-select COLOR if only one -------- */
 
@@ -164,8 +196,8 @@ export default function AddToCartModal({ show, onHide, product }) {
           />
 
           <div>
-            <h6>{product?.title}</h6>
-            <p className='mb-2'>৳ {product?.price}</p>
+            <h6 className='product__item__title'>{product?.title}</h6>
+            <p className='mb-2 product__item__price'>৳ {product?.price}</p>
 
             {/* -------- FIT -------- */}
             <div className='mb-2'>
@@ -175,7 +207,7 @@ export default function AddToCartModal({ show, onHide, product }) {
                   <button
                     key={f}
                     className={`btn btn-sm ms-1 ${
-                      fit === f ? "btn-base" : "btn-outline-base"
+                      fit == f ? "btn-base" : "btn-outline-base"
                     }`}
                     onClick={() => setFit(f)}
                   >
@@ -276,7 +308,11 @@ export default function AddToCartModal({ show, onHide, product }) {
         >
           Cancel
         </Button>
-        <Button variant='warning' onClick={handleAddToCart}>
+        <Button
+          variant=''
+          onClick={handleAddToCart}
+          className='add-to-cart commerce-btn'
+        >
           Add to Cart
         </Button>
       </Modal.Footer>

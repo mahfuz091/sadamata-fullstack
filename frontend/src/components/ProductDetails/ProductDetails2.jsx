@@ -126,6 +126,8 @@ export default function ProductDetails2({ product }) {
   const fitColors = useMemo(() => colorsForFit(fitVariants), [fitVariants]);
   const [color, setColor] = useState(fitColors[0] || "#000");
 
+  console.log(product, "product details");
+
   // keep selected color valid as fit/colors change
   useEffect(() => {
     if (!fitColors.length) return;
@@ -569,15 +571,6 @@ export default function ProductDetails2({ product }) {
                 <div className='populer-feature'>
                   <h4 className='populer-feature__title'>Product Features</h4>
                   <ul className='populer-feature__list list-unstyled'>
-                    {!!product?.features?.length && (
-                      <>
-                        {product.features.map((f) => (
-                          <li key={f.id}>
-                            <i className='fas fa-check-circle' /> {f.content}
-                          </li>
-                        ))}
-                      </>
-                    )}
                     <li>
                       <i className='fas fa-check-circle'></i> Stunning matt
                       finish
@@ -661,17 +654,6 @@ export default function ProductDetails2({ product }) {
                   <div className='product-details__size'>
                     <h4 className='product-details__box__title'>Fit Type:</h4>
 
-                    {/* <select
-      className="form-select"
-      value={fit}
-      onChange={(e) => setFit(e.target.value)}
-    >
-      {availableFits.map((ft) => (
-        <option key={ft} value={ft}>
-          {ft}
-        </option>
-      ))}
-    </select> */}
                     <Select
                       className='fit-select'
                       classNamePrefix='fit'
@@ -724,32 +706,6 @@ export default function ProductDetails2({ product }) {
                     <h4 className='product-details__box__title'>Colors:</h4>
                     <div className='d-flex gap-2 flex-wrap'>
                       {fitColors.map((c) => (
-                        // <button
-                        //   key={c}
-                        //   type='button'
-                        //   onClick={() => {
-                        //     setColor(c);
-                        //     if (showAllForFit) {
-                        //       const idx = colorToIndex[c] ?? 0;
-                        //       if (mainSwiperRef.current)
-                        //         mainSwiperRef.current.slideTo(idx);
-                        //       if (thumbsSwiper?.slideTo)
-                        //         thumbsSwiper.slideTo(idx);
-                        //     }
-                        //   }}
-                        //   aria-label={`Select color ${hexToName(c)}`}
-                        //   title={hexToName(c)}
-                        //   style={{
-                        //     backgroundColor: c,
-                        //     width: 28,
-                        //     height: 28,
-                        //     borderRadius: "50%",
-                        //     border:
-                        //       color === c ? "2px solid #111" : "1px solid #ccc",
-                        //     outline: "none",
-                        //     cursor: "pointer",
-                        //   }}
-                        // />
                         <label
                           key={c}
                           className='color-radio'
@@ -815,14 +771,7 @@ export default function ProductDetails2({ product }) {
                       <i className='far fa-heart'></i>
                     </button>
                   </div>
-                  {/* <div className='product-details__btn__item'>
-                    <button
-                      className='product-details__btn__info'
-                      aria-label='Share'
-                    >
-                      <i className='fas fa-share-alt'></i>
-                    </button>
-                  </div> */}
+
                   <div
                     className='product-details__btn__item position-relative'
                     ref={shareRef}
@@ -907,12 +856,17 @@ export default function ProductDetails2({ product }) {
                 <h2 className='product-info__title'>
                   {product?.title || "Untitled"}
                 </h2>
-                <p className='product-info__text'>
-                  {product?.description || "No description"}
-                </p>
+
                 <div className='product-info__list__info'>
                   <h3 className='product-info__list__title'>About this item</h3>
                   <ul className='product-info__list'>
+                    {!!product?.features?.length && (
+                      <>
+                        {product.features.map((f) => (
+                          <li key={f.id}>{f.content}</li>
+                        ))}
+                      </>
+                    )}
                     <li>
                       Officially Licensed Sadamata The Lion King Apparel for
                       Women - Men - Youth - Toddler; Sadamata Villains T-Shirt;
@@ -926,6 +880,14 @@ export default function ProductDetails2({ product }) {
                       hem
                     </li>
                   </ul>
+                </div>
+                <div className='product-info__list__info'>
+                  <h3 className='product-info__list__title'>
+                    Product Description
+                  </h3>
+                  <p className='product-info__text'>
+                    {product?.description || "No description"}
+                  </p>
                 </div>
                 <div className='product-info__list__info'>
                   <h3 className='product-info__list__title'>Product details</h3>
@@ -944,7 +906,17 @@ export default function ProductDetails2({ product }) {
                       <span>Closure type :</span>Pull On
                     </li>
                     <li>
-                      <span>Date First Available :</span> September 11, 2017
+                      <span>Date First Available :</span>{" "}
+                      {product?.updatedAt
+                        ? new Date(product.updatedAt).toLocaleDateString(
+                            "en-GB",
+                            {
+                              day: "2-digit",
+                              month: "long",
+                              year: "numeric",
+                            }
+                          )
+                        : "N/A"}
                     </li>
                     <li>
                       <span>Manufacturer :</span> Sadamata
@@ -992,7 +964,7 @@ export default function ProductDetails2({ product }) {
         </Container>
       </section>
 
-      <section className='product-reviews'>
+      <section className='product-reviews d-none'>
         <div className='product-reviews__top'>
           <div className='container'>
             <h2 className='circle-rating__title'>Product Reviews</h2>

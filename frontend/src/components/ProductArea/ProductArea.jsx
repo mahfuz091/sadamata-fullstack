@@ -1,466 +1,570 @@
 "use client";
-import React, { useState, useMemo, useEffect } from "react";
+
+import React, {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import ProductAreaTop from "../ProductAreaTop/ProductAreaTop";
 import Image from "next/image";
 import RelatedProducts from "../RelatedProducts/RelatedProducts";
 import Link from "next/link";
+import { searchProducts } from "@/app/actions/search/search.actions";
+import AddToCartModal from "../FeatureProduct/AddToCartModal";
+import { getProductImage } from "@/lib/helper";
+import { toast } from "sonner";
 
 const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE_URL;
 
 export const toPublicUrl = (path) => {
   if (!path) return `/uploads/placeholder.png`;
-  const rel = path.replace(/^\/+/, "");
+  const rel = String(path).replace(/^\/+/, "");
   return `${ASSET_BASE}/${rel}`;
 };
 
-const ProductArea = ({ result, slug, q, brands, mockups }) => {
-  // 🧠 State for filters
-  const [page, setPage] = useState(1);
-  const pageSize = 40;
-  const [sortBy, setSortBy] = useState("views_desc");
+const ProductArea = ({ result: initialResult, slug, q, brands, mockups }) => {
+  const [result, setResult] = useState(initialResult);
+  const isFirstRender = useRef(true);
+  const reqIdRef = useRef(0);
 
-  const [selectedGenders, setSelectedGenders] = useState([]);
-  const [selectedBrands, setSelectedBrands] = useState([]);
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  // UI states
+  const [sortBy, setSortBy] = useState("newest"); // ✅ keep same as backend
+  const [selectedGenders, setSelectedGenders] = useState([]); // MEN/WOMEN/YOUTH/ALL
+  const [selectedBrands, setSelectedBrands] = useState([]); // brand names
+  const [selectedCategories, setSelectedCategories] = useState([]); // mockup names
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
 
-  // 🧩 Handlers
-  const toggleFilter = (value, setter, state) => {
-    if (state.includes(value)) {
-      setter(state.filter((v) => v !== value));
-    } else {
-      setter([...state, value]);
-    }
-  };
+  const [showModal, setShowModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [favorites, setFavorites] = useState([]);
+
+  // server pagination (cursor)
+  const [cursorStack, setCursorStack] = useState([null]); // stack of cursors for Prev
+  const [cursor, setCursor] = useState(null);
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(true);
+
+  const pageSize = 12;
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
-    setPage(1);
-  }, [
-    selectedGenders,
-    selectedBrands,
-    selectedCategories,
-    minPrice,
-    maxPrice,
-    sortBy,
-  ]);
+    setResult(initialResult);
+    setCursorStack([null]);
+    setCursor(null);
+    setHasLoadedOnce(true);
+    isFirstRender.current = true; // reset first-render guard on navigation
+  }, [initialResult]);
 
-  const { allFiltered, paginated } = useMemo(() => {
-    let products = result.items.filter((item) => {
-      const fits = item.variants.map((v) => v.fitType?.toUpperCase?.() || "");
+  const toggleFilter = (value, setter, state) => {
+    if (state.includes(value)) setter(state.filter((v) => v !== value));
+    else setter([...state, value]);
+  };
 
-      if (
-        selectedGenders.length > 0 &&
-        !selectedGenders.includes("ALL") &&
-        !fits.some((fit) => selectedGenders.includes(fit))
-      )
-        return false;
+  const selectGender = (g) => {
+    if (g === "ALL") return setSelectedGenders(["ALL"]);
+    setSelectedGenders([g]); // ✅ only one
+  };
 
-      if (selectedBrands.length > 0 && !selectedBrands.includes(item.brandName))
-        return false;
+  // helper: pick one brandId / mockupName (your server supports brandId, slug)
+  // If you want multi-select at DB level, you need schema + query change.
+  const activeBrandId = useMemo(() => {
+    if (!selectedBrands.length) return null;
+    const firstName = selectedBrands[0];
+    const found = brands.find((b) => b.name === firstName);
+    return found?.id ?? null;
+  }, [selectedBrands, brands]);
 
-      if (
-        selectedCategories.length > 0 &&
-        !selectedCategories.includes(item.mockupName)
-      )
-        return false;
+  const activeSlug = useMemo(() => {
+    if (selectedCategories.length) return selectedCategories[0];
+    if (slug && slug.trim()) return slug;
+    return null; // ⛔ empty string নয়
+  }, [selectedCategories, slug]);
 
-      if (minPrice && item.price < parseFloat(minPrice)) return false;
-      if (maxPrice && item.price > parseFloat(maxPrice)) return false;
+  const activeFitType = useMemo(() => {
+    // backend supports single fitType. If ALL selected, ignore filter.
+    const cleaned = selectedGenders.filter((g) => g !== "ALL");
+    return cleaned.length ? cleaned[0] : null;
+  }, [selectedGenders]);
 
-      return true;
-    });
+  const pickVariantForCard = (product) => {
+    const vs = product?.variants || [];
+    if (!vs.length) return null;
 
-    // --------- SORTING ---------
-    if (sortBy === "price_asc") products.sort((a, b) => a.price - b.price);
-    if (sortBy === "price_desc") products.sort((a, b) => b.price - a.price);
-    if (sortBy === "views_desc")
-      products.sort((a, b) => (b.views || 0) - (a.views || 0));
-
-    // --------- PAGINATION ---------
-    const start = (page - 1) * pageSize;
-    const paginated = products.slice(start, start + pageSize);
-
-    return { allFiltered: products, paginated };
-  }, [
-    result.items,
-    selectedGenders,
-    selectedBrands,
-    selectedCategories,
-    minPrice,
-    maxPrice,
-    sortBy,
-    page,
-  ]);
-
-  // 🧮 Filtered products
-  // const filteredProducts = useMemo(() => {
-  //   return result.items.filter((item) => {
-  //     const gender = item.variants[0]?.fitType?.toUpperCase();
-
-  //     // ✅ Gender filter
-  //     if (
-  //       selectedGenders.length > 0 &&
-  //       !selectedGenders.includes("ALL") && // <-- if "ALL" selected, skip gender filter
-  //       !selectedGenders.includes(gender)
-  //     ) {
-  //       return false;
-  //     }
-
-  //     // ✅ Brand filter
-  //     if (selectedBrands.length > 0 && !selectedBrands.includes(item.brandName))
-  //       return false;
-
-  //     // ✅ Category filter
-  //     if (
-  //       selectedCategories.length > 0 &&
-  //       !selectedCategories.includes(item.mockupName)
-  //     )
-  //       return false;
-
-  //     // ✅ Price filter
-  //     if (minPrice && item.price < parseFloat(minPrice)) return false;
-  //     if (maxPrice && item.price > parseFloat(maxPrice)) return false;
-
-  //     return true;
-  //   });
-  // }, [
-  //   result.items,
-  //   selectedGenders,
-  //   selectedBrands,
-  //   selectedCategories,
-  //   minPrice,
-  //   maxPrice,
-  // ]);
-
-  // const filteredProducts = useMemo(() => {
-  //   return result.items.filter((item) => {
-  //     const fits = item.variants.map(
-  //       (v) => v.fitType?.toUpperCase?.() || ""
-  //     );
-
-  //     // ✅ Gender filter
-  //     if (
-  //       selectedGenders.length > 0 &&
-  //       !selectedGenders.includes("ALL") &&
-  //       !fits.some((fit) => selectedGenders.includes(fit))
-  //     ) {
-  //       return false;
-  //     }
-
-  //     // ✅ Brand filter
-  //     if (selectedBrands.length > 0 && !selectedBrands.includes(item.brandName))
-  //       return false;
-
-  //     // ✅ Category filter
-  //     if (
-  //       selectedCategories.length > 0 &&
-  //       !selectedCategories.includes(item.mockupName)
-  //     )
-  //       return false;
-
-  //     // ✅ Price filter
-  //     if (minPrice && item.price < parseFloat(minPrice)) return false;
-  //     if (maxPrice && item.price > parseFloat(maxPrice)) return false;
-
-  //     return true;
-  //   });
-  // }, [
-  //   result.items,
-  //   selectedGenders,
-  //   selectedBrands,
-  //   selectedCategories,
-  //   minPrice,
-  //   maxPrice,
-  // ]);
-
-  const filteredProducts = useMemo(() => {
-    const products = result.items.filter((item) => {
-      const fits = item.variants.map((v) => v.fitType?.toUpperCase?.() || "");
-
-      if (
-        selectedGenders.length > 0 &&
-        !selectedGenders.includes("ALL") &&
-        !fits.some((fit) => selectedGenders.includes(fit))
-      ) {
-        return false;
-      }
-
-      if (selectedBrands.length > 0 && !selectedBrands.includes(item.brandName))
-        return false;
-
-      if (
-        selectedCategories.length > 0 &&
-        !selectedCategories.includes(item.mockupName)
-      )
-        return false;
-
-      if (minPrice && item.price < parseFloat(minPrice)) return false;
-      if (maxPrice && item.price > parseFloat(maxPrice)) return false;
-
-      return true;
-    });
-
-    // ✅ Sorting
-    if (sortBy === "price_asc") {
-      products.sort((a, b) => a.price - b.price);
-    } else if (sortBy === "price_desc") {
-      products.sort((a, b) => b.price - a.price);
-    } else if (sortBy === "views_desc") {
-      products.sort((a, b) => (b.views || 0) - (a.views || 0));
+    // if user selected a gender, prefer that fitType variant
+    if (activeFitType) {
+      const matched = vs.find(
+        (v) => String(v.fitType || "").toUpperCase() === activeFitType
+      );
+      if (matched) return matched;
     }
 
-    return products;
-  }, [
-    result.items,
-    selectedGenders,
-    selectedBrands,
-    selectedCategories,
-    minPrice,
-    maxPrice,
-    sortBy, // <<— Add this dependency
-  ]);
+    // fallback: prefer MEN -> WOMEN -> YOUTH (or just first)
+    return (
+      vs.find((v) => String(v.fitType || "").toUpperCase() === "MEN") ||
+      vs.find((v) => String(v.fitType || "").toUpperCase() === "WOMEN") ||
+      vs.find((v) => String(v.fitType || "").toUpperCase() === "YOUTH") ||
+      vs[0]
+    );
+  };
 
-  const totalPages = Math.ceil(allFiltered.length / pageSize);
+  // const fetchPage = (nextCursor, pushStack = true) => {
+  //   startTransition(async () => {
+  //     const res = await searchProducts({
+  //       q: q ? String(q) : undefined,
+  //       slug: activeSlug ?? undefined,
+  //       brandId: activeBrandId,
+  //       minPrice: minPrice || null,
+  //       maxPrice: maxPrice || null,
+  //       fitType: activeFitType,
+  //       sort: sortBy,
+  //       pageSize,
+  //       cursor: nextCursor ? JSON.stringify(nextCursor) : null,
+  //     });
+
+  //     setResult(res);
+
+  //     if (pushStack) {
+  //       setCursorStack((s) => [...s, nextCursor]);
+  //     }
+  //     setCursor(nextCursor);
+  //   });
+  // };
+
+  const fetchPage = (nextCursor, pushStack = true) => {
+    const myReqId = ++reqIdRef.current;
+
+    startTransition(async () => {
+      try {
+        const res = await searchProducts({
+          q: q ? String(q) : undefined,
+          slug: activeSlug ?? undefined,
+          brandId: activeBrandId ?? undefined,
+          minPrice: minPrice || null,
+          maxPrice: maxPrice || null,
+          fitType: activeFitType ?? undefined,
+          sort: sortBy,
+          pageSize,
+          cursor: nextCursor ? JSON.stringify(nextCursor) : null,
+        });
+
+        // ✅ ignore old/stale responses
+        if (myReqId !== reqIdRef.current) return;
+
+        // ✅ if server returned nothing, don't nuke UI
+        if (!res || !Array.isArray(res.items)) {
+          console.warn("searchProducts returned invalid:", res);
+          toast.error("Search failed (invalid response)");
+          return;
+        }
+
+        setResult(res);
+        setHasLoadedOnce(true);
+
+        if (pushStack) setCursorStack((s) => [...s, nextCursor]);
+        setCursor(nextCursor);
+      } catch (e) {
+        console.error(e);
+        if (myReqId !== reqIdRef.current) return;
+        toast.error("Search failed");
+        // ✅ don't clear existing products
+        setHasLoadedOnce(true);
+      }
+    });
+  };
+
+  // when filters/sort change -> reset to first page
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return; // ⛔ initial server data overwrite করো না
+    }
+    setCursorStack([null]);
+    setCursor(null);
+    fetchPage(null, false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [q, activeSlug, activeBrandId, minPrice, maxPrice, activeFitType, sortBy]);
+
+  const safeItems = result?.items || [];
+  const hasMore = !!result?.hasMore;
+  const nextCursor = result?.nextCursor || null;
+
+  // UI only (local) filtering for multi-select brand/category এখনও client-side (optional)
+  // কিন্তু scalable করতে চাইলে multi-select DB query দরকার।
+  const itemsForGrid = useMemo(() => {
+    let items = [...safeItems];
+
+    // Multi-brand UI filter (client-side)
+    if (selectedBrands.length) {
+      items = items.filter((it) => selectedBrands.includes(it.brandName));
+    }
+
+    // Multi-category UI filter (client-side)
+    if (selectedCategories.length) {
+      items = items.filter((it) => selectedCategories.includes(it.mockupName));
+    }
+
+    return items;
+  }, [safeItems, selectedBrands, selectedCategories]);
+
+  const currentPage = cursorStack.length; // 1-based
+
+  useEffect(() => {
+    console.log(
+      "activeFitType:",
+      activeFitType,
+      "items:",
+      result?.items?.length
+    );
+  }, [activeFitType, result]);
+
+  const toggleFavorite = (product) => {
+    let action = null;
+    let nextFavorites = [];
+
+    setFavorites((prev) => {
+      const exists = prev.some((p) => p.id === product.id);
+
+      if (exists) {
+        action = "remove";
+        nextFavorites = prev.filter((p) => p.id !== product.id);
+      } else {
+        action = "add";
+        nextFavorites = [
+          ...prev,
+          {
+            id: product.id,
+            productId: product.productId,
+            title: product.title,
+            price: product.price,
+            image: getProductImage(product),
+          },
+        ];
+      }
+
+      return nextFavorites; // ✅ PURE
+    });
+
+    // ✅ Side-effects AFTER render
+    queueMicrotask(() => {
+      localStorage.setItem("favorite_products", JSON.stringify(nextFavorites));
+
+      if (action === "add") {
+        toast.success("Added to favorites", {
+          description: product.title,
+        });
+      } else if (action === "remove") {
+        toast.success("Removed from favorites", {
+          description: product.title,
+        });
+      }
+
+      window.dispatchEvent(new Event("favorite-updated"));
+    });
+  };
+
+  const showEmpty =
+    !isPending &&
+    hasLoadedOnce &&
+    Array.isArray(result?.items) &&
+    result.items.length === 0;
 
   return (
-    <section className="product-area">
-      <Container fluid>
-        <ProductAreaTop
-          slug={slug}
-          q={q}
-          result={result}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-        />
-        <div className="product-area__inner">
-          {/* Sidebar */}
-          <aside className="sidebar__menu">
-            <ul className="sidebar__menu__area list-unstyled">
-              {/* Gender Filter */}
-              <li className="sidebar__menu__area__item">
-                <a href="#" className="sidebar__menu__title">
-                  Gender
-                </a>
-                <ul className="sidebar__menu__sub-menu list-unstyled">
-                  {["MEN", "WOMEN", "YOUTH", "ALL"].map((g) => (
-                    <li className="checkbox" key={g}>
-                      <input
-                        type="checkbox"
-                        id={`gender-${g}`}
-                        checked={selectedGenders.includes(g)}
-                        onChange={() =>
-                          toggleFilter(g, setSelectedGenders, selectedGenders)
-                        }
-                      />
-                      <label htmlFor={`gender-${g}`}>
-                        <span></span>
-                        {g.charAt(0) + g.slice(1).toLowerCase()}
-                      </label>
-                    </li>
-                  ))}
-                </ul>
-              </li>
+    <>
+      <section className='product-area'>
+        <Container fluid>
+          <ProductAreaTop
+            slug={activeSlug}
+            q={q}
+            result={result}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+          />
 
-              {/* Price Range Filter */}
-              <li className="sidebar__menu__area__item">
-                <a href="#" className="sidebar__menu__title">
-                  Price Range
-                </a>
-                <ul className="sidebar__menu__sub-menu list-unstyled">
-                  <li className="price-input-box">
-                    <div className="price-input">
-                      <select>
-                        <option>TK</option>
-                      </select>
-                      <input
-                        type="number"
-                        placeholder="Minimum price"
-                        value={minPrice}
-                        onChange={(e) => setMinPrice(e.target.value)}
-                      />
-                    </div>
-                  </li>
-                  <li className="price-input-box">
-                    <div className="price-input">
-                      <select>
-                        <option>TK</option>
-                      </select>
-                      <input
-                        type="number"
-                        placeholder="Maximum price"
-                        value={maxPrice}
-                        onChange={(e) => setMaxPrice(e.target.value)}
-                      />
-                    </div>
-                  </li>
-                </ul>
-              </li>
+          <div className='product-area__inner'>
+            {/* Sidebar */}
+            <aside className='sidebar__menu'>
+              <ul className='sidebar__menu__area list-unstyled'>
+                {/* Gender */}
+                <li className='sidebar__menu__area__item'>
+                  <a
+                    href='#'
+                    className='sidebar__menu__title'
+                    onClick={(e) => e.preventDefault()}
+                  >
+                    Gender
+                  </a>
+                  <ul className='sidebar__menu__sub-menu list-unstyled'>
+                    {["MEN", "WOMEN", "ALL"].map((g) => (
+                      <li className='checkbox' key={g}>
+                        <input
+                          type='checkbox'
+                          id={`gender-${g}`}
+                          checked={selectedGenders.includes(g)}
+                          // onChange={() =>
+                          //   toggleFilter(g, setSelectedGenders, selectedGenders)
+                          // }
+                          onChange={() => selectGender(g)}
+                        />
+                        <label htmlFor={`gender-${g}`}>
+                          <span></span>
+                          {g.charAt(0) + g.slice(1).toLowerCase()}
+                        </label>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
 
-              {/* Category Filter */}
-              <li className="sidebar__menu__area__item">
-                <a href="#" className="sidebar__menu__title">
-                  Category
-                </a>
-                <ul className="sidebar__menu__sub-menu list-unstyled">
-                  {mockups.map((m) => (
-                    <li className="checkbox" key={m.id}>
-                      <input
-                        type="checkbox"
-                        id={`cat-${m.id}`}
-                        checked={selectedCategories.includes(m.name)}
-                        onChange={() =>
-                          toggleFilter(
-                            m.name,
-                            setSelectedCategories,
-                            selectedCategories
-                          )
-                        }
-                      />
-                      <label htmlFor={`cat-${m.id}`}>
-                        <span></span>
-                        {m.name}
-                      </label>
-                    </li>
-                  ))}
-                  <li className="checkbox-link">
-                    <a href="#">Show All Categories</a>
-                  </li>
-                </ul>
-              </li>
-
-              {/* Brand Filter */}
-              <li className="sidebar__menu__area__item">
-                <a href="#" className="sidebar__menu__title">
-                  Brand Name
-                </a>
-                <ul className="sidebar__menu__sub-menu list-unstyled">
-                  {brands.map((b) => (
-                    <li className="checkbox" key={b.id || b.name}>
-                      <input
-                        type="checkbox"
-                        id={`brand-${b.name}`}
-                        checked={selectedBrands.includes(b.name)}
-                        onChange={() =>
-                          toggleFilter(
-                            b.name,
-                            setSelectedBrands,
-                            selectedBrands
-                          )
-                        }
-                      />
-                      <label htmlFor={`brand-${b.name}`}>
-                        <span></span>
-                        {b.name}
-                      </label>
-                    </li>
-                  ))}
-                  <li className="checkbox-link">
-                    <a href="#">Show All</a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </aside>
-
-          {/* Product Grid */}
-          <div className="product-area__content">
-            <Row className="gutter-y-32 gutter-x-32">
-              {paginated.length > 0 ? (
-                paginated.map((item) => (
-                  <Col xl={3} lg={4} md={6} key={item.id}>
-                    <div className="product__item">
-                      <div className="product__item__img">
-                        <div className="product__item__img__item">
-                          <Image
-                            src={toPublicUrl(item.variants[0].frontImg)}
-                            alt="product image"
-                            width={300}
-                            height={300}
-                          />
-                        </div>
-                        <div className="product__item__btn">
-                          <a href="#">
-                            <i className="far fa-heart"></i>
-                          </a>
-                        </div>
+                {/* Price */}
+                <li className='sidebar__menu__area__item'>
+                  <a
+                    href='#'
+                    className='sidebar__menu__title'
+                    onClick={(e) => e.preventDefault()}
+                  >
+                    Price Range
+                  </a>
+                  <ul className='sidebar__menu__sub-menu list-unstyled'>
+                    <li className='price-input-box'>
+                      <div className='price-input'>
+                        <select>
+                          <option>TK</option>
+                        </select>
+                        <input
+                          type='number'
+                          placeholder='Minimum price'
+                          value={minPrice}
+                          onChange={(e) => setMinPrice(e.target.value)}
+                        />
                       </div>
-                      <div className="product__item__content">
-                        <p className="product__item__brand">
-                          Brand: <a href="#">{item.brandName}</a>
-                        </p>
-                        <h4 className="product__item__title">
-                          <Link href={`/products/${item.productId}`}>
-                            {item.title}
-                          </Link>
-                        </h4>
-                        <div className="product__item__box">
-                          <div className="product__item__price">
-                            ৳ {item.price}
-                          </div>
-                          <div className="product__item__ratings">
-                            <i className="fas fa-star"></i>
-                            <i className="fas fa-star"></i>
-                            <i className="fas fa-star"></i>
-                            <i className="fas fa-star"></i>
-                            <i className="fas fa-star"></i>
-                            <span>4.9 (65)</span>
-                          </div>
-                        </div>
-                        <Link
-                          href={`/products/${item.productId}`}
-                          className="commerce-btn product__item__link"
-                        >
-                          Add to Cart <i className="icon-right-arrow"></i>
-                        </Link>
+                    </li>
+                    <li className='price-input-box'>
+                      <div className='price-input'>
+                        <select>
+                          <option>TK</option>
+                        </select>
+                        <input
+                          type='number'
+                          placeholder='Maximum price'
+                          value={maxPrice}
+                          onChange={(e) => setMaxPrice(e.target.value)}
+                        />
                       </div>
-                    </div>
-                  </Col>
-                ))
-              ) : (
-                <p>No products found.</p>
-              )}
-            </Row>
+                    </li>
+                  </ul>
+                </li>
 
-            <div className="post-pagination">
-              {/* Previous */}
-              <button
-                className="previous"
-                disabled={page === 1}
-                onClick={() => setPage(page - 1)}
-              >
-                <i className="icon-left-arrow"></i> Previous
-              </button>
+                {/* Category */}
+                <li className='sidebar__menu__area__item'>
+                  <a
+                    href='#'
+                    className='sidebar__menu__title'
+                    onClick={(e) => e.preventDefault()}
+                  >
+                    Category
+                  </a>
+                  <ul className='sidebar__menu__sub-menu list-unstyled'>
+                    {mockups.map((m) => (
+                      <li className='checkbox' key={m.id}>
+                        <input
+                          type='checkbox'
+                          id={`cat-${m.id}`}
+                          checked={selectedCategories.includes(m.name)}
+                          onChange={() =>
+                            toggleFilter(
+                              m.name,
+                              setSelectedCategories,
+                              selectedCategories
+                            )
+                          }
+                        />
+                        <label htmlFor={`cat-${m.id}`}>
+                          <span></span>
+                          {m.name}
+                        </label>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
 
-              <ul className="post-pagination-list justify-content-center">
-                {[...Array(totalPages)].map((_, i) => (
-                  <li key={i}>
-                    <button
-                      className={page === i + 1 ? "active" : ""}
-                      onClick={() => setPage(i + 1)}
-                    >
-                      {i + 1}
-                    </button>
-                  </li>
-                ))}
+                {/* Brand */}
+                <li className='sidebar__menu__area__item'>
+                  <a
+                    href='#'
+                    className='sidebar__menu__title'
+                    onClick={(e) => e.preventDefault()}
+                  >
+                    Brand Name
+                  </a>
+                  <ul className='sidebar__menu__sub-menu list-unstyled'>
+                    {brands.map((b) => (
+                      <li className='checkbox' key={b.id}>
+                        <input
+                          type='checkbox'
+                          id={`brand-${b.id}`}
+                          checked={selectedBrands.includes(b.name)}
+                          onChange={() =>
+                            toggleFilter(
+                              b.name,
+                              setSelectedBrands,
+                              selectedBrands
+                            )
+                          }
+                        />
+                        <label htmlFor={`brand-${b.id}`}>
+                          <span></span>
+                          {b.name}
+                        </label>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
               </ul>
+            </aside>
 
-              {/* Next */}
-              <button
-                className="next"
-                disabled={page === totalPages}
-                onClick={() => setPage(page + 1)}
-              >
-                Next <i className="icon-right-arrow"></i>
-              </button>
+            {/* Grid */}
+            <div className='product-area__content'>
+              {isPending && <p style={{ padding: 8 }}>Loading...</p>}
+
+              <Row className='gutter-y-32 gutter-x-32'>
+                {itemsForGrid.length > 0
+                  ? itemsForGrid.map((item) => {
+                      const cardVariant = pickVariantForCard(item);
+                      const img =
+                        cardVariant?.frontImg || cardVariant?.backImg || null;
+                      const isFavorite = favorites.some(
+                        (p) => p.id === item.id
+                      );
+
+                      return (
+                        <Col xl={3} lg={4} md={6} key={item.id}>
+                          <div className='product__item'>
+                            <div className='product__item__img'>
+                              <Link
+                                href={`/products/${item?.productId}`}
+                                className='product__item__img__item d-block'
+                              >
+                                <Image
+                                  src={toPublicUrl(img)}
+                                  alt={item.title || "product image"}
+                                  width={300}
+                                  height={300}
+                                />
+                              </Link>
+                              {/* <div className='product__item__btn'>
+                                <a href='#' onClick={(e) => e.preventDefault()}>
+                                  <i className='far fa-heart'></i>
+                                </a>
+                              </div> */}
+                              <div
+                                className='product__item__btn position-absolute top-0 end-0 p-3'
+                                style={{ cursor: "pointer" }}
+                                onClick={() => toggleFavorite(item)}
+                              >
+                                <div
+                                  className={`heart ${
+                                    isFavorite ? "active" : ""
+                                  }`}
+                                >
+                                  <i
+                                    className={
+                                      isFavorite
+                                        ? "far fa-heart"
+                                        : "far fa-heart"
+                                    }
+                                  ></i>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className='product__item__content'>
+                              <p className='product__item__brand'>
+                                Brand:{" "}
+                                <a href='#' onClick={(e) => e.preventDefault()}>
+                                  {item.brandName || "N/A"}
+                                </a>
+                              </p>
+
+                              <h4 className='product__item__title'>
+                                <Link href={`/products/${item.productId}`}>
+                                  {item.title}
+                                </Link>
+                              </h4>
+
+                              <div className='product__item__box'>
+                                <div className='product__item__price'>
+                                  ৳ {item.price}
+                                </div>
+                              </div>
+
+                              <button
+                                className='commerce-btn product__item__link mt-2'
+                                onClick={() => {
+                                  setSelectedProduct({
+                                    ...item,
+                                    _preferredFit: activeFitType,
+                                  });
+                                  setShowModal(true);
+                                }}
+                              >
+                                Add to Cart <i className='icon-right-arrow'></i>
+                              </button>
+                            </div>
+                          </div>
+                        </Col>
+                      );
+                    })
+                  : showEmpty && <p>No products found.</p>}
+              </Row>
+
+              {/* Pagination (cursor-based) */}
+              <div className='post-pagination' style={{ marginTop: 24 }}>
+                <button
+                  className='previous'
+                  disabled={cursorStack.length <= 1 || isPending}
+                  onClick={() => {
+                    // pop current cursor and go back
+                    setCursorStack((s) => {
+                      if (s.length <= 1) return s;
+                      const next = s.slice(0, -1);
+                      const prevCursor = next[next.length - 1] || null;
+                      fetchPage(prevCursor, false);
+                      return next;
+                    });
+                  }}
+                >
+                  <i className='icon-left-arrow'></i> Previous
+                </button>
+
+                <span style={{ padding: "0 12px" }}>Page {currentPage}</span>
+
+                <button
+                  className='next'
+                  disabled={!hasMore || isPending}
+                  onClick={() => {
+                    fetchPage(nextCursor, true);
+                  }}
+                >
+                  Next <i className='icon-right-arrow'></i>
+                </button>
+              </div>
+
+              <RelatedProducts />
             </div>
-
-            <RelatedProducts />
           </div>
-        </div>
-      </Container>
-    </section>
+        </Container>
+      </section>
+
+      {selectedProduct && (
+        <AddToCartModal
+          show={showModal}
+          onHide={() => setShowModal(false)}
+          product={selectedProduct}
+        />
+      )}
+    </>
   );
 };
 

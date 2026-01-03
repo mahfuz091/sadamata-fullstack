@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import {
   PUBLIC_PRODUCT_INCLUDE,
   PUBLIC_PRODUCT_WHERE,
+  PUBLIC_VARIANT_WHERE,
 } from "@/lib/productQuery";
 // Adjust this path to match your Prisma client output.
 // From your schema it looks like: output = "../src/generated/prisma"
@@ -40,7 +41,9 @@ const commonProductInclude = {
   Mockup: true,
   features: true,
   tags: true,
-  variants: true,
+  variants: {
+    where: PUBLIC_VARIANT_WHERE,
+  },
 };
 
 export async function getAllProducts({ page = 1, pageSize = 24 } = {}) {
@@ -72,8 +75,12 @@ export async function getAllProducts({ page = 1, pageSize = 24 } = {}) {
         Mockup: true,
         features: true,
         tags: true,
-        variants: true,
+        variants: {
+          where: PUBLIC_VARIANT_WHERE,
+        },
       },
+      // ✅ ONLY ACTIVE VARIANTS
+
       // include: commonProductInclude,
     }),
   ]);
@@ -101,13 +108,27 @@ export async function getProducts(input = {}) {
   } = input;
 
   // -------------------- Filters --------------------
-  const orSearch = q
-    ? [
-        { title: { contains: q, mode: "insensitive" } },
-        { description: { contains: q, mode: "insensitive" } },
-        { tags: { some: { value: { contains: q, mode: "insensitive" } } } },
-      ]
-    : undefined;
+  const buildQOr = (q) => {
+    const raw = q.trim();
+    if (!raw) return undefined;
+
+    const alts = Array.from(
+      new Set([
+        raw,
+        raw.replace(/[-_]/g, " "), // t-shirt -> t shirt
+        raw.replace(/[^a-z0-9]/gi, ""), // t shirt -> tshirt
+        raw.replace(/\s+/g, "-"), // t shirt -> t-shirt
+      ])
+    ).filter(Boolean);
+
+    return alts.flatMap((term) => [
+      { title: { contains: term, mode: "insensitive" } },
+      { description: { contains: term, mode: "insensitive" } },
+      { tags: { some: { value: { contains: term, mode: "insensitive" } } } },
+    ]);
+  };
+
+  const orSearch = q ? buildQOr(q) : undefined;
 
   // const variantsFilter =
   //   (Array.isArray(fitType) && fitType.length) ||
@@ -139,17 +160,7 @@ export async function getProducts(input = {}) {
   const where = {
     AND: [
       PUBLIC_PRODUCT_WHERE,
-      q
-        ? {
-            OR: [
-              { title: { contains: q, mode: "insensitive" } },
-              { description: { contains: q, mode: "insensitive" } },
-              {
-                tags: { some: { value: { contains: q, mode: "insensitive" } } },
-              },
-            ],
-          }
-        : {},
+      orSearch ? { OR: orSearch } : {},
       variantsFilter ? { variants: variantsFilter } : {},
     ],
   };

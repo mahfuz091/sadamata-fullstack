@@ -40,8 +40,7 @@ const customStyles = {
 const Header = ({ session, categories }) => {
   const scrollToTop = useScrollUp(500);
 
-  useEffect;
-  console.log(session, "session header");
+  // console.log(session, "session header");
 
   const [options, setOptions] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -82,7 +81,7 @@ const Header = ({ session, categories }) => {
       try {
         const res = await fetch("/api/mockups", { cache: "no-store" });
         const data = await res.json();
-        console.log(data, "data");
+        // console.log(data, "data");
 
         if (mounted) setOptions(data?.options ?? []);
       } catch (e) {

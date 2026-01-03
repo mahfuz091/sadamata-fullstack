@@ -270,7 +270,8 @@ exports.Prisma.ProductCategoryScalarFieldEnum = {
   id: 'id',
   name: 'name',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  sortOrder: 'sortOrder'
 };
 
 exports.Prisma.SaleScalarFieldEnum = {

@@ -12,17 +12,19 @@ export default function ActivationNotice() {
             <h3>Account Created Successfully</h3>
 
             <p style={{ marginTop: "12px" }}>
-              Your account has been created but is not active yet.
+              Your account has been created successfully, but it is not active
+              yet.
             </p>
 
             <p style={{ marginTop: "8px" }}>
-              Please check your <strong>Email / Phone</strong> for activation
-              instructions or wait for admin approval.
+              Please check your email or phone for activation instructions. If
+              required, your account will be reviewed and approved by our admin
+              team.
             </p>
 
             <div style={{ marginTop: "20px" }}>
-              <Link href='/login' className='commerce-btn text-white'>
-                Go to Login
+              <Link href='/signin' className='commerce-btn text-white'>
+                Go to Sign in
               </Link>
             </div>
           </div>

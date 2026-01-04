@@ -575,7 +575,7 @@ export default function VendorRegister() {
             <div className='user-login user-login--two'>
               <div className='user-login__inner'>
                 <div className='user-login__top'>
-                  <h4 className='user-login__top__title'>Create account</h4>
+                  <h4 className='user-login__top__title'>Create an account</h4>
                   <p className='user-login__top__text'>
                     All fields are required
                   </p>
@@ -602,13 +602,15 @@ export default function VendorRegister() {
 
                   {/* Contact */}
                   <div className='user-login__form-input-box'>
-                    <label htmlFor='contact'>Email or Phone</label>
+                    <label htmlFor='contact'>
+                      Email address or mobile number
+                    </label>
                     <input
                       className={inputClass(errorsStep1.contact)}
                       type='text'
                       id='contact'
                       name='contact'
-                      placeholder='Enter your email or phone number'
+                      placeholder='Enter your email address or mobile number'
                       value={account.contact}
                       onChange={handleAccountChange}
                       required
@@ -635,7 +637,7 @@ export default function VendorRegister() {
                       <span className='icon'>
                         <Image src={info} alt='icon' />
                       </span>{" "}
-                      Passwords must be at least 6 characters.
+                      Password must be at least 6 characters long.
                     </p>
                     {errorsStep1.password && (
                       <p className='form-error'>{errorsStep1.password}</p>
@@ -644,13 +646,13 @@ export default function VendorRegister() {
 
                   {/* Confirm */}
                   <div className='user-login__form-input-box'>
-                    <label htmlFor='confirmPassword'>Re-enter password</label>
+                    <label htmlFor='confirmPassword'>Confirm password</label>
                     <input
                       className={inputClass(errorsStep1.confirmPassword)}
                       type='password'
                       id='confirmPassword'
                       name='confirmPassword'
-                      placeholder='Enter your new password again'
+                      placeholder='Enter your password again'
                       value={account.confirmPassword}
                       onChange={handleAccountChange}
                       required
@@ -673,12 +675,13 @@ export default function VendorRegister() {
                       className='commerce-btn'
                       disabled={!canNextFromStep1}
                     >
-                      Next: Profile <i className='icon-right-arrow' />
+                      Continue
                     </button>
+
                     <p className='mt-2'>
-                      By continuing, you agree to{" "}
-                      <Link href='#'>conditions of use</Link> and{" "}
-                      <Link href='#'>privacy notice</Link>.
+                      By continuing, you agree to Sadamata’s{" "}
+                      <Link href='#'>Terms & Conditions</Link> and{" "}
+                      <Link href='#'>Privacy Policy</Link>.
                     </p>
                   </div>
                 </div>
@@ -723,7 +726,7 @@ export default function VendorRegister() {
                             type='date'
                             id='birth-yard'
                             name='birthYard'
-                            placeholder='YYYY-MM-DD'
+                            placeholder='DD/MM/YYYY'
                             value={profile.birthYard}
                             onChange={handleProfileChange}
                             required
@@ -771,7 +774,7 @@ export default function VendorRegister() {
 
                         <div className='form-one__control'>
                           <label htmlFor='nid-number'>
-                            NID/Passport number
+                            NID or Passport number
                           </label>
                           <input
                             className={inputClass(errorsStep2.nidNumber)}
@@ -900,9 +903,7 @@ export default function VendorRegister() {
                         </div>
 
                         <div className='form-one__control'>
-                          <label htmlFor='branch-name'>
-                            Where is the bank located?
-                          </label>
+                          <label htmlFor='branch-name'>Branch name</label>
                           <input
                             className={inputClass(errorsStep2.branchName)}
                             type='text'
@@ -923,13 +924,15 @@ export default function VendorRegister() {
 
                       <div className='form-one__group-two'>
                         <div className='form-one__control'>
-                          <label htmlFor='account-name'>Account Name</label>
+                          <label htmlFor='account-name'>
+                            Account holder name
+                          </label>
                           <input
                             className={inputClass(errorsStep2.accountName)}
                             type='text'
                             id='account-name'
                             name='accountName'
-                            placeholder='Your full name'
+                            placeholder='Enter account holder name'
                             value={profile.accountName}
                             onChange={handleProfileChange}
                             required
@@ -1026,8 +1029,7 @@ export default function VendorRegister() {
                     className='commerce-btn'
                     disabled={submitting || !canSubmitStep2}
                   >
-                    {submitting ? "Submitting..." : "Submit Registration"}{" "}
-                    <i className='icon-right-arrow' />
+                    {submitting ? "Submitting..." : "Submit for review"}{" "}
                   </button>
                 </div>
               </div>

@@ -2,6 +2,7 @@ import Image from "next/image";
 import React from "react";
 import payment from "@/assets/images/shapes/payment.png";
 import logoFooter from "@/assets/images/logo-footer.png";
+import Link from "next/link";
 
 const Footer = () => {
   return (
@@ -17,19 +18,29 @@ const Footer = () => {
                   data-wow-delay='700ms'
                 >
                   <div className='footer-widget__logo'>
-                    <a href='#' className='logo'>
+                    {/* <a href='#' className='logo'>
                       <Image
                         src='/logo-sadamata.svg'
                         width={350}
                         height={50}
                         alt='logo'
                       />
-                    </a>
+                    </a> */}
+                    <h4 className='footer-widget__title'>
+                      Instant Live Support via Discord
+                    </h4>
                   </div>
                   <p className='footer-widget__text'>
-                    Join an elite group of traders with real-time insights,
-                    institutional-level strategies, and the power of a private
-                    trading network.
+                    Get instant help through our dedicated Discord community.
+                    Connect with our support team and fellow creators in real
+                    time for quick assistance, updates, and discussions.{" "}
+                    <Link
+                      href='https://discord.com/invite/sadamata'
+                      target='_blank'
+                    >
+                      {" "}
+                      Join Discord Support{" "}
+                    </Link>
                   </p>
                   <div className='footer-widget__social'>
                     <h4 className='footer-widget__social__title'>Follow Us</h4>
@@ -160,10 +171,10 @@ const Footer = () => {
                             Phone Number
                           </span>
                           <a
-                            href='tel:+8801717012170'
+                            href='tel:+8801713951922'
                             className='footer-widget__contact__link'
                           >
-                            +880 1717 012170
+                            +880 1713 951922
                           </a>
                         </div>
                       </div>
@@ -178,11 +189,11 @@ const Footer = () => {
                             Email :{" "}
                           </span>
                           <a
-                            href='mailto:support@sadamata.com
+                            href='mailto:merch-support@sadamata.com
 '
                             className='footer-widget__contact__link'
                           >
-                            support@sadamata.com
+                            merch-support@sadamata.com
                           </a>
                         </div>
                       </div>
@@ -200,8 +211,8 @@ const Footer = () => {
                             href='https://www.google.com/maps'
                             className='footer-widget__contact__link'
                           >
-                            159/12, Mannan Soroni, West Shawrapara, Mirpur-1216,
-                            Dhaka, BD
+                            159 Mannan Soroni, West Shawrapara, Mirpur-1216,
+                            Dhaka, BD.
                           </a>
                         </div>
                       </div>
@@ -223,8 +234,8 @@ const Footer = () => {
               data-wow-delay='500ms'
             >
               <p className='main-footer__copyright'>
-                &copy; Copyright {new Date().getFullYear()}
-                <span className='name'> Sadmata PLC</span> All rights reserved.
+                &copy; {new Date().getFullYear()}
+                <span className='name'> Sadmata.</span> All rights reserved.
               </p>
 
               {/* <div className='main-footer__bottom__payment'>

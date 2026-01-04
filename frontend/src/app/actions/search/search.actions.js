@@ -3,6 +3,7 @@
 // =============================
 "use server";
 
+import { FitType } from "@/generated/prisma";
 import prisma from "@/lib/prisma";
 
 /**
@@ -120,16 +121,22 @@ import prisma from "@/lib/prisma";
 // }
 
 export async function searchProducts(input) {
+  const distinctFits = await prisma.productVariant.findMany({
+    distinct: ["fitType"],
+    select: { fitType: true },
+  });
+  console.log("DISTINCT FIT TYPES:", distinctFits);
+
   const params =
     input instanceof FormData
       ? Object.fromEntries(input.entries())
       : input || {};
 
   const toNum = (x) => {
+    if (x === null || x === undefined || x === "") return null;
     const v = Number(x);
     return Number.isFinite(v) ? v : null;
   };
-
   const q = params.q?.toString().trim() || null;
   const slug = params.slug?.toString().trim() || null; // Mockup.name
   const brandId = params.brandId?.toString() || null;
@@ -139,7 +146,9 @@ export async function searchProducts(input) {
 
   const color = params.color?.toString().trim() || null;
   const fitTypeRaw = params.fitType?.toString().trim() || null;
-  const fitType = fitTypeRaw ? fitTypeRaw.toUpperCase() : null;
+  const fitType = fitTypeRaw ? FitType[fitTypeRaw.toUpperCase()] ?? null : null;
+
+  console.log("FIT:", fitType);
 
   // const fitType = params.fitType?.toString().trim() || null;
   const tag = params.tag?.toString().trim() || null;
@@ -196,6 +205,9 @@ export async function searchProducts(input) {
   };
 
   const qOr = q ? buildQOr(q) : null;
+  const activeVariantWhere = {
+    OR: [{ isActive: true }, { isActive: null }],
+  };
 
   // ---------- WHERE ----------
   // IMPORTANT: these will hide drafts (as you wanted for public)
@@ -203,7 +215,8 @@ export async function searchProducts(input) {
     isActive: true,
     visibility: true,
     AND: [
-      { variants: { some: { isActive: true } } },
+      // { variants: { some: { isActive: true } } },
+      { variants: { some: activeVariantWhere } },
       qOr ? { OR: qOr } : null,
 
       slug
@@ -228,8 +241,7 @@ export async function searchProducts(input) {
         ? {
             variants: {
               some: {
-                isActive: true,
-                fitType: fitType, // ✅ MEN/WOMEN/YOUTH
+                fitType: fitType, // MEN/WOMEN/YOUTH
               },
             },
           }
@@ -240,6 +252,35 @@ export async function searchProducts(input) {
         : null,
     ].filter(Boolean),
   };
+  if (fitType) {
+    const productCount = await prisma.product.count({
+      where: {
+        isActive: true,
+        visibility: true,
+        AND: [
+          { variants: { some: { isActive: true } } },
+          { variants: { some: { isActive: true, fitType } } },
+          qOr ? { OR: qOr } : null,
+          slug
+            ? {
+                Mockup: {
+                  is: { name: { contains: slug, mode: "insensitive" } },
+                },
+              }
+            : null,
+          brandId ? { brandId } : null,
+          minPrice != null ? { price: { gte: minPrice } } : null,
+          maxPrice != null ? { price: { lte: maxPrice } } : null,
+        ].filter(Boolean),
+      },
+    });
+
+    console.log("DEBUG productCount with fitType", fitType, "=>", productCount);
+  }
+
+  console.log("FIT:", fitType);
+  const hit = await prisma.product.count({ where });
+  console.log("COUNT:", hit);
 
   // ---------- ORDER BY ----------
   // For cursor paging, ALWAYS include a stable tiebreaker (id)
@@ -287,6 +328,8 @@ export async function searchProducts(input) {
 
   const finalWhere = cursorWhere ? { AND: [where, cursorWhere] } : where;
 
+  //
+
   // ---------- FETCH (take+1 for hasMore) ----------
   const products = await prisma.product.findMany({
     where: finalWhere,
@@ -296,8 +339,14 @@ export async function searchProducts(input) {
       Brand: { select: { id: true, name: true } },
       Mockup: { select: { id: true, name: true } },
       variants: {
-        where: { isActive: true }, // ✅ only active variants
-        select: { color: true, fitType: true, frontImg: true, backImg: true },
+        where: activeVariantWhere,
+        select: {
+          color: true,
+          fitType: true,
+          frontImg: true,
+          backImg: true,
+          isActive: true,
+        },
       },
       tags: { select: { value: true } },
     },
@@ -315,13 +364,14 @@ export async function searchProducts(input) {
     brandId: p.brandId ?? null,
     brandName: p.Brand?.name ?? p.brandName ?? null,
     mockupName: p.Mockup?.name ?? null,
-    isActive: p.isActive,
+    // isActive: p.isActive,
     visibility: p.visibility,
     variants: p.variants.map((v) => ({
       color: v.color,
       fitType: v.fitType,
       frontImg: v.frontImg,
       backImg: v.backImg,
+      isActive: v.isActive,
     })),
     tags: p.tags.map((t) => t.value),
   }));

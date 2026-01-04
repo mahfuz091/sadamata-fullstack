@@ -42,18 +42,6 @@ const HeaderTwo = ({ session }) => {
             </div>
             <div className='main-header__right'>
               <div className='mobile-nav__info'>
-                {/* {session?.user ? (
-                  <button onClick={logOut} className='commerce-btn'>
-                    Logout {session.user.name}
-                  </button>
-                ) : (
-                  <>
-                    <Link href='/login' className='commerce-btn login'>
-                      Login
-                    </Link>
-                   
-                  </>
-                )} */}
                 <div className='mobile-nav__info flex items-center gap-3'>
                   {session?.user ? (
                     <div className='relative' ref={dropdownRef}>
@@ -98,8 +86,8 @@ const HeaderTwo = ({ session }) => {
                     </div>
                   ) : (
                     <>
-                      <Link href='/login' className='commerce-btn login'>
-                        Login
+                      <Link href='/signin' className='commerce-btn login'>
+                        Sign In
                       </Link>
                     </>
                   )}

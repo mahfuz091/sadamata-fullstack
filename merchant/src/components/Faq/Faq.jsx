@@ -25,14 +25,14 @@ const faqs = [
   },
   {
     question:
-      "I want to upload a product design to Amazon Merch on Demand. Can I submit the same design to another website or manufacturer?",
+      "I want to upload a product design to Sadamata Made Merch. Can I submit the same design to another website or manufacturer?",
     answer:
       "Yes. Sadamata Made Merch is non-exclusive, which means you are free to submit the same design to other websites or manufacturers.",
   },
   {
     question: "What shipping options do my customers get?",
     answer:
-      "Yes. Sadamata Made Merch offers fast delivery: within Dhaka, a delivery charge of 50 BDT ensures delivery in 24–48 hours, and across Bangladesh, a 100 BDT delivery charge ensures delivery in 48–72 hours. Free delivery is also available for orders above 2,000 BDT within Dhaka and above 5,000 BDT nationwide.",
+      "Yes. Sadamata Made Merch provides fast order delivery with no delivery charges. Please note that since this is a customized product marketplace, Cash on Delivery is currently not available. We will inform you if this option is introduced in the future.",
   },
   {
     question:
@@ -50,7 +50,7 @@ export default function Faq() {
           <h2 className='section-title'>Frequently Asked Question</h2>
         </div>
         <div className='faq-area__inner'>
-          <Accordion defaultActiveKey='0'> 
+          <Accordion defaultActiveKey='0'>
             {faqs.map((faq, index) => (
               <Accordion.Item eventKey={index.toString()} key={index}>
                 <Accordion.Header>{faq.question}</Accordion.Header>

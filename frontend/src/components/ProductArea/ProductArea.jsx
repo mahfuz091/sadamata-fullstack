@@ -26,9 +26,22 @@ export const toPublicUrl = (path) => {
 };
 
 const ProductArea = ({ result: initialResult, slug, q, brands, mockups }) => {
+  console.log(initialResult, "initial result");
+
+  const initialQueryKeyRef = useRef(null);
+  const didInitRef = useRef(false);
+
   const [result, setResult] = useState(initialResult);
   const isFirstRender = useRef(true);
   const reqIdRef = useRef(0);
+  const routeKey = useMemo(() => {
+    return JSON.stringify({
+      q: q || null,
+      slug: slug || null,
+    });
+  }, [q, slug]);
+
+  const prevRouteKeyRef = useRef(routeKey);
 
   // UI states
   const [sortBy, setSortBy] = useState("newest"); // ✅ keep same as backend
@@ -49,14 +62,20 @@ const ProductArea = ({ result: initialResult, slug, q, brands, mockups }) => {
 
   const pageSize = 12;
   const [isPending, startTransition] = useTransition();
-
   useEffect(() => {
+    if (prevRouteKeyRef.current === routeKey) return;
+    prevRouteKeyRef.current = routeKey;
+
     setResult(initialResult);
     setCursorStack([null]);
     setCursor(null);
+
+    // ✅ route change এ server data already loaded
     setHasLoadedOnce(true);
-    isFirstRender.current = true; // reset first-render guard on navigation
-  }, [initialResult]);
+
+    // ✅ lastQueryKey reset না করলে পরের filter change এ fetch আটকে যেতে পারে
+    lastQueryKeyRef.current = "";
+  }, [routeKey, initialResult]);
 
   const toggleFilter = (value, setter, state) => {
     if (state.includes(value)) setter(state.filter((v) => v !== value));
@@ -132,8 +151,18 @@ const ProductArea = ({ result: initialResult, slug, q, brands, mockups }) => {
     sortBy,
     pageSize,
   ]);
-
   const lastQueryKeyRef = useRef("");
+
+  // mark initial server-loaded queryKey once
+
+  // ✅ init once (safe)
+  useEffect(() => {
+    if (initialQueryKeyRef.current == null) {
+      initialQueryKeyRef.current = queryKey;
+      lastQueryKeyRef.current = queryKey; // prevent initial fetch
+      setHasLoadedOnce(true); // server already loaded
+    }
+  }, [queryKey]);
 
   // const fetchPage = (nextCursor, pushStack = true) => {
   //   startTransition(async () => {
@@ -205,13 +234,14 @@ const ProductArea = ({ result: initialResult, slug, q, brands, mockups }) => {
       return;
     }
 
-    // ✅ prevent duplicate fetch for same query
+    // ✅ initial = server data, don't refetch
+    if (queryKey === initialQueryKeyRef.current) return;
+
     if (lastQueryKeyRef.current === queryKey) return;
     lastQueryKeyRef.current = queryKey;
 
     setCursorStack([null]);
     setCursor(null);
-
     fetchPage(null, false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryKey]);

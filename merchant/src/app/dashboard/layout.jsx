@@ -8,7 +8,7 @@ const layout = async ({ children }) => {
   // console.log(session, "session in layout");
 
   if (!session?.user) {
-    redirect("/login");
+    redirect("/signin");
   }
   return <Layout session={session}>{children}</Layout>;
 };

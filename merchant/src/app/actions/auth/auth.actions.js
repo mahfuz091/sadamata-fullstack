@@ -29,13 +29,19 @@ export async function registerUser(formData) {
     const role = (roleRaw || "USER").toUpperCase();
 
     if (!name || !password || !confirmPassword || !role) {
-      return { success: false, message: "All required fields must be provided." };
+      return {
+        success: false,
+        message: "All required fields must be provided.",
+      };
     }
     if (password !== confirmPassword) {
       return { success: false, message: "Passwords do not match." };
     }
     if (!emailRaw && !phoneRaw) {
-      return { success: false, message: "Either email or phone must be provided." };
+      return {
+        success: false,
+        message: "Either email or phone must be provided.",
+      };
     }
     if (!["USER", "ADMIN", "BRAND", "MERCH"].includes(role)) {
       return { success: false, message: "Invalid role." };
@@ -46,7 +52,9 @@ export async function registerUser(formData) {
 
     // ---- uniqueness ----
     const existing = await prisma.user.findFirst({
-      where: { OR: [...(email ? [{ email }] : []), ...(phone ? [{ phone }] : [])] },
+      where: {
+        OR: [...(email ? [{ email }] : []), ...(phone ? [{ phone }] : [])],
+      },
       select: { id: true },
     });
     if (existing) {
@@ -62,20 +70,54 @@ export async function registerUser(formData) {
 
     // ---- merchant profile fields ----
     const fullName = name;
-    const dateOfBirth = toDate(pick(formData.get("birth-yard"), formData.get("dateOfBirth")));
+    const dateOfBirth = toDate(
+      pick(formData.get("birth-yard"), formData.get("dateOfBirth"))
+    );
     const contactEmail = email;
     const contactPhone = phone;
 
-    const nidOrPassportNo = opt(pick(formData.get("nid-number"), formData.get("nidOrPassportNo")));
-    const presentAddress = opt(pick(formData.get("present-address"), formData.get("address"), formData.get("presentAddress")));
-    const permanentAddress = opt(pick(formData.get("permanent-address"), formData.get("permanet-address"), formData.get("permanentAddress")));
-    const portfolioUrl = opt(pick(formData.get("portfolio-link"), formData.get("portfolioUrl")));
-    const websiteUrl = opt(pick(formData.get("web-link"), formData.get("websiteUrl")));
-    const bankName = opt(pick(formData.get("bank-name"), formData.get("bankName")));
-    const bankBranch = opt(pick(formData.get("branch-name"), formData.get("bankBranch")));
-    const accountName = opt(pick(formData.get("account-name"), formData.get("accountName"), formData.get("full-name")));
-    const accountNumber = opt(pick(formData.get("account-number"), formData.get("accountNumber")));
-    const routingNumber = opt(pick(formData.get("routing-number"), formData.get("routingNumber")));
+    const nidOrPassportNo = opt(
+      pick(formData.get("nid-number"), formData.get("nidOrPassportNo"))
+    );
+    const presentAddress = opt(
+      pick(
+        formData.get("present-address"),
+        formData.get("address"),
+        formData.get("presentAddress")
+      )
+    );
+    const permanentAddress = opt(
+      pick(
+        formData.get("permanent-address"),
+        formData.get("permanet-address"),
+        formData.get("permanentAddress")
+      )
+    );
+    const portfolioUrl = opt(
+      pick(formData.get("portfolio-link"), formData.get("portfolioUrl"))
+    );
+    const websiteUrl = opt(
+      pick(formData.get("web-link"), formData.get("websiteUrl"))
+    );
+    const bankName = opt(
+      pick(formData.get("bank-name"), formData.get("bankName"))
+    );
+    const bankBranch = opt(
+      pick(formData.get("branch-name"), formData.get("bankBranch"))
+    );
+    const accountName = opt(
+      pick(
+        formData.get("account-name"),
+        formData.get("accountName"),
+        formData.get("full-name")
+      )
+    );
+    const accountNumber = opt(
+      pick(formData.get("account-number"), formData.get("accountNumber"))
+    );
+    const routingNumber = opt(
+      pick(formData.get("routing-number"), formData.get("routingNumber"))
+    );
     const message = opt(pick(formData.get("message"), formData.get("massage")));
 
     const result = await prisma.$transaction(async (tx) => {
@@ -138,7 +180,10 @@ export async function registerUser(formData) {
       return { success: false, message: "Email or phone already taken." };
     }
     console.error("Error in user registration:", error);
-    return { success: false, message: (error && error.message) || "Something went wrong." };
+    return {
+      success: false,
+      message: (error && error.message) || "Something went wrong.",
+    };
   }
 }
 
@@ -272,8 +317,6 @@ export const loginUser = async (prevState, formData) => {
     return { success: false, message: "Invalid password" };
   }
 
-  
-
   // NextAuth signIn
   const response = await signIn("credentials", {
     redirect: false,
@@ -284,14 +327,14 @@ export const loginUser = async (prevState, formData) => {
   // return {
   //   success: true,
   //   message: "Login successful",
-//   user,
+  //   user,
   // };
 };
 
 // log out
 export const logOut = async () => {
   await signOut();
-  // redirect("/login");
+
   revalidatePath("/dashboard/*");
 };
 

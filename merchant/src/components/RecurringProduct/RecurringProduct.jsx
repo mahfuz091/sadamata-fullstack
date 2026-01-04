@@ -8,7 +8,6 @@ import img3 from "@/assets/images/blog/recurring-1-3.jpg";
 import img4 from "@/assets/images/blog/recurring-1-4.jpg";
 import img5 from "@/assets/images/blog/recurring-1-5.jpg";
 
-
 export default function RecurringProduct() {
   const items = [
     {
@@ -23,7 +22,7 @@ export default function RecurringProduct() {
     },
     {
       title: "Free Shipping",
-      text: "Enjoy free shipping on orders over 2,000 BDT within Dhaka and over 5,000 BDT nationwide.",
+      text: "Enjoy free shipping on all orders with Sadamata Made Merch. As this is a customized product marketplace, Cash on Delivery is currently not available. We will notify you if this option becomes available in the future.",
       image: img3,
     },
     {
@@ -56,7 +55,11 @@ export default function RecurringProduct() {
                     alt={item.title}
                     width={460}
                     height={300}
-                    style={{ width: "100%", height: "auto", maxHeight: "300px" }}
+                    style={{
+                      width: "100%",
+                      height: "auto",
+                      maxHeight: "300px",
+                    }}
                   />
                 </div>
                 <div className='recurring-product__item__content'>

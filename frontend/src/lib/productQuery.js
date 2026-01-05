@@ -8,25 +8,31 @@ export const PUBLIC_PRODUCT_WHERE = {
   isActive: true,
   visibility: true,
 
-  // ✅ merchant (User) must be active
+  // merchant must be active
   User: {
     isActive: true,
   },
 
-  // ✅ if product has a brand, brand must be active
-  // (allows products without a brand)
+  // ✅ Brand logic (fixed)
   OR: [
-    { brandId: null },
+    // case 1: linked brand → brand must be active
     {
+      brandId: { not: null },
       Brand: {
         isActive: true,
       },
     },
+
+    // case 2: no brandId → brandName exists
+    {
+      brandId: null,
+      brandName: { not: null },
+    },
   ],
 
-  // ✅ must have at least one active variant
+  // must have at least one active variant
   variants: {
-    some: PUBLIC_VARIANT_WHERE,
+    some: { isActive: true },
   },
 };
 
@@ -46,6 +52,7 @@ export const PUBLIC_PRODUCT_INCLUDE = {
       fitType: true,
       frontImg: true,
       backImg: true,
+      isActive: true,
     },
   },
 };

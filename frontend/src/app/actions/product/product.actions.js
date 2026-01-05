@@ -53,7 +53,7 @@ export async function getAllProducts({ page = 1, pageSize = 24 } = {}) {
   const where = {
     isActive: true,
     visibility: true,
-    variants: { where: { isActive: true } },
+    // variants: { where: { isActive: true } },
   }; // tweak if you want to show inactive/hidden too
 
   const [total, items] = await Promise.all([
@@ -81,7 +81,7 @@ export async function getAllProducts({ page = 1, pageSize = 24 } = {}) {
       },
       // ✅ ONLY ACTIVE VARIANTS
 
-      // include: commonProductInclude,
+      include: PUBLIC_PRODUCT_INCLUDE,
     }),
   ]);
 
@@ -481,6 +481,48 @@ export async function getFeaturedProducts({
 }
 export async function getProductsByProductId(productId) {
   if (!productId) throw new Error("productId is required");
+  const test1 = await prisma.product.findFirst({ where: { productId } });
+  const test2 = await prisma.product.findFirst({
+    where: { productId, isActive: true, visibility: true },
+  });
+  const test3 = await prisma.product.findFirst({
+    where: {
+      productId,
+      isActive: true,
+      visibility: true,
+      User: { isActive: true },
+    },
+  });
+  const test4 = await prisma.product.findFirst({
+    where: {
+      productId,
+      isActive: true,
+      visibility: true,
+      User: { isActive: true },
+      OR: [{ brandId: null }, { Brand: { isActive: true } }],
+    },
+  });
+  const test5 = await prisma.product.findFirst({
+    where: {
+      productId,
+      isActive: true,
+      visibility: true,
+      User: { isActive: true },
+      OR: [{ brandId: null }, { Brand: { isActive: true } }],
+      variants: { some: { isActive: { equals: true } } },
+    },
+  });
+
+  console.log(
+    {
+      test1: !!test1,
+      test2: !!test2,
+      test3: !!test3,
+      test4: !!test4,
+      test5: !!test5,
+    },
+    "product server action"
+  );
 
   const product = await prisma.product.findFirst({
     where: {

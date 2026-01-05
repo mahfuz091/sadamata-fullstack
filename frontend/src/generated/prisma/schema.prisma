@@ -239,6 +239,11 @@ model Product {
 
   // ✅ many-to-many
   categories ProductCategory[] @relation("ProductCategories")
+
+  @@index([isActive, visibility, createdAt])
+  @@index([isActive, visibility, price])
+  @@index([brandId])
+  @@index([mockupId])
 }
 
 model ProductCategory {
@@ -315,6 +320,10 @@ model ProductVariant {
   // images ProductImage[] // <-- store multiple variant-specific images
 
   @@unique([productId, color, fitType]) // <- change this
+  @@index([productId])
+  @@index([fitType])
+  @@index([color])
+  @@index([fitType, color])
 }
 
 model Feature {
@@ -331,6 +340,9 @@ model Tag {
   value     String
 
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@index([value])
 }
 
 model Mockup {

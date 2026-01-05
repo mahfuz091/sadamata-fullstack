@@ -53,59 +53,88 @@ function serializeOrder(order) {
     payment: order.payment,
   };
 }
-export async function getOrders(_, filters = {}) {
+export async function getOrders(arg1 = null, arg2 = {}) {
   try {
-    const { year, month, day } = filters;
+    // ✅ support both call styles
+    const filters =
+      arg1 && typeof arg1 === "object" && !Array.isArray(arg1) ? arg1 : arg2;
 
-    let dateFilter = {};
+    const {
+      page = 1,
+      pageSize = 10,
+      status = null,
+      q = "",
+      from = null, // "YYYY-MM-DD"
+      to = null, // "YYYY-MM-DD"
+    } = filters;
 
-    if (year) {
-      const start = new Date(year, month ? month - 1 : 0, day || 1);
-      const end = day
-        ? new Date(year, month - 1, day + 1)
-        : month
-        ? new Date(year, month, 1)
-        : new Date(year + 1, 0, 1);
+    console.log("filters", { status, from, to, q, page, pageSize });
 
-      dateFilter = {
-        createdAt: {
-          gte: start,
-          lt: end,
-        },
-      };
+    const safePage = Math.max(Number(page) || 1, 1);
+    const take = Math.min(Math.max(Number(pageSize) || 10, 1), 100);
+    const skip = (safePage - 1) * take;
+
+    const where = {};
+
+    // ✅ STATUS FILTER
+    if (status) where.status = status;
+
+    // ✅ DATE RANGE FILTER (createdAt)
+    if (from || to) {
+      where.createdAt = {};
+      if (from) where.createdAt.gte = new Date(from);
+      if (to) {
+        const end = new Date(to);
+        end.setDate(end.getDate() + 1);
+        where.createdAt.lt = end;
+      }
     }
 
-    const orders = await prisma.order.findMany({
-      where: dateFilter,
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
+    // ✅ SEARCH
+    const query = q?.trim();
+    if (query) {
+      where.OR = [
+        { id: { contains: query, mode: "insensitive" } },
+        { tranId: { contains: query, mode: "insensitive" } },
+        { user: { name: { contains: query, mode: "insensitive" } } },
+        { user: { email: { contains: query, mode: "insensitive" } } },
+      ];
+    }
+
+    const [orders, total] = await prisma.$transaction([
+      prisma.order.findMany({
+        where,
+        include: {
+          user: { select: { id: true, name: true, email: true } },
+          address: true,
+          items: true,
+          payment: true,
         },
-        address: true,
-        items: true,
-        payment: true,
-      },
-      orderBy: {
-        createdAt: "desc", // 🔥 latest first
-      },
-    });
+        orderBy: { createdAt: "desc" },
+        skip,
+        take,
+      }),
+      prisma.order.count({ where }),
+    ]);
 
     return {
       success: true,
-      data: orders.map(serializeOrder),
+      data: {
+        items: orders.map(serializeOrder),
+        meta: {
+          total,
+          page: safePage,
+          pageSize: take,
+          totalPages: Math.ceil(total / take),
+        },
+      },
     };
   } catch (err) {
     console.error("getOrders error:", err);
-    return {
-      success: false,
-      msg: "Failed to fetch orders",
-    };
+    return { success: false, msg: "Failed to fetch orders" };
   }
 }
+
 export async function updateOrderStatus(_, { orderId, status }) {
   try {
     if (!orderId || !status) {

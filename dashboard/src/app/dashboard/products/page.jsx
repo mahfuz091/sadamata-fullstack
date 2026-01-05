@@ -1,25 +1,28 @@
 import { getProducts } from "@/app/actions/product/product.actions";
 import ProductsTable from "@/components/ProductsTable/ProductsTable";
 
-export default async function ProductsPage() {
-  const res = await getProducts();
-  console.log(res, "res products");
+export default async function ProductsPage({ searchParams }) {
+  const params = await searchParams;
+  const page = Number(params?.page || 1);
+  const pageSize = Number(params?.pageSize || 10);
 
-  if (!res?.success) {
-    return <div>Failed to load products</div>;
-  }
+  const merchantId = params?.merchantId || null;
+  const brandId = params?.brandId || null;
+  const q = params?.q || "";
+
+  const res = await getProducts({ page, pageSize, merchantId, brandId, q });
+
+  if (!res?.success) return <div>Failed to load products</div>;
 
   return (
-    <div className=''>
-      <div className='flex flex-1 flex-col'>
-        <div className='@container/main flex flex-1 flex-col gap-2'>
-          <div className='flex flex-col gap-4 py-4 md:gap-6 md:py-6'>
-            <div className='px-4 lg:px-6'>
-              <ProductsTable initial={res.data} />
-            </div>
-          </div>
-        </div>
-      </div>
+    <div className='px-4 lg:px-6'>
+      <ProductsTable
+        initial={res.data.items}
+        meta={res.data.meta}
+        merchants={res.data.merchants}
+        brands={res.data.brands}
+        filters={{ merchantId, brandId, q }}
+      />
     </div>
   );
 }

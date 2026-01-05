@@ -1,22 +1,26 @@
-import { getOrders } from "@/app/actions/order/order.actions";
 import OrdersTable from "@/components/OrdersTable/OrdersTable";
-import React from "react";
+import { getOrders } from "@/app/actions/order/order.actions";
 
-const page = async () => {
-  const orders = await getOrders(null, {});
+export default async function Page({ searchParams }) {
+  // ✅ safe read (Next expects this shape)
+  const params = await searchParams;
+  const page = Number(params?.page ?? 1);
+  const pageSize = Number(params?.pageSize ?? 10);
+
+  const status = params?.status ?? null;
+  const q = params?.q ?? "";
+  const from = params?.from ?? null;
+  const to = params?.to ?? null;
+
+  const res = await getOrders(null, { page, pageSize, status, q, from, to });
+
   return (
-    <div className=''>
-      <div className='flex flex-1 flex-col'>
-        <div className='@container/main flex flex-1 flex-col gap-2'>
-          <div className='flex flex-col gap-4 py-4 md:gap-6 md:py-6'>
-            <div className='px-4 lg:px-6'>
-              <OrdersTable initial={orders?.data} />
-            </div>
-          </div>
-        </div>
-      </div>
+    <div className='px-4 lg:px-6'>
+      <OrdersTable
+        initial={res?.data?.items || []}
+        meta={res?.data?.meta}
+        filters={{ status, q, from, to }}
+      />
     </div>
   );
-};
-
-export default page;
+}

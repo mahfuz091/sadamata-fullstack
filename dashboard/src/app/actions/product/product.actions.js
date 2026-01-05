@@ -15,64 +15,103 @@ function serializeProduct(product) {
   return {
     ...product,
     price: Number(product.price),
-
     createdAt: serializeDate(product.createdAt),
     updatedAt: serializeDate(product.updatedAt),
 
-    user: product.user
+    // ✅ matches schema + your UI r.User
+    User: product.User
       ? {
-          id: product.user.id,
-          name: product.user.name,
-          email: product.user.email,
+          id: product.User.id,
+          name: product.User.name,
+          email: product.User.email,
         }
       : null,
 
     Brand: product.Brand
-      ? {
-          id: product.Brand.id,
-          name: product.Brand.name,
-        }
+      ? { id: product.Brand.id, name: product.Brand.name }
       : null,
   };
 }
 
 /* -----------------------------
-   GET PRODUCTS (TABLE)
+   GET PRODUCTS (PAGINATED + FILTERS + DROPDOWNS)
 --------------------------------*/
 
-export async function getProducts() {
+export async function getProducts({
+  page = 1,
+  pageSize = 10,
+  merchantId = null, // maps to Product.userId
+  brandId = null, // maps to Product.brandId
+  q = "",
+} = {}) {
   try {
-    const products = await prisma.product.findMany({
-      include: {
-        User: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
+    const safePage = Math.max(Number(page) || 1, 1);
+    const take = Math.min(Math.max(Number(pageSize) || 10, 1), 100); // 1..100
+    const skip = (safePage - 1) * take;
+
+    const query = q?.trim();
+
+    const where = {
+      ...(merchantId ? { userId: merchantId } : {}),
+      ...(brandId ? { brandId } : {}),
+      ...(query
+        ? {
+            OR: [
+              { title: { contains: query, mode: "insensitive" } },
+              { productId: { contains: query, mode: "insensitive" } }, // ✅ your unique productId
+              { User: { name: { contains: query, mode: "insensitive" } } },
+              { Brand: { name: { contains: query, mode: "insensitive" } } },
+              { brandName: { contains: query, mode: "insensitive" } }, // ✅ fallback
+            ],
+          }
+        : {}),
+    };
+
+    const [items, total, merchants, brands] = await prisma.$transaction([
+      prisma.product.findMany({
+        where,
+        include: {
+          User: { select: { id: true, name: true, email: true } },
+          Brand: { select: { id: true, name: true } },
         },
-        Brand: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+        orderBy: { createdAt: "desc" },
+        skip,
+        take,
+      }),
+      prisma.product.count({ where }),
+
+      // ✅ merchants dropdown
+      prisma.user.findMany({
+        where: { role: "MERCH" },
+        select: { id: true, name: true },
+        orderBy: { name: "asc" },
+      }),
+
+      // ✅ brands dropdown
+      prisma.user.findMany({
+        where: { role: "BRAND" },
+        select: { id: true, name: true },
+        orderBy: { name: "asc" },
+      }),
+    ]);
 
     return {
       success: true,
-      data: products.map(serializeProduct),
+      data: {
+        items: items.map(serializeProduct),
+        merchants,
+        brands,
+        meta: {
+          total,
+          page: safePage,
+          pageSize: take,
+          totalPages: Math.ceil(total / take),
+        },
+      },
     };
   } catch (err) {
     console.error("getProducts error:", err);
-    return {
-      success: false,
-      msg: "Failed to fetch products",
-    };
+    return { success: false, msg: "Failed to fetch products" };
   }
 }
 

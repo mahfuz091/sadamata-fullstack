@@ -718,3 +718,122 @@ button.profileImageButton img {
   font-size: 12px;
   color: #fff;
 }
+
+.search-suggest-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  z-index: 9999;
+  border-radius: 10px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+  margin-top: 6px;
+  overflow: hidden;
+}
+
+.sug-title {
+  font-weight: 600;
+  padding: 10px 12px;
+  background: #fafafa;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+.sug-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.sug-row:hover {
+  background: #f3f6ff;
+}
+
+.sug-thumb {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.sug-loading {
+  padding: 10px 12px;
+}
+
+.sug-seeall {
+  padding: 10px 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.sug-seeall:hover {
+  background: #f3f6ff;
+}
+
+/* refund */
+
+.policy-wrap {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 10px 22px 30px;
+}
+
+.policy-wrap .policy-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 10px 0 14px;
+}
+.policy-wrap .effective-date {
+  margin: 0 0 18px;
+  font-size: 14px;
+  color: #111111;
+}
+
+.policy-wrap .line {
+  display: inline-block;
+  border-bottom: 1px solid #111;
+  width: 120px;
+  transform: translateY(-2px);
+  margin-left: 6px;
+}
+
+.policy-wrap p {
+  margin: 0 0 14px;
+  color: #333333;
+  font-size: 14px;
+}
+
+.policy-wrap .section-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 18px 0 6px;
+  color: #111111;
+}
+
+.policy-wrap ul {
+  margin: 6px 0 14px 22px;
+  padding: 0;
+  font-size: 14px;
+  color: #333333;
+}
+
+.policy-wrap li {
+  margin: 4px 0;
+}
+
+.policy-wrap .contact {
+  margin-top: 10px;
+}
+
+.policy-wrap .email {
+  color: #111111;
+  text-decoration: none;
+}
+
+.policy-wrap .email:hover {
+  text-decoration: underline;
+}

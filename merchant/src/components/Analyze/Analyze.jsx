@@ -5,13 +5,14 @@ import DashSidebar from "../DashSidebar/DashSidebar";
 import CustomSelect from "../CustomSelect/CustomSelect";
 import { Spinner } from "react-bootstrap";
 import Link from "next/link";
+import { getPrivateUrl } from "@/lib/s3";
 const MAIN_URL = process.env.NEXT_PUBLIC_MAIN_URL;
 const options = [
   { value: "chocolate", label: "Marketplace: All" },
   { value: "strawberry", label: "Marketplace: All" },
   { value: "vanilla", label: "Marketplace: All" },
 ];
-
+const SIGN_EXPIRES = 60 * 60; // 1 hour
 const Analyze = ({
   initialItems,
   initialPage = 1,
@@ -233,7 +234,8 @@ const Analyze = ({
                                 height={60}
                               /> */}
                               <img
-                                src={`${process.env.NEXT_PUBLIC_BASE_URL}/${item?.previewImg}`}
+                                // src={`${process.env.NEXT_PUBLIC_BASE_URL}/${item?.previewImg}`}
+                                src={item.previewUrl || "/placeholder.png"}
                                 alt={item.title}
                                 className='product-image me-2'
                                 width={80}

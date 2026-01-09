@@ -244,6 +244,8 @@ model Product {
   @@index([isActive, visibility, price])
   @@index([brandId])
   @@index([mockupId])
+  @@index([userId])
+  @@index([createdAt])
 }
 
 model ProductCategory {

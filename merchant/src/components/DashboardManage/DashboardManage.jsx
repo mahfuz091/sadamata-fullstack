@@ -10,6 +10,7 @@ import { deleteMerchantProduct } from "@/app/actions/merchant/merchant-products.
 import { toast } from "sonner";
 import { Spinner } from "react-bootstrap";
 const MAIN_URL = process.env.NEXT_PUBLIC_MAIN_URL;
+
 export default function DashboardManage({
   initialItems,
   totalPages,
@@ -264,7 +265,8 @@ export default function DashboardManage({
                             <div className='d-flex align-items-center'>
                               <img
                                 // src={product.previewImg}
-                                src={`${process.env.NEXT_PUBLIC_BASE_URL}/${product.previewImg}`}
+                                // src={`${process.env.NEXT_PUBLIC_BASE_URL}/${product.previewImg}`}
+                                src={product.previewUrl || placeholderSrc}
                                 alt='Product Image'
                                 className='product-image me-2'
                                 width={80}

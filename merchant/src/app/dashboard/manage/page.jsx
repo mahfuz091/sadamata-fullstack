@@ -7,6 +7,22 @@ import DashboardManage from "@/components/DashboardManage/DashboardManage";
 import Layout from "@/components/Layout/Layout";
 import React from "react";
 import placeholder from "@/assets/images/products/cart.png";
+import { getPrivateUrl } from "@/lib/s3";
+const SIGN_EXPIRES = 60 * 60; // 1 hour
+async function attachPreviewUrl(items) {
+  return await Promise.all(
+    items.map(async (p) => {
+      // ✅ choose the key that actually stores S3 key
+      // if you store it in p.previewImg then use that
+      const key = p.previewImg || p.frontDesign || null;
+
+      return {
+        ...p,
+        previewUrl: key ? await getPrivateUrl(key, SIGN_EXPIRES) : null,
+      };
+    })
+  );
+}
 
 const page = async () => {
   const session = await auth();
@@ -14,7 +30,7 @@ const page = async () => {
 
   if (!merchantId) {
     return (
-      <section className="container py-5">
+      <section className='container py-5'>
         <p>Please sign in.</p>
       </section>
     );
@@ -28,6 +44,7 @@ const page = async () => {
     page: 1,
     pageSize: 12,
   });
+  const signedFirstItems = await attachPreviewUrl(firstPage.items);
 
   // Define a server action *inside* the server component and pass to client
   async function loadMoreAction(prevState, formData) {
@@ -38,11 +55,18 @@ const page = async () => {
       page: nextPage,
       pageSize: 12,
     });
-    return res; // will be returned to client component
+    // ✅ sign new items too
+    const signedItems = await attachPreviewUrl(res.items);
+
+    return {
+      ...res,
+      items: signedItems,
+    };
   }
+
   return (
     <DashboardManage
-      initialItems={firstPage.items}
+      initialItems={signedFirstItems}
       totalPages={firstPage.totalPages}
       initialPage={firstPage.page}
       loadMoreAction={loadMoreAction}

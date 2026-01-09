@@ -302,7 +302,8 @@ const FeatureProduct = () => {
                       className='product__item__img__item d-block'
                     >
                       <Image
-                        src={imgSrc}
+                        // src={imgSrc}
+                        src={product.previewUrl || "/placeholder.png"}
                         alt={product.title || "Product image"}
                         className='img-fluid'
                         width={500}

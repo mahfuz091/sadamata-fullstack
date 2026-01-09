@@ -1,11 +1,14 @@
 "use server";
 
+import { attachPreviewUrl } from "@/lib/attachPreviewUrl.js";
 import prisma from "@/lib/prisma";
+
 import {
   PUBLIC_PRODUCT_INCLUDE,
   PUBLIC_PRODUCT_WHERE,
   PUBLIC_VARIANT_WHERE,
 } from "@/lib/productQuery";
+import { getPrivateUrl } from "@/lib/s3";
 // Adjust this path to match your Prisma client output.
 // From your schema it looks like: output = "../src/generated/prisma"
 
@@ -46,15 +49,56 @@ const commonProductInclude = {
   },
 };
 
+// export async function getAllProducts({ page = 1, pageSize = 24 } = {}) {
+//   const skip = (Math.max(1, page) - 1) * Math.max(1, pageSize);
+//   const take = Math.max(1, pageSize);
+
+//   const where = {
+//     isActive: true,
+//     visibility: true,
+//     // variants: { where: { isActive: true } },
+//   }; // tweak if you want to show inactive/hidden too
+
+//   const [total, items] = await Promise.all([
+//     prisma.product.count({ where: PUBLIC_PRODUCT_WHERE }),
+//     prisma.product.findMany({
+//       where: PUBLIC_PRODUCT_WHERE,
+//       skip,
+//       take,
+//       orderBy: { createdAt: "desc" },
+//       include: {
+//         Brand: {
+//           select: {
+//             id: true,
+//             name: true,
+//             // add more Brand fields if you need them
+//           },
+//         },
+//         User: { select: { id: true, name: true } },
+//         Mockup: true,
+//         features: true,
+//         tags: true,
+//         variants: {
+//           where: PUBLIC_VARIANT_WHERE,
+//         },
+//       },
+//       // ✅ ONLY ACTIVE VARIANTS
+
+//       include: PUBLIC_PRODUCT_INCLUDE,
+//     }),
+//   ]);
+
+//   return {
+//     page,
+//     pageSize: take,
+//     total,
+//     totalPages: Math.max(1, Math.ceil(total / take)),
+//     items,
+//   };
+// }
 export async function getAllProducts({ page = 1, pageSize = 24 } = {}) {
   const skip = (Math.max(1, page) - 1) * Math.max(1, pageSize);
   const take = Math.max(1, pageSize);
-
-  const where = {
-    isActive: true,
-    visibility: true,
-    // variants: { where: { isActive: true } },
-  }; // tweak if you want to show inactive/hidden too
 
   const [total, items] = await Promise.all([
     prisma.product.count({ where: PUBLIC_PRODUCT_WHERE }),
@@ -63,36 +107,21 @@ export async function getAllProducts({ page = 1, pageSize = 24 } = {}) {
       skip,
       take,
       orderBy: { createdAt: "desc" },
-      include: {
-        Brand: {
-          select: {
-            id: true,
-            name: true,
-            // add more Brand fields if you need them
-          },
-        },
-        User: { select: { id: true, name: true } },
-        Mockup: true,
-        features: true,
-        tags: true,
-        variants: {
-          where: PUBLIC_VARIANT_WHERE,
-        },
-      },
-      // ✅ ONLY ACTIVE VARIANTS
-
-      include: PUBLIC_PRODUCT_INCLUDE,
+      include: PUBLIC_PRODUCT_INCLUDE, // ✅ use only one include
     }),
   ]);
+
+  const itemsWithPreview = await attachPreviewUrl(items);
 
   return {
     page,
     pageSize: take,
     total,
     totalPages: Math.max(1, Math.ceil(total / take)),
-    items,
+    items: itemsWithPreview,
   };
 }
+
 export async function getProducts(input = {}) {
   const {
     page = 1,
@@ -262,13 +291,14 @@ export async function getProducts(input = {}) {
       platformEarning: 0,
     },
   }));
+  const withImages = await attachPreviewUrl(enriched);
 
   return {
     page,
     pageSize: take,
     total,
     totalPages: Math.max(1, Math.ceil(total / take)),
-    items: enriched,
+    items: withImages,
   };
 }
 
@@ -328,7 +358,7 @@ export async function getNewArrivals({ page = 1, pageSize = 24 } = {}) {
     pageSize: take,
     total,
     totalPages: Math.max(1, Math.ceil(total / take)),
-    items,
+    items: await attachPreviewUrl(items),
   };
 }
 
@@ -424,7 +454,7 @@ export async function getBestSellers({ page = 1, pageSize = 24 } = {}) {
       1,
       Math.ceil((totalProductsWithSales || productIds.length) / take)
     ),
-    items,
+    items: await attachPreviewUrl(items),
   };
 }
 
@@ -476,7 +506,7 @@ export async function getFeaturedProducts({
     pageSize: take,
     total,
     totalPages: Math.max(1, Math.ceil(total / take)),
-    items,
+    items: await attachPreviewUrl(items),
   };
 }
 export async function getProductsByProductId(productId) {

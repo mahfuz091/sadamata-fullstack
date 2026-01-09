@@ -5,6 +5,7 @@ import fs from "fs/promises";
 import sharp from "sharp";
 import { prisma } from "@/lib/prisma";
 import generateBlogId from "@/utils/generateTitle";
+import { saveDesignFileS3, saveProductFileS3 } from "@/lib/s3helper";
 
 const uploadDir = path.join(process.cwd(), "public", "uploads");
 const uploadProductDir = path.join(process.cwd(), "uploads", "products");
@@ -365,101 +366,6 @@ async function saveDesignFile(file, fieldName) {
 }
 
 // CREATE PRODUCT
-// export async function createProduct(formData) {
-//   try {
-//     const title = formData.get("title");
-//     const description = formData.get("description");
-//     const price = parseFloat(formData.get("price"));
-//     const brandId = formData.get("brandId") || null;
-//     const brandCommissionPct = formData.get("brandCommissionPct")
-//       ? parseFloat(formData.get("brandCommissionPct"))
-//       : null;
-//     const merchantCommissionPct = formData.get("merchantCommissionPct")
-//       ? parseFloat(formData.get("merchantCommissionPct"))
-//       : null;
-//     const mockupId = formData.get("mockupId");
-//     const userId = formData.get("userId");
-//     const visibility = formData.get("visibility") || "SEARCHABLE";
-
-//     // Handle Variants and Images
-//     const variants = [];
-//     let index = 0;
-
-//     while (formData.get(`variants[${index}][color]`)) {
-//       const color = formData.get(`variants[${index}][color]`);
-//       const fitType = formData.get(`variants[${index}][fitType]`);
-//       const variantPrice = formData.get(`variants[${index}][price]`)
-//         ? parseFloat(formData.get(`variants[${index}][price]`))
-//         : null;
-
-//       // Handle multiple images per variant
-//       const images = [];
-//       let imgIndex = 0;
-//       while (formData.get(`variants[${index}][images][${imgIndex}][type]`)) {
-//         const type = formData.get(`variants[${index}][images][${imgIndex}][type]`);
-//         const file = formData.get(`variants[${index}][images][${imgIndex}][file]`);
-
-//         const url = file && file.size > 0
-//           ? await saveFile(file, `variant${index}-img${imgIndex}`)
-//           : null;
-
-//         if (url) {
-//           images.push({ type, url });
-//         }
-//         imgIndex++;
-//       }
-
-//       variants.push({
-//         color,
-//         fitType,
-//         price: variantPrice,
-//         images: {
-//           create: images,
-//         },
-//       });
-
-//       index++;
-//     }
-
-//     const product = await prisma.product.create({
-//       data: {
-//         title,
-//         description,
-//         price,
-//         brandId,
-//         brandCommissionPct,
-//         merchantCommissionPct,
-//         mockupId,
-//         userId,
-//         visibility,
-//         variants: {
-//           create: variants,
-//         },
-//       },
-//       include: {
-//         variants: { include: { images: true } },
-//         Brand: true,
-//         features: true,
-//         tags: true,
-//         Mockup: true,
-//         User: true,
-//         sales: true,
-//       },
-//     });
-
-//     return {
-//       success: true,
-//       product,
-//       message: "Product created successfully",
-//     };
-//   } catch (error) {
-//     console.error("Error in product creation:", error);
-//     return {
-//       success: false,
-//       message: error.message || "Something went wrong, please try again.",
-//     };
-//   }
-// }
 
 // export async function createProduct(formData) {
 //   try {
@@ -600,9 +506,272 @@ async function saveDesignFile(file, fieldName) {
 //     };
 //   }
 // }
+// export async function createProduct(formData) {
+//   try {
+//     const title = (formData.get("title") || "").toString();
+//     const description = (formData.get("description") || "").toString();
+//     const price = parseFloat(formData.get("price"));
+//     const brandId = formData.get("brandId") || null;
+//     const brandName = formData.get("brandName") || null;
+
+//     const mockupId = formData.get("mockupId") || null;
+//     const userId = formData.get("userId") || null;
+
+//     const visibility =
+//       (formData.get("visibility") ?? "true").toString() === "true";
+
+//     const frontDesignFile = formData.get("frontDesign");
+//     const backDesignFile = formData.get("backDesign");
+
+//     if (!mockupId) throw new Error("mockupId is required.");
+//     if (!userId) throw new Error("userId is required.");
+//     if (!title) throw new Error("title is required.");
+//     if (!Number.isFinite(price))
+//       throw new Error("price is required and must be a number.");
+//     if (price < 990) throw new Error("Minimum price is 990.");
+//     // Derive commissions on server
+//     const { brandPct, merchantPct, source } = await resolveEffectiveCommissions(
+//       {
+//         merchantId: userId,
+//         brandId,
+//       }
+//     );
+
+//     console.log(brandPct, merchantPct, source);
+
+//     // Save files BEFORE the transaction (I/O)
+//     const isNonEmptyFile = (f) => f && typeof f.size === "number" && f.size > 0;
+
+//     const frontDesignUrl = isNonEmptyFile(frontDesignFile)
+//       ? await saveDesignFile(frontDesignFile, "frontDesign")
+//       : null;
+
+//     const backDesignUrl = isNonEmptyFile(backDesignFile)
+//       ? await saveDesignFile(backDesignFile, "backDesign")
+//       : null;
+
+//     if (!frontDesignUrl && !backDesignUrl) {
+//       throw new Error("At least one design (front or back) must be uploaded.");
+//     }
+
+//     const tags = [];
+//     const features = [];
+//     for (const key of formData.keys()) {
+//       let m = key.match(/^tags\[(\d+)\]$/);
+//       if (m) {
+//         const idx = Number(m[1]);
+//         tags[idx] = (formData.get(key) || "").toString();
+//       }
+//       m = key.match(/^features\[(\d+)\]$/);
+//       if (m) {
+//         const idx = Number(m[1]);
+//         features[idx] = (formData.get(key) || "").toString();
+//       }
+//     }
+
+//     // Variants + images
+//     const variantsInput = [];
+//     let v = 0;
+//     while (formData.get(`variants[${v}][color]`)) {
+//       const color = formData.get(`variants[${v}][color]`) || null;
+//       const fitType = formData.get(`variants[${v}][fitType]`) || null;
+//       const frontImgFile = formData.get(`variants[${v}][frontImg]`);
+//       const backImgFile = formData.get(`variants[${v}][backImg]`);
+//       const productIdForS3 = generateBlogId(title);
+//       // const frontImgUrl =
+//       //   frontImgFile && frontImgFile.size > 0
+//       //     ? await saveProductFile(frontImgFile, "frontImg")
+//       //     : null;
+//       const frontImgUrl =
+//         frontImgFile && frontImgFile.size > 0
+//           ? await saveProductFileS3(frontImgFile, productIdForS3, "frontImg")
+//           : null;
+
+//       const backImgUrl =
+//         backImgFile && backImgFile.size > 0
+//           ? await saveProductFileS3(backImgFile, productIdForS3, "backImg")
+//           : null;
+//       const isActiveStr = formData.get(`variants[${v}][isActive]`) || "false";
+//       const isActive = isActiveStr.toString() === "true";
+
+//       variantsInput.push({
+//         color,
+//         fitType,
+//         frontImg: frontImgUrl,
+//         backImg: backImgUrl,
+//         isActive,
+//       });
+
+//       v++;
+//     }
+
+//     if (!variantsInput.length) {
+//       throw new Error("No valid product variants were generated.");
+//     }
+
+//     // Ensure variants contain at least one valid image
+//     const hasAnyImage = variantsInput.some((v) => v.frontImg || v.backImg);
+
+//     if (!hasAnyImage) {
+//       throw new Error(
+//         "Variants must include at least one front or back image."
+//       );
+//     }
+
+//     const normalizedVariants = variantsInput.map((v) => ({
+//       color: v.color,
+//       fitType: v.fitType,
+//       frontImg: v.frontImg || null,
+//       backImg: v.backImg || null,
+//       isActive: v.isActive || false,
+//     }));
+
+//     const productId = generateBlogId(title);
+
+//     const mockup = await prisma.mockup.findUnique({
+//       where: { id: mockupId },
+//       select: { name: true },
+//     });
+
+//     if (!mockup?.name) {
+//       throw new Error("Invalid mockup selected.");
+//     }
+
+//     // 2) Build product type from mockup name
+//     const productType = getProductTypeFromMockup(mockup.name); // e.g. "T-Shirt"
+
+//     // 3) Bangla + English (optional)
+//     // If you only have one title field today, keep it like this:
+//     const designTitleRaw = title.trim();
+
+//     // If in future you pass titleEn + titleBn in formData, you can do:
+//     // const titleEn = (formData.get("titleEn") || "").toString();
+//     // const titleBn = (formData.get("titleBn") || "").toString();
+//     // const designTitleRaw = mergeBnEnTitle({ enTitle: titleEn, bnTitle: titleBn });
+
+//     // 4) Final product title = design + type
+//     const finalTitleRaw = `${designTitleRaw} ${productType}`.trim();
+
+//     // 5) Amazon-style formatting (won’t change Bangla parts)
+//     const finalTitle = amazonTitleCase(finalTitleRaw);
+
+//     // NOTE: productId should match title logic (use finalTitleRaw or finalTitle)
+//     const baseSlug = slugify(finalTitleRaw);
+//     // ============ ATOMIC: product create + tiar decrement + leftTiar update ============
+//     await prisma.$transaction(async (tx) => {
+//       // 1) Total products BEFORE creation
+//       const totalBefore = await tx.product.count({ where: { userId } });
+
+//       // Decrement amount = current total products (before new one)
+//       const DECREMENT = totalBefore; // change to totalBefore + 1 to base on "after creation" instead
+
+//       // 2) Fetch merchant profile
+//       const merchantProfile = await tx.merchantProfile.findUnique({
+//         where: { userId },
+//         select: { tiar: true },
+//       });
+//       if (!merchantProfile)
+//         throw new Error("Merchant profile not found for this user.");
+
+//       // 3) Balance check (only if we actually decrement)
+//       if (DECREMENT > 0 && merchantProfile.tiar < DECREMENT) {
+//         throw new Error("Insufficient tiar balance for this operation.");
+//       }
+
+//       const totalTiar = merchantProfile.tiar;
+
+//       // 2️⃣ Hard lifetime limit
+//       const totalProducts = await tx.product.count({
+//         where: { userId },
+//       });
+
+//       if (totalProducts >= totalTiar) {
+//         throw new Error(
+//           `Upload limit reached. Maximum allowed products: ${totalTiar}.`
+//         );
+//       }
+
+//       // 3️⃣ Daily limit = 10% of tiar
+//       const dailyLimit = Math.ceil(totalTiar * 0.1);
+
+//       const { start, end } = getTodayRange();
+
+//       const todayUploads = await tx.product.count({
+//         where: {
+//           userId,
+//           createdAt: {
+//             gte: start,
+//             lte: end,
+//           },
+//         },
+//       });
+
+//       if (todayUploads >= dailyLimit) {
+//         throw new Error(
+//           `Daily upload limit exceeded. You can upload only ${dailyLimit} product(s) per day.`
+//         );
+//       }
+
+//       const productId = await ensureUniqueProductId(tx, baseSlug);
+
+//       // 4) Create product
+//       await tx.product.create({
+//         data: {
+//           title: finalTitle,
+//           productId,
+//           description,
+//           price,
+//           brandCommissionPct: brandPct,
+//           merchantCommissionPct: merchantPct,
+//           visibility,
+//           brandName,
+//           frontDesign: frontDesignUrl,
+//           backDesign: backDesignUrl,
+
+//           User: { connect: { id: userId } },
+//           Mockup: { connect: { id: mockupId } },
+//           ...(brandId ? { Brand: { connect: { id: brandId } } } : {}),
+
+//           tags: { create: tags.filter(Boolean).map((value) => ({ value })) },
+//           features: {
+//             create: features.filter(Boolean).map((content) => ({ content })),
+//           },
+//           variants: { create: normalizedVariants },
+//         },
+//       });
+
+//       // 5) Compute totals/leftTiar after creation
+
+//       // total AFTER creation
+//       const totalAfter = totalBefore + 1;
+
+//       // leftTiar = tiar - totalAfter (never negative)
+//       const leftTiar = Math.max(0, merchantProfile.tiar - totalAfter);
+
+//       // update ONLY leftTiar (do NOT touch tiar)
+//       await tx.merchantProfile.update({
+//         where: { userId },
+//         data: { leftTiar: { set: leftTiar } },
+//       });
+//     });
+//     // ================================================================================
+
+//     return {
+//       success: true,
+//       message: "Product created successfully",
+//     };
+//   } catch (error) {
+//     console.error("Error in product creation:", error);
+//     console.log("Error in product creation:", error);
+//     return {
+//       success: false,
+//       message: error?.message || "Something went wrong, please try again.",
+//     };
+//   }
+// }
 export async function createProduct(formData) {
   try {
-    const title = (formData.get("title") || "").toString();
+    const title = (formData.get("title") || "").toString().trim();
     const description = (formData.get("description") || "").toString();
     const price = parseFloat(formData.get("price"));
     const brandId = formData.get("brandId") || null;
@@ -617,145 +786,130 @@ export async function createProduct(formData) {
     const frontDesignFile = formData.get("frontDesign");
     const backDesignFile = formData.get("backDesign");
 
+    const isNonEmptyFile = (f) => f && typeof f.size === "number" && f.size > 0;
+
+    // ---- validations ----
     if (!mockupId) throw new Error("mockupId is required.");
     if (!userId) throw new Error("userId is required.");
     if (!title) throw new Error("title is required.");
     if (!Number.isFinite(price))
       throw new Error("price is required and must be a number.");
     if (price < 990) throw new Error("Minimum price is 990.");
-    // Derive commissions on server
-    const { brandPct, merchantPct, source } = await resolveEffectiveCommissions(
-      {
-        merchantId: userId,
-        brandId,
-      }
-    );
 
-    console.log(brandPct, merchantPct, source);
+    // ---- commissions (server truth) ----
+    const { brandPct, merchantPct } = await resolveEffectiveCommissions({
+      merchantId: userId,
+      brandId,
+    });
 
-    // Save files BEFORE the transaction (I/O)
-    const isNonEmptyFile = (f) => f && typeof f.size === "number" && f.size > 0;
+    // ---- read mockup, build final title + baseSlug ----
+    const mockup = await prisma.mockup.findUnique({
+      where: { id: mockupId },
+      select: { name: true },
+    });
+    if (!mockup?.name) throw new Error("Invalid mockup selected.");
 
-    const frontDesignUrl = isNonEmptyFile(frontDesignFile)
-      ? await saveDesignFile(frontDesignFile, "frontDesign")
-      : null;
+    const productType = getProductTypeFromMockup(mockup.name);
+    const finalTitleRaw = `${title} ${productType}`.trim();
+    const finalTitle = amazonTitleCase(finalTitleRaw);
+    const baseSlug = slugify(finalTitleRaw);
 
-    const backDesignUrl = isNonEmptyFile(backDesignFile)
-      ? await saveDesignFile(backDesignFile, "backDesign")
-      : null;
-
-    if (!frontDesignUrl && !backDesignUrl) {
-      throw new Error("At least one design (front or back) must be uploaded.");
-    }
-
+    // ---- tags + features ----
     const tags = [];
     const features = [];
     for (const key of formData.keys()) {
       let m = key.match(/^tags\[(\d+)\]$/);
-      if (m) {
-        const idx = Number(m[1]);
-        tags[idx] = (formData.get(key) || "").toString();
-      }
+      if (m) tags[Number(m[1])] = (formData.get(key) || "").toString();
+
       m = key.match(/^features\[(\d+)\]$/);
-      if (m) {
-        const idx = Number(m[1]);
-        features[idx] = (formData.get(key) || "").toString();
-      }
+      if (m) features[Number(m[1])] = (formData.get(key) || "").toString();
     }
 
-    // Variants + images
+    // ✅ STEP A: Reserve a UNIQUE productId FIRST (so S3 folder matches DB)
+    // This is a tiny transaction only for uniqueness.
+    const reservedProductId = await prisma.$transaction(async (tx) => {
+      return await ensureUniqueProductId(tx, baseSlug);
+    });
+
+    // ✅ STEP B: Upload designs to S3 (original format, no quality change)
+    const frontDesignKey = isNonEmptyFile(frontDesignFile)
+      ? await saveDesignFileS3(
+          frontDesignFile,
+          reservedProductId,
+          "frontDesign"
+        )
+      : null;
+
+    const backDesignKey = isNonEmptyFile(backDesignFile)
+      ? await saveDesignFileS3(backDesignFile, reservedProductId, "backDesign")
+      : null;
+
+    if (!frontDesignKey && !backDesignKey) {
+      throw new Error("At least one design (front or back) must be uploaded.");
+    }
+
+    // ✅ STEP C: Build variants + upload variant images to S3 (PNG resized)
     const variantsInput = [];
     let v = 0;
+
     while (formData.get(`variants[${v}][color]`)) {
       const color = formData.get(`variants[${v}][color]`) || null;
       const fitType = formData.get(`variants[${v}][fitType]`) || null;
+
       const frontImgFile = formData.get(`variants[${v}][frontImg]`);
       const backImgFile = formData.get(`variants[${v}][backImg]`);
 
-      const frontImgUrl =
-        frontImgFile && frontImgFile.size > 0
-          ? await saveProductFile(frontImgFile, "frontImg")
-          : null;
+      const frontImgKey = isNonEmptyFile(frontImgFile)
+        ? await saveProductFileS3(
+            frontImgFile,
+            reservedProductId,
+            `variant-${v}-front`
+          )
+        : null;
 
-      const backImgUrl =
-        backImgFile && backImgFile.size > 0
-          ? await saveProductFile(backImgFile, "backImg")
-          : null;
-      const isActiveStr = formData.get(`variants[${v}][isActive]`) || "false";
-      const isActive = isActiveStr.toString() === "true";
+      const backImgKey = isNonEmptyFile(backImgFile)
+        ? await saveProductFileS3(
+            backImgFile,
+            reservedProductId,
+            `variant-${v}-back`
+          )
+        : null;
+
+      const isActive =
+        (formData.get(`variants[${v}][isActive]`) || "false").toString() ===
+        "true";
 
       variantsInput.push({
         color,
         fitType,
-        frontImg: frontImgUrl,
-        backImg: backImgUrl,
+        frontImg: frontImgKey,
+        backImg: backImgKey,
         isActive,
       });
 
       v++;
     }
 
-    if (!variantsInput.length) {
+    if (!variantsInput.length)
       throw new Error("No valid product variants were generated.");
-    }
 
-    // Ensure variants contain at least one valid image
-    const hasAnyImage = variantsInput.some((v) => v.frontImg || v.backImg);
-
+    const hasAnyImage = variantsInput.some((x) => x.frontImg || x.backImg);
     if (!hasAnyImage) {
       throw new Error(
         "Variants must include at least one front or back image."
       );
     }
 
-    const normalizedVariants = variantsInput.map((v) => ({
-      color: v.color,
-      fitType: v.fitType,
-      frontImg: v.frontImg || null,
-      backImg: v.backImg || null,
-      isActive: v.isActive || false,
+    const normalizedVariants = variantsInput.map((x) => ({
+      color: x.color,
+      fitType: x.fitType,
+      frontImg: x.frontImg || null,
+      backImg: x.backImg || null,
+      isActive: x.isActive || false,
     }));
 
-    const productId = generateBlogId(title);
-
-    const mockup = await prisma.mockup.findUnique({
-      where: { id: mockupId },
-      select: { name: true },
-    });
-
-    if (!mockup?.name) {
-      throw new Error("Invalid mockup selected.");
-    }
-
-    // 2) Build product type from mockup name
-    const productType = getProductTypeFromMockup(mockup.name); // e.g. "T-Shirt"
-
-    // 3) Bangla + English (optional)
-    // If you only have one title field today, keep it like this:
-    const designTitleRaw = title.trim();
-
-    // If in future you pass titleEn + titleBn in formData, you can do:
-    // const titleEn = (formData.get("titleEn") || "").toString();
-    // const titleBn = (formData.get("titleBn") || "").toString();
-    // const designTitleRaw = mergeBnEnTitle({ enTitle: titleEn, bnTitle: titleBn });
-
-    // 4) Final product title = design + type
-    const finalTitleRaw = `${designTitleRaw} ${productType}`.trim();
-
-    // 5) Amazon-style formatting (won’t change Bangla parts)
-    const finalTitle = amazonTitleCase(finalTitleRaw);
-
-    // NOTE: productId should match title logic (use finalTitleRaw or finalTitle)
-    const baseSlug = slugify(finalTitleRaw);
-    // ============ ATOMIC: product create + tiar decrement + leftTiar update ============
+    // ✅ STEP D: Do your big atomic transaction (limits + create product)
     await prisma.$transaction(async (tx) => {
-      // 1) Total products BEFORE creation
-      const totalBefore = await tx.product.count({ where: { userId } });
-
-      // Decrement amount = current total products (before new one)
-      const DECREMENT = totalBefore; // change to totalBefore + 1 to base on "after creation" instead
-
-      // 2) Fetch merchant profile
       const merchantProfile = await tx.merchantProfile.findUnique({
         where: { userId },
         select: { tiar: true },
@@ -763,60 +917,39 @@ export async function createProduct(formData) {
       if (!merchantProfile)
         throw new Error("Merchant profile not found for this user.");
 
-      // 3) Balance check (only if we actually decrement)
-      if (DECREMENT > 0 && merchantProfile.tiar < DECREMENT) {
-        throw new Error("Insufficient tiar balance for this operation.");
-      }
-
-      const totalTiar = merchantProfile.tiar;
-
-      // 2️⃣ Hard lifetime limit
-      const totalProducts = await tx.product.count({
-        where: { userId },
-      });
-
-      if (totalProducts >= totalTiar) {
+      // Lifetime limit
+      const totalProducts = await tx.product.count({ where: { userId } });
+      if (totalProducts >= merchantProfile.tiar) {
         throw new Error(
-          `Upload limit reached. Maximum allowed products: ${totalTiar}.`
+          `Upload limit reached. Maximum allowed products: ${merchantProfile.tiar}.`
         );
       }
 
-      // 3️⃣ Daily limit = 10% of tiar
-      const dailyLimit = Math.ceil(totalTiar * 0.1);
-
+      // Daily limit
+      const dailyLimit = Math.ceil(merchantProfile.tiar * 0.1);
       const { start, end } = getTodayRange();
-
       const todayUploads = await tx.product.count({
-        where: {
-          userId,
-          createdAt: {
-            gte: start,
-            lte: end,
-          },
-        },
+        where: { userId, createdAt: { gte: start, lte: end } },
       });
-
       if (todayUploads >= dailyLimit) {
         throw new Error(
           `Daily upload limit exceeded. You can upload only ${dailyLimit} product(s) per day.`
         );
       }
 
-      const productId = await ensureUniqueProductId(tx, baseSlug);
-
-      // 4) Create product
+      // ✅ Create product using the RESERVED productId (matches S3 folder)
       await tx.product.create({
         data: {
           title: finalTitle,
-          productId,
+          productId: reservedProductId,
           description,
           price,
           brandCommissionPct: brandPct,
           merchantCommissionPct: merchantPct,
           visibility,
           brandName,
-          frontDesign: frontDesignUrl,
-          backDesign: backDesignUrl,
+          frontDesign: frontDesignKey,
+          backDesign: backDesignKey,
 
           User: { connect: { id: userId } },
           Mockup: { connect: { id: mockupId } },
@@ -830,29 +963,19 @@ export async function createProduct(formData) {
         },
       });
 
-      // 5) Compute totals/leftTiar after creation
-
-      // total AFTER creation
-      const totalAfter = totalBefore + 1;
-
-      // leftTiar = tiar - totalAfter (never negative)
+      // leftTiar = tiar - totalAfter
+      const totalAfter = totalProducts + 1;
       const leftTiar = Math.max(0, merchantProfile.tiar - totalAfter);
 
-      // update ONLY leftTiar (do NOT touch tiar)
       await tx.merchantProfile.update({
         where: { userId },
         data: { leftTiar: { set: leftTiar } },
       });
     });
-    // ================================================================================
 
-    return {
-      success: true,
-      message: "Product created successfully",
-    };
+    return { success: true, message: "Product created successfully" };
   } catch (error) {
     console.error("Error in product creation:", error);
-    console.log("Error in product creation:", error);
     return {
       success: false,
       message: error?.message || "Something went wrong, please try again.",

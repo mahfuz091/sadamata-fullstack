@@ -13,3 +13,12 @@ export function generateBlogId(title) {
     .replace(/\s+/g, "-") // replace spaces with dashes
     .replace(/-+/g, "-"); // collapse multiple dashes
 }
+
+export function toSlug(str = "") {
+  return str
+    .toLowerCase()
+    .trim()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}

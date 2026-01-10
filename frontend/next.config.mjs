@@ -24,6 +24,11 @@ const nextConfig = {
         hostname: "merch.sadamata.com",
         pathname: "/**", // or "/uploads/**" if you want to restrict
       },
+      {
+        protocol: "https",
+        hostname: "sadamata-images.s3.ap-south-1.amazonaws.com",
+        pathname: "/**",
+      },
     ],
   },
   experimental: {

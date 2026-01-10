@@ -4,18 +4,21 @@ import React from "react";
 import { Button } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 
-export default function DownloadButton({ url }) {
+export default function DownloadButton({ s3Key, filename }) {
   const handleDownload = () => {
-    if (!url) return;
-    // ✅ same-origin download via API route
-    window.location.href = `/api/download?url=${encodeURIComponent(url)}`;
+    if (!s3Key) return;
+    const qs = new URLSearchParams({
+      key: s3Key,
+      filename: filename || "",
+    });
+    window.location.href = `/api/download?${qs.toString()}`;
   };
 
   return (
     <Button
       icon={<DownloadOutlined />}
       onClick={handleDownload}
-      disabled={!url}
+      disabled={!s3Key}
     >
       Download
     </Button>

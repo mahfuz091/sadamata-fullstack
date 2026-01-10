@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { toSlug } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 
 /* ----------------------------------------
@@ -17,12 +18,14 @@ export async function createProductCategory(name) {
       orderBy: { sortOrder: "desc" },
       select: { sortOrder: true },
     });
+    const slug = toSlug(name);
 
     const nextOrder = (last?.sortOrder ?? -1) + 1;
 
     const category = await prisma.productCategory.create({
       data: {
         name: name.trim(),
+        slug,
         sortOrder: nextOrder, // ✅ new category always at the end
       },
     });
@@ -91,9 +94,10 @@ export async function updateProductCategory(id, name) {
   }
 
   try {
+    const slug = toSlug(name);
     const updatedCategory = await prisma.productCategory.update({
       where: { id },
-      data: { name: name.trim() },
+      data: { name: name.trim(), slug },
     });
 
     revalidatePath("/admin/categories");

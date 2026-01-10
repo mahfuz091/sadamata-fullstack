@@ -41,7 +41,7 @@ const customStyles = {
 const Header = ({ session, categories }) => {
   const scrollToTop = useScrollUp(500);
 
-  // console.log(session, "session header");
+  console.log(categories, "session header");
 
   const [options, setOptions] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -285,7 +285,14 @@ const Header = ({ session, categories }) => {
             <ul className='main-menu__list'>
               {categories.map((category) => (
                 <li key={category.id}>
-                  <a href='#'>{category.name}</a>
+                  <Link
+                    href='/categories/[slug]'
+                    as={`/categories/${category.slug}`}
+                    prefetch={false}
+                    className='main-menu__list__item'
+                  >
+                    {category.name}
+                  </Link>
                 </li>
               ))}
             </ul>

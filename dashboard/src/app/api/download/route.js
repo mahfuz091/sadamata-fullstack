@@ -1,46 +1,35 @@
 import { NextResponse } from "next/server";
+import { getPrivateUrl } from "@/lib/s3";
+
+const SIGN_EXPIRES = 60 * 10; // 10 min (download should start quickly)
+
+// Allow only your folders
+function isAllowedKey(key) {
+  if (!key || typeof key !== "string") return false;
+  if (key.includes("..")) return false; // basic traversal guard
+  return (
+    key.startsWith("products/") ||
+    key.startsWith("designs/") ||
+    key.startsWith("profile/")
+  );
+}
 
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
-  const url = searchParams.get("url");
+  const key = searchParams.get("key");
+  const filenameOverride = searchParams.get("filename") || "";
 
-  if (!url) {
+  if (!isAllowedKey(key)) {
     return NextResponse.json(
-      { success: false, message: "url is required" },
-      { status: 400 }
-    );
-  }
-
-  // ✅ Security: only allow your domain + uploads path
-  let parsed;
-  try {
-    parsed = new URL(url);
-  } catch {
-    return NextResponse.json(
-      { success: false, message: "Invalid url" },
-      { status: 400 }
-    );
-  }
-
-  const allowedHosts = new Set([
-    "merch.sadamata.com",
-    "www.merch.sadamata.com",
-  ]);
-  if (!allowedHosts.has(parsed.hostname)) {
-    return NextResponse.json(
-      { success: false, message: "Host not allowed" },
+      { success: false, message: "Invalid or not allowed key" },
       { status: 403 }
     );
   }
 
-  if (!parsed.pathname.startsWith("/uploads/")) {
-    return NextResponse.json(
-      { success: false, message: "Path not allowed" },
-      { status: 403 }
-    );
-  }
+  // ✅ Generate signed URL on server (bucket stays private)
+  const signedUrl = await getPrivateUrl(key, SIGN_EXPIRES);
 
-  const upstream = await fetch(url, { cache: "no-store" });
+  const upstream = await fetch(signedUrl, { cache: "no-store" });
   if (!upstream.ok) {
     return NextResponse.json(
       { success: false, message: `Upstream failed: ${upstream.status}` },
@@ -51,7 +40,9 @@ export async function GET(req) {
   const contentType =
     upstream.headers.get("content-type") || "application/octet-stream";
 
-  const filename = parsed.pathname.split("/").pop() || "download";
+  // choose filename
+  const fallbackName = key.split("/").pop() || "download";
+  const filename = filenameOverride || fallbackName;
 
   return new NextResponse(upstream.body, {
     headers: {

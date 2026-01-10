@@ -25,19 +25,17 @@ const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE_URL;
 //   return `${ASSET_BASE}/${src.replace(/^\/+/, "")}`;
 // };
 const getImgSrc = (src) => {
-  if (!src) return `${ASSET_BASE}/uploads/placeholder.png`;
+  if (!src) return "/placeholder.png";
 
-  // ✅ If Next.js static image import
-  if (typeof src === "object" && src.src) {
-    return src.src;
-  }
+  // ✅ Next.js static import
+  if (typeof src === "object" && src.src) return src.src;
 
-  // ✅ Normal string path from backend
-  if (typeof src === "string") {
-    return `${ASSET_BASE}/${src.replace(/^\/+/, "")}`;
-  }
+  // ✅ signed/full url
+  if (typeof src === "string" && /^https?:\/\//i.test(src)) return src;
 
-  return `${ASSET_BASE}/uploads/placeholder.png`;
+  // ⛔ private key browser এ কাজ করবে না
+  // তাই fallback দিচ্ছি (কারণ key হলে signed url server থেকে আসা উচিত)
+  return "/placeholder.png";
 };
 
 const getShareUrl = () => {
@@ -93,6 +91,7 @@ const colorsForFit = (vs = []) => {
 export default function ProductDetails2({ product }) {
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
+  console.log(product, "product");
 
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -140,25 +139,10 @@ export default function ProductDetails2({ product }) {
   const variantImages = useMemo(() => {
     if (!currentVariant) return [];
 
-    const images = [];
-
-    if (currentVariant.frontImg) {
-      images.push({
-        key: "front",
-        label: "Front",
-        src: currentVariant.frontImg,
-      });
-    }
-
-    if (currentVariant.backImg) {
-      images.push({
-        key: "back",
-        label: "Back",
-        src: currentVariant.backImg,
-      });
-    }
-
-    return images;
+    return [
+      { key: "front", label: "Front", src: currentVariant.frontImgUrl },
+      { key: "back", label: "Back", src: currentVariant.backImgUrl },
+    ].filter((x) => x.src); // যেটা নাই বাদ
   }, [currentVariant]);
 
   useEffect(() => {
@@ -176,42 +160,25 @@ export default function ProductDetails2({ product }) {
   const { galleryImages, colorToIndex } = useMemo(() => {
     if (!fitVariants.length) return { galleryImages: [], colorToIndex: {} };
 
-    if (showAllForFit) {
-      let slideIndex = 0;
-      const map = {};
-      const imgs = [];
+    let slideIndex = 0;
+    const map = {};
+    const imgs = [];
 
-      fitVariants.forEach((v) => {
-        if (v.frontImg) {
-          if (!(v.color in map)) map[v.color] = slideIndex;
-          imgs.push({
-            src: v.frontImg,
-            alt: `MEN ${hexToName(v.color)} – Front`,
-            key: `${v.id}-front`,
-            color: v.color,
-          });
-          slideIndex += 1;
-        }
-      });
+    fitVariants.forEach((v) => {
+      if (v.frontImgUrl) {
+        if (!(v.color in map)) map[v.color] = slideIndex;
+        imgs.push({
+          src: v.frontImgUrl,
+          alt: `${fit} ${hexToName(v.color)} – Front`,
+          key: `${v.id}-front`,
+          color: v.color,
+        });
+        slideIndex++;
+      }
+    });
 
-      return { galleryImages: imgs, colorToIndex: map };
-    }
-
-    // only the selected variant’s front image
-    return currentVariant?.frontImg
-      ? {
-          galleryImages: [
-            {
-              src: currentVariant.frontImg,
-              alt: `${fit} ${hexToName(color)} – Front`,
-              key: `selected-${currentVariant.id}-front`,
-              color,
-            },
-          ],
-          colorToIndex: { [color]: 0 },
-        }
-      : { galleryImages: [], colorToIndex: {} };
-  }, [fit, fitVariants, color, showAllForFit, currentVariant]);
+    return { galleryImages: imgs, colorToIndex: map };
+  }, [fit, fitVariants]);
 
   // Reset to first slide when fit/mode changes
   useEffect(() => {
@@ -520,6 +487,7 @@ export default function ProductDetails2({ product }) {
                     </div>
                   ))}
                 </div>
+
                 {/* BIG IMAGE */}
                 <div className='main-image-box'>
                   {activeImage && (
@@ -533,7 +501,6 @@ export default function ProductDetails2({ product }) {
                       className='img-fluid'
                     />
                   )}
-                  {/* <span className='image-badge'>{activeImage?.label}</span> */}
                 </div>
               </div>
             </Col>

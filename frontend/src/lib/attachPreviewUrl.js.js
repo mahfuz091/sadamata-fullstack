@@ -23,3 +23,39 @@ export async function attachPreviewUrl(products) {
     })
   );
 }
+
+export async function attachPreviewUrlTwo(items = []) {
+  if (!items?.length) return [];
+
+  return Promise.all(
+    items.map(async (p) => {
+      const variants = await Promise.all(
+        (p.variants || []).map(async (v) => {
+          const frontImgUrl = v.frontImg
+            ? await getPrivateUrl(v.frontImg, SIGN_EXPIRES)
+            : null;
+
+          const backImgUrl = v.backImg
+            ? await getPrivateUrl(v.backImg, SIGN_EXPIRES)
+            : null;
+
+          return { ...v, frontImgUrl, backImgUrl };
+        })
+      );
+
+      // product-level preview (optional)
+      const firstKey =
+        variants?.find((x) => x.frontImgUrl)?.frontImg ||
+        variants?.find((x) => x.backImgUrl)?.backImg ||
+        p.frontDesign ||
+        p.backDesign ||
+        null;
+
+      const previewUrl = firstKey
+        ? await getPrivateUrl(firstKey, SIGN_EXPIRES)
+        : null;
+
+      return { ...p, variants, previewUrl };
+    })
+  );
+}

@@ -4,6 +4,7 @@ import ProductCategoriesSection from "../_components/ProductCategoriesSection";
 import ProductStatusControl from "../_components/ProductStatusControl";
 import DownloadButton from "../_components/DownloadButton";
 import ProductVariantActiveToggle from "../_components/ProductVariantActiveToggle";
+import { getPrivateUrl } from "@/lib/s3";
 
 export const metadata = {
   title: "Product Details",
@@ -46,7 +47,24 @@ export default async function ProductDetailsPage({ params }) {
     },
   });
 
-  const sortedVariants = [...product.variants].sort((a, b) => {
+  const SIGN_EXPIRES = 60 * 60; // 1 hour
+
+  async function sign(key) {
+    return key ? await getPrivateUrl(key, SIGN_EXPIRES) : null;
+  }
+
+  const frontDesignUrl = await sign(product.frontDesign);
+  const backDesignUrl = await sign(product.backDesign);
+
+  const signedVariants = await Promise.all(
+    product.variants.map(async (v) => ({
+      ...v,
+      frontImgUrl: await sign(v.frontImg),
+      backImgUrl: await sign(v.backImg),
+    }))
+  );
+
+  const sortedVariants = [...signedVariants].sort((a, b) => {
     const ca = (a.color || "").trim().toLowerCase();
     const cb = (b.color || "").trim().toLowerCase();
 
@@ -159,12 +177,18 @@ export default async function ProductDetailsPage({ params }) {
             {product.frontDesign ? (
               <>
                 <img
-                  src={imgSrc(product.frontDesign)}
+                  // src={imgSrc(product.frontDesign)}
+                  src={frontDesignUrl}
                   alt='Front Design'
                   className='w-full max-w-sm rounded border'
                 />
+                {/* <DownloadButton
+                  // url={imgSrc(product.frontDesign)}
+                  url={frontDesignUrl}
+                  filename={`front-design-${product.id}.png`}
+                /> */}
                 <DownloadButton
-                  url={imgSrc(product.frontDesign)}
+                  s3Key={product.frontDesign}
                   filename={`front-design-${product.id}.png`}
                 />
               </>
@@ -179,12 +203,19 @@ export default async function ProductDetailsPage({ params }) {
             {product.backDesign ? (
               <>
                 <img
-                  src={imgSrc(product.backDesign)}
+                  // src={imgSrc(product.backDesign)}
+                  src={backDesignUrl}
                   alt='Back Design'
                   className='w-full max-w-sm rounded border'
                 />
+                {/* <DownloadButton
+                  // url={imgSrc(product.backDesign)}
+                  url={backDesignUrl}
+                  filename={`back-design-${product.id}.png`}
+                /> */}
+
                 <DownloadButton
-                  url={imgSrc(product.backDesign)}
+                  s3Key={product.backDesign}
                   filename={`back-design-${product.id}.png`}
                 />
               </>
@@ -217,7 +248,8 @@ export default async function ProductDetailsPage({ params }) {
                 <div className='flex gap-3'>
                   {v.frontImg && (
                     <img
-                      src={imgSrc(v.frontImg)}
+                      // src={imgSrc(v.frontImg)}
+                      src={v.frontImgUrl}
                       alt='Variant Front'
                       className='w-32 h-32 object-cover rounded border'
                     />
@@ -225,7 +257,8 @@ export default async function ProductDetailsPage({ params }) {
 
                   {v.backImg && (
                     <img
-                      src={imgSrc(v.backImg)}
+                      // src={imgSrc(v.backImg)}
+                      src={v.backImgUrl}
                       alt='Variant Back'
                       className='w-32 h-32 object-cover rounded border'
                     />

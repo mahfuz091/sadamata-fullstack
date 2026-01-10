@@ -1,8 +1,11 @@
 "use server";
 
-import { attachPreviewUrl } from "@/lib/attachPreviewUrl.js";
+import {
+  attachPreviewUrl,
+  attachPreviewUrlTwo,
+} from "@/lib/attachPreviewUrl.js";
 import prisma from "@/lib/prisma";
-
+const SIGN_EXPIRES = 60 * 60;
 import {
   PUBLIC_PRODUCT_INCLUDE,
   PUBLIC_PRODUCT_WHERE,
@@ -511,64 +514,177 @@ export async function getFeaturedProducts({
 }
 export async function getProductsByProductId(productId) {
   if (!productId) throw new Error("productId is required");
-  const test1 = await prisma.product.findFirst({ where: { productId } });
-  const test2 = await prisma.product.findFirst({
-    where: { productId, isActive: true, visibility: true },
-  });
-  const test3 = await prisma.product.findFirst({
-    where: {
-      productId,
-      isActive: true,
-      visibility: true,
-      User: { isActive: true },
-    },
-  });
-  const test4 = await prisma.product.findFirst({
-    where: {
-      productId,
-      isActive: true,
-      visibility: true,
-      User: { isActive: true },
-      OR: [{ brandId: null }, { Brand: { isActive: true } }],
-    },
-  });
-  const test5 = await prisma.product.findFirst({
-    where: {
-      productId,
-      isActive: true,
-      visibility: true,
-      User: { isActive: true },
-      OR: [{ brandId: null }, { Brand: { isActive: true } }],
-      variants: { some: { isActive: { equals: true } } },
-    },
-  });
-
-  console.log(
-    {
-      test1: !!test1,
-      test2: !!test2,
-      test3: !!test3,
-      test4: !!test4,
-      test5: !!test5,
-    },
-    "product server action"
-  );
 
   const product = await prisma.product.findFirst({
     where: {
       productId,
       isActive: true,
       visibility: true,
-      variants: {
-        some: { isActive: true },
-      },
+      variants: { some: { isActive: true } },
     },
     include: PUBLIC_PRODUCT_INCLUDE,
   });
 
+  const [signed] = await attachPreviewUrlTwo(product ? [product] : []);
+
   return {
     kind: "product_by_id",
     found: !!product,
-    item: product,
+    item: signed || null,
+  };
+}
+
+export async function getProductsByCategorySlug(input = {}) {
+  const {
+    slug,
+    page = 1,
+    pageSize = 24,
+    q = "",
+    fitType = [], // ["MEN","WOMEN"]
+    colors = [], // ["#000","#fff"]
+    sort = "newest", // newest|oldest|price_asc|price_desc|title_asc|title_desc|best_selling
+  } = input;
+
+  if (!slug) throw new Error("slug is required");
+
+  // ✅ 1) find category by slug (case-insensitive)
+  const category = await prisma.productCategory.findFirst({
+    where: {
+      slug: { equals: slug, mode: "insensitive" },
+    },
+    select: { id: true, name: true, slug: true, sortOrder: true },
+  });
+
+  if (!category) {
+    return {
+      found: false,
+      category: null,
+      items: [],
+      page,
+      pageSize,
+      total: 0,
+      totalPages: 1,
+    };
+  }
+
+  // -------- Search OR --------
+  const buildQOr = (text) => {
+    const raw = (text || "").trim();
+    if (!raw) return undefined;
+
+    const alts = Array.from(
+      new Set([
+        raw,
+        raw.replace(/[-_]/g, " "),
+        raw.replace(/[^a-z0-9]/gi, ""),
+        raw.replace(/\s+/g, "-"),
+      ])
+    ).filter(Boolean);
+
+    return alts.flatMap((term) => [
+      { title: { contains: term, mode: "insensitive" } },
+      { description: { contains: term, mode: "insensitive" } },
+      { tags: { some: { value: { contains: term, mode: "insensitive" } } } },
+    ]);
+  };
+
+  const orSearch = q ? buildQOr(q) : undefined;
+
+  // -------- Variant filter --------
+  const variantsFilter =
+    fitType?.length || colors?.length
+      ? {
+          some: {
+            ...PUBLIC_VARIANT_WHERE,
+            ...(fitType?.length && { fitType: { in: fitType } }),
+            ...(colors?.length && { color: { in: colors } }),
+          },
+        }
+      : { some: { ...PUBLIC_VARIANT_WHERE } }; // ensure at least one active variant
+
+  // -------- WHERE --------
+  const where = {
+    AND: [
+      PUBLIC_PRODUCT_WHERE,
+      // ✅ category match (m:n)
+      { categories: { some: { id: category.id } } },
+      orSearch ? { OR: orSearch } : {},
+      { variants: variantsFilter },
+    ],
+  };
+
+  // -------- ORDER BY --------
+  let orderBy = [{ createdAt: "desc" }];
+
+  switch (sort) {
+    case "oldest":
+      orderBy = [{ createdAt: "asc" }];
+      break;
+    case "price_asc":
+      orderBy = [{ price: "asc" }, { createdAt: "desc" }];
+      break;
+    case "price_desc":
+      orderBy = [{ price: "desc" }, { createdAt: "desc" }];
+      break;
+    case "title_asc":
+      orderBy = [{ title: "asc" }];
+      break;
+    case "title_desc":
+      orderBy = [{ title: "desc" }];
+      break;
+    case "best_selling":
+      orderBy = [{ sales: { _count: "desc" } }, { createdAt: "desc" }];
+      break;
+    default:
+      orderBy = [{ createdAt: "desc" }];
+  }
+
+  const take = Math.max(1, pageSize);
+  const skip = (Math.max(1, page) - 1) * take;
+
+  const [total, items] = await Promise.all([
+    prisma.product.count({ where }),
+    prisma.product.findMany({
+      where,
+      orderBy,
+      skip,
+      take,
+      include: PUBLIC_PRODUCT_INCLUDE,
+    }),
+  ]);
+
+  // ✅ attach previewUrl (signed S3)
+  const SIGN_EXPIRES = 60 * 60;
+
+  const itemsWithPreview = await Promise.all(
+    items.map(async (p) => {
+      const activeVariant =
+        p.variants?.find((v) => v.isActive && (v.frontImg || v.backImg)) ||
+        null;
+
+      const key =
+        activeVariant?.frontImg ||
+        activeVariant?.backImg ||
+        p.variants?.[0]?.frontImg ||
+        p.variants?.[0]?.backImg ||
+        p.frontDesign ||
+        p.backDesign ||
+        null;
+
+      const previewUrl = key ? await getPrivateUrl(key, SIGN_EXPIRES) : null;
+
+      return { ...p, previewUrl };
+    })
+  );
+
+  return {
+    found: true,
+    kind: "category_products",
+    category,
+    page,
+    pageSize: take,
+    total,
+    totalPages: Math.max(1, Math.ceil(total / take)),
+    items: itemsWithPreview,
   };
 }

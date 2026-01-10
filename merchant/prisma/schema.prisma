@@ -200,10 +200,14 @@ model Product {
 model ProductCategory {
   id        String    @id @default(uuid())
   name      String    @unique
+  slug      String?   @unique
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  sortOrder Int?      @default(0)
+  sortOrder Int?      @default(0) // Add a sortOrder field
+  // ✅ many-to-many
   products  Product[] @relation("ProductCategories")
+
+  @@index([slug])
 }
 
 model Sale {

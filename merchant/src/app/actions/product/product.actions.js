@@ -6,6 +6,7 @@ import sharp from "sharp";
 import { prisma } from "@/lib/prisma";
 import generateBlogId from "@/utils/generateTitle";
 import { saveDesignFileS3, saveProductFileS3 } from "@/lib/s3helper";
+import { revalidatePath } from "next/cache";
 
 const uploadDir = path.join(process.cwd(), "public", "uploads");
 const uploadProductDir = path.join(process.cwd(), "uploads", "products");
@@ -769,6 +770,27 @@ async function saveDesignFile(file, fieldName) {
 //     };
 //   }
 // }
+
+const normalizeHex = (c = "") =>
+  c.toString().trim().toLowerCase().replace(/\s+/g, "");
+
+const FIT_ORDER = ["MEN", "WOMEN"]; // serial
+
+const fitRank = (fitType) => {
+  const t = (fitType || "").toString().trim().toUpperCase();
+  const idx = FIT_ORDER.indexOf(t);
+  return idx === -1 ? 999 : idx;
+};
+
+// Color serial: #000 first, #fff second, then others
+const COLOR_PRIORITY = ["#000", "#fff"];
+
+const colorRank = (color) => {
+  const c = normalizeHex(color);
+  const idx = COLOR_PRIORITY.indexOf(c);
+  return idx === -1 ? 999 : idx;
+};
+
 export async function createProduct(formData) {
   try {
     const title = (formData.get("title") || "").toString().trim();
@@ -900,6 +922,22 @@ export async function createProduct(formData) {
       );
     }
 
+    // ✅ Enforce serial order: Fit MEN->WOMEN, Color #000->#fff->rest
+    variantsInput.sort((a, b) => {
+      // 1) Fit type serial
+      const fr = fitRank(a.fitType) - fitRank(b.fitType);
+      if (fr !== 0) return fr;
+
+      // 2) Color serial (#000 then #fff then others)
+      const cr = colorRank(a.color) - colorRank(b.color);
+      if (cr !== 0) return cr;
+
+      // 3) Rest colors: stable alphabetical by hex/name
+      const ac = normalizeHex(a.color);
+      const bc = normalizeHex(b.color);
+      return ac.localeCompare(bc);
+    });
+
     const normalizedVariants = variantsInput.map((x) => ({
       color: x.color,
       fitType: x.fitType,
@@ -972,6 +1010,8 @@ export async function createProduct(formData) {
         data: { leftTiar: { set: leftTiar } },
       });
     });
+
+    revalidatePath("/dashboard/*");
 
     return { success: true, message: "Product created successfully" };
   } catch (error) {

@@ -1,6 +1,8 @@
 import { auth } from "@/auth";
 import Profile from "@/components/Profile/Profile";
 import { prisma } from "@/lib/prisma";
+import { getPrivateUrl } from "@/lib/s3";
+import { getSignedS3Url } from "@/lib/s3View";
 import React from "react";
 import { GetCountries } from "react-country-state-city";
 
@@ -24,7 +26,17 @@ const page = async () => {
   });
   // console.log(user, 'user');
 
-  return <Profile user={user} countries={countries} />;
+  const profileImageUrl = user?.profileImage
+    ? await getPrivateUrl(user.profileImage)
+    : null;
+
+  return (
+    <Profile
+      user={user}
+      countries={countries}
+      profileImageUrl={profileImageUrl}
+    />
+  );
 };
 
 export default page;

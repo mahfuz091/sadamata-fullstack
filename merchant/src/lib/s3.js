@@ -2,6 +2,7 @@ import {
   S3Client,
   PutObjectCommand,
   GetObjectCommand,
+  DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
@@ -30,5 +31,18 @@ export async function getPrivateUrl(key, expiresIn = 3600) {
     s3,
     new GetObjectCommand({ Bucket: process.env.AWS_BUCKET, Key: key }),
     { expiresIn }
+  );
+}
+
+export async function deleteFromS3(key) {
+  if (!key) return;
+  if (/^https?:\/\//i.test(key)) return; // full url হলে skip
+  const Key = key.replace(/^\/+/, "");
+
+  await s3.send(
+    new DeleteObjectCommand({
+      Bucket: BUCKET,
+      Key,
+    })
   );
 }

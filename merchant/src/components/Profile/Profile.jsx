@@ -8,8 +8,9 @@ import {
 } from "@/app/actions/auth/userAddressActions";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import ProfileImageUploader from "./ProfileImageUploader";
 
-const Profile = ({ user, countries }) => {
+const Profile = ({ user, countries, profileImageUrl }) => {
   const [editMode, setEditMode] = useState(false);
   const [phoneValue, setPhoneValue] = useState(
     user?.merchantProfile?.contactPhone || ""
@@ -32,10 +33,11 @@ const Profile = ({ user, countries }) => {
   //   user?.profileImage || "/assets/images/resources/avater.png"
   // );
   const [preview, setPreview] = useState(
-    user?.profileImage
-      ? `${process.env.NEXT_PUBLIC_BASE_URL}${user.profileImage}`
-      : "/assets/images/resources/avater.png"
+    profileImageUrl || "/assets/images/resources/avater.png"
   );
+  useEffect(() => {
+    if (profileImageUrl) setPreview(profileImageUrl);
+  }, [profileImageUrl]);
   const [formData, setFormData] = useState({
     name: user.name || "",
     email: user.email || user.addresses?.[0]?.email || "",
@@ -133,7 +135,7 @@ const Profile = ({ user, countries }) => {
         <div className='user-profile__form'>
           <form className='user-form' onSubmit={(e) => e.preventDefault()}>
             <aside className='user-profile__info'>
-              <div className='user-profile__info__avater'>
+              {/* <div className='user-profile__info__avater'>
                 <div className='avatar-container'>
                   <img src={preview} alt='Profile Avatar' className='avatar' />
                   <div className='verified-badge'>
@@ -175,7 +177,8 @@ const Profile = ({ user, countries }) => {
                   <h1 className='profile-name'>{user?.name}</h1>
                   <p className='profile-username d-none'>@sobuz8464</p>
                 </div>
-              </div>
+              </div> */}
+              <ProfileImageUploader userId={user.id} initialUrl={preview} />
               <ul className='user-profile__info__menu list-unstyled'>
                 <Link href='/dashboard/profile/'>
                   <li className='user-profile__info__menu__item active'>

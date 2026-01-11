@@ -6,7 +6,7 @@ import Link from "next/link";
 import { logOut } from "@/app/actions/auth/auth.actions";
 import { useEffect, useRef, useState } from "react";
 
-const HeaderTwo = ({ session }) => {
+const HeaderTwo = ({ session, profileImageUrl }) => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
   useEffect(() => {
@@ -51,11 +51,7 @@ const HeaderTwo = ({ session }) => {
                         onClick={() => setOpen((prev) => !prev)}
                       >
                         <img
-                          src={
-                            session.user.profileImage
-                              ? `${process.env.NEXT_PUBLIC_BASE_URL}/${session?.user?.profileImage}`
-                              : "/avatar.png" // fallback image
-                          }
+                          src={profileImageUrl || "/avatar.png"}
                           width={40}
                           height={40}
                           alt='User Avatar'

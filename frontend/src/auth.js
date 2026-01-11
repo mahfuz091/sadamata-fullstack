@@ -14,7 +14,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const user = await prisma.user.findFirst({
           where: {
             OR: [
-              { email: credentials.identifier },
+              { email: credentials.identifier.toLowerCase() },
               { phone: credentials.identifier },
             ],
           },

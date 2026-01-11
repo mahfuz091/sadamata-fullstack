@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs"; // for hashing passwords
 import { signIn, signOut, auth } from "@/auth";
 
 import { revalidatePath } from "next/cache";
-
+const toLower = (v) => (v ? v.toLowerCase() : null);
 export async function registerUser(prevState, formData) {
   try {
     const name = (formData.get("name") || "").toString().trim();
@@ -28,7 +28,9 @@ export async function registerUser(prevState, formData) {
     // Uniqueness check
     let existingUser = null;
     if (email) {
-      existingUser = await prisma.user.findUnique({ where: { email } });
+      existingUser = await prisma.user.findUnique({
+        where: { email: toLower(email) },
+      });
     } else if (phone) {
       existingUser = await prisma.user.findUnique({ where: { phone } });
     }
@@ -47,7 +49,7 @@ export async function registerUser(prevState, formData) {
     const user = await prisma.user.create({
       data: {
         name,
-        email,
+        email: toLower(email),
         phone,
         password: hashedPassword,
         role,
@@ -257,7 +259,7 @@ export const loginUser = async (prevState, formData) => {
     const user = await prisma.user.findFirst({
       where: {
         AND: [
-          { OR: [{ email: identifier }, { phone: identifier }] },
+          { OR: [{ email: identifier.toLowerCase() }, { phone: identifier }] },
           { role: "USER" },
         ],
       },

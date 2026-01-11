@@ -288,7 +288,7 @@ export const loginUser = async (prevState, formData) => {
   const user = await prisma.user.findFirst({
     where: {
       AND: [
-        { OR: [{ email: identifier }, { phone: identifier }] },
+        { OR: [{ email: toLower(identifier) }, { phone: identifier }] },
         { role: "MERCH" },
       ],
     },

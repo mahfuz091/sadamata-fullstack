@@ -6,7 +6,7 @@ const Select = dynamic(() => import("react-select"), {
 });
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import sizeChartImage from "@/assets/images/resources/size-chart.jpeg";
+import sizeChartImage from "@/assets/images/resources/sadamata-sizechart.png";
 import { Container, Row, Col } from "react-bootstrap";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Thumbs } from "swiper/modules";

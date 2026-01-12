@@ -65,6 +65,7 @@ const FeatureProduct = () => {
   const [isPending, startTransition] = useTransition();
   const [favorites, setFavorites] = useState([]);
   const pageSize = 32;
+  console.log(products, "features");
 
   const paginationRange = getPaginationRange(totalPages, page, 1);
 
@@ -142,6 +143,8 @@ const FeatureProduct = () => {
       try {
         const loader = loaders[activeTab];
         const data = await loader({ page, pageSize });
+        console.log(data, "features data");
+
         setProducts(data.items || []);
         setTotalPages(data.totalPages || 1);
       } catch (e) {

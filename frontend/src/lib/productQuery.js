@@ -14,21 +14,21 @@ export const PUBLIC_PRODUCT_WHERE = {
   },
 
   // ✅ Brand logic (fixed)
-  OR: [
-    // case 1: linked brand → brand must be active
-    {
-      brandId: { not: null },
-      Brand: {
-        isActive: true,
-      },
-    },
+  // OR: [
+  //   // case 1: linked brand → brand must be active
+  //   {
+  //     brandId: { not: null },
+  //     Brand: {
+  //       isActive: true,
+  //     },
+  //   },
 
-    // case 2: no brandId → brandName exists
-    {
-      brandId: null,
-      brandName: { not: null },
-    },
-  ],
+  //   // case 2: no brandId → brandName exists
+  //   {
+  //     brandId: null,
+  //     brandName: { not: null },
+  //   },
+  // ],
 
   // must have at least one active variant
   variants: {

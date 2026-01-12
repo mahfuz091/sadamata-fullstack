@@ -106,7 +106,6 @@ export async function GET(req) {
     select: { id: true, name: true },
   });
 
-  // ✅ Query suggestions (Amazon style)
   const queries = [
     q,
     ...products.slice(0, 4).map((p) => p.title),

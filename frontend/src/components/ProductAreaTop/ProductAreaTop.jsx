@@ -47,6 +47,8 @@ function rangeLabel(total, page, pageSize) {
 const ProductAreaTop = ({ slug, q, result, sortBy, setSortBy }) => {
   const { total = 0, page = 1, pageSize = 12 } = result || {};
 
+  console.log(total, "total");
+
   return (
     <div className='product-header-top'>
       <ul className='commerce-breadcrumb list-unstyled'>
@@ -70,9 +72,9 @@ const ProductAreaTop = ({ slug, q, result, sortBy, setSortBy }) => {
           <h2 className='product-header-top__title'>
             {q ? <>Showing products for “{q}”</> : "Products"}
           </h2>
-          <p className='product-header-top__text'>
+          {/* <p className='product-header-top__text'>
             {rangeLabel(total, page, pageSize)}
-          </p>
+          </p> */}
         </div>
 
         <div className='product-header-top__right'>

@@ -103,7 +103,7 @@ export async function getAllProducts({ page = 1, pageSize = 24 } = {}) {
   const skip = (Math.max(1, page) - 1) * Math.max(1, pageSize);
   const take = Math.max(1, pageSize);
 
-  const [total, items] = await Promise.all([
+  const [total, items, all] = await Promise.all([
     prisma.product.count({ where: PUBLIC_PRODUCT_WHERE }),
     prisma.product.findMany({
       where: PUBLIC_PRODUCT_WHERE,
@@ -112,6 +112,7 @@ export async function getAllProducts({ page = 1, pageSize = 24 } = {}) {
       orderBy: { createdAt: "desc" },
       include: PUBLIC_PRODUCT_INCLUDE, // ✅ use only one include
     }),
+    prisma.product.findMany({}),
   ]);
 
   const itemsWithPreview = await attachPreviewUrl(items);
@@ -122,6 +123,7 @@ export async function getAllProducts({ page = 1, pageSize = 24 } = {}) {
     total,
     totalPages: Math.max(1, Math.ceil(total / take)),
     items: itemsWithPreview,
+    all: all,
   };
 }
 

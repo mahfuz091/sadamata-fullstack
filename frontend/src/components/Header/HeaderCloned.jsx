@@ -8,6 +8,7 @@ import { searchRedirect } from "@/app/actions/search.actions";
 import Link from "next/link";
 import { logOut } from "@/app/actions/auth.actions";
 import useScrollUp from "@/hooks/useScrollUp";
+import SearchBar from "./SearchBar";
 const options = [
   { value: "chocolate", label: "All Categories" },
   { value: "strawberry", label: "All Categories" },
@@ -150,7 +151,7 @@ const HeaderCloned = ({ session }) => {
                 <Image src={logo} alt='sadamata' width={200} height={40} />
               </Link>
             </div>
-            <div className='main-header__search-box'>
+            {/* <div className='main-header__search-box'>
               <form action={searchRedirect} className='main-header__search'>
                 <div className='main-header__search__input-box'>
                   <Select
@@ -164,7 +165,7 @@ const HeaderCloned = ({ session }) => {
                     isSearchable={true}
                     placeholder={placeholder}
                   />
-                  {/* hidden input: server action এ slug যাবে */}
+
                   <input
                     type='hidden'
                     name='slug'
@@ -184,7 +185,8 @@ const HeaderCloned = ({ session }) => {
                   </button>
                 </div>
               </form>
-            </div>
+            </div> */}
+            <SearchBar options={options} />
             <div className='main-header__right'>
               {/* <div className="main-header__language">
                         <a href="#"><img src="assets/images/shapes/united-states-of-america.png" alt="commerce"/>English</a>

@@ -1,6 +1,30 @@
 "use server";
 import prisma from "@/lib/prisma";
 import { FitType } from "@/generated/prisma"; // adjust if needed
+import { getPrivateUrl } from "@/lib/s3";
+// --- add this helper inside the same file ---
+const attachVariantUrls = async (products) => {
+  return await Promise.all(
+    products.map(async (p) => {
+      const variants = await Promise.all(
+        (p.variants || []).map(async (v) => {
+          const frontImgUrl = v.frontImg
+            ? await getPrivateUrl(v.frontImg)
+            : null;
+          const backImgUrl = v.backImg ? await getPrivateUrl(v.backImg) : null;
+
+          return {
+            ...v,
+            frontImgUrl, // ✅ signed url
+            backImgUrl, // ✅ signed url
+          };
+        })
+      );
+
+      return { ...p, variants };
+    })
+  );
+};
 
 export async function searchProducts(input) {
   const params =
@@ -268,8 +292,9 @@ export async function searchProducts(input) {
 
     const hasMore = products.length > pageSize;
     const sliced = hasMore ? products.slice(0, pageSize) : products;
+    const slicedWithUrls = await attachVariantUrls(sliced);
 
-    const items = sliced.map((p) => ({
+    const items = slicedWithUrls.map((p) => ({
       id: p.id,
       productId: p.productId,
       title: p.title,
@@ -284,6 +309,8 @@ export async function searchProducts(input) {
         fitType: v.fitType,
         frontImg: v.frontImg,
         backImg: v.backImg,
+        frontImgUrl: v.frontImgUrl,
+        backImgUrl: v.backImgUrl,
         isActive: v.isActive,
       })),
       tags: p.tags.map((t) => t.value),
@@ -355,7 +382,9 @@ export async function searchProducts(input) {
   const hasMore = merged.length > pageSize;
   const sliced = hasMore ? merged.slice(0, pageSize) : merged;
 
-  const items = sliced.map((p) => ({
+  const slicedWithUrls = await attachVariantUrls(sliced);
+
+  const items = slicedWithUrls.map((p) => ({
     id: p.id,
     productId: p.productId,
     title: p.title,
@@ -370,6 +399,8 @@ export async function searchProducts(input) {
       fitType: v.fitType,
       frontImg: v.frontImg,
       backImg: v.backImg,
+      frontImgUrl: v.frontImgUrl,
+      backImgUrl: v.backImgUrl,
       isActive: v.isActive,
     })),
     tags: p.tags.map((t) => t.value),

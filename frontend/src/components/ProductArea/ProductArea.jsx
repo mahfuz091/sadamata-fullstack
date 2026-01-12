@@ -493,8 +493,20 @@ const ProductArea = ({ result: initialResult, slug, q, brands, mockups }) => {
                 {itemsForGrid.length > 0
                   ? itemsForGrid.map((item) => {
                       const cardVariant = pickVariantForCard(item);
-                      const img =
+
+                      // ✅ Prefer signed URLs from server
+                      const imgUrl =
+                        cardVariant?.frontImgUrl ||
+                        cardVariant?.backImgUrl ||
+                        null;
+
+                      // fallback: if you still sometimes get keys (optional)
+                      const imgKey =
                         cardVariant?.frontImg || cardVariant?.backImg || null;
+
+                      const finalSrc =
+                        imgUrl ||
+                        (imgKey ? toPublicUrl(imgKey) : "/placeholder.png");
                       const isFavorite = favorites.some(
                         (p) => p.id === item.id
                       );
@@ -508,7 +520,7 @@ const ProductArea = ({ result: initialResult, slug, q, brands, mockups }) => {
                                 className='product__item__img__item d-block'
                               >
                                 <Image
-                                  src={toPublicUrl(img)}
+                                  src={finalSrc}
                                   alt={item.title || "product image"}
                                   width={300}
                                   height={300}

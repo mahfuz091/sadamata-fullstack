@@ -197,10 +197,7 @@ export default function SearchBar({ options = [] }) {
           />
         </div>
 
-        <div
-          className='main-header__search__input-box'
-          style={{ position: "relative" }}
-        >
+        <div className='main-header__search__input-box'>
           <input
             type='text'
             name='text'

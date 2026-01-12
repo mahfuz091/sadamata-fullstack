@@ -20,9 +20,9 @@ const VendorLogin = () => {
                 placeholder='Full Name'
               />
               <p>
-                By continuing, you agree to amazon’s{" "}
-                <Link href='#'>conditions of use</Link> and{" "}
-                <Link href='#'>privacy notice</Link>.
+                By continuing, you agree to sadamata’s{" "}
+                <Link href='/terms'>conditions of use</Link> and{" "}
+                <Link href='/privecy'>privacy notice</Link>.
               </p>
             </div>
             <div className='user-login__form-input-box'>

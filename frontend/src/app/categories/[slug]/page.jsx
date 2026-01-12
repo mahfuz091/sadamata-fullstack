@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { notFound } from "next/navigation";
 import { getProductsByCategorySlug } from "@/app/actions/product/product.actions";
 import CategoryProductsClient from "@/components/CategoryProducts/CategoryProductsClient";
+import prisma from "@/lib/prisma";
 
 export default async function Page({ params }) {
   const session = await auth();

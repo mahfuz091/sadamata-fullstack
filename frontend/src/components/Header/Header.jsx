@@ -265,7 +265,7 @@ const Header = ({ session, categories }) => {
                 ) : (
                   <>
                     <Link href='/login' className='commerce-btn login'>
-                      Login
+                      Sign In
                     </Link>
                   </>
                 )}

@@ -10,6 +10,7 @@ import {
 } from "@/app/actions/address/address.actions";
 import Select from "react-select";
 import { customStyles } from "@/lib/reactSelect";
+import { getCartImageUrls } from "@/app/actions/cart/cart.actions";
 const COUPONS = { SAVE10: 0.1, SAVE20: 0.2, WELCOME5: 0.05 };
 
 const toNum = (v) => {
@@ -37,6 +38,8 @@ const CheckoutPageTwo = ({ user }) => {
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const [makeDefault, setMakeDefault] = useState(true);
+
+  const [imageMap, setImageMap] = useState({});
 
   // require login
   useEffect(() => {
@@ -74,9 +77,7 @@ const CheckoutPageTwo = ({ user }) => {
           fit: i.fit || null,
           size: i.size || null,
           // keep a couple of raw fields for UI display
-          _img: i.image
-            ? `${process.env.NEXT_PUBLIC_MERCH_URL}/${i.image}`
-            : i.img,
+          _imgKey: i.image || null, // S3 key রাখো
           _typeOrBrand: i.type || i.brand,
         };
       })
@@ -154,6 +155,22 @@ const CheckoutPageTwo = ({ user }) => {
     setShowNewForm(false);
     await refreshAddresses();
   }
+
+  useEffect(() => {
+    if (!cartItems?.length) return;
+
+    const keys = cartItems.map((x) => x.image).filter(Boolean);
+
+    (async () => {
+      try {
+        const map = await getCartImageUrls(keys);
+        setImageMap(map || {});
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+  }, [cartItems]);
+
   console.log(sanitizedCart, summary, "sanitizedCart");
   return (
     <section className='checkout-page'>
@@ -378,17 +395,28 @@ const CheckoutPageTwo = ({ user }) => {
                   const key = `${item.productId}-${item.color ?? "nocolor"}-${
                     item.fit ?? "nofit"
                   }-${item.size ?? "nosize"}`;
+
+                  console.log(item, "itemn");
+
                   return (
                     <li className='cart-one__list__item' key={key}>
                       <div className='cart-one__list__left'>
                         <div className='cart-one__list__image'>
-                          {item._img ? (
-                            <Image
-                              src={item._img}
-                              alt={item.title || "cart image"}
-                              width={80}
-                              height={80}
-                            />
+                          {item._imgKey ? (
+                            <div className='cart-one__list__image'>
+                              <Image
+                                src={
+                                  item._imgKey
+                                    ? imageMap[item._imgKey] ||
+                                      "/placeholder.png"
+                                    : "/placeholder.png"
+                                }
+                                alt={item.title || "cart image"}
+                                width={80}
+                                height={80}
+                                unoptimized
+                              />
+                            </div>
                           ) : (
                             <span>No Image</span>
                           )}

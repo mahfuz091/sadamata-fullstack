@@ -254,7 +254,7 @@ const HeaderCloned = ({ session }) => {
                 ) : (
                   <>
                     <Link href='/login' className='commerce-btn login'>
-                      Login
+                      Sign In
                     </Link>
                   </>
                 )}

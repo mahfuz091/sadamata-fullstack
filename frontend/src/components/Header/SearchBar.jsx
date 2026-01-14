@@ -197,7 +197,10 @@ export default function SearchBar({ options = [] }) {
           />
         </div>
 
-        <div className='main-header__search__input-box'>
+        <div
+          className='main-header__search__input-box'
+          style={{ maxWidth: "650px", width: "100%" }}
+        >
           <input
             type='text'
             name='text'

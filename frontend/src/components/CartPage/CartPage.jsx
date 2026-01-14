@@ -4,6 +4,7 @@ import Image from "next/image";
 import { GoTrash } from "react-icons/go";
 import { toast } from "sonner";
 import { usePathname, useRouter } from "next/navigation";
+import { getCartImageUrls } from "@/app/actions/cart/cart.actions";
 
 const CartPage = ({ user }) => {
   const router = useRouter();
@@ -11,6 +12,8 @@ const CartPage = ({ user }) => {
   const pathname = usePathname();
 
   const [cartItems, setCartItems] = useState([]);
+  const [imageMap, setImageMap] = useState({}); // { key: signedUrl }
+
   const [summary, setSummary] = useState({
     total: 0,
     discount: 0,
@@ -74,6 +77,22 @@ const CartPage = ({ user }) => {
     localStorage.setItem("cart", JSON.stringify(safeCart));
 
     window.dispatchEvent(new Event("cart-updated"));
+  }, [cartItems]);
+
+  useEffect(() => {
+    if (!hydrated.current) return;
+    if (!cartItems?.length) return;
+
+    const keys = cartItems.map((x) => x.image).filter(Boolean);
+
+    (async () => {
+      try {
+        const map = await getCartImageUrls(keys);
+        setImageMap(map || {});
+      } catch (e) {
+        console.error(e);
+      }
+    })();
   }, [cartItems]);
 
   const handleQuantityChange = (id, color, fit, size, delta) => {
@@ -143,13 +162,20 @@ const CartPage = ({ user }) => {
                           <div className='cart-one__list__image'>
                             {item.image ? (
                               <Image
-                                src={`${process.env.NEXT_PUBLIC_MERCH_URL}/${item.image}`}
+                                src={imageMap[item.image] || "/placeholder.png"}
                                 alt={item.title}
                                 width={80}
                                 height={80}
+                                unoptimized
                               />
                             ) : (
-                              <span>No Image</span>
+                              <Image
+                                src={"/placeholder.png"}
+                                alt='placeholder'
+                                width={80}
+                                height={80}
+                                unoptimized
+                              />
                             )}
                           </div>
                           <div className='cart-one__list__content'>

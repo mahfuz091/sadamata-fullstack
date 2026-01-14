@@ -364,6 +364,7 @@ export default function ProductDetails2({ product }) {
     label: "All Views",
     src: sizeChartImage,
   };
+  console.log(product);
 
   return (
     <>
@@ -539,19 +540,24 @@ export default function ProductDetails2({ product }) {
                   <h4 className='populer-feature__title'>Product Features</h4>
                   <ul className='populer-feature__list list-unstyled'>
                     <li>
-                      <i className='fas fa-check-circle'></i> Stunning matt
-                      finish
+                      <span className='dot'></span>{" "}
+                      <strong>Fabric Type:</strong> Knit
                     </li>
                     <li>
-                      <i className='fas fa-check-circle'></i> W500 x D340 x
-                      H168mm
+                      <span className='dot'></span> <strong>Fit Type:</strong>{" "}
+                      Regular ({product?.Mockup?.name})
                     </li>
                     <li>
-                      <i className='fas fa-check-circle'></i> Lifetime guarantee
+                      <span className='dot'></span>{" "}
+                      <strong>Closure Type:</strong> Pull On
                     </li>
                     <li>
-                      <i className='fas fa-check-circle'></i> No overflow - use
-                      unslotted basin waste
+                      <span className='dot'></span> <strong>Origin:</strong>{" "}
+                      Bangladesh
+                    </li>
+                    <li>
+                      <span className='dot'></span>{" "}
+                      <strong>Manufacturer:</strong> Sadamata
                     </li>
                   </ul>
                 </div>
@@ -834,7 +840,7 @@ export default function ProductDetails2({ product }) {
                         ))}
                       </>
                     )}
-                    <li>
+                    {/* <li>
                       Officially Licensed Sadamata The Lion King Apparel for
                       Women - Men - Youth - Toddler; Sadamata Villains T-Shirt;
                       Holiday; Seasonal; Christmas; Vintage; Sadamataland;
@@ -845,6 +851,9 @@ export default function ProductDetails2({ product }) {
                     <li>
                       Lightweight, Classic fit, Double-needle sleeve and bottom
                       hem
+                    </li> */}
+                    <li>
+                      <a href='#'>See Size Chart</a>
                     </li>
                   </ul>
                 </div>

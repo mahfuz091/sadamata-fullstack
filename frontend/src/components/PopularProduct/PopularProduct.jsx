@@ -98,8 +98,8 @@ const PopularProduct = () => {
             const imgSrc = rawImg?.startsWith("http")
               ? rawImg
               : rel
-              ? `${ASSET_BASE}/${rel}`
-              : "/placeholder.png";
+                ? `${ASSET_BASE}/${rel}`
+                : "/placeholder.png";
 
             const brand = product?.Brand?.name ?? product?.brandName ?? "—";
             const price =
@@ -174,7 +174,7 @@ const PopularProduct = () => {
           {hasMore ? (
             <button
               type='button'
-              className='commerce-btn'
+              className='commerce-btn text-white'
               onClick={handleLoadMore}
               disabled={isPending}
             >

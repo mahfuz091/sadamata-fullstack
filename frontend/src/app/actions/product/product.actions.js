@@ -152,7 +152,7 @@ export async function getProducts(input = {}) {
         raw.replace(/[-_]/g, " "), // t-shirt -> t shirt
         raw.replace(/[^a-z0-9]/gi, ""), // t shirt -> tshirt
         raw.replace(/\s+/g, "-"), // t shirt -> t-shirt
-      ])
+      ]),
     ).filter(Boolean);
 
     return alts.flatMap((term) => [
@@ -430,7 +430,7 @@ export async function getBestSellers({ page = 1, pageSize = 24 } = {}) {
         merchantEarning: t._sum.merchantEarning || 0,
         platformEarning: t._sum.platformEarning || 0,
       },
-    ])
+    ]),
   );
 
   const items = productIds
@@ -457,7 +457,7 @@ export async function getBestSellers({ page = 1, pageSize = 24 } = {}) {
     total: totalProductsWithSales || productIds.length,
     totalPages: Math.max(
       1,
-      Math.ceil((totalProductsWithSales || productIds.length) / take)
+      Math.ceil((totalProductsWithSales || productIds.length) / take),
     ),
     items: await attachPreviewUrl(items),
   };
@@ -521,7 +521,7 @@ export async function getProductsByProductId(productId) {
     where: {
       productId,
       isActive: true,
-      visibility: true,
+      // visibility: true,
       variants: { some: { isActive: true } },
     },
     include: PUBLIC_PRODUCT_INCLUDE,
@@ -580,7 +580,7 @@ export async function getProductsByCategorySlug(input = {}) {
         raw.replace(/[-_]/g, " "),
         raw.replace(/[^a-z0-9]/gi, ""),
         raw.replace(/\s+/g, "-"),
-      ])
+      ]),
     ).filter(Boolean);
 
     return alts.flatMap((term) => [
@@ -676,7 +676,7 @@ export async function getProductsByCategorySlug(input = {}) {
       const previewUrl = key ? await getPrivateUrl(key, SIGN_EXPIRES) : null;
 
       return { ...p, previewUrl };
-    })
+    }),
   );
 
   return {

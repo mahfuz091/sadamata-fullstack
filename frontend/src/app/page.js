@@ -9,12 +9,20 @@ import TopMovieBrand from "@/components/TopMovieBrand/TopMovieBrand";
 import TopNatokBrand from "@/components/TopNatokBrand/TopNatokBrand";
 import TopMovieBrandTshirt from "@/components/TopMovieBrandTshirt/TopMovieBrandTshirt";
 import TopNatokBrandTshirt from "@/components/TopNatokBrandTshirt/TopNatokBrandTshirt";
-import { getNewArrivals } from "./actions/product/product.actions";
+import {
+  getNewArrivals,
+  getProductsByCategorySlug,
+} from "./actions/product/product.actions";
 import { auth } from "@/auth";
-import prisma from "@/lib/prisma";
 
 export default async function Home() {
   // const newA  =  await getNewArrivals()
+  const [musicProducts, movieProducts, natokProducts] = await Promise.all([
+    getProductsByCategorySlug({ slug: "music" }),
+    getProductsByCategorySlug({ slug: "movie" }),
+    getProductsByCategorySlug({ slug: "drama" }), // or "natok"
+  ]);
+  console.log(musicProducts, movieProducts, natokProducts, "music Products");
 
   const session = await auth();
   console.log(session, "session");
@@ -25,11 +33,11 @@ export default async function Home() {
       <PopularProduct />
       <FeatureProduct />
       <TopMusicBrand />
-      <TopMusicBrandTshirt />
+      <TopMusicBrandTshirt products={musicProducts?.items} />
       <TopMovieBrand />
-      <TopMovieBrandTshirt />
+      <TopMovieBrandTshirt products={movieProducts?.items} />
       <TopNatokBrand />
-      <TopNatokBrandTshirt />
+      <TopNatokBrandTshirt products={natokProducts?.items} />
     </Layout>
   );
 }

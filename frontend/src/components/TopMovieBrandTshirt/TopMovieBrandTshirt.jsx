@@ -1,129 +1,156 @@
-// components/HistoryProductSection.js
 "use client";
 
 import Image from "next/image";
 import Slider from "react-slick";
 import { Container } from "react-bootstrap";
-import { useRef } from "react";
+import { useMemo, useRef, useState } from "react";
+import Link from "next/link";
+import AddToCartModal from "../FeatureProduct/AddToCartModal";
 
-// Import a demo image – replace or map real images later
-import productImg from "@/assets/images/products/item-1-1.png";
-
-/**
- * Dummy history-based products — ideally fetch from API or context
- */
-const historyProducts = Array.from({ length: 8 }).map((_, i) => ({
-  id: i + 1,
-  brand: "Sadamata",
-  title: "Sadamata The Lion King Scar I'm Surrounded T-Shirt",
-  price: 17.95,
-  rating: 4.9,
-  reviews: 65,
-  image: productImg,
-}));
-
-export default function TopMovieBrandTshirt() {
+export default function TopMovieBrandTshirt({
+  title = "Top Movie Brand T-shirt",
+  products = [],
+}) {
+  const [showModal, setShowModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const sliderRef = useRef(null);
 
   const settings = {
     dots: false,
-    infinite: true,
-    arrows: false, // we use custom external buttons
+    infinite: products.length > 4,
+    arrows: false,
     centerMode: false,
     speed: 300,
     slidesToShow: 4,
     slidesToScroll: 1,
     responsive: [
-      {
-        breakpoint: 1024,
-        settings: { slidesToShow: 3 },
-      },
-      {
-        breakpoint: 600,
-        settings: { slidesToShow: 2 },
-      },
-      {
-        breakpoint: 480,
-        settings: { slidesToShow: 1 },
-      },
+      { breakpoint: 1024, settings: { slidesToShow: 3 } },
+      { breakpoint: 600, settings: { slidesToShow: 2 } },
+      { breakpoint: 480, settings: { slidesToShow: 1 } },
     ],
   };
+
+  const normalized = useMemo(() => {
+    return (products ?? []).map((p) => ({
+      id: p.id,
+      productId: p.productId,
+      title: p.title,
+      price: p.price,
+      brand: p.brandName || "Brand",
+      imageUrl: p.previewUrl || null,
+      rating: p.rating ?? 5,
+      reviews: p.reviews ?? 0,
+    }));
+  }, [products]);
 
   return (
     <section className='history-product slider-wrapper py-5'>
       <Container>
-        {/* Section Header */}
-        <div className=' history-product__top'>
-          <h2 className='history-product__title'>Top Movie Brand T-shirt</h2>
+        <div className='history-product__top'>
+          <h2 className='history-product__title'>{title}</h2>
 
-          {/* External arrow controls */}
           <div className='history-product__btn'>
             <button
               className='slick-custom-prev slick-arrow'
               onClick={() => sliderRef.current?.slickPrev()}
+              type='button'
+              aria-label='Previous'
             >
               <i className='icon-left-arrow' />
             </button>
             <button
               className='slick-custom-next slick-arrow'
               onClick={() => sliderRef.current?.slickNext()}
+              type='button'
+              aria-label='Next'
             >
               <i className='icon-left-arrow' />
             </button>
           </div>
         </div>
 
-        {/* Carousel */}
         <Slider
           {...settings}
           ref={sliderRef}
           className='history-product__carousel'
         >
-          {historyProducts.map((prod) => (
+          {normalized.map((prod) => (
             <div key={prod.id} className='item'>
               <div className='product__item'>
-                {/* Image & Wish */}
                 <div className='product__item__img'>
-                  <a href='#' className='product__item__img__item'>
-                    <Image src={prod.image} alt='product image' />
-                  </a>
+                  <Link
+                    href={`/product-details/${prod.productId}`}
+                    className='product__item__img__item'
+                  >
+                    {prod.imageUrl ? (
+                      <Image
+                        src={prod.imageUrl}
+                        alt={prod.title}
+                        width={600}
+                        height={600}
+                        style={{ width: "100%", height: "auto" }}
+                        unoptimized
+                      />
+                    ) : (
+                      <div style={{ aspectRatio: "1/1" }} />
+                    )}
+                  </Link>
+
                   <div className='product__item__btn'>
-                    <a href='/cart'>
+                    <Link href='/cart'>
                       <i className='far fa-heart' />
-                    </a>
+                    </Link>
                   </div>
                 </div>
 
-                {/* Content */}
                 <div className='product__item__content'>
                   <p className='product__item__brand'>
-                    Brand: <a href='#'>{prod.brand}</a>
+                    Brand: <span>{prod.brand}</span>
                   </p>
+
                   <h4 className='product__item__title'>
-                    <a href='/product-details'>{prod.title}</a>
+                    <Link href={`/product-details/${prod.productId}`}>
+                      {prod.title}
+                    </Link>
                   </h4>
+
                   <div className='product__item__box'>
                     <div className='product__item__price'>
-                      ${prod.price.toFixed(2)}
+                      ৳{Number(prod.price ?? 0).toFixed(2)}
                     </div>
+
                     <div className='product__item__ratings'>
                       {[...Array(5)].map((_, i) => (
                         <i key={i} className='fas fa-star' />
                       ))}
-                      <span className=''>
+                      <span>
                         {prod.rating} ({prod.reviews})
                       </span>
                     </div>
                   </div>
-                  <a href='/cart' className='commerce-btn product__item__link'>
-                    Add to Cart <i className='icon-right-arrow' />
-                  </a>
+
+                  <button
+                    className='commerce-btn product__item__link mt-2'
+                    onClick={() => {
+                      setSelectedProduct(prod);
+                      setShowModal(true);
+                    }}
+                  >
+                    Add to Cart <i className='icon-right-arrow'></i>
+                  </button>
                 </div>
               </div>
             </div>
           ))}
         </Slider>
       </Container>
+      {selectedProduct && (
+        <AddToCartModal
+          show={showModal}
+          onHide={() => setShowModal(false)}
+          product={selectedProduct}
+        />
+      )}
     </section>
   );
 }

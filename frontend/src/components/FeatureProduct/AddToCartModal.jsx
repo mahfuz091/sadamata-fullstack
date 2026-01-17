@@ -30,7 +30,7 @@ const groupByFit = (variants = []) =>
       (acc[k] ||= []).push(v);
       return acc;
     },
-    { MEN: [], WOMEN: [], YOUTH: [] }
+    { MEN: [], WOMEN: [], YOUTH: [] },
   );
 
 const uniqueColors = (variants = []) => [
@@ -47,12 +47,12 @@ const toImg = (path) => {
 export default function AddToCartModal({ show, onHide, product }) {
   const grouped = useMemo(
     () => groupByFit(product?.variants || []),
-    [product?.variants]
+    [product?.variants],
   );
 
   const availableFits = useMemo(
     () => Object.keys(grouped).filter((f) => grouped[f].length),
-    [grouped]
+    [grouped],
   );
 
   /* -------- State (NO DEFAULTS) -------- */
@@ -69,7 +69,7 @@ export default function AddToCartModal({ show, onHide, product }) {
 
     // keep previous if still valid, otherwise set first
     setFit((prev) =>
-      prev && availableFits.includes(prev) ? prev : availableFits[0]
+      prev && availableFits.includes(prev) ? prev : availableFits[0],
     );
   }, [availableFits]);
 
@@ -97,7 +97,7 @@ export default function AddToCartModal({ show, onHide, product }) {
   const blackFirst = (colors = []) => {
     const isBlack = (c) => BLACK_SET.has(String(c).toLowerCase());
     return [...colors].sort(
-      (a, b) => (isBlack(b) ? 1 : 0) - (isBlack(a) ? 1 : 0)
+      (a, b) => (isBlack(b) ? 1 : 0) - (isBlack(a) ? 1 : 0),
     );
   };
 
@@ -105,7 +105,7 @@ export default function AddToCartModal({ show, onHide, product }) {
   // const fitColors = useMemo(() => colorsForFit(fitVariants), [fitVariants]);
   const fitColors = useMemo(
     () => blackFirst(colorsForFit(fitVariants)),
-    [fitVariants]
+    [fitVariants],
   );
 
   /* -------- Auto-select COLOR if only one -------- */
@@ -128,6 +128,26 @@ export default function AddToCartModal({ show, onHide, product }) {
   const imgSrc = rel
     ? `${ASSET_BASE}/${rel}`
     : `${ASSET_BASE}/uploads/placeholder.png`;
+
+  // --- image resolver (supports full S3 url or relative path) ---
+  const resolveImg = (val) => {
+    if (!val) return null;
+    // if already full url (S3 signed url etc.)
+    if (/^https?:\/\//i.test(val)) return val;
+    // otherwise treat as relative path served from ASSET_BASE
+    return `${ASSET_BASE}/${String(val).replace(/^\/+/, "")}`;
+  };
+
+  // current variant image preference
+  const variantImg =
+    currentVariant?.frontImg || currentVariant?.backImg || null;
+
+  // final image source for modal
+  const modalImgSrc =
+    resolveImg(variantImg) ||
+    resolveImg(product?.previewUrl) ||
+    resolveImg(getProductImage(product)) ||
+    `${ASSET_BASE}/uploads/placeholder.png`;
 
   /* -------- Add to Cart -------- */
 
@@ -154,7 +174,7 @@ export default function AddToCartModal({ show, onHide, product }) {
         i.id === item.id &&
         i.fit === item.fit &&
         i.color === item.color &&
-        i.size === item.size
+        i.size === item.size,
     );
 
     if (index > -1) cart[index].quantity += qty;
@@ -187,7 +207,7 @@ export default function AddToCartModal({ show, onHide, product }) {
       <Modal.Body>
         <div className='d-flex gap-3'>
           <Image
-            src={imgSrc}
+            src={product.previewUrl || product.imageUrl || "/placeholder.png"}
             width={120}
             height={120}
             alt={product.title || "Product image"}

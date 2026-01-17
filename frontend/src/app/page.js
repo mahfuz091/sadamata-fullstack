@@ -19,7 +19,7 @@ export default async function Home() {
   // const newA  =  await getNewArrivals()
   const [musicProducts, movieProducts, natokProducts] = await Promise.all([
     getProductsByCategorySlug({ slug: "music" }),
-    getProductsByCategorySlug({ slug: "movie" }),
+    getProductsByCategorySlug({ slug: "movies" }),
     getProductsByCategorySlug({ slug: "drama" }), // or "natok"
   ]);
   console.log(musicProducts, movieProducts, natokProducts, "music Products");

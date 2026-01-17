@@ -180,16 +180,16 @@ const Footer = () => {
                   {/* /.footer-widget__title */}
                   <ul className='list-unstyled footer-widget__links'>
                     <li>
-                      <a href='#'>Privacy Policy</a>
+                      <a href='/privecy'>Privacy Policy</a>
                     </li>
                     <li>
-                      <a href='#'>Terms and Condition</a>
+                      <a href='/terms'>Terms and Condition</a>
                     </li>
                     <li>
                       <a href='#'>Delivery & collection</a>
                     </li>
                     <li>
-                      <a href='#'>Returns & refunds</a>
+                      <a href='/refund'>Returns & refunds</a>
                     </li>
                     <li>
                       <a href='#'>Track your order</a>

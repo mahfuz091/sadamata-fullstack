@@ -9,6 +9,10 @@
     "lint": "next lint",
     "postinstall": "prisma generate"
   },
+  "overrides": {
+  "hono": "4.11.4"
+}
+,
   "dependencies": {
     "@aws-sdk/client-s3": "^3.965.0",
     "@aws-sdk/s3-request-presigner": "^3.965.0",
@@ -16,7 +20,7 @@
     "@fontsource/inter": "^5.2.5",
     "@fortawesome/fontawesome-free": "^7.1.0",
     "@prisma/adapter-pg": "^7.0.1",
-    "@prisma/client": "^7.0.1",
+    "@prisma/client": "^7.2.0",
     "bcryptjs": "^3.0.2",
     "bootstrap": "^5.3.5",
     "jose": "^6.0.11",
@@ -38,6 +42,6 @@
     "swiper": "^12.0.2"
   },
   "devDependencies": {
-    "prisma": "^6.19.2"
+    "prisma": "^7.2.0"
   }
 }

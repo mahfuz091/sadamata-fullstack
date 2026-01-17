@@ -7,6 +7,7 @@ import info from "@/assets/images/shapes/info.svg";
 import { toast } from "sonner";
 import { registerUser } from "@/app/actions/auth/auth.actions";
 import { Col, Row } from "react-bootstrap";
+import Select from "react-select";
 
 /**
  * VendorRegister (full, two-step) with VendorLogin-style validation for ALL fields.
@@ -103,8 +104,40 @@ export default function VendorRegister({ brandCategories = [] }) {
   // derived
   const phoneMode = useMemo(
     () => isBDPhone(account.contact),
-    [account.contact]
+    [account.contact],
   );
+
+  // react-select options
+  const brandCategoryOptions = useMemo(() => {
+    return (brandCategories || []).map((cat) => ({
+      value: String(cat.id ?? cat._id ?? cat.value ?? ""),
+      label: String(cat.name ?? cat.title ?? cat.label ?? "Unnamed"),
+    }));
+  }, [brandCategories]);
+
+  const selectedBrandCategory = useMemo(() => {
+    if (!profile.brandCategoryId) return null;
+    return (
+      brandCategoryOptions.find(
+        (opt) => opt.value === String(profile.brandCategoryId),
+      ) || null
+    );
+  }, [brandCategoryOptions, profile.brandCategoryId]);
+
+  const handleBrandCategorySelect = (option) => {
+    const value = option?.value || "";
+
+    setProfile((prev) => {
+      const next = { ...prev, brandCategoryId: value };
+
+      setErrorsStep2((prevErr) => ({
+        ...prevErr,
+        brandCategoryId: validateRequired(value, "Brand category"),
+      }));
+
+      return next;
+    });
+  };
 
   /* =========================
      Validation helpers
@@ -178,13 +211,13 @@ export default function VendorRegister({ brandCategories = [] }) {
           // update confirmPassword validation because password changed
           nextErr.confirmPassword = validateConfirmPassword(
             next.confirmPassword,
-            value
+            value,
           );
         }
         if (name === "confirmPassword") {
           nextErr.confirmPassword = validateConfirmPassword(
             value,
-            next.password
+            next.password,
           );
         }
 
@@ -227,7 +260,7 @@ export default function VendorRegister({ brandCategories = [] }) {
           case "permanentAddress":
             nextErr.permanentAddress = validateRequired(
               value,
-              "Permanent address"
+              "Permanent address",
             );
             break;
 
@@ -272,7 +305,7 @@ export default function VendorRegister({ brandCategories = [] }) {
     const passwordErr = validatePassword(account.password);
     const confirmPasswordErr = validateConfirmPassword(
       account.confirmPassword,
-      account.password
+      account.password,
     );
 
     const newErrors = {
@@ -297,22 +330,22 @@ export default function VendorRegister({ brandCategories = [] }) {
     newErr.call = validatePhoneField(profile.call);
     newErr.nidNumber = validateRequired(
       profile.nidNumber,
-      "NID/Passport number"
+      "NID/Passport number",
     );
     newErr.presentAddress = validateRequired(
       profile.presentAddress,
-      "Present address"
+      "Present address",
     );
     newErr.permanentAddress = validateRequired(
       profile.permanentAddress,
-      "Permanent address"
+      "Permanent address",
     );
     newErr.portfolioLink = "";
     newErr.webLink = "";
 
     newErr.brandCategoryId = validateRequired(
       profile.brandCategoryId,
-      "Brand category"
+      "Brand category",
     );
 
     newErr.bankName = validateRequired(profile.bankName, "Bank name");
@@ -320,11 +353,11 @@ export default function VendorRegister({ brandCategories = [] }) {
     newErr.accountName = validateRequired(profile.accountName, "Account name");
     newErr.accountNumber = validateRequired(
       profile.accountNumber,
-      "Account number"
+      "Account number",
     );
     newErr.routingNumber = validateRequired(
       profile.routingNumber,
-      "Routing number"
+      "Routing number",
     );
 
     newErr.message = "";
@@ -689,7 +722,7 @@ export default function VendorRegister({ brandCategories = [] }) {
                       className='commerce-btn'
                       disabled={!canNextFromStep1}
                     >
-                      Next: Profile <i className='icon-right-arrow' />
+                      Continue
                     </button>
                     <p className='mt-2'>
                       By continuing, you agree to{" "}
@@ -893,7 +926,7 @@ export default function VendorRegister({ brandCategories = [] }) {
                         </div>
 
                         {/* Brand category dropdown (NEW) */}
-                        <div className='form-one__control form-one__control--full'>
+                        {/* <div className='form-one__control form-one__control--full'>
                           <label htmlFor='brand-category'>Brand category</label>
                           <select
                             id='brand-category'
@@ -913,6 +946,62 @@ export default function VendorRegister({ brandCategories = [] }) {
                               </option>
                             ))}
                           </select>
+                          {errorsStep2.brandCategoryId && (
+                            <p className='form-error'>
+                              {errorsStep2.brandCategoryId}
+                            </p>
+                          )}
+                        </div> */}
+                        <div className='form-one__control form-one__control--full'>
+                          <label htmlFor='brand-category'>Brand category</label>
+
+                          <Select
+                            inputId='brand-category'
+                            name='brandCategoryId'
+                            options={brandCategoryOptions}
+                            value={selectedBrandCategory}
+                            onChange={handleBrandCategorySelect}
+                            placeholder='Select a category'
+                            isClearable
+                            classNamePrefix='rs'
+                            className={
+                              errorsStep2.brandCategoryId ? "rs-error" : ""
+                            }
+                            styles={{
+                              control: (base, state) => ({
+                                ...base,
+                                maxHeight: 58,
+                                minHeight: 58,
+                                height: 58,
+                              }),
+                              valueContainer: (base) => ({
+                                ...base,
+                                maxHeight: 58,
+                                height: 58,
+                                paddingTop: 0,
+                                paddingBottom: 0,
+                              }),
+                              indicatorsContainer: (base) => ({
+                                ...base,
+                                maxHeight: 58,
+                                height: 58,
+                              }),
+                              input: (base) => ({
+                                ...base,
+                                margin: 0,
+                                padding: 0,
+                              }),
+                              singleValue: (base) => ({
+                                ...base,
+                                margin: 0,
+                              }),
+                              placeholder: (base) => ({
+                                ...base,
+                                margin: 0,
+                              }),
+                            }}
+                          />
+
                           {errorsStep2.brandCategoryId && (
                             <p className='form-error'>
                               {errorsStep2.brandCategoryId}

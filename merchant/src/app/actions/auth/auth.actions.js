@@ -17,6 +17,175 @@ const opt = (v) => (v && v.length ? v : null);
 const toDate = (v) => (v ? new Date(v) : null);
 const toLower = (v) => (v ? v.toLowerCase() : null);
 
+// export async function registerUser(formData) {
+//   try {
+//     // ---- core auth fields ----
+//     const name = pick(formData.get("name"), formData.get("full-name"));
+//     const emailRaw = pick(formData.get("email"));
+//     const phoneRaw = pick(formData.get("phone"), formData.get("call"));
+//     const password = pick(formData.get("password"));
+//     const confirmPassword = pick(formData.get("confirmPassword"));
+//     const roleRaw = pick(formData.get("role"));
+//     const role = (roleRaw || "USER").toUpperCase();
+
+//     if (!name || !password || !confirmPassword || !role) {
+//       return {
+//         success: false,
+//         message: "All required fields must be provided.",
+//       };
+//     }
+//     if (password !== confirmPassword) {
+//       return { success: false, message: "Passwords do not match." };
+//     }
+//     if (!emailRaw && !phoneRaw) {
+//       return {
+//         success: false,
+//         message: "Either email or phone must be provided.",
+//       };
+//     }
+//     if (!["USER", "ADMIN", "BRAND", "MERCH"].includes(role)) {
+//       return { success: false, message: "Invalid role." };
+//     }
+
+//     const email = toLower(emailRaw);
+//     const phone = phoneRaw || null;
+
+//     // ---- uniqueness ----
+//     const existing = await prisma.user.findFirst({
+//       where: {
+//         OR: [...(email ? [{ email }] : []), ...(phone ? [{ phone }] : [])],
+//       },
+//       select: { id: true },
+//     });
+//     if (existing) {
+//       return { success: false, message: "Email or phone already taken." };
+//     }
+
+//     const hashedPassword = await bcrypt.hash(password, 10);
+//     const isActive = !(role === "BRAND" || role === "MERCH");
+
+//     // ---- defaults for commissions (tweak as needed or load from env/config) ----
+//     const DEFAULT_BRAND_PCT = 10.0;
+//     const DEFAULT_MERCHANT_PCT = 10.0;
+
+//     // ---- merchant profile fields ----
+//     const fullName = name;
+//     const dateOfBirth = toDate(
+//       pick(formData.get("birth-yard"), formData.get("dateOfBirth"))
+//     );
+//     const contactEmail = email;
+//     const contactPhone = phone;
+
+//     const nidOrPassportNo = opt(
+//       pick(formData.get("nid-number"), formData.get("nidOrPassportNo"))
+//     );
+//     const presentAddress = opt(
+//       pick(
+//         formData.get("present-address"),
+//         formData.get("address"),
+//         formData.get("presentAddress")
+//       )
+//     );
+//     const permanentAddress = opt(
+//       pick(
+//         formData.get("permanent-address"),
+//         formData.get("permanet-address"),
+//         formData.get("permanentAddress")
+//       )
+//     );
+//     const portfolioUrl = opt(
+//       pick(formData.get("portfolio-link"), formData.get("portfolioUrl"))
+//     );
+//     const websiteUrl = opt(
+//       pick(formData.get("web-link"), formData.get("websiteUrl"))
+//     );
+//     const bankName = opt(
+//       pick(formData.get("bank-name"), formData.get("bankName"))
+//     );
+//     const bankBranch = opt(
+//       pick(formData.get("branch-name"), formData.get("bankBranch"))
+//     );
+//     const accountName = opt(
+//       pick(
+//         formData.get("account-name"),
+//         formData.get("accountName"),
+//         formData.get("full-name")
+//       )
+//     );
+//     const accountNumber = opt(
+//       pick(formData.get("account-number"), formData.get("accountNumber"))
+//     );
+//     const routingNumber = opt(
+//       pick(formData.get("routing-number"), formData.get("routingNumber"))
+//     );
+//     const message = opt(pick(formData.get("message"), formData.get("massage")));
+
+//     const result = await prisma.$transaction(async (tx) => {
+//       const user = await tx.user.create({
+//         data: { email, phone, name, password: hashedPassword, role, isActive },
+//       });
+
+//       let merchantProfile = null;
+//       let merchantCommissionPctNew = null; // <-- declare it
+
+//       if (role === "MERCH") {
+//         merchantProfile = await tx.merchantProfile.create({
+//           data: {
+//             user: { connect: { id: user.id } }, // use relation, not raw userId
+//             fullName,
+//             dateOfBirth,
+//             contactEmail,
+//             contactPhone,
+//             nidOrPassportNo,
+//             presentAddress,
+//             permanentAddress,
+//             portfolioUrl,
+//             websiteUrl,
+//             bankName,
+//             bankBranch,
+//             accountName,
+//             accountNumber,
+//             routingNumber,
+//             message,
+//           },
+//         });
+
+//         // CommissionSetting.merchantId must reference User.id (not MerchantProfile.id)
+//         merchantCommissionPctNew = await tx.commissionSetting.create({
+//           data: {
+//             brandId: null,
+//             merchantId: user.id,
+//             productId: null,
+//             brandCommissionPct: DEFAULT_BRAND_PCT,
+//             merchantCommissionPct: DEFAULT_MERCHANT_PCT,
+//             effectiveFrom: new Date(),
+//             isActive: true,
+//           },
+//         });
+//       }
+
+//       return { user, merchantProfile, merchantCommissionPctNew };
+//     });
+
+//     return {
+//       success: true,
+//       message:
+//         role === "MERCH" || role === "BRAND"
+//           ? "Registration submitted. Your account will be activated after review."
+//           : "Registration successful.",
+//       ...result,
+//     };
+//   } catch (error) {
+//     if (error && error.code === "P2002") {
+//       return { success: false, message: "Email or phone already taken." };
+//     }
+//     console.error("Error in user registration:", error);
+//     return {
+//       success: false,
+//       message: (error && error.message) || "Something went wrong.",
+//     };
+//   }
+// }
 export async function registerUser(formData) {
   try {
     // ---- core auth fields ----
@@ -28,7 +197,7 @@ export async function registerUser(formData) {
     const roleRaw = pick(formData.get("role"));
     const role = (roleRaw || "USER").toUpperCase();
 
-    if (!name || !password || !confirmPassword || !role) {
+    if (!password || !confirmPassword || !role) {
       return {
         success: false,
         message: "All required fields must be provided.",
@@ -50,88 +219,230 @@ export async function registerUser(formData) {
     const email = toLower(emailRaw);
     const phone = phoneRaw || null;
 
-    // ---- uniqueness ----
-    const existing = await prisma.user.findFirst({
-      where: {
-        OR: [...(email ? [{ email }] : []), ...(phone ? [{ phone }] : [])],
-      },
-      select: { id: true },
-    });
-    if (existing) {
-      return { success: false, message: "Email or phone already taken." };
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const isActive = !(role === "BRAND" || role === "MERCH");
-
-    // ---- defaults for commissions (tweak as needed or load from env/config) ----
+    // ---- defaults for commissions ----
     const DEFAULT_BRAND_PCT = 10.0;
     const DEFAULT_MERCHANT_PCT = 10.0;
 
     // ---- merchant profile fields ----
-    const fullName = name;
+    const fullName = name || pick(formData.get("full-name")) || "N/A";
     const dateOfBirth = toDate(
-      pick(formData.get("birth-yard"), formData.get("dateOfBirth"))
+      pick(formData.get("birth-yard"), formData.get("dateOfBirth")),
     );
-    const contactEmail = email;
-    const contactPhone = phone;
+    const contactEmail = email || opt(pick(formData.get("contactEmail")));
+    const contactPhone = phone || opt(pick(formData.get("contactPhone")));
 
     const nidOrPassportNo = opt(
-      pick(formData.get("nid-number"), formData.get("nidOrPassportNo"))
+      pick(formData.get("nid-number"), formData.get("nidOrPassportNo")),
     );
     const presentAddress = opt(
       pick(
         formData.get("present-address"),
         formData.get("address"),
-        formData.get("presentAddress")
-      )
+        formData.get("presentAddress"),
+      ),
     );
     const permanentAddress = opt(
       pick(
         formData.get("permanent-address"),
         formData.get("permanet-address"),
-        formData.get("permanentAddress")
-      )
+        formData.get("permanentAddress"),
+      ),
     );
     const portfolioUrl = opt(
-      pick(formData.get("portfolio-link"), formData.get("portfolioUrl"))
+      pick(formData.get("portfolio-link"), formData.get("portfolioUrl")),
     );
     const websiteUrl = opt(
-      pick(formData.get("web-link"), formData.get("websiteUrl"))
+      pick(formData.get("web-link"), formData.get("websiteUrl")),
     );
     const bankName = opt(
-      pick(formData.get("bank-name"), formData.get("bankName"))
+      pick(formData.get("bank-name"), formData.get("bankName")),
     );
     const bankBranch = opt(
-      pick(formData.get("branch-name"), formData.get("bankBranch"))
+      pick(formData.get("branch-name"), formData.get("bankBranch")),
     );
     const accountName = opt(
       pick(
         formData.get("account-name"),
         formData.get("accountName"),
-        formData.get("full-name")
-      )
+        formData.get("full-name"),
+      ),
     );
     const accountNumber = opt(
-      pick(formData.get("account-number"), formData.get("accountNumber"))
+      pick(formData.get("account-number"), formData.get("accountNumber")),
     );
     const routingNumber = opt(
-      pick(formData.get("routing-number"), formData.get("routingNumber"))
+      pick(formData.get("routing-number"), formData.get("routingNumber")),
     );
     const message = opt(pick(formData.get("message"), formData.get("massage")));
 
+    // ---- check existing (by email or phone) ----
+    const existing = await prisma.user.findFirst({
+      where: {
+        OR: [...(email ? [{ email }] : []), ...(phone ? [{ phone }] : [])],
+      },
+      select: {
+        id: true,
+        role: true,
+        password: true,
+        isActive: true,
+        email: true,
+        phone: true,
+        name: true,
+      },
+    });
+
+    /**
+     * MIGRATION RULE (NO SCHEMA CHANGE):
+     * If a normal USER exists with same email/phone and new "registration" asks role=MERCH,
+     * then migrate that account to MERCH (create MerchantProfile + CommissionSetting if needed),
+     * and set isActive=false for review.
+     *
+     * We verify ownership by password match.
+     */
+    if (existing) {
+      // only migrate when requested role is MERCH and existing is USER
+      if (role === "MERCH" && existing.role === "USER") {
+        const ok = await bcrypt.compare(password, existing.password);
+        if (!ok) {
+          return {
+            success: false,
+            message:
+              "Account already exists with this email/phone. Password mismatch, cannot migrate.",
+          };
+        }
+
+        const result = await prisma.$transaction(async (tx) => {
+          // 1) update user role + set inactive for review
+          const updatedUser = await tx.user.update({
+            where: { id: existing.id },
+            data: {
+              role: "MERCH",
+              isActive: false, // review flow like your current MERCH registration
+              // optional: keep name updated if provided
+              ...(name ? { name } : {}),
+            },
+          });
+
+          // 2) create merchant profile if missing (or update)
+          const merchantProfile = await tx.merchantProfile.upsert({
+            where: { userId: existing.id },
+            create: {
+              user: { connect: { id: existing.id } },
+              fullName,
+              dateOfBirth,
+              contactEmail: contactEmail || existing.email || "N/A",
+              contactPhone: contactPhone || existing.phone || "N/A",
+              nidOrPassportNo,
+              presentAddress,
+              permanentAddress,
+              portfolioUrl,
+              websiteUrl,
+              bankName,
+              bankBranch,
+              accountName,
+              accountNumber,
+              routingNumber,
+              message,
+            },
+            update: {
+              fullName,
+              dateOfBirth,
+              contactEmail: contactEmail || existing.email || undefined,
+              contactPhone: contactPhone || existing.phone || undefined,
+              nidOrPassportNo,
+              presentAddress,
+              permanentAddress,
+              portfolioUrl,
+              websiteUrl,
+              bankName,
+              bankBranch,
+              accountName,
+              accountNumber,
+              routingNumber,
+              message,
+            },
+          });
+
+          // 3) create default commission setting for merchant if not exists
+          const existingCommission = await tx.commissionSetting.findFirst({
+            where: {
+              merchantId: existing.id,
+              brandId: null,
+              productId: null,
+              isActive: true,
+            },
+            select: { id: true },
+          });
+
+          const merchantCommissionPctNew = existingCommission
+            ? null
+            : await tx.commissionSetting.create({
+                data: {
+                  brandId: null,
+                  merchantId: existing.id, // MUST reference User.id
+                  productId: null,
+                  brandCommissionPct: DEFAULT_BRAND_PCT,
+                  merchantCommissionPct: DEFAULT_MERCHANT_PCT,
+                  effectiveFrom: new Date(),
+                  isActive: true,
+                },
+              });
+
+          return {
+            user: updatedUser,
+            merchantProfile,
+            merchantCommissionPctNew,
+          };
+        });
+
+        return {
+          success: true,
+          message:
+            "Migration submitted. Your account is now MERCH and will be activated after review.",
+          ...result,
+          migrated: true,
+        };
+      }
+
+      // if already exists, but not eligible for migration
+      return {
+        success: false,
+        message:
+          existing.role === "MERCH"
+            ? "This account is already a MERCH."
+            : existing.role === "BRAND"
+              ? "This account is already a BRAND."
+              : "Email or phone already taken.",
+      };
+    }
+
+    // ---- create new user (original behavior) ----
+    if (!name && role === "USER") {
+      return { success: false, message: "Name is required." };
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const isActive = !(role === "BRAND" || role === "MERCH");
+
     const result = await prisma.$transaction(async (tx) => {
       const user = await tx.user.create({
-        data: { email, phone, name, password: hashedPassword, role, isActive },
+        data: {
+          email,
+          phone,
+          name: name || fullName,
+          password: hashedPassword,
+          role,
+          isActive,
+        },
       });
 
       let merchantProfile = null;
-      let merchantCommissionPctNew = null; // <-- declare it
+      let merchantCommissionPctNew = null;
 
       if (role === "MERCH") {
         merchantProfile = await tx.merchantProfile.create({
           data: {
-            user: { connect: { id: user.id } }, // use relation, not raw userId
+            user: { connect: { id: user.id } },
             fullName,
             dateOfBirth,
             contactEmail,
@@ -150,7 +461,6 @@ export async function registerUser(formData) {
           },
         });
 
-        // CommissionSetting.merchantId must reference User.id (not MerchantProfile.id)
         merchantCommissionPctNew = await tx.commissionSetting.create({
           data: {
             brandId: null,
@@ -174,6 +484,7 @@ export async function registerUser(formData) {
           ? "Registration submitted. Your account will be activated after review."
           : "Registration successful.",
       ...result,
+      migrated: false,
     };
   } catch (error) {
     if (error && error.code === "P2002") {

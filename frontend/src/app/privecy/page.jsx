@@ -10,7 +10,7 @@ const page = async () => {
         <div class='policy-title'>Privacy Policy – Sadamata.com</div>
 
         <div class='effective-date'>
-          Effective Date:<span class='line'></span>
+          Effective Date: <span class=''>1 Jan 2026</span>
         </div>
 
         <p>

@@ -89,11 +89,11 @@ const Footer = () => {
                       <Image src={logo} width={190} height='auto' alt='logo' />
                     </a>
                   </div>
-                  <p className='footer-widget__text'>
+                  {/* <p className='footer-widget__text'>
                     Join an elite group of traders with real-time insights,
                     institutional-level strategies, and the power of a private
                     trading network.
-                  </p>
+                  </p> */}
                   <div className='footer-widget__social'>
                     <h4 className='footer-widget__social__title'>Follow Us</h4>
                     <div className='footer-widget__social__icon'>
@@ -143,26 +143,20 @@ const Footer = () => {
                   data-wow-duration='1500ms'
                   data-wow-delay='300ms'
                 >
-                  <h2 className='footer-widget__title'>Comapny</h2>
+                  <h2 className='footer-widget__title'>Company</h2>
                   {/* /.footer-widget__title */}
                   <ul className='list-unstyled footer-widget__links'>
                     <li>
-                      <a href='#'>Home</a>
+                      <a href='/about'>About Us</a>
                     </li>
                     <li>
-                      <a href='#'>About Us</a>
+                      <a href='/privecy'>Privacy Policy</a>
                     </li>
                     <li>
-                      <a href='#'>Our Product</a>
+                      <a href='/terms'>Terms and Condition</a>
                     </li>
                     <li>
-                      <a href='#'>Affiliate</a>
-                    </li>
-                    <li>
-                      <a href='#'>Brand</a>
-                    </li>
-                    <li>
-                      <a href='#'>Contact Us</a>
+                      <a href='/refund'>Returns & refunds</a>
                     </li>
                   </ul>
                   {/* /.list-unstyled footer-widget__links */}
@@ -180,17 +174,9 @@ const Footer = () => {
                   {/* /.footer-widget__title */}
                   <ul className='list-unstyled footer-widget__links'>
                     <li>
-                      <a href='/privecy'>Privacy Policy</a>
-                    </li>
-                    <li>
-                      <a href='/terms'>Terms and Condition</a>
-                    </li>
-                    <li>
                       <a href='#'>Delivery & collection</a>
                     </li>
-                    <li>
-                      <a href='/refund'>Returns & refunds</a>
-                    </li>
+
                     <li>
                       <a href='#'>Track your order</a>
                     </li>
@@ -281,17 +267,26 @@ const Footer = () => {
         <div className='main-footer__bottom'>
           <div className='container'>
             <div
-              className='main-footer__bottom__inner wow fadeInUp'
+              className='main-footer__bottom__inner wow fadeInUp flex-column gap-3'
               data-wow-duration='1500ms'
               data-wow-delay='500ms'
             >
               <p className='main-footer__copyright'>
-                {" "}
-                &copy; Copyright <span className='dynamic-year'></span>{" "}
-                <span className='name'> Logohere</span> All rights reserved. 
+                &copy; {new Date().getFullYear()}
+                <span className='name'> Sadmata.</span> All rights reserved.
               </p>
               <div className='main-footer__bottom__payment'>
-                <Image src={payment} alt='images' />
+                <a
+                  target='_blank'
+                  href='https://www.sslcommerz.com/'
+                  title='SSLCommerz'
+                  alt='SSLCommerz'
+                >
+                  <img
+                    // style='width:300px;height:auto;'
+                    src='https://securepay.sslcommerz.com/public/image/SSLCommerz-Pay-With-logo-All-Size-03.png'
+                  />
+                </a>
               </div>
             </div>
           </div>

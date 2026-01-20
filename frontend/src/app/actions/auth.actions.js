@@ -260,7 +260,7 @@ export const loginUser = async (prevState, formData) => {
       where: {
         AND: [
           { OR: [{ email: identifier.toLowerCase() }, { phone: identifier }] },
-          { role: "USER" },
+          // { role: "USER" },
         ],
       },
     });

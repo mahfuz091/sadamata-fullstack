@@ -86,14 +86,14 @@ async function resizeAndCompressImage(
   inputFilePath,
   outputFilePath,
   width = 500,
-  height = 600
+  height = 600,
 ) {
   const image = sharp(inputFilePath);
 
   // Create a temporary file path for the processed image
   const tempOutputFilePath = path.join(
     path.dirname(outputFilePath),
-    `${Date.now()}_temp.png`
+    `${Date.now()}_temp.png`,
   );
 
   // Resize the image to fit within the given dimensions (500x600) while maintaining the aspect ratio
@@ -348,7 +348,7 @@ async function saveProductFile(file, fieldName) {
     filepath,
     filepath,
     500,
-    600
+    600,
   );
 
   return `/uploads/products/${path.basename(resizedFilePath.filePath)}`;
@@ -858,7 +858,7 @@ export async function createProduct(formData) {
       ? await saveDesignFileS3(
           frontDesignFile,
           reservedProductId,
-          "frontDesign"
+          "frontDesign",
         )
       : null;
 
@@ -885,7 +885,7 @@ export async function createProduct(formData) {
         ? await saveProductFileS3(
             frontImgFile,
             reservedProductId,
-            `variant-${v}-front`
+            `variant-${v}-front`,
           )
         : null;
 
@@ -893,7 +893,7 @@ export async function createProduct(formData) {
         ? await saveProductFileS3(
             backImgFile,
             reservedProductId,
-            `variant-${v}-back`
+            `variant-${v}-back`,
           )
         : null;
 
@@ -918,7 +918,7 @@ export async function createProduct(formData) {
     const hasAnyImage = variantsInput.some((x) => x.frontImg || x.backImg);
     if (!hasAnyImage) {
       throw new Error(
-        "Variants must include at least one front or back image."
+        "Variants must include at least one front or back image.",
       );
     }
 
@@ -950,7 +950,7 @@ export async function createProduct(formData) {
     await prisma.$transaction(async (tx) => {
       const merchantProfile = await tx.merchantProfile.findUnique({
         where: { userId },
-        select: { tiar: true },
+        select: { tiar: true, dailyLimitPct: true },
       });
       if (!merchantProfile)
         throw new Error("Merchant profile not found for this user.");
@@ -959,19 +959,21 @@ export async function createProduct(formData) {
       const totalProducts = await tx.product.count({ where: { userId } });
       if (totalProducts >= merchantProfile.tiar) {
         throw new Error(
-          `Upload limit reached. Maximum allowed products: ${merchantProfile.tiar}.`
+          `Upload limit reached. Maximum allowed products: ${merchantProfile.tiar}.`,
         );
       }
 
       // Daily limit
-      const dailyLimit = Math.ceil(merchantProfile.tiar * 0.1);
+      const dailyLimit = Math.ceil(
+        merchantProfile.tiar * (merchantProfile.dailyLimitPct / 100),
+      );
       const { start, end } = getTodayRange();
       const todayUploads = await tx.product.count({
         where: { userId, createdAt: { gte: start, lte: end } },
       });
       if (todayUploads >= dailyLimit) {
         throw new Error(
-          `Daily upload limit exceeded. You can upload only ${dailyLimit} product(s) per day.`
+          `Daily upload limit exceeded. You can upload only ${dailyLimit} product(s) per day.`,
         );
       }
 
@@ -1049,7 +1051,7 @@ export async function updateProduct(formData) {
   if (isFile(frontDesignFile)) {
     updateData.frontDesign = await saveDesignFile(
       frontDesignFile,
-      "frontDesign"
+      "frontDesign",
     );
   }
 

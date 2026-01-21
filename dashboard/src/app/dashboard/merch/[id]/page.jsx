@@ -33,6 +33,7 @@ export default async function MerchantDetailsPage({ params }) {
   const merchantCommissionPct = commission?.merchantCommissionPct ?? 10;
 
   const merchantPct = commission?.merchantCommissionPct ?? 10;
+  const merchDailyLimitPct = user?.merchantProfile?.dailyLimitPct ?? 10;
 
   //   const merchantEarning = (total * merchantPct) / 100;
 
@@ -89,6 +90,7 @@ export default async function MerchantDetailsPage({ params }) {
         initialTiar={p.tiar}
         initialBrandOption={p.brandOption}
         initialCommission={merchantCommissionPct}
+        initialDailyLimitPct={merchDailyLimitPct}
       />
     </div>
   );

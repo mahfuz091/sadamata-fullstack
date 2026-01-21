@@ -111,6 +111,7 @@ model MerchantProfile {
   leftTiar         Int      @default(0)
   zipCode          String?
   country          String?
+  dailyLimitPct    Int?     @default(10)
   user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([bankName, bankBranch])

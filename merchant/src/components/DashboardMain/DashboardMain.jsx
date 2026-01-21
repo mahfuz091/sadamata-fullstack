@@ -108,7 +108,11 @@ const DashboardMain = ({
       {
         label: "Uploader Today",
         value: today.totalTodayUploaded || 0,
-        total: Math.round((stats?.merchantProfile?.tiar || 0) * 0.1) || 0,
+        total:
+          Math.round(
+            (stats?.merchantProfile?.tiar || 0) *
+              (stats?.merchantProfile?.dailyLimitPct / 100),
+          ) || 0,
       },
       {
         label: "Live Designs",
@@ -191,7 +195,7 @@ const DashboardMain = ({
                           </p>
                         )}
                       </div>
-                    )
+                    ),
                   )}
                 </div>
                 <div className='dashboard__top__btn'>
@@ -328,7 +332,7 @@ const DashboardMain = ({
                                 </div>
                               </div>
                             );
-                          }
+                          },
                         )}
                       </div>
                     </div>

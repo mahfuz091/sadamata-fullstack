@@ -162,7 +162,7 @@ export const userList = async () => {
     } catch (innerErr) {
       console.warn(
         "userList: fallback query due to:",
-        innerErr?.message ?? innerErr
+        innerErr?.message ?? innerErr,
       );
 
       const users = await prisma.user.findMany({
@@ -209,7 +209,7 @@ export const brandList = async () => {
       // fall back to a simpler query and return available fields.
       console.warn(
         "userList: fallback query due to:",
-        innerErr?.message ?? innerErr
+        innerErr?.message ?? innerErr,
       );
 
       const users = await prisma.user.findMany({
@@ -253,7 +253,7 @@ export const merchList = async () => {
       // fall back to a simpler query and return available fields.
       console.warn(
         "userList: fallback query due to:",
-        innerErr?.message ?? innerErr
+        innerErr?.message ?? innerErr,
       );
 
       const users = await prisma.user.findMany({
@@ -301,7 +301,7 @@ export const merchList = async () => {
 
 export const updateUserProfileImage = async (
   _prevState,
-  { userId, imageUrl }
+  { userId, imageUrl },
 ) => {
   if (!userId || !imageUrl) {
     throw new Error("User ID and image URL are required");
@@ -612,10 +612,9 @@ export const updateUserIsActive = async (_prevState, { userId, isActive }) => {
 };
 
 /** ---------- Update Merchant Tier & Brand Option (ADMIN) ---------- */
-/** ---------- Update Merchant Tier & Brand Option (ADMIN) ---------- */
 export const updateMerchantAdminSettings = async (
   _prevState,
-  { userId, tiar, brandOption }
+  { userId, tiar, brandOption },
 ) => {
   try {
     if (!userId) {
@@ -672,3 +671,50 @@ export const updateMerchantAdminSettings = async (
     return { success: false, msg: "Something went wrong" };
   }
 };
+
+export async function updateMerchantDailyLimitPctAction(
+  _prevState,
+  { merchantId, dailyLimitPct },
+) {
+  try {
+    // 1) auth
+
+    // 3) validation
+    const pctNum = Number(dailyLimitPct);
+    if (!Number.isFinite(pctNum)) {
+      return { success: false, msg: "Invalid dailyLimitPct" };
+    }
+    if (pctNum < 0 || pctNum > 100) {
+      return { success: false, msg: "dailyLimitPct must be between 0 and 100" };
+    }
+
+    // MerchantProfile.dailyLimitPct is Int? -> store as integer
+    const pct = Math.round(pctNum);
+
+    // 4) ensure merchant profile exists
+    const existing = await prisma.merchantProfile.findUnique({
+      where: { userId: merchantId },
+      select: { id: true },
+    });
+
+    if (!existing) {
+      return { success: false, msg: "Merchant profile not found" };
+      // If you want auto-create here, tell me and I’ll add it.
+    }
+
+    // 5) update
+    const updated = await prisma.merchantProfile.update({
+      where: { userId: merchantId },
+      data: { dailyLimitPct: pct },
+      select: { dailyLimitPct: true },
+    });
+
+    return {
+      success: true,
+      msg: "Merchant dailyLimitPct updated",
+      dailyLimitPct: updated.dailyLimitPct ?? pct,
+    };
+  } catch (e) {
+    return { success: false, msg: e?.message || "Something went wrong" };
+  }
+}

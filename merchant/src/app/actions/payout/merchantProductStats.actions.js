@@ -62,6 +62,7 @@ export async function getMerchantProductStats(merchantId, opts = {}) {
     select: {
       tiar: true,
       leftTiar: true,
+      dailyLimitPct: true,
     },
   });
 
@@ -92,8 +93,8 @@ export async function getTodayUploadedProducts(merchantId) {
       nowDhaka.getUTCDate(),
       0,
       0,
-      0
-    )
+      0,
+    ),
   );
   const endDhaka = new Date(
     Date.UTC(
@@ -102,8 +103,8 @@ export async function getTodayUploadedProducts(merchantId) {
       nowDhaka.getUTCDate(),
       23,
       59,
-      59
-    )
+      59,
+    ),
   );
 
   // Convert back to UTC for query

@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 import { Button, InputNumber, Switch, message } from "antd";
-import { updateMerchantAdminSettings } from "@/app/actions/user/user.actions";
+
+import {
+  updateMerchantAdminSettings,
+  updateMerchantDailyLimitPctAction,
+} from "@/app/actions/user/user.actions";
 import { setMerchantCommission } from "@/app/actions/user/setMerchantCommission";
 
 export default function MerchantAdminActions({
@@ -10,7 +14,9 @@ export default function MerchantAdminActions({
   initialTiar,
   initialBrandOption,
   initialCommission,
+  initialDailyLimitPct, // <-- add this prop
 }) {
+  // Admin settings
   const [tiar, setTiar] = useState(initialTiar);
   const [brandOption, setBrandOption] = useState(initialBrandOption);
   const [loading, setLoading] = useState(false);
@@ -28,7 +34,6 @@ export default function MerchantAdminActions({
         message.error(res?.msg || "Update failed");
         return;
       }
-
       message.success("Merchant settings updated");
     } catch (err) {
       console.error(err);
@@ -38,23 +43,59 @@ export default function MerchantAdminActions({
     }
   };
 
+  // Commission
   const [commission, setCommission] = useState(initialCommission);
   const [commissionLoading, setCommissionLoading] = useState(false);
 
   const saveCommission = async () => {
     setCommissionLoading(true);
-    const res = await setMerchantCommission(null, {
-      merchantId: userId,
-      merchantCommissionPct: commission,
-    });
+    try {
+      const res = await setMerchantCommission(null, {
+        merchantId: userId,
+        merchantCommissionPct: commission,
+      });
 
-    if (!res?.success) {
-      message.error(res?.msg || "Failed to update commission");
-    } else {
-      message.success("Merchant commission updated");
+      if (!res?.success)
+        message.error(res?.msg || "Failed to update commission");
+      else message.success("Merchant commission updated");
+    } catch (err) {
+      console.error(err);
+      message.error("Something went wrong");
+    } finally {
+      setCommissionLoading(false);
     }
-    setCommissionLoading(false);
   };
+
+  // Daily Limit %
+  const [dailyLimitPct, setDailyLimitPct] = useState(initialDailyLimitPct ?? 0);
+  const [dailyLimitLoading, setDailyLimitLoading] = useState(false);
+
+  const saveDailyLimitPct = async () => {
+    setDailyLimitLoading(true);
+    try {
+      const res = await updateMerchantDailyLimitPctAction(null, {
+        merchantId: userId,
+        dailyLimitPct,
+      });
+
+      if (!res?.success) {
+        message.error(res?.msg || "Failed to update daily limit");
+        return;
+      }
+
+      // Optional: sync state from response (in case server rounds)
+      if (typeof res.dailyLimitPct === "number")
+        setDailyLimitPct(res.dailyLimitPct);
+
+      message.success("Merchant daily limit updated");
+    } catch (err) {
+      console.error(err);
+      message.error("Something went wrong");
+    } finally {
+      setDailyLimitLoading(false);
+    }
+  };
+
   return (
     <>
       <div className='border rounded-lg p-4 space-y-4'>
@@ -86,9 +127,9 @@ export default function MerchantAdminActions({
           </Button>
         </div>
       </div>
+
       <div className='border rounded-lg p-4 space-y-3'>
         <h2 className='font-medium'>Commission Settings</h2>
-
         <div className='flex items-end gap-4'>
           <div>
             <p className='text-sm text-muted-foreground'>
@@ -106,6 +147,31 @@ export default function MerchantAdminActions({
             type='primary'
             onClick={saveCommission}
             loading={commissionLoading}
+            className='bg-[#f29456]! border-[#f29456]! hover:bg-[#f29456] hover:border-[#f29456]'
+          >
+            Save
+          </Button>
+        </div>
+      </div>
+
+      <div className='border rounded-lg p-4 space-y-3'>
+        <h2 className='font-medium'>Daily Limit Settings</h2>
+
+        <div className='flex items-end gap-4'>
+          <div>
+            <p className='text-sm text-muted-foreground'>Daily Limit (%)</p>
+            <InputNumber
+              min={0}
+              max={100}
+              value={dailyLimitPct}
+              onChange={setDailyLimitPct}
+            />
+          </div>
+
+          <Button
+            type='primary'
+            onClick={saveDailyLimitPct}
+            loading={dailyLimitLoading}
             className='bg-[#f29456]! border-[#f29456]! hover:bg-[#f29456] hover:border-[#f29456]'
           >
             Save

@@ -16,16 +16,33 @@ const page = async () => {
   const allMockup = await getAllMockups();
   const session = await auth();
   const currentUserId = session?.user.id;
+  // const user = await prisma.user.findUnique({
+  //   where: {
+  //     id: currentUserId,
+  //   },
+  //   select: {
+  //     name: true,
+  //     merchantProfile: true, // must match your relation field name in schema
+  //     CommissionSetting: { where: { isActive: true } , select:{ brandCommissionPct: true, merchantCommissionPct: true, brandSelectedMerchantPct: true }} },
+  //   },
+  // });
+  // console.log(brands, "mockup");
   const user = await prisma.user.findUnique({
-    where: {
-      id: currentUserId,
-    },
+    where: { id: currentUserId },
     select: {
       name: true,
-      merchantProfile: true, // must match your relation field name in schema
+      merchantProfile: true,
+      CommissionSetting: {
+        where: { isActive: true },
+        select: {
+          brandCommissionPct: true,
+          merchantCommissionPct: true,
+          brandSelectedMerchantPct: true,
+        },
+      },
     },
   });
-  // console.log(brands, "mockup");
+
   return (
     <AddDesignFitAdmin
       allMockup={allMockup}

@@ -33,7 +33,7 @@ const getCenteredPlacement = (canvas, img) => {
   const scale = Math.min(
     MAX_DESIGN_PX / img.width,
     MAX_DESIGN_PX / img.height,
-    1
+    1,
   );
 
   const width = img.width * scale;
@@ -76,7 +76,7 @@ const prioritizeBlack = (colors = []) => {
   const BLACK_KEYS = ["black", "#000", "#000000", "rgb(0, 0, 0)"];
 
   const blackIndex = colors.findIndex((c) =>
-    BLACK_KEYS.includes(String(c).toLowerCase())
+    BLACK_KEYS.includes(String(c).toLowerCase()),
   );
 
   if (blackIndex <= 0) return colors;
@@ -167,6 +167,9 @@ export default function AddDesignFitAdmin({
   const [activePreviewFit, setActivePreviewFit] = useState({});
   const [fitClickHistory, setFitClickHistory] = useState({});
   const [designOriginalSize, setDesignOriginalSize] = useState(null);
+
+  console.log(user, "user");
+
   const getGlobalColors = (productIndex) => {
     const val = selectedColor?.[productIndex];
 
@@ -242,7 +245,7 @@ export default function AddDesignFitAdmin({
     const BLACK_KEYS = ["black", "#000", "#000000", "rgb(0, 0, 0)"];
 
     const blackIndex = colors.findIndex((c) =>
-      BLACK_KEYS.includes(String(c).toLowerCase())
+      BLACK_KEYS.includes(String(c).toLowerCase()),
     );
 
     if (blackIndex <= 0) return colors;
@@ -266,8 +269,8 @@ export default function AddDesignFitAdmin({
     const selected = Array.isArray(raw)
       ? raw
       : raw && typeof raw === "object"
-      ? [...new Set(Object.values(raw).flat().filter(Boolean))]
-      : [];
+        ? [...new Set(Object.values(raw).flat().filter(Boolean))]
+        : [];
 
     const history = Array.isArray(colorClickHistory?.[idx])
       ? colorClickHistory[idx]
@@ -327,7 +330,7 @@ export default function AddDesignFitAdmin({
 
   const activeProduct =
     activeProductIndex !== null
-      ? allMockup?.[activeProductIndex] ?? null
+      ? (allMockup?.[activeProductIndex] ?? null)
       : null;
 
   // ---- Build mockup config: product -> fit -> color -> img URLs ----
@@ -370,7 +373,7 @@ export default function AddDesignFitAdmin({
 
   const mockupsByProduct = useMemo(
     () => buildMockupsByProduct(allMockup),
-    [allMockup]
+    [allMockup],
   );
 
   // ------------------ IMAGE UPLOAD HANDLERS ------------------
@@ -513,7 +516,7 @@ export default function AddDesignFitAdmin({
   const activeFitList = activeConfig?.fitTypes ?? [];
   const uiFit =
     activeProductIndex !== null
-      ? getActiveFit(activeProductIndex, activeFitList[0]) ?? activeFitList[0]
+      ? (getActiveFit(activeProductIndex, activeFitList[0]) ?? activeFitList[0])
       : undefined;
 
   // const activeColors = uiFit ? activeConfig?.fits?.[uiFit]?.colors ?? [] : [];
@@ -526,7 +529,7 @@ export default function AddDesignFitAdmin({
   const activeColorsForUI = useMemo(() => {
     // Show only black and white in the UI
     return prioritizeBlack(rawColors).filter((color) =>
-      ["#000", "#fff"].includes(color.toLowerCase())
+      ["#000", "#fff"].includes(color.toLowerCase()),
     );
   }, [rawColors]);
 
@@ -574,7 +577,7 @@ export default function AddDesignFitAdmin({
     if (!refs.length) return;
 
     const instances = refs.map(
-      (ref) => new Canvas(ref, { width: 400, height: 400, selection: false })
+      (ref) => new Canvas(ref, { width: 400, height: 400, selection: false }),
     );
     setCanvasInstances(instances);
 
@@ -946,7 +949,7 @@ export default function AddDesignFitAdmin({
     }
 
     const fit = getActiveFit(activeProductIndex, firstFit);
-    const colors = fit ? conf.fits[fit]?.colors ?? [] : [];
+    const colors = fit ? (conf.fits[fit]?.colors ?? []) : [];
     const firstColor = colors[0];
 
     // if (!selectedColor[activeProductIndex] && firstColor) {
@@ -1263,7 +1266,7 @@ export default function AddDesignFitAdmin({
 
         const validColorsForNewFit = conf.fits?.[fit]?.colors ?? [];
         nextProductColors[fit] = normalizeColors(
-          baseColors.filter((c) => validColorsForNewFit.includes(c))
+          baseColors.filter((c) => validColorsForNewFit.includes(c)),
         );
       } else {
         delete nextProductColors[fit];
@@ -1284,7 +1287,7 @@ export default function AddDesignFitAdmin({
 
     const color = getActiveColor(
       activeProductIndex,
-      conf.fits[fit]?.colors?.[0] || ""
+      conf.fits[fit]?.colors?.[0] || "",
     );
 
     if (!color) return;
@@ -1645,7 +1648,7 @@ export default function AddDesignFitAdmin({
     const scaleFactor = Math.max(
       MIN_OUTPUT_PX / baseImg.width,
       MIN_HEIGHT_OUTPUT_PX / baseImg.height,
-      1
+      1,
     );
 
     const outputW = Math.round(baseImg.width * scaleFactor);
@@ -1710,7 +1713,7 @@ export default function AddDesignFitAdmin({
     fc.renderAll();
 
     const blob = await new Promise((resolve) =>
-      el.toBlob(resolve, "image/png", 1.0)
+      el.toBlob(resolve, "image/png", 1.0),
     );
 
     fc.dispose();
@@ -2105,7 +2108,7 @@ export default function AddDesignFitAdmin({
     formData.append("price", String(features.price ?? 990));
     formData.append(
       "visibility",
-      selected !== "non-searchable" ? "true" : "false"
+      selected !== "non-searchable" ? "true" : "false",
     );
     formData.append("userId", String(currentUserId));
     formData.append("mockupId", String(chosenMockup.id));
@@ -2115,27 +2118,27 @@ export default function AddDesignFitAdmin({
         "frontDesign",
         designImageFile,
         designImageFile.name,
-        "designFront"
+        "designFront",
       );
     if (designBackFile)
       formData.append(
         "backDesign",
         designBackFile,
         designBackFile.name,
-        "designBack"
+        "designBack",
       );
 
     if (brandId) formData.append("brandId", brandId);
     if (features.brandCommissionPct != null) {
       formData.append(
         "brandCommissionPct",
-        String(features.brandCommissionPct)
+        String(features.brandCommissionPct),
       );
     }
     if (features.merchantCommissionPct != null) {
       formData.append(
         "merchantCommissionPct",
-        String(features.merchantCommissionPct)
+        String(features.merchantCommissionPct),
       );
     }
 
@@ -2162,7 +2165,7 @@ export default function AddDesignFitAdmin({
 
       // ✅ user যেগুলো select করেছে, শুধু সেগুলো
       const selectedColorsForThisFit = getGlobalColors(
-        activeProductIndex
+        activeProductIndex,
       ).filter((c) => allColors.includes(c));
 
       // ✅ যদি কোন fit এ কিছুই select না থাকে, skip
@@ -2189,7 +2192,7 @@ export default function AddDesignFitAdmin({
             formData.append(
               `variants[${vIndex}][frontImg]`,
               frontBlob,
-              `${designTitle}_${chosenMockup.name}_${fit}_${color}_front.png`
+              `${designTitle}_${chosenMockup.name}_${fit}_${color}_front.png`,
             );
           }
         }
@@ -2201,7 +2204,7 @@ export default function AddDesignFitAdmin({
             formData.append(
               `variants[${vIndex}][backImg]`,
               backBlob,
-              `${designTitle}_${chosenMockup.name}_${fit}_${color}_back.png`
+              `${designTitle}_${chosenMockup.name}_${fit}_${color}_back.png`,
             );
           }
         }
@@ -2329,6 +2332,40 @@ export default function AddDesignFitAdmin({
 
     await handleFrontFile(file);
   };
+
+  // ---------- ROYALTY / COMMISSION ----------
+
+  // price as a safe number
+  const priceNum = Number(features.price) || 0;
+
+  // Your schema may be user.commissionSetting (object) or user.commissionSetting[0] (array).
+  // Normalize it.
+  const commissionSetting = useMemo(() => {
+    const cs = user?.CommissionSetting;
+    if (Array.isArray(cs)) return cs[0] ?? null;
+    return cs ?? null;
+  }, [user]);
+
+  // Determine which pct to apply
+  const commissionPct = useMemo(() => {
+    const brandPct = Number(commissionSetting?.brandSelectedMerchantPct);
+    const nonBrandPct = Number(commissionSetting?.merchantCommissionPct);
+
+    // if user chose "select-brand" and actually selected a brandId, use brandSelectedMerchantPct
+    const useBrandPct = brandOption === "select-brand" && !!brandId;
+
+    const pct = useBrandPct ? brandPct : nonBrandPct;
+
+    // fallback to 0 if invalid
+    return Number.isFinite(pct) ? pct : 0;
+  }, [commissionSetting, brandOption, brandId]);
+
+  // Royalty (commission amount). If you meant "merchant earnings after commission", see note below.
+  const royalty = useMemo(() => {
+    if (priceNum < 990) return 0; // <---- key line
+    // if pct is "7" meaning 7%, use /100
+    return Math.round((priceNum * commissionPct) / 100);
+  }, [priceNum, commissionPct]);
 
   // ------------------ JSX ------------------
 
@@ -2687,7 +2724,7 @@ export default function AddDesignFitAdmin({
                             {(activeColors ?? []).map((color) => {
                               const checked =
                                 getGlobalColors(activeProductIndex).includes(
-                                  color
+                                  color,
                                 );
 
                               return (
@@ -2723,16 +2760,22 @@ export default function AddDesignFitAdmin({
                           <label className='product-preview-panel__label'>
                             Price (Minimum BDT 990):
                           </label>
-                          <input
-                            type='number'
-                            placeholder='BDT 0.00'
-                            onChange={(e) =>
-                              setFeatures((p) => ({
-                                ...p,
-                                price: Number(e.target.value) || 990,
-                              }))
-                            }
-                          />
+                          <div className='d-flex align-items-center gap-2'>
+                            <input
+                              type='txt'
+                              placeholder='BDT 0.00'
+                              onChange={(e) =>
+                                setFeatures((p) => ({
+                                  ...p,
+                                  price: Number(e.target.value) || 0,
+                                }))
+                              }
+                              style={{ maxWidth: "200px" }}
+                            />
+                            <p>
+                              BDT {royalty} Estimated royalty ({commissionPct}%)
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -2796,7 +2839,7 @@ export default function AddDesignFitAdmin({
 
                           {user?.merchantProfile?.brandOption ? (
                             <>
-                              <div className='flex items-center gap-4 mt-2'>
+                              <div className='d-flex items-center gap-4 mt-2'>
                                 <label>
                                   <input
                                     type='radio'
@@ -2891,7 +2934,7 @@ export default function AddDesignFitAdmin({
                           <span>
                             {remainingChars(
                               features.brandName,
-                              LIMITS.brandName
+                              LIMITS.brandName,
                             )}{" "}
                             characters remaining (minimum 3 characters)
                           </span>
@@ -2935,7 +2978,7 @@ export default function AddDesignFitAdmin({
                             {" "}
                             {remainingChars(
                               features.feature2,
-                              LIMITS.feature
+                              LIMITS.feature,
                             )}{" "}
                             characters remaining
                           </span>
@@ -2955,7 +2998,7 @@ export default function AddDesignFitAdmin({
                           <span>
                             {remainingChars(
                               features.description,
-                              LIMITS.description
+                              LIMITS.description,
                             )}{" "}
                             characters remaining
                           </span>

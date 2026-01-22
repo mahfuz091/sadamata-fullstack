@@ -7,7 +7,10 @@ import {
   updateMerchantAdminSettings,
   updateMerchantDailyLimitPctAction,
 } from "@/app/actions/user/user.actions";
-import { setMerchantCommission } from "@/app/actions/user/setMerchantCommission";
+import {
+  setMerchantCommission,
+  updateCommissionWithBrandPctAction,
+} from "@/app/actions/user/setMerchantCommission";
 
 export default function MerchantAdminActions({
   userId,
@@ -15,6 +18,7 @@ export default function MerchantAdminActions({
   initialBrandOption,
   initialCommission,
   initialDailyLimitPct, // <-- add this prop
+  initialMerchCommissionWithBrand,
 }) {
   // Admin settings
   const [tiar, setTiar] = useState(initialTiar);
@@ -96,6 +100,39 @@ export default function MerchantAdminActions({
     }
   };
 
+  // Commission with Brand
+  const [commissionWithBrand, setCommissionWithBrand] = useState(
+    initialMerchCommissionWithBrand,
+  );
+  const [commissionWithBrandLoading, setCommissionWithBrandLoading] =
+    useState(false);
+
+  const saveCommissionWithBrandPct = async () => {
+    setCommissionWithBrandLoading(true);
+    try {
+      const res = await updateCommissionWithBrandPctAction(null, {
+        merchantId: userId,
+        brandSelectedMerchantPct: commissionWithBrand,
+      });
+
+      if (!res?.success) {
+        message.error(res?.msg || "Failed to update With Brand Pct");
+        return;
+      }
+
+      // Optional: sync state from response (in case server rounds)
+      if (typeof res.brandSelectedMerchantPct === "number")
+        setCommissionWithBrand(res.brandSelectedMerchantPct);
+
+      message.success("Merchant With Brand Commission updated");
+    } catch (err) {
+      console.error(err);
+      message.error("Something went wrong");
+    } finally {
+      setCommissionWithBrandLoading(false);
+    }
+  };
+
   return (
     <>
       <div className='border rounded-lg p-4 space-y-4'>
@@ -172,6 +209,30 @@ export default function MerchantAdminActions({
             type='primary'
             onClick={saveDailyLimitPct}
             loading={dailyLimitLoading}
+            className='bg-[#f29456]! border-[#f29456]! hover:bg-[#f29456] hover:border-[#f29456]'
+          >
+            Save
+          </Button>
+        </div>
+      </div>
+      <div className='border rounded-lg p-4 space-y-3'>
+        <h2 className='font-medium'>With Brand Merchant Commision Settings</h2>
+
+        <div className='flex items-end gap-4'>
+          <div>
+            <p className='text-sm text-muted-foreground'>Commision (%)</p>
+            <InputNumber
+              min={0}
+              max={100}
+              value={commissionWithBrand}
+              onChange={setCommissionWithBrand}
+            />
+          </div>
+
+          <Button
+            type='primary'
+            onClick={saveCommissionWithBrandPct}
+            loading={commissionWithBrandLoading}
             className='bg-[#f29456]! border-[#f29456]! hover:bg-[#f29456] hover:border-[#f29456]'
           >
             Save

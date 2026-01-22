@@ -30,9 +30,11 @@ export default async function MerchantDetailsPage({ params }) {
     orderBy: { createdAt: "desc" },
   });
   const p = user.merchantProfile;
-  const merchantCommissionPct = commission?.merchantCommissionPct ?? 10;
+  const merchantCommissionPct = commission?.merchantCommissionPct ?? 11;
+  const merchantCommissionPctwithBrand =
+    commission?.brandSelectedMerchantPct ?? 6;
 
-  const merchantPct = commission?.merchantCommissionPct ?? 10;
+  const merchantPct = commission?.merchantCommissionPct ?? 11;
   const merchDailyLimitPct = user?.merchantProfile?.dailyLimitPct ?? 10;
 
   //   const merchantEarning = (total * merchantPct) / 100;
@@ -91,6 +93,7 @@ export default async function MerchantDetailsPage({ params }) {
         initialBrandOption={p.brandOption}
         initialCommission={merchantCommissionPct}
         initialDailyLimitPct={merchDailyLimitPct}
+        initialMerchCommissionWithBrand={merchantCommissionPctwithBrand}
       />
     </div>
   );

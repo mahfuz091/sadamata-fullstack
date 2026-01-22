@@ -189,7 +189,11 @@ const DashboardMain = ({
                         <div className='flag__img'>
                           <Image src={flag} alt={`flag ${index + 1}`} />
                         </div>
-                        {index === 0 ? null : (
+                        {index === 0 ? (
+                          <p className='flag__title'>
+                            <span style={{ fontSize: "14px" }}>Live</span>
+                          </p>
+                        ) : (
                           <p className='flag__title'>
                             <span>Upcoming</span>
                           </p>

@@ -251,7 +251,8 @@ async function resolveEffectiveCommissions({ merchantId, brandId }) {
   if (pairRule) {
     return {
       brandPct: pairRule.brandCommissionPct,
-      merchantPct: pairRule.merchantCommissionPct,
+      merchantPct: pairRule.brandSelectedMerchantPct,
+      // merchantWithBrandPct: pairRule.brandSelectedMerchantPct,
       source: "merchant+brand rule",
     };
   }
@@ -292,15 +293,15 @@ async function resolveEffectiveCommissions({ merchantId, brandId }) {
     });
     if (brand) {
       return {
-        brandPct: brand.defaultBrandPct || 10,
-        merchantPct: brand.defaultMerchantPct || 10,
+        brandPct: brand.defaultBrandPct || 6,
+        merchantPct: brand.defaultMerchantPct || 11,
         source: "brand defaults",
       };
     }
   }
 
   // 5️⃣ Hard fallback
-  return { brandPct: 10, merchantPct: 10, source: "hard fallback" };
+  return { brandPct: 6, merchantPct: 11, source: "hard fallback" };
 }
 
 async function saveFile(file, fieldName) {

@@ -240,69 +240,118 @@ function getTodayRange() {
   return { start, end };
 }
 
+// async function resolveEffectiveCommissions({ merchantId, brandId }) {
+//   // 1️⃣ Merchant + Brand specific rule
+//   const pairRule = await prisma.commissionSetting.findFirst({
+//     where: { isActive: true, merchantId, brandId: brandId || undefined },
+//     orderBy: { effectiveFrom: "desc" },
+//   });
+//   console.log(merchantId, brandId, pairRule);
+
+//   if (pairRule) {
+//     return {
+//       brandPct: pairRule.brandCommissionPct,
+//       merchantPct: pairRule.brandSelectedMerchantPct,
+//       // merchantWithBrandPct: pairRule.brandSelectedMerchantPct,
+//       source: "merchant+brand rule",
+//     };
+//   }
+
+//   // 2️⃣ Merchant-only rule
+//   const merchantRule = await prisma.commissionSetting.findFirst({
+//     where: { isActive: true, merchantId, brandId: null },
+//     orderBy: { effectiveFrom: "desc" },
+//   });
+//   if (merchantRule) {
+//     return {
+//       brandPct: merchantRule.brandCommissionPct,
+//       merchantPct: merchantRule.merchantCommissionPct,
+//       source: "merchant-only rule",
+//     };
+//   }
+
+//   // 3️⃣ Brand-only rule
+//   if (brandId) {
+//     const brandRule = await prisma.commissionSetting.findFirst({
+//       where: { isActive: true, merchantId: null, brandId },
+//       orderBy: { effectiveFrom: "desc" },
+//     });
+//     if (brandRule) {
+//       return {
+//         brandPct: brandRule.brandCommissionPct,
+//         merchantPct: brandRule.merchantCommissionPct,
+//         source: "brand-only rule",
+//       };
+//     }
+//   }
+
+//   // 4️⃣ Brand default percentages
+//   if (brandId) {
+//     const brand = await prisma.brand.findUnique({
+//       where: { id: brandId },
+//       select: { defaultBrandPct: true, defaultMerchantPct: true },
+//     });
+//     if (brand) {
+//       return {
+//         brandPct: brand.defaultBrandPct || 6,
+//         merchantPct: brand.defaultMerchantPct || 11,
+//         source: "brand defaults",
+//       };
+//     }
+//   }
+
+//   // 5️⃣ Hard fallback
+//   return { brandPct: 6, merchantPct: 11, source: "hard fallback" };
+// }
 async function resolveEffectiveCommissions({ merchantId, brandId }) {
-  // 1️⃣ Merchant + Brand specific rule
-  const pairRule = await prisma.commissionSetting.findFirst({
-    where: { isActive: true, merchantId, brandId: brandId || undefined },
-    orderBy: { effectiveFrom: "desc" },
-  });
-  console.log(merchantId, brandId, pairRule);
-
-  if (pairRule) {
-    return {
-      brandPct: pairRule.brandCommissionPct,
-      merchantPct: pairRule.brandSelectedMerchantPct,
-      // merchantWithBrandPct: pairRule.brandSelectedMerchantPct,
-      source: "merchant+brand rule",
-    };
-  }
-
-  // 2️⃣ Merchant-only rule
-  const merchantRule = await prisma.commissionSetting.findFirst({
-    where: { isActive: true, merchantId, brandId: null },
-    orderBy: { effectiveFrom: "desc" },
-  });
-  if (merchantRule) {
-    return {
-      brandPct: merchantRule.brandCommissionPct,
-      merchantPct: merchantRule.merchantCommissionPct,
-      source: "merchant-only rule",
-    };
-  }
-
-  // 3️⃣ Brand-only rule
+  // 🔹 CASE 1: brandId আছে → merchant + brand pair rule
   if (brandId) {
-    const brandRule = await prisma.commissionSetting.findFirst({
-      where: { isActive: true, merchantId: null, brandId },
+    const pairRule = await prisma.commissionSetting.findFirst({
+      where: {
+        isActive: true,
+        merchantId,
+        brandId,
+      },
       orderBy: { effectiveFrom: "desc" },
     });
-    if (brandRule) {
+
+    if (pairRule) {
       return {
-        brandPct: brandRule.brandCommissionPct,
-        merchantPct: brandRule.merchantCommissionPct,
-        source: "brand-only rule",
+        brandPct: pairRule.brandCommissionPct,
+        merchantPct: pairRule.brandSelectedMerchantPct,
+        source: "merchant+brand rule",
       };
     }
   }
 
-  // 4️⃣ Brand default percentages
-  if (brandId) {
-    const brand = await prisma.brand.findUnique({
-      where: { id: brandId },
-      select: { defaultBrandPct: true, defaultMerchantPct: true },
+  // 🔹 CASE 2: brandId নাই → merchant-only rule
+  if (!brandId) {
+    const merchantRule = await prisma.commissionSetting.findFirst({
+      where: {
+        isActive: true,
+        merchantId,
+        brandId: null,
+      },
+      orderBy: { effectiveFrom: "desc" },
     });
-    if (brand) {
+
+    if (merchantRule) {
       return {
-        brandPct: brand.defaultBrandPct || 6,
-        merchantPct: brand.defaultMerchantPct || 11,
-        source: "brand defaults",
+        brandPct: merchantRule.brandCommissionPct,
+        merchantPct: merchantRule.merchantCommissionPct,
+        source: "merchant-only rule",
       };
     }
   }
 
-  // 5️⃣ Hard fallback
-  return { brandPct: 6, merchantPct: 11, source: "hard fallback" };
+  // 🔻 Optional fallback (strongly recommended)
+  return {
+    brandPct: 6,
+    merchantPct: 11,
+    source: "hard fallback",
+  };
 }
+
 
 async function saveFile(file, fieldName) {
   if (!file) return null;

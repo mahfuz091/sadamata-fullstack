@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import image from "@/assets/images/products/cart.png";
 import CustomSelect from "../CustomSelect/CustomSelect";
 import DashSidebar from "../DashSidebar/DashSidebar";
@@ -15,12 +15,16 @@ export default function DashboardManage({
   initialItems,
   totalPages,
   initialPage = 1,
-  loadMoreAction, // server action passed down
+  loadMoreAction,
+  loadPageAction, // server action passed down
   placeholderSrc,
   merchantId,
 }) {
+  const tableTopRef = useRef(null);
+
   const [items, setItems] = useState(initialItems);
   const [page, setPage] = useState(initialPage);
+  const [pageSize, setPageSize] = useState(15); // screenshot মতো 15 default
   const [isPending, startTransition] = useTransition();
   const [showSpinner, setShowSpinner] = useState(false);
 
@@ -56,6 +60,28 @@ export default function DashboardManage({
       }, remaining);
     });
   }
+const fetchPage = (nextPage, nextSize = pageSize) => {
+  const formData = new FormData();
+  formData.set("page", String(nextPage));
+  formData.set("pageSize", String(nextSize));
+
+  startTransition(async () => {
+    const res = await loadPageAction(undefined, formData);
+
+    setItems(res.items);
+    setPage(res.page);
+
+    // ✅ scroll after state update
+    requestAnimationFrame(() => {
+      tableTopRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+  });
+};
+
+
 
   const handleSelect = (selected) => {
     // console.log("Selected:", selected);
@@ -155,6 +181,8 @@ export default function DashboardManage({
     return true;
   });
 
+
+
   console.log(filteredItems, "filter");
 
   return (
@@ -227,7 +255,7 @@ export default function DashboardManage({
                   </div>
                 </div>
 
-                <div className='dashboard-area__tabel'>
+                <div className='dashboard-area__tabel' ref={tableTopRef}>
                   <table style={{ width: "100%" }}>
                     <thead>
                       <tr>
@@ -333,7 +361,7 @@ export default function DashboardManage({
                 </div>
               </div>
 
-              <div className='dashboard-area__btn'>
+              {/* <div className='dashboard-area__btn'>
                 <button
                   onClick={onLoadMore}
                   disabled={!hasMore || showSpinner}
@@ -355,7 +383,57 @@ export default function DashboardManage({
                     </>
                   )}
                 </button>
-              </div>
+              </div> */}
+              <div className="d-flex justify-content-between align-items-center mt-4">
+  {/* Left: pagination */}
+  <div className="d-flex align-items-center gap-2">
+    <button
+      type="button"
+      onClick={() => fetchPage(Math.max(1, page - 1))}
+      disabled={page <= 1 || isPending}
+      className="pagination-btn"
+      aria-label="Previous page"
+    >
+      ‹
+    </button>
+
+    <button type="button" className="pagination-btn active" disabled>
+      {page}
+    </button>
+
+    <button
+      type="button"
+      onClick={() => fetchPage(Math.min(totalPages, page + 1))}
+      disabled={page >= totalPages || isPending}
+      className="pagination-btn"
+      aria-label="Next page"
+    >
+      ›
+    </button>
+  </div>
+
+  {/* Right: per page */}
+  <div className="d-flex align-items-center gap-2">
+    <span className="small text-muted">results per page</span>
+    <select
+      value={pageSize}
+      onChange={(e) => {
+        const nextSize = Number(e.target.value);
+        setPageSize(nextSize);
+        fetchPage(1, nextSize); // ✅ change size -> reset to page 1
+      }}
+      disabled={isPending}
+      className="per-page-select"
+    >
+      {[10, 12, 15, 20, 30, 50].map((n) => (
+        <option key={n} value={n}>
+          {n}
+        </option>
+      ))}
+    </select>
+  </div>
+</div>
+
             </div>
           </div>
         </div>

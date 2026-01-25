@@ -6,6 +6,7 @@
 
 import { unstable_noStore as noStore } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { pickPreviewImg } from "@/utils/color";
 
 function buildDateRange(from, to) {
   const range = {};
@@ -47,7 +48,15 @@ export async function getMerchantProductSalesSummary({
         updatedAt: true,
         brandName: true,
         Brand: { select: { id: true, name: true } },
-        variants: { select: { frontImg: true }, take: 1 },
+        variants: {
+  select: {
+    frontImg: true,
+    backImg: true, 
+    fitType: true,
+    color: true,
+    isActive: true, // optional
+  },
+},
       },
     }),
   ]);
@@ -134,7 +143,7 @@ export async function getMerchantProductSalesSummary({
       revenue: Number(paid.revenue.toFixed(2)),
       royalties: Number(paid.royalties.toFixed(2)),
       updatedAt: p.updatedAt,
-      previewImg: p.variants?.[0]?.frontImg || null,
+     previewImg: pickPreviewImg(p.variants),
       isActive: p.isActive,
     };
   });

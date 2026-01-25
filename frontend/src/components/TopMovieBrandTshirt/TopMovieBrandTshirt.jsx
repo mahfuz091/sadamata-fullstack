@@ -79,7 +79,7 @@ export default function TopMovieBrandTshirt({
               <div className='product__item'>
                 <div className='product__item__img'>
                   <Link
-                    href={`/product-details/${prod.productId}`}
+                    href={`/products/${prod.productId}`}
                     className='product__item__img__item'
                   >
                     {prod.imageUrl ? (
@@ -109,7 +109,7 @@ export default function TopMovieBrandTshirt({
                   </p>
 
                   <h4 className='product__item__title'>
-                    <Link href={`/product-details/${prod.productId}`}>
+                    <Link href={`/products/${prod.productId}`}>
                       {prod.title}
                     </Link>
                   </h4>

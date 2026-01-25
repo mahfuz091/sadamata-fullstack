@@ -5,6 +5,7 @@
 
 import { Role } from "@/generated/prisma";
 import { prisma } from "@/lib/prisma";
+import { pickPreviewImg } from "@/utils/color";
 import { unstable_noStore as noStore, revalidatePath } from "next/cache";
 
 export async function assertIsMerchant(userId) {
@@ -81,7 +82,15 @@ export async function getMerchantProducts({
         status: true,
         Mockup: { select: { name: true } }, // only mockup name
         Brand: { select: { id: true, name: true, isActive: true } },
-        variants: { select: { frontImg: true }, take: 1 },
+        variants: {
+  select: {
+    frontImg: true,
+    backImg: true, 
+    fitType: true,
+    color: true,
+    isActive: true, // optional
+  },
+},
       },
     }),
   ]);
@@ -98,8 +107,8 @@ export async function getMerchantProducts({
     brand: p.Brand,
     status: p.status,
     mockupName: p.Mockup?.name || null,
-    previewImg: p.variants?.[0]?.frontImg || null,
-  }));
+    previewImg: pickPreviewImg(p.variants),
+  })); 
 
   return {
     items,

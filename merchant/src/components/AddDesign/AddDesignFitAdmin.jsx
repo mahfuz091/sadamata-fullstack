@@ -2773,7 +2773,7 @@ export default function AddDesignFitAdmin({
                               style={{ maxWidth: "200px" }}
                             />
                             <p>
-                              BDT {royalty} Estimated royalty ({commissionPct}%)
+                              BDT {royalty} Estimated royalty
                             </p>
                           </div>
                         </div>

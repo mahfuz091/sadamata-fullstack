@@ -12,7 +12,7 @@ import {
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-const ChangePassword = ({ user, countries }) => {
+const ChangePassword = ({ user, countries, profileImageUrl }) => {
   const [editMode, setEditMode] = useState(false);
   const [phoneValue, setPhoneValue] = useState(
     user?.merchantProfile?.contactPhone || ""
@@ -34,8 +34,8 @@ const ChangePassword = ({ user, countries }) => {
 
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(
-    user?.profileImage || "/assets/images/resources/avater.png"
-  );
+      profileImageUrl || "/assets/images/resources/avater.png"
+    );
 
   const [formData, setFormData] = useState({
     bankName: user?.merchantProfile?.bankName || "",

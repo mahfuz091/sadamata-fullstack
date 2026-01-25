@@ -64,12 +64,35 @@ const page = async () => {
     };
   }
 
+  async function loadPageAction(prevState, formData) {
+  "use server";
+  const nextPage = Number(formData.get("page") || 1);
+  const pageSize = Number(formData.get("pageSize") || 15);
+
+  const res = await getMerchantProducts({
+    merchantId,
+    page: nextPage,
+    pageSize,
+  });
+
+  const signedItems = await attachPreviewUrl(res.items);
+
+  return {
+    ...res,
+    items: signedItems,
+  };
+}
+
+  console.log(signedFirstItems, "signedFirstItems");
+  
+
   return (
     <DashboardManage
       initialItems={signedFirstItems}
       totalPages={firstPage.totalPages}
       initialPage={firstPage.page}
       loadMoreAction={loadMoreAction}
+       loadPageAction={loadPageAction}   
       placeholderSrc={placeholder}
       merchantId={merchantId}
     />

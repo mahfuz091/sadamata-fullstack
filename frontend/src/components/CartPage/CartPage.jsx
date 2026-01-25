@@ -5,6 +5,7 @@ import { GoTrash } from "react-icons/go";
 import { toast } from "sonner";
 import { usePathname, useRouter } from "next/navigation";
 import { getCartImageUrls } from "@/app/actions/cart/cart.actions";
+import { COLOR_MAP } from "@/utils/helper";
 
 const CartPage = ({ user }) => {
   const router = useRouter();
@@ -140,6 +141,11 @@ const CartPage = ({ user }) => {
     router.push("/checkout");
   };
 
+  const getColorName = (hex) => {
+  if (!hex) return "";
+  return COLOR_MAP[hex.toLowerCase()] || hex;
+};
+
   return (
     <section className='cart-page'>
       <div className='container'>
@@ -184,7 +190,7 @@ const CartPage = ({ user }) => {
                             </h3>
                             <span className='cart-one__list__text'>
                               {item.brand} | {item.fit} | {item.size} |{" "}
-                              {item.color}
+                         {getColorName(item.color)}
                             </span>
                             <div className='cart-one__list__amount'>
                               ৳

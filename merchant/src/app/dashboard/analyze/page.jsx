@@ -35,28 +35,42 @@ const page = async () => {
   // ✅ sign initial items
   const signedFirstItems = await attachPreviewUrl(firstPage.items);
 
-  async function loadMoreSales(prevState, formData) {
-    "use server";
-    const nextPage = Number(formData.get("nextPage"));
+  // async function loadMoreSales(prevState, formData) {
+  //   "use server";
+  //   const nextPage = Number(formData.get("nextPage"));
 
-    const res = await getMerchantProductSalesSummary({
-      merchantId,
-      page: nextPage,
-      pageSize: 10,
-    });
+  //   const res = await getMerchantProductSalesSummary({
+  //     merchantId,
+  //     page: nextPage,
+  //     pageSize: 10,
+  //   });
 
-    // ✅ sign loaded items too
-    const signed = await attachPreviewUrl(res.items);
+  //   // ✅ sign loaded items too
+  //   const signed = await attachPreviewUrl(res.items);
 
-    return { ...res, items: signed };
-  }
+  //   return { ...res, items: signed };
+  // }
+async function loadPageSales(prevState, formData) {
+  "use server";
+  const page = Number(formData.get("page") || 1);
+  const pageSize = Number(formData.get("pageSize") || 10);
+
+  const res = await getMerchantProductSalesSummary({
+    merchantId,
+    page,
+    pageSize,
+  });
+
+  const signed = await attachPreviewUrl(res.items);
+  return { ...res, items: signed };
+}
 
   return (
     <Analyze
       initialItems={signedFirstItems}
       initialPage={firstPage.page}
       totalPages={firstPage.totalPages}
-      loadMoreAction={loadMoreSales}
+      loadMoreAction={loadPageSales}
       summery={summery}
     />
   );

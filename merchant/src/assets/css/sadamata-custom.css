@@ -643,8 +643,8 @@ button.profileImageButton {
 }
 .loader {
   position: relative;
-  width: 55px;
-  height: 55px;
+  width: 80px;
+  height: 80px;
   left: 50%;
   top: auto;
   margin-left: -22px;
@@ -659,12 +659,12 @@ button.profileImageButton {
 }
 .loader span {
   position: absolute;
-  width: 55px;
-  height: 55px;
+  width: 80px;
+  height: 80px;
   top: -1px;
   left: -1px;
   border: 1px solid transparent;
-  border-top: 1px solid #0b7956;
+  border-top: 1px solid var(--commerce-base);
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
   -ms-border-radius: 50%;
@@ -675,6 +675,17 @@ button.profileImageButton {
   -ms-animation: rotate 1s infinite linear;
   -o-animation: rotate 1s infinite linear;
   animation: rotate 1s infinite linear;
+}
+
+.loader img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50px;
+  border-radius: 50%;
+  height: auto;
+  transform: translate(-50%, -50%);
+  z-index: 8;
 }
 @-webkit-keyframes rotate {
   0% {
@@ -707,4 +718,28 @@ button.profileImageButton {
 .user-login__form-input-box a:hover {
   background-size: 100% 1px;
   color: var(--commerce-base, #f37927);
+}
+
+
+.pagination-btn{
+  border:1px solid #d7e1ff;
+  background:#fff;
+  padding:6px 12px;
+  border-radius:6px;
+  cursor:pointer;
+}
+.pagination-btn.active{
+  border-color:#2d5bff;
+  color:#2d5bff;
+  font-weight:600;
+}
+.pagination-btn:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+.per-page-select{
+  border:1px solid #d7e1ff;
+  padding:6px 10px;
+  border-radius:6px;
+  background:#fff;
 }

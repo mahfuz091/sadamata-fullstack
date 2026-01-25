@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import React from "react";
 import { GetCountries } from "react-country-state-city";
+import { getPrivateUrl } from "@/lib/s3";
 
 const page = async () => {
   const session = await auth();
@@ -23,9 +24,12 @@ const page = async () => {
       profileImage: true,
     },
   });
+    const profileImageUrl = user?.profileImage
+      ? await getPrivateUrl(user.profileImage)
+      : null;
   return (
     <>
-      <Bank user={user} countries={countries} />
+      <Bank user={user} countries={countries}   profileImageUrl={profileImageUrl} />
     </>
   );
 };

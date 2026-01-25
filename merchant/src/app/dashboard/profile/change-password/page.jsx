@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 
 import { GetCountries } from "react-country-state-city";
 import ChangePassword from "@/components/ChangePassword/ChangePassword";
+import { getPrivateUrl } from "@/lib/s3";
 const page = async () => {
   const session = await auth();
   const countries = await GetCountries();
@@ -23,9 +24,12 @@ const page = async () => {
       profileImage: true,
     },
   });
+   const profileImageUrl = user?.profileImage
+        ? await getPrivateUrl(user.profileImage)
+        : null;
   return (
     <>
-      <ChangePassword user={user} countries={countries} />
+      <ChangePassword user={user} countries={countries} profileImageUrl={profileImageUrl} />
     </>
   );
 };

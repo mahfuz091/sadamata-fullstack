@@ -48,3 +48,20 @@ export function getPaginationRange(totalPages, currentPage, siblingCount = 1) {
 
   return Array.from({ length: totalPages }, (_, i) => i + 1);
 }
+
+export const COLOR_MAP = {
+  "#000000": "Black",
+  "#ffffff": "White",
+  "#192252": "Navy Blue",
+  "#636b2f": "Olive Green",
+  "#895129": "Brown",
+  "#4cbb17": "Bright Green",
+  "#708090": "Slate Gray",
+  "#24357a": "Royal Blue",
+  "#4f3065": "Purple",
+  "#595855": "Dark Gray",
+  "#669f51": "Light Green",
+  "#c1daf7": "Baby Blue",
+  "#f7a5bb": "Pink",
+};
+

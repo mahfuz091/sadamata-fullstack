@@ -1,5 +1,5 @@
 "use client";
-import React, { useTransition, useState } from "react";
+import React, { useTransition, useState, useRef } from "react";
 import DashSidebar from "../DashSidebar/DashSidebar";
 
 import CustomSelect from "../CustomSelect/CustomSelect";
@@ -20,8 +20,10 @@ const Analyze = ({
   loadMoreAction,
   summery,
 }) => {
+    const tableTopRef = useRef(null);
   const [items, setItems] = useState(initialItems);
   const [page, setPage] = useState(initialPage);
+  const [pageSize, setPageSize] = useState(15);
   const [isPending, startTransition] = useTransition();
   const [showSpinner, setShowSpinner] = useState(false);
   // console.log(initialItems, "initialItems");
@@ -62,6 +64,25 @@ const Analyze = ({
       }, remaining);
     });
   }
+  const fetchPage = (nextPage, nextSize = pageSize) => {
+  const fd = new FormData();
+  fd.set("page", String(nextPage));
+  fd.set("pageSize", String(nextSize));
+
+  startTransition(async () => {
+    const res = await loadMoreAction(undefined, fd);
+    setItems(res.items);   // ✅ replace, not append
+    setPage(res.page);
+
+     requestAnimationFrame(() => {
+      tableTopRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+  });
+};
+
 
   console.log(items);
 
@@ -173,7 +194,7 @@ const Analyze = ({
                     </div>
                   </div>
                 </div>
-                <div className='dashboard-area__tabel'>
+                <div className='dashboard-area__tabel' ref={tableTopRef}>
                   <table className='' style={{ width: "100%" }}>
                     <thead>
                       <tr>
@@ -279,7 +300,7 @@ const Analyze = ({
                   </table>
                 </div>
               </div>
-              <div className='dashboard-area__btn'>
+              {/* <div className='dashboard-area__btn'>
                 <button
                   onClick={onLoadMore}
                   disabled={!hasMore || showSpinner}
@@ -301,7 +322,53 @@ const Analyze = ({
                     </>
                   )}
                 </button>
-              </div>
+              </div> */}
+              <div className="d-flex justify-content-between align-items-center mt-4">
+  {/* Left: prev / page / next */}
+  <div className="d-flex align-items-center gap-2">
+    <button
+      type="button"
+      onClick={() => fetchPage(Math.max(1, page - 1))}
+      disabled={page <= 1 || isPending}
+      className="pagination-btn"
+    >
+      ‹
+    </button>
+
+    <button type="button" className="pagination-btn active" disabled>
+      {page}
+    </button>
+
+    <button
+      type="button"
+      onClick={() => fetchPage(Math.min(totalPages, page + 1))}
+      disabled={page >= totalPages || isPending}
+      className="pagination-btn"
+    >
+      ›
+    </button>
+  </div>
+
+  {/* Right: per page */}
+  <div className="d-flex align-items-center gap-2">
+    <span className="small text-muted">results per page</span>
+    <select
+      value={pageSize}
+      onChange={(e) => {
+        const n = Number(e.target.value);
+        setPageSize(n);
+        fetchPage(1, n);
+      }}
+      disabled={isPending}
+      className="per-page-select"
+    >
+      {[10, 15, 20, 30, 50].map((n) => (
+        <option key={n} value={n}>{n}</option>
+      ))}
+    </select>
+  </div>
+</div>
+
             </div>
           </div>
         </div>

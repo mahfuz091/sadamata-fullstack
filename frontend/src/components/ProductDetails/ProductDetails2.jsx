@@ -866,8 +866,46 @@ export default function ProductDetails2({ product }) {
                   </p>
                 </div>
                 <div className='product-info__list__info'>
+                  <h3 className='product-info__list__title'>
+                   Care Instructions
+                  </h3>
+                    <ul className='product-info__list'>
+                    <li>
+                      Machine wash cold (max 30°C)
+                    </li>
+                    <li>
+                      Wash with similar colors
+                    </li>
+                    <li>
+                       Wash inside out
+                    </li>
+                    <li>
+                     Do not bleach
+                    </li>
+                    <li>
+             Tumble dry low or hang to dry
+                    </li>
+                    <li>
+            Do not iron directly on print
+                    </li>
+                    <li>
+         Warm iron on reverse side if needed
+                    </li>
+                    <li>
+    Do not dry clean
+                    </li>
+                  </ul>
+                </div>
+                <div className='product-info__list__info'>
                   <h3 className='product-info__list__title'>Product details</h3>
                   <ul className='product-info__list'>
+                    <li>
+                      <span>Department : </span>{product?.Mockup?.name}
+                    </li>
+                    <li>
+                      <span>Package Dimensions :</span> 10 x 8 x 2 inches
+
+                    </li>
                     <li>
                       <span>Fabric type :</span> Solid colors: 100% Cotton;
                       Heather Grey: 90% Cotton, 10% Polyester; Dark Heather and
@@ -894,8 +932,17 @@ export default function ProductDetails2({ product }) {
                           )
                         : "N/A"}
                     </li>
+                     <li>
+                      <span>SMPIN :</span>
+                    </li>
+                     <li>
+                      <span>Sales Rank (Sadamata) : </span>
+                    </li>
                     <li>
                       <span>Manufacturer :</span> Sadamata
+                    </li>
+                    <li>
+                      <span>Customer Reviews :</span> 
                     </li>
                   </ul>
                 </div>

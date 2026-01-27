@@ -1,8 +1,13 @@
+"use client"
 import Image from "next/image";
-import Link from "next/link";
-import videoThumbnail from "@/assets/images/resources/video.jpg";
+
+import { useState } from "react";
 
 export default function DoesWork() {
+  const [playing, setPlaying] = useState(false);
+
+  const youtubeId = "LnyP8ri7l98";
+  const videoUrl = `https://www.youtube.com/watch?v=${youtubeId}`;
   return (
     <section className='does-work-one'>
       <div className='container'>
@@ -10,32 +15,68 @@ export default function DoesWork() {
         <div className='does-work-one__top'>
           <h2 className='section-title'>How does it work?</h2>
           <p className='section-text'>
-            Simply upload your artwork, choose a product type and color, and add
-            a product description. We'll create a product page on Amazon and
-            when customers buy your product, we'll handle production, shipping,
-            and customer service — all with no upfront costs.
+           Register your details and complete the brand approval process.After approval, share your artwork with your dedicated Brand Manager. Your Brand Manager will turn your artwork into merchandise and organize your brand on Sadamata.You focus on marketing and growing your brand. Start earning from every sale.
           </p>
         </div>
 
         {/* Video Section */}
-        <div className='row'>
+         <div className='row'>
           <div className='col-12'>
-            <div className='does-work-one__video'>
-              <Image
-                src={videoThumbnail}
-                alt='video image'
-                width={1200}
-                height={675}
-                style={{ width: "100%", height: "auto" }}
-              />
-              <a
-                href='https://www.youtube.com/watch?v=SjJhuZQlkbA'
-                className='video-popup'
-                target='_blank'
-                rel='noopener noreferrer'
-              >
-                <i className='fas fa-play'></i>
-              </a>
+            <div
+              style={{
+                position: "relative",
+                width: "100%",
+                height: "675px",
+                backgroundColor: "#000",
+                borderRadius: "30px",
+                overflow: "hidden",
+              }}
+            >
+              {!playing && (
+                <>
+                  <Image
+                    src={`https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`}
+                    alt='Video thumbnail'
+                    fill
+                    style={{ objectFit: "cover" }}
+                    priority
+                  />
+
+                  <button
+                    type='button'
+                    onClick={() => setPlaying(true)}
+                    className='video-popup'
+                    // style={{
+                    //   position: "absolute",
+                    //   top: "50%",
+                    //   left: "50%",
+                    //   transform: "translate(-50%, -50%)",
+                    //   background: "rgba(0,0,0,0.6)",
+                    //   border: "none",
+                    //   borderRadius: "50%",
+                    //   width: "80px",
+                    //   height: "80px",
+                    //   color: "#fff",
+                    //   fontSize: "28px",
+                    //   cursor: "pointer",
+                    //   zIndex: 2,
+                    // }}
+                  >
+                    <i className='fas fa-play'></i>
+                  </button>
+                </>
+              )}
+
+              {playing && (
+                <ReactPlayer
+                  src={videoUrl} // REQUIRED by npm docs
+                  playing={playing} // controlled state
+                  controls={true} // shows pause button
+                  width='100%'
+                  height='100%'
+                  onPause={() => setPlaying(false)} // optional sync
+                />
+              )}
             </div>
           </div>
         </div>

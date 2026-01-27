@@ -21,7 +21,7 @@ const HeaderTwo = ({ session }) => {
                 <Image
                   src='/logo-sadamata.svg'
                   alt='commerce HTML'
-                  width={200}
+                  width={300}
                   height={50}
                 />
               </Link>

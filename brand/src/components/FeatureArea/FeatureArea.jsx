@@ -2,11 +2,11 @@ import Link from "next/link";
 
 export default function FeatureArea() {
   const features = [
-    { icon: "icon-downlode", title: "Upload your artwork" },
-    { icon: "icon-doller", title: "Suggest a list price" },
-    { icon: "icon-prient", title: "We print what’s sold" },
-    { icon: "icon-delefery", title: "Fast shipping with Prime" },
-    { icon: "icon-save-doller", title: "Earn monthly royalties" },
+    { icon: "/feature/Apply-for-Brand.png", title: "Apply for Brand" },
+    { icon: "/feature/Brand-Review-&-Approval.png", title: "Brand Review & Approval" },
+    { icon: "/feature/Send-Your-Artwork.png", title: "Send Your Artwork" },
+    { icon: "/feature/Products-Go-Live.png", title: "Products Go Live" },
+    { icon: "/feature/Earn-monthly-royalties.png", title: "Earn monthly royalties" },
   ];
 
   return (
@@ -16,7 +16,7 @@ export default function FeatureArea() {
           {features.map((feature, index) => (
             <li className='feature-area__list__item' key={index}>
               <div className='feature-area__list__item__icon'>
-                <i className={feature.icon}></i>
+                <img src={feature.icon}></img>
               </div>
               <h4 className='feature-area__list__title'>
                 <Link href='#'>{feature.title}</Link>

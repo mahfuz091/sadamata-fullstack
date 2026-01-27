@@ -4,57 +4,130 @@ import { Accordion } from "react-bootstrap";
 
 const faqs = [
   {
-    question: "Do my submissions need to comply with a content policy?",
-    answer:
-      "Yes. If Amazon determines that your design violates one of our content policies, we may remove it without notice. Amazon reserves the right to make judgments about whether or not content is appropriate. Listing a design that violates our content policies may result in the cancellation of your listings, or the suspension or termination of your Amazon Merch on Demand account. Each item that you submit to us must adhere to our Content Policy.",
+    question: "What is Brand.Sadamata.com?",
+    answer: `
+      <p>
+        Brand.Sadamata.com is Sadamata’s official brand portal where creators, influencers, and entrepreneurs can launch their own merchandise brand without handling production or delivery operations.
+      </p>
+    `,
   },
   {
-    question: "How are royalties calculated?",
-    answer:
-      "Yes. If Amazon determines that your design violates one of our content policies, we may remove it without notice...",
+    question: "Is there any cost to open a brand on Sadamata?",
+    answer: `
+      <p>
+        No. Brand registration on Sadamata is completely free of cost. There are no upfront fees or hidden charges.
+      </p>
+    `,
   },
   {
-    question: "Can I order a sample before I publish a product?",
-    answer:
-      "Yes. If Amazon determines that your design violates one of our content policies, we may remove it without notice...",
+    question: "Who can apply for a brand?",
+    answer: `
+      <p>Anyone can apply for a brand, including:</p>
+      <ul>
+        <li>Content creators and influencers</li>
+        <li>Artists and designers</li>
+        <li>Online entrepreneurs</li>
+        <li>Community or page administrators</li>
+      </ul>
+      <p>A large follower base is not required to apply.</p>
+    `,
   },
   {
-    question: "How should I prepare my t-shirt artwork to be uploaded?",
-    answer:
-      "Yes. If Amazon determines that your design violates one of our content policies, we may remove it without notice...",
+    question: "How does the brand approval process work?",
+    answer: `
+      <p>
+        You submit your brand application with the required details. After review, once approved, you will be assigned a dedicated Brand Manager and receive access to your Brand Dashboard.
+      </p>
+    `,
   },
   {
-    question:
-      "I want to upload a product design to Amazon Merch on Demand. Can I submit the same design to another website or manufacturer?",
-    answer:
-      "Yes. If Amazon determines that your design violates one of our content policies, we may remove it without notice...",
+    question: "Do I need to upload designs myself?",
+    answer: `
+      <p>
+        No. After approval, you simply share your artwork or design ideas with your assigned Brand Manager. Sadamata handles the design setup and merchandise preparation.
+      </p>
+    `,
   },
   {
-    question: "What shipping options do my customers get?",
-    answer:
-      "Yes. If Amazon determines that your design violates one of our content policies, we may remove it without notice...",
+    question: "Can I co-design with Sadamata?",
+    answer: `
+      <p>
+        Yes. You may submit your own artwork or collaborate with Sadamata for co-designing merchandise.
+      </p>
+    `,
   },
   {
-    question:
-      "I've signed up for an Amazon Merch on Demand account. What happens next?",
-    answer:
-      "Yes. If Amazon determines that your design violates one of our content policies, we may remove it without notice...",
+    question: "Where will my brand’s products be sold?",
+    answer: `
+      <p>
+        Your approved products will be listed and sold on Sadamata.com under your brand name.
+      </p>
+    `,
+  },
+  {
+    question: "How do I earn money?",
+    answer: `
+      <p>
+        You earn a commission on every sale made under your brand. All sales and earnings are visible in real time from your Brand Dashboard.
+      </p>
+    `,
+  },
+  {
+    question: "Who handles production and delivery?",
+    answer: `
+      <p>Sadamata fully manages:</p>
+      <ul>
+        <li>Product manufacturing</li>
+        <li>Printing and quality control</li>
+        <li>Order processing</li>
+        <li>Nationwide delivery</li>
+        <li>Customer support</li>
+      </ul>
+      <p>You focus on marketing and growing your brand.</p>
+    `,
+  },
+  {
+    question: "How do payouts work?",
+    answer: `
+      <p>
+        Your brand’s royalty from the current month’s sales will be transferred to your provided bank account between the 1st and 10th of the following month.
+      </p>
+      <p>
+        All earnings, commissions, and payout details are transparently available in your Brand Dashboard.
+      </p>
+    `,
+  },
+  {
+    question: "Can Sadamata reject a brand application?",
+    answer: `
+      <p>
+        Yes. Sadamata reserves the right to approve or reject any brand application based on its internal review guidelines.
+      </p>
+    `,
   },
 ];
 
+
 export default function Faq() {
   return (
-    <section className='faq-area'>
-      <div className='container'>
-        <div className='faq-area__top text-center mb-4'>
-          <h2 className='section-title'>Frequently Asked Question</h2>
+    <section className="faq-area">
+      <div className="container">
+        <div className="faq-area__top text-center mb-4">
+          <h2 className="section-title">Frequently Asked Question</h2>
         </div>
-        <div className='faq-area__inner'>
-          <Accordion defaultActiveKey='0'>
+
+        <div className="faq-area__inner">
+          <Accordion defaultActiveKey="0">
             {faqs.map((faq, index) => (
               <Accordion.Item eventKey={index.toString()} key={index}>
                 <Accordion.Header>{faq.question}</Accordion.Header>
-                <Accordion.Body>{faq.answer}</Accordion.Body>
+
+                <Accordion.Body>
+                  <div
+                    className="faq-content"
+                    dangerouslySetInnerHTML={{ __html: faq.answer }}
+                  />
+                </Accordion.Body>
               </Accordion.Item>
             ))}
           </Accordion>

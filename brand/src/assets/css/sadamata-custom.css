@@ -514,3 +514,25 @@ button.profileImageButton {
 .brand-register .form-one .commerce-btn i {
   margin-left: 4px;
 }
+.feature-area__list__item__icon img{
+  width: 80px;
+  height: 80px;
+}
+
+.faq-content p {
+  margin-bottom: 10px;
+  line-height: 1.6;
+  font-size: 18px;
+}
+
+.faq-content ul {
+  padding-left: 20px;
+  margin-bottom: 10px;
+   font-size: 18px;
+}
+
+.faq-content li {
+  list-style: disc;
+  margin-bottom: 6px;
+   font-size: 18px;
+}

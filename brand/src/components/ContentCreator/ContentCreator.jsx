@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import aboutImg from "@/assets/images/about/about-1-1.jpg";
+import aboutImg from "@/assets/images/about/about-1-1.png";
 
 export default function ContentCreator() {
   return (
@@ -11,15 +11,17 @@ export default function ContentCreator() {
           <div className='col-lg-6'>
             <div className='content-creator-one__content'>
               <h2 className='section-title'>
-                Become a Merch on Demand content creator
+                Build Your Own Merchandise Brand with Sadamata
               </h2>
               <p className='content-creator-one__text'>
-                Share your designs with the world by creating graphic tees,
-                accessories, and more, all printed on demand. We handle your
-                printing and shipping, so you can design while we deliver.
+               Launch your own merchandise brand on the Sadamata platform free of cost. Register your brand through Sadamata Brand Registration with just a few basic details.
               </p>
-              <Link href='/product.html' className='commerce-btn'>
-                Shop Now <i className='icon-right-arrow'></i>
+               <p className='content-creator-one__text'>
+              No upfront investment. No technical hassle. <br />
+You focus on building your brand. Sadamata handles the rest.
+              </p>
+              <Link href='/' className='commerce-btn'>
+                Enroll Your Brand <i className='icon-right-arrow'></i>
               </Link>
             </div>
           </div>

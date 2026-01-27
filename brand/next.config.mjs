@@ -29,6 +29,11 @@ const nextConfig = {
         hostname: "www.merch.sadamata.com",
         pathname: "/**", // or "/uploads/**" if you want to restrict
       },
+      {
+        protocol: "https",
+        hostname: "img.youtube.com",
+        pathname: "/**",
+      },
     ],
   },
 };

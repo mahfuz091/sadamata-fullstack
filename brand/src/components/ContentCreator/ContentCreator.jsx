@@ -20,7 +20,7 @@ export default function ContentCreator() {
               No upfront investment. No technical hassle. <br />
 You focus on building your brand. Sadamata handles the rest.
               </p>
-              <Link href='/' className='commerce-btn'>
+              <Link href='/choose-plan' className='commerce-btn'>
                 Enroll Your Brand <i className='icon-right-arrow'></i>
               </Link>
             </div>

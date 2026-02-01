@@ -3,6 +3,7 @@ import VendorRegister from "@/components/VendorRegister/VendorRegister";
 import VendorSignup from "@/components/VendorSignup/VendorSignup";
 import React from "react";
 import { getAllCategories } from "../actions/brandCategoryActions";
+import VendorSignupStep1 from "./_components/VendorSignupStep1";
 
 const VendorSignUpPage = async() => {
 
@@ -12,7 +13,8 @@ const VendorSignUpPage = async() => {
   return (
     <Layout>
       {/* <VendorSignup /> */}
-      <VendorRegister brandCategories={brandCategories}/>
+      {/* <VendorRegister brandCategories={brandCategories}/> */}
+      <VendorSignupStep1/>
     </Layout>
   );
 };

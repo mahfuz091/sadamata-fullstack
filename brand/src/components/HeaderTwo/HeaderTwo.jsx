@@ -85,7 +85,7 @@ const HeaderTwo = ({ session }) => {
                   ) : (
                     <>
                       <Link href='/login' className='commerce-btn login'>
-                        Login
+                        Signin
                       </Link>
                     </>
                   )}

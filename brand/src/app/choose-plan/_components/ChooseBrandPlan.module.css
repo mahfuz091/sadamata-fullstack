@@ -1,0 +1,241 @@
+.page {
+  min-height: 100vh;
+  background: #f6f7fb;
+}
+
+/* Header */
+.headerWrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 16px 18px;
+}
+
+.headerCard {
+    text-align: center;
+  background: #ffffff;
+  border: 1px solid #e6e8ef;
+  border-radius: 22px;
+  padding: 28px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.h1 {
+  margin: 0;
+  font-size: 34px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #0f172a;
+  font-weight: 800;
+}
+
+.subText {
+  margin: 10px 0 0;
+  color: #5b6475;
+  font-size: 14px;
+}
+
+/* radios */
+.radioRow {
+  margin-top: 18px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+.radioLabel {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  cursor: pointer;
+  font-size: 14px;
+  color: #111827;
+  font-weight: 600;
+}
+
+.radioLabel input{
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height:20px;
+  border-radius: 50%;
+  border: none;              /* ✅ no border */
+  outline: none;             /* ✅ no outline */
+border: 1px solid #f97316;
+  cursor: pointer;
+}
+
+.radioLabel input:checked{
+  background: #f97316;       /* ✅ solid orange */
+}
+
+.radioLabel input:focus{
+  outline: none;
+  box-shadow: none;          /* ✅ remove focus ring */
+}
+
+
+/* Content */
+.contentWrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 16px 56px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+@media (min-width: 960px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Card */
+.card {
+  background: #ffffff;
+  border: 1px solid #e6e8ef;
+  border-radius: 22px;
+  padding: 22px;
+  cursor: pointer;
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+  outline: none;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: #d9dde7;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.10);
+}
+
+.cardActive {
+  border-color: #f97316;
+  box-shadow: 0 18px 50px rgba(249, 115, 22, 0.16);
+  position: relative;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.cardSubtitle {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: #5b6475;
+}
+
+.badge {
+  background: rgba(249, 115, 22, 0.12);
+  color: #c2410c;
+  font-weight: 800;
+  font-size: 11px;
+  border-radius: 999px;
+  padding: 7px 10px;
+  white-space: nowrap;
+}
+
+/* Buttons */
+.continueBtn {
+  margin-top: 18px;
+  width: 100%;
+  border: none;
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-weight: 800;
+  font-size: 14px;
+  transition: background 160ms ease, transform 160ms ease, opacity 160ms ease;
+}
+
+.continueBtnActive {
+  background: #f97316;
+  color: #fff;
+}
+
+.continueBtnActive:hover {
+  background: #ea580c;
+  transform: translateY(-1px);
+}
+
+.continueBtnDisabled {
+  background: #eef1f7;
+  color: #98a2b3;
+  cursor: not-allowed;
+}
+
+/* list */
+.list {
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 12px;
+}
+
+.listItem {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  color: #243046;
+}
+
+.checkWrap {
+  margin-top: 2px;
+  color: #16a34a; /* green */
+}
+
+.checkIcon {
+  width: 20px;
+  height: 20px;
+}
+
+.bulletText {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #334155;
+}
+
+/* bottom continue */
+.bottomBar {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.bottomContinue {
+  border: none;
+  border-radius: 14px;
+  padding: 12px 18px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 160ms ease, background 160ms ease, opacity 160ms ease;
+}
+
+.bottomContinueActive {
+  background: #0f172a;
+  color: #fff;
+}
+
+.bottomContinueActive:hover {
+  background: #111827;
+  transform: translateY(-1px);
+}
+
+.bottomContinueDisabled {
+  background: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}

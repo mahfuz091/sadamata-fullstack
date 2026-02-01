@@ -124,7 +124,7 @@ model Brand {
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
   isActive           Boolean             @default(false)
-  brandCategoryId    String
+  brandCategoryId    String?
   defaultBrandPct    Float               @default(10.0)
   defaultMerchantPct Float               @default(10.0)
   accountName        String              @db.VarChar(120)
@@ -145,7 +145,8 @@ model Brand {
   industryType       String
   country            String?
   zipCode            String?
-  brandCategory      BrandCategory       @relation(fields: [brandCategoryId], references: [id])
+  isExclusive        Boolean             @default(false)
+  brandCategory      BrandCategory?       @relation(fields: [brandCategoryId], references: [id])
   user               User                @relation(fields: [userId], references: [id])
   CommissionSetting  CommissionSetting[]
   Payout             Payout[]            @relation("BrandPayouts")

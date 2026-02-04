@@ -209,7 +209,7 @@ model ProductCategory {
   sortOrder Int?      @default(0)
   slug      String?   @unique
   products  Product[] @relation("ProductCategories")
-
+isActive Boolean @default(true)
   @@index([slug])
 }
 

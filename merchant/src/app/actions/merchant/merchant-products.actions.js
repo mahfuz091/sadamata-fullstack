@@ -135,12 +135,25 @@ export async function deleteMerchantProduct(_prev, formData) {
   // 1) Validate product ownership
   const product = await prisma.product.findUnique({
     where: { id: productId },
-    select: { id: true, userId: true },
+    select: { id: true, userId: true, status: true },
   });
 
   if (!product) throw new Error("Product not found");
   if (product.userId !== merchantId)
     throw new Error("Not allowed to delete this product");
+
+
+
+
+
+  // 2) Check if the status is "REJECT", and prevent deletion if so
+  if (product.status === "REJECT") {
+
+    throw new Error("Not allowed to delete a rejected product");
+  }
+
+ 
+  
 
   // 2) Delete product
   await prisma.product.delete({

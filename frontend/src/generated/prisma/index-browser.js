@@ -124,11 +124,11 @@ exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   phone: 'phone',
-  name: 'name',
   password: 'password',
   role: 'role',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  name: 'name',
   isActive: 'isActive',
   profileImage: 'profileImage',
   brandId: 'brandId'
@@ -150,16 +150,16 @@ exports.Prisma.UserProfileScalarFieldEnum = {
 exports.Prisma.UserAddressScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
-  profileImage: 'profileImage',
   firstName: 'firstName',
   lastName: 'lastName',
   phone: 'phone',
   email: 'email',
   address: 'address',
   isDefault: 'isDefault',
-  zipCode: 'zipCode',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  profileImage: 'profileImage',
+  zipCode: 'zipCode'
 };
 
 exports.Prisma.PasswordResetTokenScalarFieldEnum = {
@@ -199,43 +199,45 @@ exports.Prisma.MerchantProfileScalarFieldEnum = {
   accountNumber: 'accountNumber',
   routingNumber: 'routingNumber',
   message: 'message',
-  tiar: 'tiar',
-  leftTiar: 'leftTiar',
-  brandOption: 'brandOption',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  tiar: 'tiar',
+  brandOption: 'brandOption',
+  leftTiar: 'leftTiar',
   zipCode: 'zipCode',
-  country: 'country'
+  country: 'country',
+  dailyLimitPct: 'dailyLimitPct'
 };
 
 exports.Prisma.BrandScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  isActive: 'isActive',
+  userId: 'userId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  isActive: 'isActive',
   brandCategoryId: 'brandCategoryId',
-  userId: 'userId',
   defaultBrandPct: 'defaultBrandPct',
   defaultMerchantPct: 'defaultMerchantPct',
-  dateOfBirth: 'dateOfBirth',
-  contactEmail: 'contactEmail',
-  contactPhone: 'contactPhone',
-  nidOrPassportNo: 'nidOrPassportNo',
-  presentAddress: 'presentAddress',
-  permanentAddress: 'permanentAddress',
-  portfolioUrl: 'portfolioUrl',
-  websiteUrl: 'websiteUrl',
-  bankName: 'bankName',
-  bankBranch: 'bankBranch',
   accountName: 'accountName',
   accountNumber: 'accountNumber',
-  routingNumber: 'routingNumber',
+  bankBranch: 'bankBranch',
+  bankName: 'bankName',
+  contactEmail: 'contactEmail',
+  contactPhone: 'contactPhone',
+  dateOfBirth: 'dateOfBirth',
   message: 'message',
-  industryType: 'industryType',
+  nidOrPassportNo: 'nidOrPassportNo',
+  permanentAddress: 'permanentAddress',
+  portfolioUrl: 'portfolioUrl',
+  presentAddress: 'presentAddress',
+  routingNumber: 'routingNumber',
   socialProfile: 'socialProfile',
+  websiteUrl: 'websiteUrl',
+  industryType: 'industryType',
+  country: 'country',
   zipCode: 'zipCode',
-  country: 'country'
+  isExclusive: 'isExclusive'
 };
 
 exports.Prisma.BrandCategoryScalarFieldEnum = {
@@ -247,37 +249,37 @@ exports.Prisma.BrandCategoryScalarFieldEnum = {
 
 exports.Prisma.ProductScalarFieldEnum = {
   id: 'id',
-  productId: 'productId',
   title: 'title',
   description: 'description',
   price: 'price',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  isActive: 'isActive',
-  status: 'status',
-  brandName: 'brandName',
+  brandCommissionPct: 'brandCommissionPct',
   brandId: 'brandId',
+  brandName: 'brandName',
+  merchantCommissionPct: 'merchantCommissionPct',
   mockupId: 'mockupId',
   userId: 'userId',
+  isActive: 'isActive',
   visibility: 'visibility',
   backDesign: 'backDesign',
   frontDesign: 'frontDesign',
-  brandCommissionPct: 'brandCommissionPct',
-  merchantCommissionPct: 'merchantCommissionPct'
+  productId: 'productId',
+  status: 'status'
 };
 
 exports.Prisma.ProductCategoryScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  slug: 'slug',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  sortOrder: 'sortOrder'
+  sortOrder: 'sortOrder',
+  slug: 'slug',
+  isActive: 'isActive'
 };
 
 exports.Prisma.SaleScalarFieldEnum = {
   id: 'id',
-  orderItemId: 'orderItemId',
   productId: 'productId',
   merchantId: 'merchantId',
   brandId: 'brandId',
@@ -286,7 +288,8 @@ exports.Prisma.SaleScalarFieldEnum = {
   brandEarning: 'brandEarning',
   merchantEarning: 'merchantEarning',
   platformEarning: 'platformEarning',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  orderItemId: 'orderItemId'
 };
 
 exports.Prisma.SaleItemScalarFieldEnum = {
@@ -294,9 +297,9 @@ exports.Prisma.SaleItemScalarFieldEnum = {
   saleId: 'saleId',
   productId: 'productId',
   quantity: 'quantity',
-  unitPrice: 'unitPrice',
+  orderItemId: 'orderItemId',
   total: 'total',
-  orderItemId: 'orderItemId'
+  unitPrice: 'unitPrice'
 };
 
 exports.Prisma.ProductVariantScalarFieldEnum = {
@@ -304,8 +307,8 @@ exports.Prisma.ProductVariantScalarFieldEnum = {
   productId: 'productId',
   color: 'color',
   fitType: 'fitType',
-  frontImg: 'frontImg',
   backImg: 'backImg',
+  frontImg: 'frontImg',
   isActive: 'isActive'
 };
 
@@ -332,28 +335,28 @@ exports.Prisma.MockupVariantScalarFieldEnum = {
   id: 'id',
   mockupId: 'mockupId',
   color: 'color',
-  fitType: 'fitType',
   frontImg: 'frontImg',
   backImg: 'backImg',
+  fitType: 'fitType',
   isVisible: 'isVisible'
 };
 
 exports.Prisma.OrderScalarFieldEnum = {
   id: 'id',
-  userId: 'userId',
-  addressId: 'addressId',
   currency: 'currency',
-  subtotal: 'subtotal',
-  discount: 'discount',
-  tax: 'tax',
-  shippingFee: 'shippingFee',
-  grandTotal: 'grandTotal',
-  couponCode: 'couponCode',
-  couponRate: 'couponRate',
   status: 'status',
   tranId: 'tranId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  addressId: 'addressId',
+  couponCode: 'couponCode',
+  couponRate: 'couponRate',
+  discount: 'discount',
+  grandTotal: 'grandTotal',
+  shippingFee: 'shippingFee',
+  subtotal: 'subtotal',
+  tax: 'tax',
+  userId: 'userId',
   settledAt: 'settledAt',
   cancelledAt: 'cancelledAt'
 };
@@ -392,7 +395,8 @@ exports.Prisma.CommissionSettingScalarFieldEnum = {
   effectiveTo: 'effectiveTo',
   isActive: 'isActive',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  brandSelectedMerchantPct: 'brandSelectedMerchantPct'
 };
 
 exports.Prisma.RefundScalarFieldEnum = {

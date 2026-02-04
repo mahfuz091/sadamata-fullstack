@@ -22,10 +22,10 @@ export default async function Home() {
     getProductsByCategorySlug({ slug: "movies" }),
     getProductsByCategorySlug({ slug: "drama" }), // or "natok"
   ]);
-  console.log(musicProducts, movieProducts, natokProducts, "music Products");
+  // console.log(musicProducts, movieProducts, natokProducts, "music Products");
 
   const session = await auth();
-  console.log(session, "session");
+  // console.log(session, "session");
   return (
     <Layout session={session}>
       <Hero />

@@ -24,6 +24,7 @@ import {
   Tag,
   Modal,
   Input,
+  Switch,
 } from "antd";
 import {
   EditOutlined,
@@ -39,6 +40,7 @@ import {
   updateProductCategory,
   reorderProductCategories,
   createProductCategory,
+  updateProductCategoryActive,
 } from "@/app/actions/productCategory.actions"; // <-- server actions
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -101,6 +103,8 @@ export default function ProductCategoriesTable({ initial = [] }) {
   const [renameValue, setRenameValue] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [renaming, setRenaming] = useState(false);
+  const [togglingId, setTogglingId] = useState(null);
+
   const openRenameDialog = (category) => {
     setSelectedCategory(category);
     setRenameValue(category.name);
@@ -254,6 +258,44 @@ export default function ProductCategoriesTable({ initial = [] }) {
       setLoadingFor(categoryId, false);
     }
   };
+  const handleToggleActive = async (category) => {
+  const nextVal = !category.isActive;
+
+  // optimistic update
+  setCategories((prev) =>
+    prev.map((c) => (c.id === category.id ? { ...c, isActive: nextVal } : c))
+  );
+
+  setTogglingId(category.id);
+
+  try {
+    const res = await updateProductCategoryActive(category.id, nextVal);
+
+    if (!res?.success) {
+      // rollback if failed
+      setCategories((prev) =>
+        prev.map((c) =>
+          c.id === category.id ? { ...c, isActive: !nextVal } : c
+        )
+      );
+      toast.error(res?.message || "Failed to update status");
+      return;
+    }
+
+    toast.success(nextVal ? "Activated" : "Deactivated");
+    router.refresh();
+  } catch (e) {
+    // rollback if error
+    setCategories((prev) =>
+      prev.map((c) =>
+        c.id === category.id ? { ...c, isActive: !nextVal } : c
+      )
+    );
+    toast.error("Something went wrong");
+  } finally {
+    setTogglingId(null);
+  }
+};
   const columns = useMemo(
     () => [
       {
@@ -270,6 +312,20 @@ export default function ProductCategoriesTable({ initial = [] }) {
         key: "createdAt",
         render: (d) => new Date(d).toLocaleDateString("en-GB"),
       },
+      {
+      title: "Status",
+      dataIndex: "isActive",
+      key: "isActive",
+      render: (isActive, record) => (
+         <Switch
+          checked={!!record.isActive}
+          loading={togglingId === record.id}
+          checkedChildren="Active"
+          unCheckedChildren="Inactive"
+          onChange={() => handleToggleActive(record)}
+        />
+      ),
+    },
       {
         title: "Actions",
         key: "actions",

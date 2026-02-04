@@ -83,7 +83,7 @@ const page = async () => {
   };
 }
 
-  console.log(signedFirstItems, "signedFirstItems");
+  // console.log(signedFirstItems, "signedFirstItems");
   
 
   return (

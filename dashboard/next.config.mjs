@@ -3,6 +3,7 @@ import path from "path";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  turbopack: {},
   outputFileTracingRoot: path.resolve(),
   images: {
     remotePatterns: [

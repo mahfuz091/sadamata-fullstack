@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma"; // adjust path
+import { attachPreviewUrl } from "@/lib/attachPreviewUrl.js";
 
 const TAKE_PRODUCTS = 7;
 const TAKE_CATEGORIES = 6;
@@ -90,6 +91,9 @@ export async function GET(req) {
     },
   });
 
+  // Attach S3 URLs to the products
+  const productsWithUrls = await attachPreviewUrl(products);
+
   // ✅ Categories suggestions (based on ProductCategory name)
   const categories = await prisma.productCategory.findMany({
     where: { name: { contains: q, mode: "insensitive" } },
@@ -108,7 +112,7 @@ export async function GET(req) {
 
   const queries = [
     q,
-    ...products.slice(0, 4).map((p) => p.title),
+  ...productsWithUrls.slice(0, 4).map((p) => p.title),
     ...categories.slice(0, 2).map((c) => c.name),
   ]
     .map(norm)
@@ -124,13 +128,9 @@ export async function GET(req) {
       slug: c.name,
     })),
     brands: brands.map((b) => ({ id: b.id, name: b.name, slug: b.name })),
-    products: products.map((p) => {
+    products: productsWithUrls.map((p) => {
       const rawThumb = p.variants?.[0]?.frontImg ?? null;
-      const thumb = rawThumb
-        ? rawThumb.startsWith("http")
-          ? rawThumb
-          : `${BASE}${rawThumb}`
-        : null;
+      const thumb = p.previewUrl;
 
       return {
         id: p.id,

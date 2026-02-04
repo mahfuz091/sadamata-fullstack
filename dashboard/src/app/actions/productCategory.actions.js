@@ -195,3 +195,19 @@ export async function reorderProductCategories(orderedIds = []) {
     return { success: false, message: "Failed to reorder categories" };
   }
 }
+
+export async function updateProductCategoryActive(id, isActive) {
+  try {
+    const updated = await prisma.productCategory.update({
+      where: { id },
+      data: { isActive: Boolean(isActive) },
+      select: { id: true, isActive: true },
+    });
+
+    revalidatePath("/dashboard/product-categories");
+    return { success: true, data: updated };
+  } catch (error) {
+    console.error("updateProductCategoryActive error:", error);
+    return { success: false, message: "Failed to update category status" };
+  }
+}

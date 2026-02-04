@@ -67,6 +67,9 @@ export default function SearchBar({ options = [] }) {
     categories: [],
   });
 
+  console.log(sug, "sug");
+  
+
   const [openSug, setOpenSug] = useState(false);
   const [loadingSug, setLoadingSug] = useState(false);
 

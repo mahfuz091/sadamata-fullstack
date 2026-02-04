@@ -65,7 +65,7 @@ const FeatureProduct = () => {
   const [isPending, startTransition] = useTransition();
   const [favorites, setFavorites] = useState([]);
   const pageSize = 32;
-  console.log(products, "features");
+  // console.log(products, "features");
 
   const paginationRange = getPaginationRange(totalPages, page, 1);
 

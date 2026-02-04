@@ -146,7 +146,7 @@ model Brand {
   country            String?
   zipCode            String?
   isExclusive        Boolean             @default(false)
-  brandCategory      BrandCategory?       @relation(fields: [brandCategoryId], references: [id])
+  brandCategory      BrandCategory?      @relation(fields: [brandCategoryId], references: [id])
   user               User                @relation(fields: [userId], references: [id])
   CommissionSetting  CommissionSetting[]
   Payout             Payout[]            @relation("BrandPayouts")
@@ -206,6 +206,7 @@ model ProductCategory {
   updatedAt DateTime  @updatedAt
   sortOrder Int?      @default(0)
   slug      String?   @unique
+  isActive  Boolean   @default(true)
   products  Product[] @relation("ProductCategories")
 
   @@index([slug])

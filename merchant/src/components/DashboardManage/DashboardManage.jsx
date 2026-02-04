@@ -131,6 +131,7 @@ const fetchPage = (nextPage, nextSize = pageSize) => {
     startDeleteTransition(async () => {
       try {
         const res = await deleteMerchantProduct(undefined, formData);
+console.log(res, "delete product res");
 
         if (res?.success) {
           // Remove item instantly from UI
@@ -183,7 +184,7 @@ const fetchPage = (nextPage, nextSize = pageSize) => {
 
 
 
-  console.log(filteredItems, "filter");
+  // console.log(filteredItems, "filter");
 
   return (
     <section className='dashboard-area section-space'>
@@ -287,10 +288,10 @@ const fetchPage = (nextPage, nextSize = pageSize) => {
                     </thead>
                     <tbody>
                       {filteredItems.map((product, index) => (
-                        <tr key={product.id}>
+                        <tr key={product.id} >
                           <td>{index + 1}</td>
                           <td>
-                            <div className='d-flex align-items-center'>
+                            <div className='d-flex align-items-center' style={{ color: product.status === "REJECT" ? "red" : "" }}>
                               <img
                                 // src={product.previewImg}
                                 // src={`${process.env.NEXT_PUBLIC_BASE_URL}/${product.previewImg}`}
@@ -312,19 +313,19 @@ const fetchPage = (nextPage, nextSize = pageSize) => {
                               )}
                             </div>
                           </td>
-                          <td>
+                          <td style={{ color: product.status === "REJECT" ? "red" : "" }}>
                             {product.brandName !== null
                               ? product.brandName
                               : product?.brand?.name}
                           </td>
-                          <td>{product.mockupName}</td>
-                          <td>
+                          <td style={{ color: product.status === "REJECT" ? "red" : "" }}>{product.mockupName}</td>
+                          <td style={{ color: product.status === "REJECT" ? "red" : "" }}>
                             {new Date(product.updatedAt).toLocaleDateString(
                               "en-GB"
                             )}
                           </td>
-                          <td>{product.price}</td>
-                          <td>{product?.status}</td>
+                          <td style={{ color: product.status === "REJECT" ? "red" : "" }}>{product.price}</td>
+                          <td style={{ color: product.status === "REJECT" ? "red" : "" }}>{product?.status}</td>
                           <td>
                             <button className='action-buttons'>
                               {/* You can replace with a component or an icon library */}

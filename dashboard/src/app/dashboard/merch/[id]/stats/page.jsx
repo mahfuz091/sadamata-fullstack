@@ -6,7 +6,8 @@ export const metadata = {
 };
 
 export default async function MerchantStatsPage({ params }) {
-  const userId = params.id;
+  const { id } = await params;
+  const userId = id
 
   // 1️⃣ Ensure merchant exists
   const merchant = await prisma.user.findUnique({

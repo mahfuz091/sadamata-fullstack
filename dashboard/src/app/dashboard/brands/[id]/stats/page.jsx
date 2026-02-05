@@ -2,10 +2,13 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 
 export default async function BrandStatsByUser({ params }) {
+  const { id }  = await params
+  console.log(id, "brandid");
+  
   // 1️⃣ Resolve brand from userId
   const brand = await prisma.brand.findUnique({
     where: {
-      userId: params.id, // ✅ KEY FIX
+      userId: id, // ✅ KEY FIX
     },
     select: {
       id: true,

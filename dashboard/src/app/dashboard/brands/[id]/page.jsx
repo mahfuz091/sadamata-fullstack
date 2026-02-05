@@ -8,8 +8,9 @@ export const metadata = {
 };
 
 export default async function BrandDetailsPage({ params }) {
+  const {id} = await params
   const brand = await prisma.user.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       products: {
         select: { id: true },
@@ -22,7 +23,7 @@ export default async function BrandDetailsPage({ params }) {
     },
   });
 
-  console.log(brand, "BB");
+  // console.log(brand, "BB");
 
   const brandCommission = await prisma.commissionSetting.findFirst({
     where: {

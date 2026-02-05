@@ -7,8 +7,9 @@ export const metadata = {
 };
 
 export default async function MerchantDetailsPage({ params }) {
+  const {id} = await params;
   const user = await prisma.user.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       merchantProfile: true,
     },

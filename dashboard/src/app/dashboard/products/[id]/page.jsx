@@ -35,8 +35,9 @@ const imgSrc = (path) => {
 };
 
 export default async function ProductDetailsPage({ params }) {
+  const {id} = await params
   const product = await prisma.product.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       User: true,
       Brand: true,

@@ -14,7 +14,7 @@ async function getBooking(id) {
 }
 
 export default async function BookingDetailPage({ params }) {
-  const { id } = params;
+  const { id } = await params;
   const booking = await getBooking(id);
 
   if (!booking) {

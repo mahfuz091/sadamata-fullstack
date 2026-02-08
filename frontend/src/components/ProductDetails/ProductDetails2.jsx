@@ -907,11 +907,7 @@ export default function ProductDetails2({ product }) {
 
                     </li>
                     <li>
-                      <span>Fabric type :</span> Solid colors: 100% Cotton;
-                      Heather Grey: 90% Cotton, 10% Polyester; Dark Heather and
-                      Heather Blue: 50% Cotton, 50% Polyester; OR Dark Heather,
-                      Heather Blue and All Other Heathers: 65% Polyester, 35%
-                      Cotton; Girls' Heathers: 60% Cotton, 40% Polyester
+                      <span>Fabric type :</span> Solid colors: 100% Cotton; Heather Grey: 90% Cotton, 10% Polyester; Dark Heather and Heather Blue: 50% Cotton, 50% Polyester; OR Dark Heather, Heather Blue and All Other Heathers: 65% Polyester, 35% Cotton; Girls' Heathers: 60% Cotton, 40% Polyester
                     </li>
                     <li>
                       <span>Care instructions :</span> Machine Wash

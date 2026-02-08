@@ -176,7 +176,7 @@ export default function ProductsTable({
       title: "Actions",
       render: (_, r) => (
         <Space>
-          <Link href={`/dashboard/products/${r.id}`}>
+          <Link href={`/dashboard/products/${r.id}`} target="_blank">
             <Button>Details</Button>
           </Link>
           <Button

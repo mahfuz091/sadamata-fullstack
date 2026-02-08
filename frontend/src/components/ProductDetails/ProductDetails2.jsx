@@ -906,15 +906,8 @@ export default function ProductDetails2({ product }) {
                       <span>Package Dimensions :</span> 10 x 8 x 2 inches
 
                     </li>
-                    <li>
-                      <span>Fabric type :</span> Solid colors: 100% Cotton; Heather Grey: 90% Cotton, 10% Polyester; Dark Heather and Heather Blue: 50% Cotton, 50% Polyester; OR Dark Heather, Heather Blue and All Other Heathers: 65% Polyester, 35% Cotton; Girls' Heathers: 60% Cotton, 40% Polyester
-                    </li>
-                    <li>
-                      <span>Care instructions :</span> Machine Wash
-                    </li>
-                    <li>
-                      <span>Closure type :</span>Pull On
-                    </li>
+                    
+                 
                     <li>
                       <span>Date First Available :</span>{" "}
                       {product?.updatedAt
@@ -934,9 +927,7 @@ export default function ProductDetails2({ product }) {
                      <li>
                       <span>Sales Rank (Sadamata) : </span>
                     </li>
-                    <li>
-                      <span>Manufacturer :</span> Sadamata
-                    </li>
+                   
                     <li>
                       <span>Customer Reviews :</span> 
                     </li>

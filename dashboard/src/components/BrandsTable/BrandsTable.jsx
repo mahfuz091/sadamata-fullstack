@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import {
   updateUserIsActive,
   deleteUser,
+  updateUserIsActiveAlsoBrand,
 } from "@/app/actions/user/user.actions";
 import Link from "next/link";
 
@@ -25,7 +26,7 @@ export default function BrandsTable({ initial = [] }) {
   const handleStatusChange = async (userId, isActive) => {
     setLoadingFor(userId, true);
     try {
-      const res = await updateUserIsActive(null, { userId, isActive });
+      const res = await updateUserIsActiveAlsoBrand(null, { userId, isActive });
 
       if (!res?.success) {
         message.error(res?.msg || "Failed to update account status");

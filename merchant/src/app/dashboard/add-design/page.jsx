@@ -43,6 +43,9 @@ const page = async () => {
     },
   });
 
+  console.log("brands", brands);
+  
+
   return (
     <AddDesignFitAdmin
       allMockup={allMockup}

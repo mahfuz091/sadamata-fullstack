@@ -611,6 +611,68 @@ export const updateUserIsActive = async (_prevState, { userId, isActive }) => {
   }
 };
 
+
+export const updateUserIsActiveAlsoBrand = async (_prevState, { userId, isActive }) => {
+  try {
+    if (!userId || typeof isActive !== "boolean") {
+      return { success: false, msg: "User ID and isActive(boolean) are required" };
+    }
+
+    // authorize: only ADMIN or SUPERADMIN (তোমার auth অনুযায়ী role string match করো)
+    const session = await auth();
+    if (!session?.user) return { success: false, msg: "Unauthorized" };
+
+    const callerRole = session.user.role;
+    if (!["ADMIN", "SUPERADMIN"].includes(callerRole)) {
+      return { success: false, msg: "Forbidden: admin only" };
+    }
+
+    const result = await prisma.$transaction(async (tx) => {
+      // ensure target user exists
+      const existingUser = await tx.user.findUnique({
+        where: { id: userId },
+        select: { id: true, isActive: true, role: true },
+      });
+
+      if (!existingUser) {
+        return { ok: false, msg: "User not found" };
+      }
+
+      // 1) update user.isActive
+      const updatedUser = await tx.user.update({
+        where: { id: userId },
+        data: { isActive },
+        select: { id: true, name: true, email: true, isActive: true },
+      });
+
+      // 2) sync brand.isActive (brand না থাকলেও যেন error না হয়)
+      const brandUpdate = await tx.brand.updateMany({
+        where: { userId }, // Brand.userId unique, তাই সাধারণত 0 বা 1 হবে
+        data: { isActive },
+      });
+
+      return {
+        ok: true,
+        updatedUser,
+        brandUpdatedCount: brandUpdate.count, // 0 মানে brand নেই, 1 মানে আপডেট হয়েছে
+      };
+    });
+
+    if (!result.ok) return { success: false, msg: result.msg };
+
+    return {
+      success: true,
+      msg: `User ${isActive ? "activated" : "deactivated"} and brand sync done`,
+      user: result.updatedUser,
+      brandUpdatedCount: result.brandUpdatedCount,
+    };
+  } catch (err) {
+    console.error("updateUserIsActiveAlsoBrand error:", err);
+    return { success: false, msg: "Something went wrong" };
+  }
+};
+
+
 /** ---------- Update Merchant Tier & Brand Option (ADMIN) ---------- */
 export const updateMerchantAdminSettings = async (
   _prevState,

@@ -1,6 +1,6 @@
+
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import "@ant-design/v5-patch-for-react-19";
 import { BlogProvider } from "@/context/BlogContext";
 import { Toaster } from "sonner";
 const geistSans = Geist({
@@ -9,6 +9,7 @@ const geistSans = Geist({
 });
 import "antd/dist/reset.css";
 import { PressProvider } from "@/context/PressContext";
+import Providers from './providers';
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
@@ -30,7 +31,7 @@ export default function RootLayout({ children }) {
       >
         <BlogProvider>
           <PressProvider>
-            {children}
+            <Providers>{children}</Providers>
             <Toaster richColors position='top-center' />
           </PressProvider>
         </BlogProvider>

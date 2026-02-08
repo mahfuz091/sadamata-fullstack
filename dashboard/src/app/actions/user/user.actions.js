@@ -646,7 +646,7 @@ export const updateUserIsActiveAlsoBrand = async (_prevState, { userId, isActive
       });
 
       // 2) sync brand.isActive (brand না থাকলেও যেন error না হয়)
-      const brandUpdate = await tx.brand.updateMany({
+      const brandUpdate = await tx.brand.update({
         where: { userId }, // Brand.userId unique, তাই সাধারণত 0 বা 1 হবে
         data: { isActive },
       });

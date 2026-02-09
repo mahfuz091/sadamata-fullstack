@@ -362,6 +362,30 @@ ul.populer-feature__list.list-unstyled li i {
     transform: rotate(360deg);
   }
 }
+.footer-cta__inner{
+  justify-content: center;
+}
+.footer-cta__content{
+  text-align: center;
+}
+.footer-cta__content a.commerce-btn{
+  text-transform: capitalize;
+  padding: 14px 100px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+.footer-cta__content p{
+  color: #fff;
+  font-size: 18px;
+}
+.footer-cta__content p a{
+  color: #4273f1;
+  text-decoration: underline;
+}
+.footer-cta__content p a:hover{
+  color: #1350e8;
+  text-decoration: underline;
+}
 /* ======= End Preloader style ======= */
 :where(.css-dev-only-do-not-override-ac2jek).ant-space-gap-col-small {
   column-gap: 15px !important;

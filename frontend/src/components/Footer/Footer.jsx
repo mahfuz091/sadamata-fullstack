@@ -5,6 +5,7 @@ import Image from "next/image";
 import React from "react";
 import payment from "@/assets/images/shapes/payment.png";
 import logo from "@/assets/images/logo-sadamata.svg";
+import Link from "next/link";
 
 const Footer = () => {
   return (
@@ -14,14 +15,15 @@ const Footer = () => {
           <div className='footer-cta__inner'>
             <div className='footer-cta__content'>
               <h3 className='footer-cta__title'>
-                Sign up to recieve br <span>15% off</span> <br /> of your first
-                order!
+                Get recommendation just for you
               </h3>
-              <p className='footer-cta__text'>
+              <Link href='/login' className="commerce-btn text-white"> Sign in</Link>
+              <p>New Here? <Link href="/sign-up">Create Account</Link></p>
+              {/* <p className='footer-cta__text'>
                 Join our email list for exclusive offers and the latest news.
-              </p>
+              </p> */}
             </div>
-            <div className='footer-cta__form'>
+            {/* <div className='footer-cta__form'>
               <form
                 action='#'
                 data-url='MAILCHIMP_FORM_URL'
@@ -38,12 +40,12 @@ const Footer = () => {
                     Subscribe
                   </button>
                 </div>
-                {/* /.form-group */}
+              
               </form>
-              {/* /.footer-cta__form__newsletter mc-form */}
+            
               <div className='mc-form__response'></div>
-              {/* /.mc-form__response */}
-            </div>
+             
+            </div> */}
           </div>
         </div>
         {/* <div className='footer-cta__scroll-top'>

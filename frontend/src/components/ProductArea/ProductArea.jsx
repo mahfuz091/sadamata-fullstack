@@ -572,7 +572,7 @@ const ProductArea = ({ result: initialResult, slug, q, brands, mockups }) => {
                                 </div>
                               </div>
 
-                              <button
+                              {/* <button
                                 className='commerce-btn product__item__link mt-2'
                                 onClick={() => {
                                   setSelectedProduct({
@@ -583,7 +583,13 @@ const ProductArea = ({ result: initialResult, slug, q, brands, mockups }) => {
                                 }}
                               >
                                 Add to Cart <i className='icon-right-arrow'></i>
-                              </button>
+                              </button> */}
+                              <Link
+                      href={`/products/${item.productId}`}
+                      className='commerce-btn product__item__link mt-auto align-self-start'
+                    >
+                      View Product <i className='icon-right-arrow' />
+                    </Link>
                             </div>
                           </div>
                         </Col>

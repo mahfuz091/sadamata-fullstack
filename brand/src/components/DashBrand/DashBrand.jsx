@@ -1,3 +1,6 @@
+// ✅ CLIENT component: শুধু img render enable করো (S3 signed previewUrl)
+// ⚠️ markup/className unchanged
+
 "use client";
 
 import { useMemo, useState } from "react";
@@ -5,8 +8,8 @@ import Image from "next/image";
 import DashSidebar from "../DashSidebar/DashSidebar";
 import bgImage from "@/assets/images/backgrounds/admin-bg-home.jpg";
 import userImage from "@/assets/images/resources/user-1-1.png";
-const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE_URL ;
-export default function DashBrand({ data = [] , brandName, profileImageUrl}) {
+
+export default function DashBrand({ data = [], brandName, profileImageUrl }) {
   const [activeIdx, setActiveIdx] = useState(0);
   const activeMockup = useMemo(() => data[activeIdx], [data, activeIdx]);
 
@@ -33,29 +36,35 @@ export default function DashBrand({ data = [] , brandName, profileImageUrl}) {
                   <div className="brand-profile-top__profile">
                     <div className="brand-profile-top__left">
                       <div className="brand-profile-top__image">
-                        <Image src={profileImageUrl} alt="user image" width={200} height={200} />
+                        <Image
+                          src={profileImageUrl || userImage}
+                          alt="user image"
+                          width={200}
+                          height={200}
+                        />
                       </div>
                       <div className="brand-profile-top__content">
                         <h4 className="brand-profile-top__name">{brandName}</h4>
-
-                         <span className='brand-profile-top__followers'>
+                        <span className="brand-profile-top__followers">
                           5.8K Followers
                         </span>
                       </div>
                     </div>
-                    <div className='brand-profile-top__right'>
-                      <div className='brand-profile-top__btn'>
-                        <a href='#' className='commerce-btn'>
-                          <i className='icon-edit-2'></i> Edit Profile
+                    <div className="brand-profile-top__right">
+                      <div className="brand-profile-top__btn">
+                        <a href="#" className="commerce-btn">
+                          <i className="icon-edit-2"></i> Edit Profile
                         </a>
                       </div>
                     </div>
                   </div>
 
-                  {/* Tabs: all mockup names */}
                   <ul className="brand-profile-top__list list-unstyled">
                     {data.map((m, idx) => (
-                      <li key={m.id} className={idx === activeIdx ? "active" : ""}>
+                      <li
+                        key={m.id}
+                        className={idx === activeIdx ? "active" : ""}
+                      >
                         <a
                           href="#"
                           onClick={(e) => {
@@ -72,19 +81,32 @@ export default function DashBrand({ data = [] , brandName, profileImageUrl}) {
                 </div>
               </div>
 
-              {/* Products for the active mockup */}
               <div className="brand-item-area">
                 <div className="row gutter-x-51 gutter-y-20">
                   {activeMockup?.products?.length ? (
                     activeMockup.products.map((item) => {
-                      const img = item?.variant?.frontImg || "/placeholder-300x300.png";
+                      const imgSrc =
+                        item?.previewUrl || "/placeholder-300x300.png";
+
                       return (
-                        <div key={item.id} className="col-lg-4 col-md-6 col-sm-6">
+                        <div
+                          key={item.id}
+                          className="col-lg-4 col-md-6 col-sm-6"
+                        >
                           <div className="brand-item">
                             <div className="brand-item__img">
-                              <a href={`/products/${item.id}`} className="brand-item__img__item">
-                                {/* <Image  src={`${ASSET_BASE}${img}`} alt={item.title} width={300} height={300} /> */}
+                              <a
+                                href={`/products/${item.id}`}
+                                className="brand-item__img__item"
+                              >
+                                <Image
+                                  src={imgSrc}
+                                  alt={item.title}
+                                  width={300}
+                                  height={300}
+                                />
                               </a>
+
                               <div className="brand-item__dropdown">
                                 <a
                                   className="dropdown-toggle"
@@ -97,12 +119,18 @@ export default function DashBrand({ data = [] , brandName, profileImageUrl}) {
                                 </a>
                                 <ul className="dropdown-menu">
                                   <li>
-                                    <a className="dropdown-item" href={`/dashboard/products/${item.id}/edit`}>
+                                    <a
+                                      className="dropdown-item"
+                                      href={`/dashboard/products/${item.id}/edit`}
+                                    >
                                       Edit
                                     </a>
                                   </li>
                                   <li>
-                                    <a className="dropdown-item" href={`/dashboard/products/${item.id}/delete`}>
+                                    <a
+                                      className="dropdown-item"
+                                      href={`/dashboard/products/${item.id}/delete`}
+                                    >
                                       Delete
                                     </a>
                                   </li>
@@ -113,13 +141,19 @@ export default function DashBrand({ data = [] , brandName, profileImageUrl}) {
                             <div className="brand-item__content">
                               <p className="brand-item__brand">
                                 Brand:{" "}
-                                <a href={item.brand?.id ? `/brands/${item.brand.id}` : "#"}>
+                                <a
+                                  href={
+                                    item.brand?.id ? `/brands/${item.brand.id}` : "#"
+                                  }
+                                >
                                   {item.brand?.name || item.brandName || "—"}
                                 </a>
                               </p>
+
                               <h4 className="brand-item__title">
                                 <a href={`/products/${item.id}`}>{item.title}</a>
                               </h4>
+
                               <div className="brand-item__box">
                                 <div className="brand-item__price">
                                   ${Number(item.price).toFixed(2)}

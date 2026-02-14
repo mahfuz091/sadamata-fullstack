@@ -8,12 +8,13 @@ import {
 } from "@/app/actions/auth/userAddressActions";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import ProfileImageUploader from "./ProfileImageUploader";
 
-const Profile = ({ user, countries }) => {
+const Profile = ({ user, countries, profileImageUrl }) => {
   const [editMode, setEditMode] = useState(false);
   const [phoneValue, setPhoneValue] = useState(user?.brand?.contactPhone || "");
   const [country, setCountry] = useState(null);
-  console.log(user, "profile");
+  console.log(user, "profile");                                              
 
   useEffect(() => {
     if (user?.brand?.country) {
@@ -23,10 +24,13 @@ const Profile = ({ user, countries }) => {
       setCountry(matched);
     }
   }, [user, countries]);
-  const [file, setFile] = useState(null);
-  const [preview, setPreview] = useState(
-    user?.profileImage || "/assets/images/resources/avater.png"
+
+    const [preview, setPreview] = useState(
+    profileImageUrl || "/assets/images/resources/avater.png"
   );
+  useEffect(() => {
+    if (profileImageUrl) setPreview(profileImageUrl);
+  }, [profileImageUrl]);
   const [formData, setFormData] = useState({
     name: user.name || "",
     email: user.email || user.addresses?.[0]?.email || "",
@@ -53,26 +57,7 @@ const Profile = ({ user, countries }) => {
     return `${d.getFullYear()}-${month}-${day}`;
   }
 
-  const handleFileChange = async (e) => {
-    const selectedFile = e.target.files[0];
-    if (!selectedFile) return;
-
-    setPreview(URL.createObjectURL(selectedFile));
-    setFile(selectedFile);
-
-    try {
-      const updated = await updateUserAddressProfileImageFile(
-        user.id,
-        selectedFile
-      );
-      setPreview(updated.profileImage);
-      router.refresh();
-      toast.success("Profile image updated!");
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to upload image");
-    }
-  };
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -123,7 +108,7 @@ const Profile = ({ user, countries }) => {
         <div className='user-profile__form'>
           <form className='user-form' onSubmit={(e) => e.preventDefault()}>
             <aside className='user-profile__info'>
-              <div className='user-profile__info__avater'>
+              {/* <div className='user-profile__info__avater'>
                 <div className='avatar-container'>
                   <img src={preview} alt='Profile Avatar' className='avatar' />
                   <div className='verified-badge'>
@@ -165,10 +150,11 @@ const Profile = ({ user, countries }) => {
                   <h1 className='profile-name'>{user?.name}</h1>
                   <p className='profile-username d-none'>@sobuz8464</p>
                 </div>
-              </div>
+              </div> */}
+                <ProfileImageUploader userId={user.id} initialUrl={preview} />
               <ul className='user-profile__info__menu list-unstyled'>
                 <Link href='/dashboard/profile/'>
-                  <li className='user-profile__info__menu__item'>
+                  <li className='user-profile__info__menu__item active'>
                     User Profile information
                   </li>
                 </Link>
@@ -184,9 +170,11 @@ const Profile = ({ user, countries }) => {
                   </li>
                 </Link>
 
-                <li className='user-profile__info__menu__item mt-3'>
-                  Delete your account
-                </li>
+                <Link href='/dashboard'>
+                  <li className='user-profile__info__menu__item mt-3'>
+                    Back To Dashboard
+                  </li>
+                </Link>
               </ul>
             </aside>
 
@@ -272,11 +260,21 @@ const Profile = ({ user, countries }) => {
                 <div className='user-profile__group__item'>
                   <label htmlFor='country'>Country</label>
 
-                  <CountrySelect
-                    value={country}
-                    onChange={setCountry}
-                    placeHolder='Select Country'
-                  />
+                 {editMode ? (
+                    <CountrySelect
+                      value={country}
+                      onChange={setCountry}
+                      placeHolder='Select Country'
+                    />
+                  ) : (
+                    <input
+                      type='text'
+                      name='country'
+                      id='country'
+                      value={user?.brand?.country}
+                      readOnly={!editMode}
+                    />
+                  )}
                 </div>
 
                 <div className='user-profile__group__item'>

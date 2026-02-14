@@ -42,6 +42,7 @@ export async function getBrandProductSalesSummaryByUser({
   dateFrom,
   dateTo,
   merchantId,       // optional owner filter: Product.userId
+  searchTerm, 
 } = {}) {
   noStore();
   if (!userId) throw new Error("userId is required");
@@ -97,12 +98,20 @@ export async function getBrandProductSalesSummaryByUser({
   }
 
   // 2) প্রোডাক্ট পেজিনেশন (brandIds + optional merchantId filter)
-  const take = Math.min(100, Math.max(1, pageSize));
+ const take = Math.min(100, Math.max(1, pageSize));
   const skip = (Math.max(1, page) - 1) * take;
 
   const productWhere = {
     brandId: { in: brandIds },
-    ...(merchantId ? { userId: merchantId } : {}), // owner filter (optional)
+    ...(merchantId ? { userId: merchantId } : {}),
+    ...(searchTerm
+      ? {
+          title: {
+            contains: searchTerm,
+            mode: "insensitive",
+          },
+        }
+      : {}),
   };
 
   const [total, products] = await prisma.$transaction([

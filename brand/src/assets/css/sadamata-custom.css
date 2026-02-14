@@ -536,3 +536,41 @@ button.profileImageButton {
   margin-bottom: 6px;
    font-size: 18px;
 }
+
+.user-profile__info__menu li:hover {
+  background-color: var(--commerce-base);
+  border: 1px solid var(--commerce-base);
+  color: var(--commerce-white);
+}
+.user-profile__info__menu li.active {
+  background-color: var(--commerce-base);
+  border: 1px solid var(--commerce-base);
+  color: var(--commerce-white);
+}
+
+
+.pagination-btn {
+    cursor: pointer;
+    background: #fff;
+    border: 1px solid #d7e1ff;
+    border-radius: 6px;
+    padding: 6px 12px
+}
+
+.pagination-btn.active {
+    color: #2d5bff;
+    border-color: #2d5bff;
+    font-weight: 600
+}
+
+.pagination-btn:disabled {
+    opacity: .5;
+    cursor: not-allowed
+}
+
+.per-page-select {
+    background: #fff;
+    border: 1px solid #d7e1ff;
+    border-radius: 6px;
+    padding: 6px 10px
+}

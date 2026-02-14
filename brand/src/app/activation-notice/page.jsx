@@ -23,7 +23,7 @@ export default function ActivationNotice() {
             </p>
 
             <div style={{ marginTop: "20px" }}>
-              <Link href='/login' className='commerce-btn text-white'>
+              <Link href='/signin' className='commerce-btn text-white'>
                 Go to Sign in
               </Link>
             </div>

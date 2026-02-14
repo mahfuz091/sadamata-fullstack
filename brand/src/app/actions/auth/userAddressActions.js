@@ -3,6 +3,42 @@ import { prisma } from "@/lib/prisma";
 import fs from "fs";
 import path from "path";
 import bcrypt from "bcryptjs";
+import { saveProfileImageS3 } from "@/lib/s3helper";
+import { deleteFromS3, getPrivateUrl } from "@/lib/s3";
+
+
+export async function updateUserProfileImageS3(userId, file) {
+  if (!userId) throw new Error("userId is required");
+  if (!file) throw new Error("No file provided");
+
+  // 1) previous key বের করো
+  const prev = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { profileImage: true },
+  });
+
+  // 2) নতুন upload
+  const newKey = await saveProfileImageS3(file, userId);
+  if (!newKey) throw new Error("Upload failed");
+
+  // 3) DB update
+  const updated = await prisma.user.update({
+    where: { id: userId },
+    data: { profileImage: newKey, updatedAt: new Date() },
+    select: { id: true, profileImage: true },
+  });
+
+  // 4) old delete (শুধু যদি old key থাকে এবং newKey থেকে আলাদা হয়)
+  if (prev?.profileImage && prev.profileImage !== newKey) {
+    await deleteFromS3(prev.profileImage);
+  }
+
+  // 5) UI এর জন্য signed url
+  // const profileImageUrl = await getSignedS3Url(updated.profileImage);
+  const profileImageUrl = await getPrivateUrl(updated.profileImage);
+
+  return { ...updated, profileImageUrl };
+}
 
 export async function updateUserAddressProfileImageFile(id, file) {
   if (!file) throw new Error("No file provided");

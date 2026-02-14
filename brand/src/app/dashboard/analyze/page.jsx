@@ -1,46 +1,72 @@
+// ✅ SERVER page (Brand Analyze) — now supports: page/pageSize + dateFrom/dateTo + searchTerm
 import { getBrandId } from "@/app/actions/brand/getBrandId.actions";
 import { getBrandProductSalesSummaryByUser } from "@/app/actions/brand/sales-summery.actions";
 import { auth } from "@/auth";
 import Analyze from "@/components/Analyze/Analyze";
-import Layout from "@/components/Layout/Layout";
-import { prisma } from "@/lib/prisma";
 import { getBrandFinancialSummary } from "@/utils/financeSummary";
-import React from "react";
+import { getPrivateUrl } from "@/lib/s3";
 
-const page = async() => {
-     const session = await auth();
-  const userId = session?.user?.id;
-  const brandId = await getBrandId(userId)
-   const summery = await getBrandFinancialSummary(brandId);
-  console.log(summery);
- 
+const SIGN_EXPIRES = 60 * 60;
 
-  console.log(brandId, "brandId");
-  
-  const allRes = await getBrandProductSalesSummaryByUser({
-  userId: userId,
-  page: 1,
-  pageSize: 12,
-  
-});
-console.log(allRes, "res");
-
-async function loadMoreAction(prevState, formData) {
-"use server";
-const nextPage = Number(formData.get("nextPage"));
-const res = await getBrandProductSalesSummaryByUser({ userId, page: nextPage, pageSize: 12 });
-return res; // will be returned to client component
+async function attachPreviewUrl(items) {
+  return Promise.all(
+    items.map(async (item) => ({
+      ...item,
+      previewUrl: item.previewImg ? await getPrivateUrl(item.previewImg, SIGN_EXPIRES) : null,
+    }))
+  );
 }
 
+const page = async () => {
+  const session = await auth();
+  const userId = session?.user?.id;
+
+  if (!userId) return <div className="container py-5">Please sign in.</div>;
+
+  const brandId = await getBrandId(userId);
+  const summery = await getBrandFinancialSummary(brandId);
+
+  // initial fetch (no filters)
+  const firstPage = await getBrandProductSalesSummaryByUser({
+    userId,
+    page: 1,
+    pageSize: 12,
+  });
+
+  const signedFirstItems = await attachPreviewUrl(firstPage.items);
+
+  async function loadPageAction(prevState, formData) {
+    "use server";
+
+    const page = Number(formData.get("page") || 1);
+    const pageSize = Number(formData.get("pageSize") || 12);
+
+    // ✅ optional filters
+    const dateFrom = formData.get("dateFrom") || undefined; // "YYYY-MM-DD"
+    const dateTo = formData.get("dateTo") || undefined;     // "YYYY-MM-DD"
+    const searchTerm = (formData.get("searchTerm") || "").toString().trim();
+
+    const res = await getBrandProductSalesSummaryByUser({
+      userId,
+      page,
+      pageSize,
+      dateFrom,
+      dateTo,
+      searchTerm, // ✅ we’ll add support in the action below
+    });
+
+    const signed = await attachPreviewUrl(res.items);
+    return { ...res, items: signed };
+  }
 
   return (
-   
-      <Analyze initialItems={allRes.items}
-totalPages={allRes.totalPages}
-initialPage={allRes.page}
-loadMoreAction={loadMoreAction} summery={summery} />
-
-  
+    <Analyze
+      initialItems={signedFirstItems}
+      totalPages={firstPage.totalPages}
+      initialPage={firstPage.page}
+      loadMoreAction={loadPageAction}
+      summery={summery}
+    />
   );
 };
 

@@ -12,7 +12,7 @@ export default function AboutCta() {
             Sign up with your existing Amazon account to get started. New to
             Amazon? Create an account during the sign up process.
           </p>
-          <Link href='/login' className='commerce-btn'>
+          <Link href='/signup' className='commerce-btn'>
             Sign Up <i className='icon-right-arrow'></i>
           </Link>
         </div>

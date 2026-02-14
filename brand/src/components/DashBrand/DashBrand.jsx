@@ -6,7 +6,7 @@ import DashSidebar from "../DashSidebar/DashSidebar";
 import bgImage from "@/assets/images/backgrounds/admin-bg-home.jpg";
 import userImage from "@/assets/images/resources/user-1-1.png";
 const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE_URL ;
-export default function DashBrand({ data = [] , brandName}) {
+export default function DashBrand({ data = [] , brandName, profileImageUrl}) {
   const [activeIdx, setActiveIdx] = useState(0);
   const activeMockup = useMemo(() => data[activeIdx], [data, activeIdx]);
 
@@ -33,7 +33,7 @@ export default function DashBrand({ data = [] , brandName}) {
                   <div className="brand-profile-top__profile">
                     <div className="brand-profile-top__left">
                       <div className="brand-profile-top__image">
-                        <Image src={userImage} alt="user image" />
+                        <Image src={profileImageUrl} alt="user image" width={200} height={200} />
                       </div>
                       <div className="brand-profile-top__content">
                         <h4 className="brand-profile-top__name">{brandName}</h4>
@@ -83,7 +83,7 @@ export default function DashBrand({ data = [] , brandName}) {
                           <div className="brand-item">
                             <div className="brand-item__img">
                               <a href={`/products/${item.id}`} className="brand-item__img__item">
-                                <Image  src={`${ASSET_BASE}${img}`} alt={item.title} width={300} height={300} />
+                                {/* <Image  src={`${ASSET_BASE}${img}`} alt={item.title} width={300} height={300} /> */}
                               </a>
                               <div className="brand-item__dropdown">
                                 <a

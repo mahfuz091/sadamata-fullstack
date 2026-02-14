@@ -11,8 +11,9 @@ import {
 
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import ProfileImageUploader from "../Profile/ProfileImageUploader";
 
-const ChangePassword = ({ user, countries }) => {
+const ChangePassword = ({ user, countries, profileImageUrl }) => {
   const [editMode, setEditMode] = useState(false);
   const [phoneValue, setPhoneValue] = useState(
     user?.merchantProfile?.contactPhone || ""
@@ -33,9 +34,12 @@ const ChangePassword = ({ user, countries }) => {
   }, [user, countries]);
 
   const [file, setFile] = useState(null);
-  const [preview, setPreview] = useState(
-    user?.profileImage || "/assets/images/resources/avater.png"
+    const [preview, setPreview] = useState(
+    profileImageUrl || "/assets/images/resources/avater.png"
   );
+  useEffect(() => {
+    if (profileImageUrl) setPreview(profileImageUrl);
+  }, [profileImageUrl]);
 
   const [formData, setFormData] = useState({
     bankName: user?.merchantProfile?.bankName || "",
@@ -154,50 +158,7 @@ const ChangePassword = ({ user, countries }) => {
             }}
           >
             <aside className='user-profile__info'>
-              <div className='user-profile__info__avater'>
-                <div className='avatar-container'>
-                  <img src={preview} alt='Profile Avatar' className='avatar' />
-                  <div className='verified-badge'>
-                    <input
-                      type='file'
-                      name='image'
-                      id='avater'
-                      onChange={handleFileChange}
-                    />
-                    <label htmlFor='avater'>
-                      {/* SVG unchanged */}
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        width='24'
-                        height='24'
-                        viewBox='0 0 24 24'
-                        fill='none'
-                      >
-                        <path
-                          d='M11 2H9C4 2 2 4 2 9V15C2 20 4 22 9 22H15C20 22 22 20 22 15V13'
-                          stroke='#1B2124'
-                          strokeWidth='1.5'
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                        />
-                        <path
-                          d='M16.0418 3.02001L8.16183 10.9C7.86183 11.2 7.56183 11.79 7.50183 12.22L7.07183 15.23C6.91183 16.32 7.68183 17.08 8.77183 16.93L11.7818 16.5C12.2018 16.44 12.7918 16.14 13.1018 15.84L20.9818 7.96001C22.3418 6.60001 22.9818 5.02001 20.9818 3.02001C18.9818 1.02001 17.4018 1.66001 16.0418 3.02001Z'
-                          stroke='#1B2124'
-                          strokeWidth='1.5'
-                          strokeMiterlimit='10'
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                        />
-                      </svg>
-                    </label>
-                  </div>
-                </div>
-
-                <div className='profile-info'>
-                  <h1 className='profile-name'>{user?.name}</h1>
-                  <p className='profile-username d-none'>@sobuz8464</p>
-                </div>
-              </div>
+             <ProfileImageUploader userId={user.id} initialUrl={preview} />
               <ul className='user-profile__info__menu list-unstyled'>
                 <Link href='/dashboard/profile/'>
                   <li className='user-profile__info__menu__item'>
@@ -211,14 +172,16 @@ const ChangePassword = ({ user, countries }) => {
                   </li>
                 </Link>
                 <Link href='/dashboard/profile/change-password'>
-                  <li className='user-profile__info__menu__item '>
+                  <li className='user-profile__info__menu__item active'>
                     Change password
                   </li>
                 </Link>
 
-                <li className='user-profile__info__menu__item mt-3'>
-                  Delete your account
-                </li>
+                <Link href='/dashboard'>
+                  <li className='user-profile__info__menu__item mt-3'>
+                    Back To Dashboard
+                  </li>
+                </Link>
               </ul>
             </aside>
 

@@ -34,6 +34,11 @@ const nextConfig = {
         hostname: "img.youtube.com",
         pathname: "/**",
       },
+       {
+              protocol: "https",
+              hostname: "sadamata-images.s3.ap-south-1.amazonaws.com",
+              pathname: "/**",
+            }, 
     ],
   },
 };

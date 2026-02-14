@@ -2,14 +2,26 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import logo from "@/assets/images/logo-light.png";
 
 import { logOut } from "@/app/actions/auth/auth.actions";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
-const HeaderTwo = ({ session }) => {
-  const [open, setOpen] = useState(false);
-  console.log(session, "session in header");
+const HeaderTwo = ({ session, profileImageUrl }) => {
+    const [open, setOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <header className='main-header main-header--two sticky-header sticky-header--normal'>
@@ -26,34 +38,18 @@ const HeaderTwo = ({ session }) => {
                 />
               </Link>
             </div>
-            <div className='main-header__right'>
+             <div className='main-header__right'>
               <div className='mobile-nav__info'>
-                {/* {session?.user ? (
-                  <button onClick={logOut} className='commerce-btn'>
-                    Logout {session.user.name}
-                  </button>
-                ) : (
-                  <>
-                    <Link href='/login' className='commerce-btn login'>
-                      Login
-                    </Link>
-                   
-                  </>
-                )} */}
                 <div className='mobile-nav__info flex items-center gap-3'>
                   {session?.user ? (
-                    <div className='relative'>
+                    <div className='relative' ref={dropdownRef}>
                       {/* Profile Image Button */}
                       <button
                         className='profileImageButton'
                         onClick={() => setOpen((prev) => !prev)}
                       >
                         <img
-                          src={
-                            session.user.profileImage
-                              ? session?.user?.profileImage
-                              : "/avatar.png" // fallback image
-                          }
+                          src={profileImageUrl || "/avatar.png"}
                           width={40}
                           height={40}
                           alt='User Avatar'
@@ -84,18 +80,18 @@ const HeaderTwo = ({ session }) => {
                     </div>
                   ) : (
                     <>
-                      <Link href='/login' className='commerce-btn login'>
-                        Signin
+                      <Link href='/signin' className='commerce-btn login'>
+                        Sign In
                       </Link>
                     </>
                   )}
                 </div>
               </div>
-              <div className='mobile-nav__btn mobile-nav__toggler'>
+              {/* <div className='mobile-nav__btn mobile-nav__toggler'>
                 <span></span>
                 <span></span>
                 <span></span>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

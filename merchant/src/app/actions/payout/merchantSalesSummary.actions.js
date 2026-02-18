@@ -2,6 +2,7 @@
 
 import { prisma } from '@/lib/prisma';
 import { Prisma } from '@/generated/prisma';
+import { OrderStatus } from '@/generated/prisma';
 
 /** ---------- Time helpers (Asia/Dhaka) ---------- */
 const DHAKA_OFFSET_MS = 6 * 60 * 60 * 1000;
@@ -91,7 +92,7 @@ async function calcMerchantTotalsForRange(merchantId, startUTC, endUTC) {
   // 1) PAID orders in range (prefer settledAt, else createdAt)
   const paidOrders = await prisma.order.findMany({
     where: {
-      status: 'PAID',
+     status: { in: [OrderStatus.PAID, OrderStatus.SHIPPED, OrderStatus.COMPLETED] },
       OR: [
         { settledAt: { gte: startUTC, lte: endUTC } },
         { AND: [{ settledAt: null }, { createdAt: { gte: startUTC, lte: endUTC } }] },

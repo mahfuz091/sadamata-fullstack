@@ -872,3 +872,11 @@ button.profileImageButton img {
   margin-right: 10px;
   display: inline-flex;
 }
+.footer-widget__text.trade-licence{
+  transition: all .3s ;
+  cursor: pointer;
+}
+
+.footer-widget__text.trade-licence:hover{
+  color: var(--commerce-base);
+}

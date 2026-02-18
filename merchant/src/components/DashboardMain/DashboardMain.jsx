@@ -40,6 +40,8 @@ const DashboardMain = ({
   const hasSales = (current.items?.length ?? 0) > 0;
   console.log(salesReport, "current");
 
+  
+
   useEffect(() => {
     if (!salesReport) return;
     // convert server data to UI structure
@@ -407,7 +409,7 @@ const DashboardMain = ({
                               >
                                 <div className='dashboard-dverview__salse-li-left'>
                                   <div className='dashboard-dverview__salse-li-thumb'>
-                                    {item.image ? (
+                                    {/* {item.image ? (
                                       <Image
                                         src={`${process.env.NEXT_PUBLIC_BASE_URL}/${item.image}`}
                                         alt={item.productName || "Product"}
@@ -416,7 +418,17 @@ const DashboardMain = ({
                                       />
                                     ) : (
                                       <div className='dashboard-dverview__salse-li-fallback' />
-                                    )}
+                                    )} */}
+                                     {item.image ? (
+                <img
+                  src={item.image} // Use the signed URL
+                  alt={item.productName || "Product"}
+                  width={80}
+                  height={80}
+                />
+              ) : (
+                <div>No Image</div> // Fallback if no image or URL
+              )}
                                   </div>
                                   <div className='dashboard-dverview__salse-li-meta'>
                                     <h4 className='dashboard-dverview__salse-li-title'>

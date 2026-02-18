@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/generated/prisma";
+import { OrderStatus } from "@/generated/prisma";
 
 /** আজকের Dhaka টাইম অনুযায়ী UTC উইন্ডো বের করে */
 function getDhakaDayWindowUTC(date = new Date()) {
@@ -30,7 +31,7 @@ export async function getTodayMerchantSalesReportFromOrders(merchantId) {
   // === ১️⃣ আজকের "PAID" অর্ডার ===
   const paidOrders = await prisma.order.findMany({
     where: {
-      status: "PAID",
+      status: { in: [OrderStatus.PAID, OrderStatus.SHIPPED, OrderStatus.COMPLETED] },
       OR: [
         { settledAt: { gte: startUTC, lt: endUTC } },
         {

@@ -96,7 +96,7 @@ const Footer = () => {
                     institutional-level strategies, and the power of a private
                     trading network.
                   </p> */}
-                  <div className='footer-widget__social'>
+                  <div className='footer-widget__social '>
                     <h4 className='footer-widget__social__title'>Follow Us</h4>
                     <div className='footer-widget__social__icon'>
                       <a
@@ -133,6 +133,10 @@ const Footer = () => {
                         <i className='fab fa-threads'></i>
                       </a>
                     </div>
+                  </div>
+                  <div className="footer-widget">
+                    <p className="footer-widget__text mb-0 mt-3 ">Trade Licence No: </p>
+                    <p className="footer-widget__text trade-licence ">TRAD/DNCC/021029/2025</p>
                   </div>
                   {/* /.footer-widget__social */}
                 </div>

@@ -302,10 +302,19 @@ model MockupVariant {
   @@index([mockupId, isVisible])
 }
 
+enum OrderStatus {
+  PENDING
+  PAID
+  FAILED
+  CANCELLED
+  SHIPPED
+  COMPLETED
+}
+
 model Order {
   id          String      @id @default(cuid())
   currency    String      @default("BDT")
-  status      String      @default("PENDING")
+  status      OrderStatus @default(PENDING) // ✅ was String
   tranId      String      @unique
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt

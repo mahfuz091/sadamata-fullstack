@@ -31,7 +31,7 @@ export default function BrandDropdown({ brands = [], onBrandChange }) {
         value={value} // <-- start as null, shows placeholder
         placeholder="-- Select a Brand --"
         onChange={handleChange}
-        isSearchable={false}
+        isSearchable={true}
         isClearable={true}
       />
     </div>

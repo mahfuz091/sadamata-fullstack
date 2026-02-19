@@ -1404,7 +1404,7 @@ export default function AddDesignFitAdmin({
   // ------------------ TAGS ------------------
 
   const [tags, setTags] = useState([]);
-  const tagLimit = 10;
+  const tagLimit = 15;
 
   const handleTagKeyDown = (e) => {
     if (e.keyCode === 188 || e.keyCode === 13) {
@@ -1418,6 +1418,10 @@ export default function AddDesignFitAdmin({
       e.target.value = "";
     }
   };
+
+  const remainingTags = (tagCount = 0, limit = 12) => {
+  return Math.max(0, limit - tagCount); // Returning the remaining tags
+};
 
   const removeTag = (index) =>
     setTags((prev) => prev.filter((_, i) => i !== index));
@@ -2960,9 +2964,17 @@ export default function AddDesignFitAdmin({
                             name='feature1'
                             id='feature1'
                             value={features.feature1}
+                             maxLength={LIMITS.feature}
                             onChange={handleFeatureChange}
                           />
-                          <span>220 characters remaining</span>
+                          <span>
+                            {" "}
+                            {remainingChars(
+                              features.feature1,
+                              LIMITS.feature,
+                            )}{" "}
+                            characters remaining
+                          </span>
                         </div>
                         <div className='form-control-two'>
                           <label htmlFor='feature2'>Feature bullet 2</label>
@@ -3042,8 +3054,8 @@ export default function AddDesignFitAdmin({
                       />
                     </div>
                     <p className='char-limit' id='charLimit'>
-                      200 characters remaining
-                    </p>
+  {remainingTags(tags.length, 15)} tags remaining (limit: {tagLimit})
+</p>
                   </div>
                 </div>
               </div>

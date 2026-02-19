@@ -35,7 +35,7 @@ const Footer = () => {
                     Connect with our support team and fellow creators in real
                     time for quick assistance, updates, and discussions.{" "}
                     <Link
-                      href='https://discord.com/invite/sadamata'
+                      href='https://discord.gg/wrurEjyc'
                       target='_blank'
                     >
                       {" "}

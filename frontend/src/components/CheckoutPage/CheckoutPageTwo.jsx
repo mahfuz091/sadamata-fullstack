@@ -378,7 +378,7 @@ const CheckoutPageTwo = ({ user }) => {
                       <div className='form-one__control'>
                         <div className='form-one__btn'>
                           <button type='submit' className='commerce-btn'>
-                            Save Now <i className='icon-right-arrow' />
+                            Save Now 
                           </button>
                         </div>
                       </div>

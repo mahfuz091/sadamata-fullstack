@@ -10,8 +10,8 @@ const page = () => {
   return (
     <Layout session={session}>
       <CartPage user={user} />
-      <RelatedProducts />
-      <div style={{ height: "100px" }}></div>
+      {/* <RelatedProducts /> */}
+  
     </Layout>
   );
 };

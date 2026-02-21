@@ -3,15 +3,10 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
 // Image imports from @assets/images
-import flag1 from "@/assets/images/icon/flag-1-1.png";
-import flag2 from "@/assets/images/icon/flag-1-2.png";
-import flag3 from "@/assets/images/icon/flag-1-3.png";
-import flag4 from "@/assets/images/icon/flag-1-4.png";
-import flag5 from "@/assets/images/icon/flag-1-5.png";
-import flag6 from "@/assets/images/icon/flag-1-6.png";
+
 import cartImg from "@/assets/images/resources/admin-cart.png";
 import saleAvatar from "@/assets/images/resources/salse-avater.png";
-import Link from "next/link";
+
 import DashSidebar from "../DashSidebar/DashSidebar";
 import CustomSelect from "../CustomSelect/CustomSelect";
 const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE_URL ;
@@ -96,7 +91,7 @@ const DashboardMain = ({report, today, stats, salesReport, salesData}) => {
       {
         label: "Uploader Today",
         value: today.totalTodayUploaded || 0,
-        total: stats.totalProducts || 0,
+        // total: stats.totalProducts || 0,
       },
       {
         label: "Live Designs",
@@ -136,25 +131,34 @@ const DashboardMain = ({report, today, stats, salesReport, salesData}) => {
           <div className='col-lg-9'>
             <div className='dashboard-area__content'>
               <div className='dashboard__metrics'>
-                {metrics.map((item, i) => (
-        <div className="dashboard__metrics__item" key={i}>
-          <h4 className="dashboard__metrics__text">{item.label}</h4>
-          <div className="dashboard__metrics__progess-box">
-            <div className="dashboard__metrics__progess__inner">
-              <div className="progess__left">
-                {item.value} <span>of</span> {item.total}
-              </div>
-              <div className="progess__persent">{item.percent}%</div>
-            </div>
-            <div className="progess-box">
-              <div
-                className="progess-box__inner"
-                style={{ width: `${item.percent}%` }}
-              ></div>
-            </div>
+      {metrics.map((item, i) => (
+  <div className="dashboard__metrics__item" key={i}>
+    <h4 className="dashboard__metrics__text text-center">{item.label}</h4>
+
+    {item.label === "Uploader Today" ? (
+      
+      <div className="dashboard__metrics__simple-value text-center">
+        <h2>{item.value}</h2>
+      </div>
+    ) : (
+    
+      <div className="dashboard__metrics__progess-box">
+        <div className="dashboard__metrics__progess__inner">
+          <div className="progess__left">
+            {item.value} <span>of</span> {item.total}
           </div>
+          <div className="progess__persent">{item.percent}%</div>
         </div>
-      ))}
+        <div className="progess-box">
+          <div
+            className="progess-box__inner"
+            style={{ width: `${item.percent}%` }}
+          ></div>
+        </div>
+      </div>
+    )}
+  </div>
+))}
 
                 <div className='dashboard__metrics__item dashboard__star'>
                   <h4 className='dashboard__metrics__text'>Reviews</h4>
@@ -252,16 +256,16 @@ const DashboardMain = ({report, today, stats, salesReport, salesData}) => {
               <li key={item.productId} className="dashboard-dverview__salse-li">
                 <div className="dashboard-dverview__salse-li-left">
                   <div className="dashboard-dverview__salse-li-thumb">
-                    {item.image ? (
-                      <Image
-                        src={`${ASSET_BASE}${item.image}`}
-                        alt={item.productName || 'Product'}
-                        width={64}
-                        height={64}
-                      />
-                    ) : (
-                      <div className="dashboard-dverview__salse-li-fallback" />
-                    )}
+                  {item.image ? (
+                <img
+                  src={item.image} // Use the signed URL
+                  alt={item.productName || "Product"}
+                  width={80}
+                  height={80}
+                />
+              ) : (
+                <div>No Image</div> // Fallback if no image or URL
+              )}
                   </div>
                   <div className="dashboard-dverview__salse-li-meta">
                     <h4 className="dashboard-dverview__salse-li-title">

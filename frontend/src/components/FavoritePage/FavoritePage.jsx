@@ -5,6 +5,7 @@ import { GoTrash } from "react-icons/go";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { getProductImage } from "@/lib/helper";
 
 const FavoritePage = ({ user }) => {
   const FAVORITE_KEY = "favorite_products";
@@ -41,13 +42,17 @@ const FavoritePage = ({ user }) => {
                 {favorites.length === 0 ? (
                   <p>Your favorites list is empty.</p>
                 ) : (
-                  favorites.map((item) => (
+                  favorites.map((item) => {
+const rawImg = item?.image;
+console.log(rawImg);
+
+                    return (
                     <li className='cart-one__list__item' key={item.id}>
                       <div className='cart-one__list__left w-100'>
                         <div className='cart-one__list__image'>
                           <Link href={`/products/${item.productId}`}>
                             <Image
-                              src={`${process.env.NEXT_PUBLIC_MERCH_URL}/${item.image}`}
+                              src={rawImg}
                               alt={item.title}
                               width={80}
                               height={80}
@@ -88,7 +93,9 @@ const FavoritePage = ({ user }) => {
                         </div>
                       </div>
                     </li>
-                  ))
+                    )
+                  }
+                  )
                 )}
               </ul>
             </div>

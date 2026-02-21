@@ -71,7 +71,7 @@ const RelatedProducts = () => {
           <h2 className='product-slider__title'>Related Product</h2>
           <div className='product-slider__btn'>
             <Link href='/product' className='inline-flex items-center gap-2'>
-              See All Product <i className='icon-right-arrow' />
+              See All Product 
             </Link>
           </div>
         </div>
@@ -135,7 +135,7 @@ const RelatedProducts = () => {
                         href='/cart'
                         className='commerce-btn product__item__link'
                       >
-                        Add to Cart <i className='icon-right-arrow' />
+                        Add to Cart 
                       </Link>
                     </div>
                   </div>

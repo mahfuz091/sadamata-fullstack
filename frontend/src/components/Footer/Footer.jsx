@@ -3,15 +3,19 @@
 import ScrollToTop from "react-scroll-to-top";
 import Image from "next/image";
 import React from "react";
-import payment from "@/assets/images/shapes/payment.png";
+
 import logo from "@/assets/images/logo-sadamata.svg";
 import Link from "next/link";
 
-const Footer = () => {
+const Footer = ({session}) => {
+  const user = session?.user
+  console.log(user);
+  
   return (
     <>
       <section className='footer-cta'>
-        <div className='container'>
+        {
+          !user && <div className='container'>
           <div className='footer-cta__inner'>
             <div className='footer-cta__content'>
               <h3 className='footer-cta__title'>
@@ -48,13 +52,17 @@ const Footer = () => {
             </div> */}
           </div>
         </div>
+        }
+        
         {/* <div className='footer-cta__scroll-top'>
           <p className='footer-cta__scroll-top__text'>
             Back on Top{" "}
             <span className='icon-reshot-icon-arrow-chevron-up-9ECRMJ2GNT'></span>
           </p>
         </div> */}
-        <div className='footer-cta__scroll-top'>
+        <div className='footer-cta__scroll-top' style={{
+    marginTop: user ? "-40px" : undefined
+  }}>
           <ScrollToTop
             smooth
             top={300}

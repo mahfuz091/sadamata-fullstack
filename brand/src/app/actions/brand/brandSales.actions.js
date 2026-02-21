@@ -1,6 +1,7 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
+import { getPrivateUrl } from "@/lib/s3";
 
 // ======== Time helpers (Dhaka-aligned, UTC+6) ========
 const DHAKA_OFFSET_MS = 6 * 60 * 60 * 1000
@@ -60,38 +61,40 @@ function buildDhakaRanges() {
  * Returns: { items: [{productId, productName, image, qty}], totalQty }
  */
 async function fetchSalesByRange({ userId, startUTC, endUTC }) {
-  if (!userId) throw new Error('userId required')
-const firstBrand = await prisma.brand.findFirst({
+  if (!userId) throw new Error("userId required");
+
+  const firstBrand = await prisma.brand.findFirst({
     where: { userId },
-    orderBy: { createdAt: 'asc' },
+    orderBy: { createdAt: "asc" },
     select: { id: true, name: true },
-  })
+  });
 
   if (!firstBrand) {
     return {
       userId,
       brandFound: false,
-      message: 'No brand found for this user',
-    }
+      message: "No brand found for this user",
+    };
   }
 
-  const { id: brandId, name: brandName } = firstBrand
-  // 1) Group by productId & sum quantity
+  const { id: brandId } = firstBrand;
+
+  // 1️⃣ Group by productId & sum quantity
   const grouped = await prisma.sale.groupBy({
-    by: ['productId'],
+    by: ["productId"],
     where: {
-      brandId : brandId,
+      brandId: brandId,
       createdAt: { gte: startUTC, lt: endUTC },
     },
     _sum: { quantity: true },
-  })
+  });
 
   if (grouped.length === 0) {
-    return { items: [], totalQty: 0 }
+    return { items: [], totalQty: 0 };
   }
 
-  // 2) Fetch product titles + image (frontImg or first variant.frontImg)
-  const productIds = grouped.map(g => g.productId)
+  // 2️⃣ Fetch product titles + image
+  const productIds = grouped.map((g) => g.productId);
 
   const products = await prisma.product.findMany({
     where: { id: { in: productIds } },
@@ -104,35 +107,44 @@ const firstBrand = await prisma.brand.findFirst({
         select: { frontImg: true },
       },
     },
-  })
+  });
 
   const productMap = new Map(
-    products.map(p => [
+    products.map((p) => [
       p.id,
       {
         title: p.title,
         image: p.frontImg || (p.variants[0]?.frontImg ?? null),
       },
     ])
-  )
+  );
 
-  // 3) Build rows, sort by qty desc
-  const items = grouped
-    .map(g => {
-      const qty = Number(g._sum.quantity || 0)
-      const product = productMap.get(g.productId) || {}
+  // 3️⃣ Generate signed URLs properly (async)
+  const items = await Promise.all(
+    grouped.map(async (g) => {
+      const qty = Number(g._sum.quantity || 0);
+      const product = productMap.get(g.productId) || {};
+
+      const imageKey = product.image;
+      const signedImageUrl = imageKey
+        ? await getPrivateUrl(imageKey, 60 * 60) // 1 hour expiry
+        : null;
+
       return {
         productId: g.productId,
-        productName: product.title || 'Unknown Product',
-        image: product.image,
+        productName: product.title || "Unknown Product",
+        image: signedImageUrl,
         qty,
-      }
+      };
     })
-    .sort((a, b) => b.qty - a.qty)
+  );
 
-  const totalQty = items.reduce((acc, r) => acc + r.qty, 0)
+  // 4️⃣ Sort by qty desc
+  items.sort((a, b) => b.qty - a.qty);
 
-  return { items, totalQty }
+  const totalQty = items.reduce((acc, r) => acc + r.qty, 0);
+
+  return { items, totalQty };
 }
 
 // ======== Public Server Action ========

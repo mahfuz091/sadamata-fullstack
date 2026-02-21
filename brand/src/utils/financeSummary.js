@@ -1,18 +1,19 @@
 import { prisma } from "@/lib/prisma";
 import { PayoutActor } from '@/generated/prisma';
+import { OrderStatus } from '@/generated/prisma';
 
 
 // Helper: only count sales from paid orders
 const paidSaleWhere = {
   orderItem: {
-    order: { status: 'PAID' },
+    order: {  status: { in: [OrderStatus.PAID, OrderStatus.SHIPPED, OrderStatus.COMPLETED] },  },
   },
 };
 
 // BRAND total income, withdrawals, and remaining balance
 export async function getBrandFinancialSummary(brandId) {
     const paidOrderItems = await prisma.orderItem.findMany({
-    where: { order: { status: 'PAID' } },
+    where: { order: { status: { in: [OrderStatus.PAID, OrderStatus.SHIPPED, OrderStatus.COMPLETED] }, } },
     select: { id: true },
   });
   const paidOrderItemIds = paidOrderItems.map((x) => x.id);

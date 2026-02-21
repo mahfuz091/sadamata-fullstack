@@ -7,6 +7,7 @@
 import { unstable_noStore as noStore } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { pickPreviewImg } from "@/utils/color";
+import { OrderStatus } from "@/generated/prisma";
 
 function buildDateRange(from, to) {
   const range = {};
@@ -81,7 +82,7 @@ export async function getMerchantProductSalesSummary({
       productId: { in: ids },
       orderItem: {
         order: {
-          status: "PAID",
+          status: { in: [OrderStatus.PAID, OrderStatus.SHIPPED, OrderStatus.COMPLETED] }, 
           ...(orderDateFilter ? { createdAt: orderDateFilter } : {}),
         },
       },

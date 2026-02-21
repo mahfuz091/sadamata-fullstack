@@ -21,7 +21,7 @@ const Layout = async ({ children, session }) => {
       <Header session={session} categories={categories} />
       <HeaderCloned session={session} categories={categories} />
       {children}
-      <Footer />
+      <Footer session={session} />
     </>
   );
 };

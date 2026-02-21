@@ -273,7 +273,7 @@ const CategoryProductsClient = ({
             productId: product.productId,
             title: product.title,
             price: product.price,
-            image: getProductImage(product),
+            image: product.previewUrl,
           },
         ];
       }

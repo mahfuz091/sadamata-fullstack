@@ -131,7 +131,7 @@ export default function TopMusicBrandTshirt({
                     </div>
                   </div>
 
-                  <button
+                  {/* <button
                     className='commerce-btn product__item__link mt-2'
                     onClick={() => {
                       setSelectedProduct(prod);
@@ -139,7 +139,13 @@ export default function TopMusicBrandTshirt({
                     }}
                   >
                     Add to Cart <i className='icon-right-arrow'></i>
-                  </button>
+                  </button> */}
+                  <Link
+                        href={`/products/${prod.productId}`}
+                        className='commerce-btn product__item__link mt-auto align-self-start'
+                      >
+                        View Product 
+                      </Link>
                 </div>
               </div>
             </div>

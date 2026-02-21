@@ -344,6 +344,8 @@ export async function registerUser(formData) {
       let brandProfile = null;
 
       if (role === "BRAND") {
+        const defaultBrandPct = isExclusive ? 10 : 6;
+  const defaultMerchantPct = 6;
         brandProfile = await tx.brand.create({
           data: {
             user: { connect: { id: user.id } },
@@ -365,6 +367,10 @@ export async function registerUser(formData) {
             socialProfile,
             industryType,
             isExclusive,
+
+            // ✅ set defaults based on isExclusive
+      defaultBrandPct,
+      defaultMerchantPct,
 
             // ✅ optional connect
             ...(brandCategoryId

@@ -7,9 +7,7 @@ import {
   Container,
   Row,
   Col,
-  Button,
-  Nav,
-  Pagination,
+ 
   Spinner,
 } from "react-bootstrap";
 
@@ -50,9 +48,7 @@ const getFavorites = () => {
   }
 };
 
-const saveFavorites = (items) => {
-  localStorage.setItem(FAVORITE_KEY, JSON.stringify(items));
-};
+
 
 const FeatureProduct = () => {
   const sectionRef = useRef(null);
@@ -69,12 +65,7 @@ const FeatureProduct = () => {
 
   const paginationRange = getPaginationRange(totalPages, page, 1);
 
-  // useEffect(() => {
-  //   if (isPending) return;
-  //   if (!sectionRef.current) return;
 
-  //   sectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-  // }, [isPending, page, activeTab]);
 
   useEffect(() => {
     setFavorites(getFavorites());
@@ -109,7 +100,7 @@ const FeatureProduct = () => {
             productId: product.productId,
             title: product.title,
             price: product.price,
-            image: getProductImage(product),
+                image: product.previewUrl,
           },
         ];
       }
@@ -279,7 +270,7 @@ const FeatureProduct = () => {
                         setShowModal(true);
                       }}
                     >
-                      Add to Cart <i className='icon-right-arrow'></i>
+                      Add to Cart 
                     </button>
                   </div>
                 </div>

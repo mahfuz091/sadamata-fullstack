@@ -130,15 +130,12 @@ export default function TopNatokBrandTshirt({
                     </div>
                   </div>
 
-                  <button
-                    className='commerce-btn product__item__link mt-2'
-                    onClick={() => {
-                      setSelectedProduct(prod);
-                      setShowModal(true);
-                    }}
-                  >
-                    Add to Cart <i className='icon-right-arrow'></i>
-                  </button>
+                  <Link
+                        href={`/products/${prod.productId}`}
+                        className='commerce-btn product__item__link mt-auto align-self-start'
+                      >
+                        View Product 
+                      </Link>
                 </div>
               </div>
             </div>

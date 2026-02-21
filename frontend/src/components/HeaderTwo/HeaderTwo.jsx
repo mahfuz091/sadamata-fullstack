@@ -21,7 +21,7 @@ export default function HeaderTwo() {
                   Login
                 </Link>
                 <Link href='/sign-up' className='commerce-btn'>
-                  Register <i className='icon-right-arrow' />
+                  Register
                 </Link>
               </div>
               <div className='mobile-nav__btn mobile-nav__toggler'>

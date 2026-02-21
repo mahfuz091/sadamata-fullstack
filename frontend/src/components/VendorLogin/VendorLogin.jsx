@@ -27,7 +27,7 @@ const VendorLogin = () => {
             </div>
             <div className='user-login__form-input-box'>
               <button type='submit' className='commerce-btn'>
-                Register <i className='icon-right-arrow' />
+                Register 
               </button>
             </div>
           </form>

@@ -300,7 +300,7 @@ const ProductArea = ({ result: initialResult, slug, q, brands, mockups }) => {
             productId: product.productId,
             title: product.title,
             price: product.price,
-            image: getProductImage(product),
+                image: product.previewUrl,
           },
         ];
       }
@@ -588,7 +588,7 @@ const ProductArea = ({ result: initialResult, slug, q, brands, mockups }) => {
                       href={`/products/${item.productId}`}
                       className='commerce-btn product__item__link mt-auto align-self-start'
                     >
-                      View Product <i className='icon-right-arrow' />
+                      View Product 
                     </Link>
                             </div>
                           </div>

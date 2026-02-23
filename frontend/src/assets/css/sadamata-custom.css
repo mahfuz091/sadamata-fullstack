@@ -921,3 +921,19 @@ button.profileImageButton img {
 .product__item__ratings{
   display: none !important;
 }
+.product-header-top__showing-sort:after {
+    content: "";
+    background-color: #e4e9ee;
+    width: 1px;
+    height: 24px;
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    display: none;
+}
+.product-header-top__showing-sort {
+     margin-right: 0px; 
+    padding-right: 0px; 
+    position: relative;
+}

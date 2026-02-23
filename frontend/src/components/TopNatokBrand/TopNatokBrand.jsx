@@ -49,7 +49,7 @@ const TopNatokBrand = () => {
     <section className='top-brand slider-wrapper'>
       <Container>
         <div className='top-brand__top'>
-          <h2 className='top-brand__title'>Top Natok Brand</h2>
+          <h2 className='top-brand__title'>Drama Merchandise</h2>
           <div className='top-brand__btn'>
             <button
               className='slick-custom-prev slick-arrow'

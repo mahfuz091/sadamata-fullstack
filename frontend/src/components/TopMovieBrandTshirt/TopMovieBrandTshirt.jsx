@@ -3,17 +3,32 @@
 import Image from "next/image";
 import Slider from "react-slick";
 import { Container } from "react-bootstrap";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import AddToCartModal from "../FeatureProduct/AddToCartModal";
-
+import { toast } from "sonner";
+ const FAVORITE_KEY = "favorite_products";
+  const getFavorites = () => {
+    if (typeof window === "undefined") return [];
+    try {
+      return JSON.parse(localStorage.getItem(FAVORITE_KEY)) || [];
+    } catch {
+      return [];
+    }
+  };
 export default function TopMovieBrandTshirt({
-  title = "Top Movie Brand T-shirt",
+  title = "Movie Merchandise Shop",
   products = [],
 }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+   const [favorites, setFavorites] = useState([]);
   const sliderRef = useRef(null);
+
+  useEffect(() => {
+          setFavorites(getFavorites());
+        }, []);
+console.log("products", products);
 
   const settings = {
     dots: false,
@@ -40,8 +55,53 @@ export default function TopMovieBrandTshirt({
       imageUrl: p.previewUrl || null,
       rating: p.rating ?? 5,
       reviews: p.reviews ?? 0,
+      variants: p.variants || [],
     }));
   }, [products]);
+  const toggleFavorite = (product) => {
+      let action = null;
+      let nextFavorites = [];
+
+      setFavorites((prev) => {
+        const exists = prev.some((p) => p.id === product.id);
+
+        if (exists) {
+          action = "remove";
+          nextFavorites = prev.filter((p) => p.id !== product.id);
+        } else {
+          action = "add";
+          nextFavorites = [
+            ...prev,
+            {
+              id: product.id,
+              productId: product.productId,
+              title: product.title,
+              price: product.price,
+              image: product.previewUrl,
+            },
+          ];
+        }
+
+        return nextFavorites; // ✅ PURE
+      });
+
+      // ✅ Side-effects AFTER render
+      queueMicrotask(() => {
+        localStorage.setItem("favorite_products", JSON.stringify(nextFavorites));
+
+        if (action === "add") {
+          toast.success("Added to favorites", {
+            description: product.title,
+          });
+        } else if (action === "remove") {
+          toast.success("Removed from favorites", {
+            description: product.title,
+          });
+        }
+
+        window.dispatchEvent(new Event("favorite-updated"));
+      });
+    };
 
   return (
     <section className='history-product slider-wrapper py-5'>
@@ -74,10 +134,12 @@ export default function TopMovieBrandTshirt({
           ref={sliderRef}
           className='history-product__carousel'
         >
-          {normalized.map((prod) => (
+         {normalized.map((prod) => {
+            const isFavorite = favorites.some((f) => f.id === prod.id);
+return (
             <div key={prod.id} className='item'>
               <div className='product__item'>
-                <div className='product__item__img'>
+                <div className='product__item__img position-relative'>
                   <Link
                     href={`/products/${prod.productId}`}
                     className='product__item__img__item'
@@ -96,11 +158,19 @@ export default function TopMovieBrandTshirt({
                     )}
                   </Link>
 
-                  <div className='product__item__btn'>
-                    <Link href='/cart'>
-                      <i className='far fa-heart' />
-                    </Link>
-                  </div>
+                  <div
+                        className='product__item__btn position-absolute top-0 end-0 p-2'
+                        style={{ cursor: "pointer" }}
+                        onClick={() => toggleFavorite(prod)}
+                      >
+                        <div className={`heart ${isFavorite ? "active" : ""}`}>
+                          <i
+                            className={
+                              isFavorite ? "far fa-heart" : "far fa-heart"
+                            }
+                          ></i>
+                        </div>
+                      </div>
                 </div>
 
                 <div className='product__item__content'>
@@ -129,25 +199,19 @@ export default function TopMovieBrandTshirt({
                     </div>
                   </div>
 
-                  {/* <button
-                    className='commerce-btn product__item__link mt-2'
+                  <button
+                    className='commerce-btn product__item__link mt-auto'
                     onClick={() => {
                       setSelectedProduct(prod);
                       setShowModal(true);
                     }}
                   >
-                    Add to Cart <i className='icon-right-arrow'></i>
-                  </button> */}
-                  <Link
-                        href={`/products/${prod.productId}`}
-                        className='commerce-btn product__item__link mt-auto align-self-start'
-                      >
-                        View Product 
-                      </Link>
+                    Add to Cart 
+                  </button>
                 </div>
               </div>
-            </div>
-          ))}
+            </div>)}
+          )}
         </Slider>
       </Container>
       {selectedProduct && (

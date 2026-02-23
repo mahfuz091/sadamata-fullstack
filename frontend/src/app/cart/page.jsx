@@ -4,9 +4,11 @@ import Layout from "@/components/Layout/Layout";
 import RelatedProducts from "@/components/RelatedProducts/RelatedProducts";
 import React from "react";
 
-const page = () => {
-  const session = auth();
+const page = async () => {
+  const session = await auth();
   const user = session?.user;
+
+  
   return (
     <Layout session={session}>
       <CartPage user={user} />

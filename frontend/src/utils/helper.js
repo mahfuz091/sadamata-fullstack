@@ -50,8 +50,8 @@ export function getPaginationRange(totalPages, currentPage, siblingCount = 1) {
 }
 
 export const COLOR_MAP = {
-  "#000000": "Black",
-  "#ffffff": "White",
+  "#000": "Black",
+  "#fff": "White",
   "#192252": "Navy Blue",
   "#636b2f": "Olive Green",
   "#895129": "Brown",

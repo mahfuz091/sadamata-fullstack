@@ -97,7 +97,7 @@ const ProductAreaTop = ({ slug, q, result, sortBy, setSortBy }) => {
             />
           </div>
 
-          <Link
+          {/* <Link
             className='product-header-top__showing-box'
             href='#'
             aria-label='Grid view'
@@ -110,7 +110,7 @@ const ProductAreaTop = ({ slug, q, result, sortBy, setSortBy }) => {
             aria-label='List view'
           >
             <i className='fas fa-bars'></i>
-          </Link>
+          </Link> */}
         </div>
       </div>
     </div>

@@ -9,6 +9,7 @@
   import { getAllProducts } from "@/app/actions/product/product.actions";
   import { getProductImage } from "@/lib/helper";
   import { toast } from "sonner";
+import AddToCartModal from "../FeatureProduct/AddToCartModal";
 
   const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE_URL;
 
@@ -28,10 +29,12 @@
 
     const [products, setProducts] = useState([]);
     const [page, setPage] = useState(1);
-    const pageSize = 8; // load more e protibar koto product
+    const pageSize = 16; // load more e protibar koto product
     const [totalPages, setTotalPages] = useState(1);
   const [favorites, setFavorites] = useState([]);
     const [isPending, startTransition] = useTransition();
+      const [showModal, setShowModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
     const hasMore = page < totalPages;
 
@@ -276,12 +279,15 @@
                         </div>
                       </div>
 
-                      <Link
-                        href={`/products/${product.productId}`}
-                        className='commerce-btn product__item__link mt-auto align-self-start'
-                      >
-                        View Product 
-                      </Link>
+                      <button
+                      className='commerce-btn product__item__link mt-auto'
+                      onClick={() => {
+                        setSelectedProduct(product);
+                        setShowModal(true);
+                      }}
+                    >
+                      Add to Cart 
+                    </button>
                     </div>
                   </div>
                 </Col>
@@ -305,6 +311,13 @@
             )}
           </div>
         </Container>
+        {selectedProduct && (
+                  <AddToCartModal
+                    show={showModal}
+                    onHide={() => setShowModal(false)}
+                    product={selectedProduct}
+                  />
+                )}
       </section>
     );
   };

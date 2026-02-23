@@ -261,10 +261,10 @@ const FeatureProduct = () => {
                       href={`/products/${product.productId}`}
                       className='commerce-btn product__item__link mt-2'
                     >
-                      Add to Cart <i className='icon-right-arrow'></i>
+                      Add to Cart 
                     </Link> */}
                     <button
-                      className='commerce-btn product__item__link mt-2'
+                      className='commerce-btn product__item__link mt-auto'
                       onClick={() => {
                         setSelectedProduct(product);
                         setShowModal(true);
@@ -351,7 +351,7 @@ const FeatureProduct = () => {
                 requestAnimationFrame(() => scrollToSectionTop());
               }}
             >
-              Next <i className='icon-right-arrow'></i>
+              Next 
             </button>
           </div>
         </div>

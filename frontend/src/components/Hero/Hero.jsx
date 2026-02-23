@@ -34,7 +34,7 @@ const Hero = () => {
               </p>
               <div className='hero-area__btn text-center'>
                 <a href='product.html' className='commerce-btn'>
-                  Shop Now <i className='icon-right-arrow'></i>
+                  Shop Now 
                 </a>
               </div>
             </div>

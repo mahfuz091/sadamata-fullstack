@@ -214,7 +214,7 @@ export default function ProductDetails({ product }) {
                 <div className='product-details__btn'>
                   <div className='product-details__btn__item'>
                     <a href='#' className='commerce-btn'>
-                      Add to Cart <i className='icon-right-arrow'></i>
+                      Add to Cart 
                     </a>
                   </div>
                   <div className='product-details__btn__item'>
@@ -359,7 +359,7 @@ export default function ProductDetails({ product }) {
                       <div className='form-one__control form-one__control--full'>
                         <div className='product-info__form-box__btn'>
                           <button type='submit' className='commerce-btn'>
-                            Submit Now <i className='icon-right-arrow'></i>
+                            Submit Now 
                           </button>
                         </div>
                       </div>

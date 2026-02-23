@@ -324,7 +324,7 @@ const CartPage = ({ user }) => {
                 onClick={handleCheckout}
                 disabled={cartItems.length === 0}
               >
-                Checkout <i className='icon-right-arrow'></i>
+                Checkout 
               </button>
             </div>
           </div>

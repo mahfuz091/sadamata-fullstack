@@ -582,7 +582,7 @@ const ProductArea = ({ result: initialResult, slug, q, brands, mockups }) => {
                                   setShowModal(true);
                                 }}
                               >
-                                Add to Cart <i className='icon-right-arrow'></i>
+                                Add to Cart 
                               </button> */}
                               <Link
                       href={`/products/${item.productId}`}
@@ -626,7 +626,7 @@ const ProductArea = ({ result: initialResult, slug, q, brands, mockups }) => {
                     fetchPage(nextCursor, true);
                   }}
                 >
-                  Next <i className='icon-right-arrow'></i>
+                  Next 
                 </button>
               </div>
 

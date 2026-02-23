@@ -26,19 +26,19 @@ import group4_4 from "@/assets/images/resources/group-info-4-4.jpg";
 
 const brandData = [
   {
-    title: "Music Brand T-shirt",
+    title: "Music Merchandise",
     images: [group1_1, group1_2, group1_3, group1_4],
   },
   {
-    title: "Movie’s T-shirt",
+    title: "Movie Merchandise",
     images: [group2_1, group2_2, group2_3, group2_4],
   },
   {
-    title: "Natok T-shirt",
+    title: "Drama Merchandise",
     images: [group3_1, group3_2, group3_3, group3_4],
   },
   {
-    title: "Tranding Event’s T-shirt",
+    title: "Event's Merchandise",
     images: [group4_1, group4_2, group4_3, group4_4],
   },
 ];
@@ -65,7 +65,7 @@ const BrandInfo = () => {
                   ))}
                 </div>
                 <a href='/product' className='brand-info__item__btn'>
-                  Shop Now <i className='icon-right-arrow'></i>
+                  Shop Now
                 </a>
               </div>
             </Col>

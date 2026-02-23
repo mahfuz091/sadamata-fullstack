@@ -285,7 +285,7 @@ const CheckoutPageTwo = ({ user }) => {
                       : showNewForm
                       ? "Close"
                       : "Add New Address"}
-                    <i className='icon-right-arrow'></i>
+                    
                   </button>
                 </div>
               </div>

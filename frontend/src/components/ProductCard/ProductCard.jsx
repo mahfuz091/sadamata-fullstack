@@ -37,7 +37,7 @@ const ProductCard = ({ product }) => {
             </div>
           </div>
           <a href='cart.html' className='commerce-btn product__item__link'>
-            Add to Cart <i className='icon-right-arrow'></i>
+            Add to Cart 
           </a>
         </div>
       </div>

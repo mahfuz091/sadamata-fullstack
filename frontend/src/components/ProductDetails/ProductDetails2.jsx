@@ -725,12 +725,12 @@ export default function ProductDetails2({ product }) {
                       className='commerce-btn'
                       onClick={handleAddToCartOnly}
                     >
-                      Add To Cart <i className='icon-right-arrow'></i>
+                      Add To Cart 
                     </button>
                   </div>
                   <div className='product-details__btn__item'>
                     <button className='commerce-btn' onClick={handleBuyNow}>
-                      Buy Now <i className='icon-right-arrow'></i>
+                      Buy Now 
                     </button>
                   </div>
                   <div className='product-details__btn__item'>
@@ -961,7 +961,7 @@ export default function ProductDetails2({ product }) {
                       <div className='form-one__control form-one__control--full'>
                         <div className='product-info__form-box__btn'>
                           <button type='submit' className='commerce-btn'>
-                            Submit Now <i className='icon-right-arrow'></i>
+                            Submit Now 
                           </button>
                         </div>
                       </div>

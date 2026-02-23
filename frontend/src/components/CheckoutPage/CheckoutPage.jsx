@@ -133,7 +133,7 @@ const CheckoutPage = ({ user }) => {
                 </div>
                 <div className='address-item__btn'>
                   <a href='product.html'>
-                    Add New Addres<i className='icon-right-arrow'></i>
+                    Add New Addres
                   </a>
                 </div>
               </div>
@@ -232,7 +232,7 @@ const CheckoutPage = ({ user }) => {
                     <div className='form-one__control'>
                       <div className='form-one__btn'>
                         <button type='submit' className='commerce-btn'>
-                          Save Now <i className='icon-right-arrow'></i>
+                          Save Now 
                         </button>
                       </div>
                     </div>
@@ -396,7 +396,7 @@ const CheckoutPage = ({ user }) => {
               </div>
 
               <button type='button' className='commerce-btn'>
-                Continue to Shipping <i className='icon-right-arrow'></i>
+                Continue to Shipping 
               </button>
               <button
                 disabled={pending}

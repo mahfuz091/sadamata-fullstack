@@ -525,7 +525,7 @@ const CategoryProductsClient = ({
                                   setShowModal(true);
                                 }}
                               >
-                                Add to Cart <i className='icon-right-arrow'></i>
+                                Add to Cart 
                               </button>
                             </div>
                           </div>
@@ -562,7 +562,7 @@ const CategoryProductsClient = ({
                     fetchPage(nextPage, true);
                   }}
                 >
-                  Next <i className='icon-right-arrow'></i>
+                  Next 
                 </button>
               </div>
 

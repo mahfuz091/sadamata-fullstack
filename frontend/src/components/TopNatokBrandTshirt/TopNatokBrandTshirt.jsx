@@ -3,18 +3,31 @@
 import Image from "next/image";
 import Slider from "react-slick";
 import { Container } from "react-bootstrap";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import AddToCartModal from "../FeatureProduct/AddToCartModal";
-
+import { toast } from "sonner";
+ const FAVORITE_KEY = "favorite_products";
+  const getFavorites = () => {
+    if (typeof window === "undefined") return [];
+    try {
+      return JSON.parse(localStorage.getItem(FAVORITE_KEY)) || [];
+    } catch {
+      return [];
+    }
+  };
 export default function TopNatokBrandTshirt({
-  title = "Top Natok Brand T-shirt",
+  title = "Drama Merchandise Shop",
   products = [],
 }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const sliderRef = useRef(null);
+  const [favorites, setFavorites] = useState([]);
 
+  useEffect(() => {
+          setFavorites(getFavorites());
+        }, []);
   const settings = {
     dots: false,
     infinite: products.length > 4,
@@ -40,8 +53,54 @@ export default function TopNatokBrandTshirt({
       imageUrl: p.previewUrl || null,
       rating: p.rating ?? 5,
       reviews: p.reviews ?? 0,
+       variants: p.variants || [],
     }));
   }, [products]);
+
+    const toggleFavorite = (product) => {
+      let action = null;
+      let nextFavorites = [];
+
+      setFavorites((prev) => {
+        const exists = prev.some((p) => p.id === product.id);
+
+        if (exists) {
+          action = "remove";
+          nextFavorites = prev.filter((p) => p.id !== product.id);
+        } else {
+          action = "add";
+          nextFavorites = [
+            ...prev,
+            {
+              id: product.id,
+              productId: product.productId,
+              title: product.title,
+              price: product.price,
+              image: product.previewUrl,
+            },
+          ];
+        }
+
+        return nextFavorites; // ✅ PURE
+      });
+
+      // ✅ Side-effects AFTER render
+      queueMicrotask(() => {
+        localStorage.setItem("favorite_products", JSON.stringify(nextFavorites));
+
+        if (action === "add") {
+          toast.success("Added to favorites", {
+            description: product.title,
+          });
+        } else if (action === "remove") {
+          toast.success("Removed from favorites", {
+            description: product.title,
+          });
+        }
+
+        window.dispatchEvent(new Event("favorite-updated"));
+      });
+    };
 
   return (
     <section className='history-product slider-wrapper py-5'>
@@ -75,12 +134,14 @@ export default function TopNatokBrandTshirt({
           ref={sliderRef}
           className='history-product__carousel'
         >
-          {normalized.map((prod) => (
+         {normalized.map((prod) => {
+            const isFavorite = favorites.some((f) => f.id === prod.id);
+return (
             <div key={prod.id} className='item'>
               <div className='product__item'>
-                <div className='product__item__img'>
+                <div className='product__item__img position-relative'>
                   <Link
-                    href={`/product-details/${prod.productId}`}
+                    href={`/products/${prod.productId}`}
                     className='product__item__img__item'
                   >
                     {prod.imageUrl ? (
@@ -97,11 +158,19 @@ export default function TopNatokBrandTshirt({
                     )}
                   </Link>
 
-                  <div className='product__item__btn'>
-                    <Link href='/cart'>
-                      <i className='far fa-heart' />
-                    </Link>
-                  </div>
+                  <div
+                        className='product__item__btn position-absolute top-0 end-0 p-2'
+                        style={{ cursor: "pointer" }}
+                        onClick={() => toggleFavorite(prod)}
+                      >
+                        <div className={`heart ${isFavorite ? "active" : ""}`}>
+                          <i
+                            className={
+                              isFavorite ? "far fa-heart" : "far fa-heart"
+                            }
+                          ></i>
+                        </div>
+                      </div>
                 </div>
 
                 <div className='product__item__content'>
@@ -110,7 +179,7 @@ export default function TopNatokBrandTshirt({
                   </p>
 
                   <h4 className='product__item__title'>
-                    <Link href={`/product-details/${prod.productId}`}>
+                    <Link href={`/products/${prod.productId}`}>
                       {prod.title}
                     </Link>
                   </h4>
@@ -130,16 +199,19 @@ export default function TopNatokBrandTshirt({
                     </div>
                   </div>
 
-                  <Link
-                        href={`/products/${prod.productId}`}
-                        className='commerce-btn product__item__link mt-auto align-self-start'
-                      >
-                        View Product 
-                      </Link>
+                  <button
+                    className='commerce-btn product__item__link mt-auto'
+                    onClick={() => {
+                      setSelectedProduct(prod);
+                      setShowModal(true);
+                    }}
+                  >
+                    Add to Cart 
+                  </button>
                 </div>
               </div>
-            </div>
-          ))}
+            </div>)}
+          )}
         </Slider>
       </Container>
       {selectedProduct && (

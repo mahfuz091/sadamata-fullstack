@@ -11,7 +11,7 @@ const ProductCard = ({ product }) => {
             <Image src={product.image} alt={product.title} />
           </a>
           <div className='product__item__btn'>
-            <a href='cart.html'>
+            <a href='cart'>
               <i className='far fa-heart'></i>
             </a>
           </div>
@@ -21,7 +21,7 @@ const ProductCard = ({ product }) => {
             Brand: <a href='#'>{product.brand}</a>
           </p>
           <h4 className='product__item__title'>
-            <a href='product-details.html'>{product.title}</a>
+            <a href='product-details'>{product.title}</a>
           </h4>
           <div className='product__item__box'>
             <div className='product__item__price'>{product.price}</div>
@@ -36,7 +36,7 @@ const ProductCard = ({ product }) => {
               </span>
             </div>
           </div>
-          <a href='cart.html' className='commerce-btn product__item__link'>
+          <a href='cart' className='commerce-btn product__item__link'>
             Add to Cart 
           </a>
         </div>

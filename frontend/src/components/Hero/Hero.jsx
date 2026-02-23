@@ -33,7 +33,7 @@ const Hero = () => {
                 style
               </p>
               <div className='hero-area__btn text-center'>
-                <a href='product.html' className='commerce-btn'>
+                <a href='/' className='commerce-btn'>
                   Shop Now 
                 </a>
               </div>

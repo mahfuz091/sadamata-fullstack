@@ -132,7 +132,7 @@ const CheckoutPage = ({ user }) => {
                   </div>
                 </div>
                 <div className='address-item__btn'>
-                  <a href='product.html'>
+                  <a href='product'>
                     Add New Addres
                   </a>
                 </div>

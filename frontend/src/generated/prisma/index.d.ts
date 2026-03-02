@@ -104,6 +104,11 @@ export type MockupVariant = $Result.DefaultSelection<Prisma.$MockupVariantPayloa
  */
 export type Order = $Result.DefaultSelection<Prisma.$OrderPayload>
 /**
+ * Model GuestAddress
+ * 
+ */
+export type GuestAddress = $Result.DefaultSelection<Prisma.$GuestAddressPayload>
+/**
  * Model OrderItem
  * 
  */
@@ -507,6 +512,16 @@ export class PrismaClient<
     * ```
     */
   get order(): Prisma.OrderDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.guestAddress`: Exposes CRUD operations for the **GuestAddress** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more GuestAddresses
+    * const guestAddresses = await prisma.guestAddress.findMany()
+    * ```
+    */
+  get guestAddress(): Prisma.GuestAddressDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.orderItem`: Exposes CRUD operations for the **OrderItem** model.
@@ -1009,6 +1024,7 @@ export namespace Prisma {
     Mockup: 'Mockup',
     MockupVariant: 'MockupVariant',
     Order: 'Order',
+    GuestAddress: 'GuestAddress',
     OrderItem: 'OrderItem',
     Payment: 'Payment',
     CommissionSetting: 'CommissionSetting',
@@ -1029,7 +1045,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "userProfile" | "userAddress" | "passwordResetToken" | "phoneResetOtp" | "merchantProfile" | "brand" | "brandCategory" | "product" | "productCategory" | "sale" | "saleItem" | "productVariant" | "feature" | "tag" | "mockup" | "mockupVariant" | "order" | "orderItem" | "payment" | "commissionSetting" | "refund" | "payout"
+      modelProps: "user" | "userProfile" | "userAddress" | "passwordResetToken" | "phoneResetOtp" | "merchantProfile" | "brand" | "brandCategory" | "product" | "productCategory" | "sale" | "saleItem" | "productVariant" | "feature" | "tag" | "mockup" | "mockupVariant" | "order" | "guestAddress" | "orderItem" | "payment" | "commissionSetting" | "refund" | "payout"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2365,6 +2381,80 @@ export namespace Prisma {
           }
         }
       }
+      GuestAddress: {
+        payload: Prisma.$GuestAddressPayload<ExtArgs>
+        fields: Prisma.GuestAddressFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.GuestAddressFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GuestAddressPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.GuestAddressFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GuestAddressPayload>
+          }
+          findFirst: {
+            args: Prisma.GuestAddressFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GuestAddressPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.GuestAddressFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GuestAddressPayload>
+          }
+          findMany: {
+            args: Prisma.GuestAddressFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GuestAddressPayload>[]
+          }
+          create: {
+            args: Prisma.GuestAddressCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GuestAddressPayload>
+          }
+          createMany: {
+            args: Prisma.GuestAddressCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.GuestAddressCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GuestAddressPayload>[]
+          }
+          delete: {
+            args: Prisma.GuestAddressDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GuestAddressPayload>
+          }
+          update: {
+            args: Prisma.GuestAddressUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GuestAddressPayload>
+          }
+          deleteMany: {
+            args: Prisma.GuestAddressDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.GuestAddressUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.GuestAddressUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GuestAddressPayload>[]
+          }
+          upsert: {
+            args: Prisma.GuestAddressUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GuestAddressPayload>
+          }
+          aggregate: {
+            args: Prisma.GuestAddressAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateGuestAddress>
+          }
+          groupBy: {
+            args: Prisma.GuestAddressGroupByArgs<ExtArgs>
+            result: $Utils.Optional<GuestAddressGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.GuestAddressCountArgs<ExtArgs>
+            result: $Utils.Optional<GuestAddressCountAggregateOutputType> | number
+          }
+        }
+      }
       OrderItem: {
         payload: Prisma.$OrderItemPayload<ExtArgs>
         fields: Prisma.OrderItemFieldRefs
@@ -2861,6 +2951,7 @@ export namespace Prisma {
     mockup?: MockupOmit
     mockupVariant?: MockupVariantOmit
     order?: OrderOmit
+    guestAddress?: GuestAddressOmit
     orderItem?: OrderItemOmit
     payment?: PaymentOmit
     commissionSetting?: CommissionSettingOmit
@@ -3352,6 +3443,37 @@ export namespace Prisma {
    */
   export type OrderCountOutputTypeCountItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: OrderItemWhereInput
+  }
+
+
+  /**
+   * Count Type GuestAddressCountOutputType
+   */
+
+  export type GuestAddressCountOutputType = {
+    orders: number
+  }
+
+  export type GuestAddressCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    orders?: boolean | GuestAddressCountOutputTypeCountOrdersArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * GuestAddressCountOutputType without action
+   */
+  export type GuestAddressCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GuestAddressCountOutputType
+     */
+    select?: GuestAddressCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * GuestAddressCountOutputType without action
+   */
+  export type GuestAddressCountOutputTypeCountOrdersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OrderWhereInput
   }
 
 
@@ -23424,7 +23546,6 @@ export namespace Prisma {
     tranId: string | null
     createdAt: Date | null
     updatedAt: Date | null
-    addressId: string | null
     couponCode: string | null
     couponRate: Decimal | null
     discount: Decimal | null
@@ -23435,6 +23556,8 @@ export namespace Prisma {
     userId: string | null
     settledAt: Date | null
     cancelledAt: Date | null
+    addressId: string | null
+    guestAddressId: string | null
   }
 
   export type OrderMaxAggregateOutputType = {
@@ -23444,7 +23567,6 @@ export namespace Prisma {
     tranId: string | null
     createdAt: Date | null
     updatedAt: Date | null
-    addressId: string | null
     couponCode: string | null
     couponRate: Decimal | null
     discount: Decimal | null
@@ -23455,6 +23577,8 @@ export namespace Prisma {
     userId: string | null
     settledAt: Date | null
     cancelledAt: Date | null
+    addressId: string | null
+    guestAddressId: string | null
   }
 
   export type OrderCountAggregateOutputType = {
@@ -23464,7 +23588,6 @@ export namespace Prisma {
     tranId: number
     createdAt: number
     updatedAt: number
-    addressId: number
     couponCode: number
     couponRate: number
     discount: number
@@ -23475,6 +23598,8 @@ export namespace Prisma {
     userId: number
     settledAt: number
     cancelledAt: number
+    addressId: number
+    guestAddressId: number
     _all: number
   }
 
@@ -23504,7 +23629,6 @@ export namespace Prisma {
     tranId?: true
     createdAt?: true
     updatedAt?: true
-    addressId?: true
     couponCode?: true
     couponRate?: true
     discount?: true
@@ -23515,6 +23639,8 @@ export namespace Prisma {
     userId?: true
     settledAt?: true
     cancelledAt?: true
+    addressId?: true
+    guestAddressId?: true
   }
 
   export type OrderMaxAggregateInputType = {
@@ -23524,7 +23650,6 @@ export namespace Prisma {
     tranId?: true
     createdAt?: true
     updatedAt?: true
-    addressId?: true
     couponCode?: true
     couponRate?: true
     discount?: true
@@ -23535,6 +23660,8 @@ export namespace Prisma {
     userId?: true
     settledAt?: true
     cancelledAt?: true
+    addressId?: true
+    guestAddressId?: true
   }
 
   export type OrderCountAggregateInputType = {
@@ -23544,7 +23671,6 @@ export namespace Prisma {
     tranId?: true
     createdAt?: true
     updatedAt?: true
-    addressId?: true
     couponCode?: true
     couponRate?: true
     discount?: true
@@ -23555,6 +23681,8 @@ export namespace Prisma {
     userId?: true
     settledAt?: true
     cancelledAt?: true
+    addressId?: true
+    guestAddressId?: true
     _all?: true
   }
 
@@ -23651,7 +23779,6 @@ export namespace Prisma {
     tranId: string
     createdAt: Date
     updatedAt: Date
-    addressId: string
     couponCode: string | null
     couponRate: Decimal | null
     discount: Decimal
@@ -23659,9 +23786,11 @@ export namespace Prisma {
     shippingFee: Decimal
     subtotal: Decimal
     tax: Decimal
-    userId: string
+    userId: string | null
     settledAt: Date | null
     cancelledAt: Date | null
+    addressId: string | null
+    guestAddressId: string | null
     _count: OrderCountAggregateOutputType | null
     _avg: OrderAvgAggregateOutputType | null
     _sum: OrderSumAggregateOutputType | null
@@ -23690,7 +23819,6 @@ export namespace Prisma {
     tranId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    addressId?: boolean
     couponCode?: boolean
     couponRate?: boolean
     discount?: boolean
@@ -23701,8 +23829,11 @@ export namespace Prisma {
     userId?: boolean
     settledAt?: boolean
     cancelledAt?: boolean
-    address?: boolean | UserAddressDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    addressId?: boolean
+    guestAddressId?: boolean
+    address?: boolean | Order$addressArgs<ExtArgs>
+    guestAddress?: boolean | Order$guestAddressArgs<ExtArgs>
+    user?: boolean | Order$userArgs<ExtArgs>
     items?: boolean | Order$itemsArgs<ExtArgs>
     payment?: boolean | Order$paymentArgs<ExtArgs>
     _count?: boolean | OrderCountOutputTypeDefaultArgs<ExtArgs>
@@ -23715,7 +23846,6 @@ export namespace Prisma {
     tranId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    addressId?: boolean
     couponCode?: boolean
     couponRate?: boolean
     discount?: boolean
@@ -23726,8 +23856,11 @@ export namespace Prisma {
     userId?: boolean
     settledAt?: boolean
     cancelledAt?: boolean
-    address?: boolean | UserAddressDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    addressId?: boolean
+    guestAddressId?: boolean
+    address?: boolean | Order$addressArgs<ExtArgs>
+    guestAddress?: boolean | Order$guestAddressArgs<ExtArgs>
+    user?: boolean | Order$userArgs<ExtArgs>
   }, ExtArgs["result"]["order"]>
 
   export type OrderSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -23737,7 +23870,6 @@ export namespace Prisma {
     tranId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    addressId?: boolean
     couponCode?: boolean
     couponRate?: boolean
     discount?: boolean
@@ -23748,8 +23880,11 @@ export namespace Prisma {
     userId?: boolean
     settledAt?: boolean
     cancelledAt?: boolean
-    address?: boolean | UserAddressDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    addressId?: boolean
+    guestAddressId?: boolean
+    address?: boolean | Order$addressArgs<ExtArgs>
+    guestAddress?: boolean | Order$guestAddressArgs<ExtArgs>
+    user?: boolean | Order$userArgs<ExtArgs>
   }, ExtArgs["result"]["order"]>
 
   export type OrderSelectScalar = {
@@ -23759,7 +23894,6 @@ export namespace Prisma {
     tranId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    addressId?: boolean
     couponCode?: boolean
     couponRate?: boolean
     discount?: boolean
@@ -23770,30 +23904,36 @@ export namespace Prisma {
     userId?: boolean
     settledAt?: boolean
     cancelledAt?: boolean
+    addressId?: boolean
+    guestAddressId?: boolean
   }
 
-  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "currency" | "status" | "tranId" | "createdAt" | "updatedAt" | "addressId" | "couponCode" | "couponRate" | "discount" | "grandTotal" | "shippingFee" | "subtotal" | "tax" | "userId" | "settledAt" | "cancelledAt", ExtArgs["result"]["order"]>
+  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "currency" | "status" | "tranId" | "createdAt" | "updatedAt" | "couponCode" | "couponRate" | "discount" | "grandTotal" | "shippingFee" | "subtotal" | "tax" | "userId" | "settledAt" | "cancelledAt" | "addressId" | "guestAddressId", ExtArgs["result"]["order"]>
   export type OrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    address?: boolean | UserAddressDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    address?: boolean | Order$addressArgs<ExtArgs>
+    guestAddress?: boolean | Order$guestAddressArgs<ExtArgs>
+    user?: boolean | Order$userArgs<ExtArgs>
     items?: boolean | Order$itemsArgs<ExtArgs>
     payment?: boolean | Order$paymentArgs<ExtArgs>
     _count?: boolean | OrderCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OrderIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    address?: boolean | UserAddressDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    address?: boolean | Order$addressArgs<ExtArgs>
+    guestAddress?: boolean | Order$guestAddressArgs<ExtArgs>
+    user?: boolean | Order$userArgs<ExtArgs>
   }
   export type OrderIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    address?: boolean | UserAddressDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    address?: boolean | Order$addressArgs<ExtArgs>
+    guestAddress?: boolean | Order$guestAddressArgs<ExtArgs>
+    user?: boolean | Order$userArgs<ExtArgs>
   }
 
   export type $OrderPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Order"
     objects: {
-      address: Prisma.$UserAddressPayload<ExtArgs>
-      user: Prisma.$UserPayload<ExtArgs>
+      address: Prisma.$UserAddressPayload<ExtArgs> | null
+      guestAddress: Prisma.$GuestAddressPayload<ExtArgs> | null
+      user: Prisma.$UserPayload<ExtArgs> | null
       items: Prisma.$OrderItemPayload<ExtArgs>[]
       payment: Prisma.$PaymentPayload<ExtArgs> | null
     }
@@ -23804,7 +23944,6 @@ export namespace Prisma {
       tranId: string
       createdAt: Date
       updatedAt: Date
-      addressId: string
       couponCode: string | null
       couponRate: Prisma.Decimal | null
       discount: Prisma.Decimal
@@ -23812,9 +23951,11 @@ export namespace Prisma {
       shippingFee: Prisma.Decimal
       subtotal: Prisma.Decimal
       tax: Prisma.Decimal
-      userId: string
+      userId: string | null
       settledAt: Date | null
       cancelledAt: Date | null
+      addressId: string | null
+      guestAddressId: string | null
     }, ExtArgs["result"]["order"]>
     composites: {}
   }
@@ -24209,8 +24350,9 @@ export namespace Prisma {
    */
   export interface Prisma__OrderClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    address<T extends UserAddressDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserAddressDefaultArgs<ExtArgs>>): Prisma__UserAddressClient<$Result.GetResult<Prisma.$UserAddressPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    address<T extends Order$addressArgs<ExtArgs> = {}>(args?: Subset<T, Order$addressArgs<ExtArgs>>): Prisma__UserAddressClient<$Result.GetResult<Prisma.$UserAddressPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    guestAddress<T extends Order$guestAddressArgs<ExtArgs> = {}>(args?: Subset<T, Order$guestAddressArgs<ExtArgs>>): Prisma__GuestAddressClient<$Result.GetResult<Prisma.$GuestAddressPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    user<T extends Order$userArgs<ExtArgs> = {}>(args?: Subset<T, Order$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     items<T extends Order$itemsArgs<ExtArgs> = {}>(args?: Subset<T, Order$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     payment<T extends Order$paymentArgs<ExtArgs> = {}>(args?: Subset<T, Order$paymentArgs<ExtArgs>>): Prisma__PaymentClient<$Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
@@ -24248,7 +24390,6 @@ export namespace Prisma {
     readonly tranId: FieldRef<"Order", 'String'>
     readonly createdAt: FieldRef<"Order", 'DateTime'>
     readonly updatedAt: FieldRef<"Order", 'DateTime'>
-    readonly addressId: FieldRef<"Order", 'String'>
     readonly couponCode: FieldRef<"Order", 'String'>
     readonly couponRate: FieldRef<"Order", 'Decimal'>
     readonly discount: FieldRef<"Order", 'Decimal'>
@@ -24259,6 +24400,8 @@ export namespace Prisma {
     readonly userId: FieldRef<"Order", 'String'>
     readonly settledAt: FieldRef<"Order", 'DateTime'>
     readonly cancelledAt: FieldRef<"Order", 'DateTime'>
+    readonly addressId: FieldRef<"Order", 'String'>
+    readonly guestAddressId: FieldRef<"Order", 'String'>
   }
     
 
@@ -24655,6 +24798,63 @@ export namespace Prisma {
   }
 
   /**
+   * Order.address
+   */
+  export type Order$addressArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserAddress
+     */
+    select?: UserAddressSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserAddress
+     */
+    omit?: UserAddressOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserAddressInclude<ExtArgs> | null
+    where?: UserAddressWhereInput
+  }
+
+  /**
+   * Order.guestAddress
+   */
+  export type Order$guestAddressArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GuestAddress
+     */
+    select?: GuestAddressSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GuestAddress
+     */
+    omit?: GuestAddressOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GuestAddressInclude<ExtArgs> | null
+    where?: GuestAddressWhereInput
+  }
+
+  /**
+   * Order.user
+   */
+  export type Order$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
    * Order.items
    */
   export type Order$itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -24713,6 +24913,1115 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: OrderInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model GuestAddress
+   */
+
+  export type AggregateGuestAddress = {
+    _count: GuestAddressCountAggregateOutputType | null
+    _min: GuestAddressMinAggregateOutputType | null
+    _max: GuestAddressMaxAggregateOutputType | null
+  }
+
+  export type GuestAddressMinAggregateOutputType = {
+    id: string | null
+    firstName: string | null
+    lastName: string | null
+    phone: string | null
+    email: string | null
+    address: string | null
+    zipCode: string | null
+    createdAt: Date | null
+  }
+
+  export type GuestAddressMaxAggregateOutputType = {
+    id: string | null
+    firstName: string | null
+    lastName: string | null
+    phone: string | null
+    email: string | null
+    address: string | null
+    zipCode: string | null
+    createdAt: Date | null
+  }
+
+  export type GuestAddressCountAggregateOutputType = {
+    id: number
+    firstName: number
+    lastName: number
+    phone: number
+    email: number
+    address: number
+    zipCode: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type GuestAddressMinAggregateInputType = {
+    id?: true
+    firstName?: true
+    lastName?: true
+    phone?: true
+    email?: true
+    address?: true
+    zipCode?: true
+    createdAt?: true
+  }
+
+  export type GuestAddressMaxAggregateInputType = {
+    id?: true
+    firstName?: true
+    lastName?: true
+    phone?: true
+    email?: true
+    address?: true
+    zipCode?: true
+    createdAt?: true
+  }
+
+  export type GuestAddressCountAggregateInputType = {
+    id?: true
+    firstName?: true
+    lastName?: true
+    phone?: true
+    email?: true
+    address?: true
+    zipCode?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type GuestAddressAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GuestAddress to aggregate.
+     */
+    where?: GuestAddressWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GuestAddresses to fetch.
+     */
+    orderBy?: GuestAddressOrderByWithRelationInput | GuestAddressOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: GuestAddressWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GuestAddresses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GuestAddresses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned GuestAddresses
+    **/
+    _count?: true | GuestAddressCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: GuestAddressMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: GuestAddressMaxAggregateInputType
+  }
+
+  export type GetGuestAddressAggregateType<T extends GuestAddressAggregateArgs> = {
+        [P in keyof T & keyof AggregateGuestAddress]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateGuestAddress[P]>
+      : GetScalarType<T[P], AggregateGuestAddress[P]>
+  }
+
+
+
+
+  export type GuestAddressGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GuestAddressWhereInput
+    orderBy?: GuestAddressOrderByWithAggregationInput | GuestAddressOrderByWithAggregationInput[]
+    by: GuestAddressScalarFieldEnum[] | GuestAddressScalarFieldEnum
+    having?: GuestAddressScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: GuestAddressCountAggregateInputType | true
+    _min?: GuestAddressMinAggregateInputType
+    _max?: GuestAddressMaxAggregateInputType
+  }
+
+  export type GuestAddressGroupByOutputType = {
+    id: string
+    firstName: string
+    lastName: string
+    phone: string
+    email: string | null
+    address: string
+    zipCode: string | null
+    createdAt: Date
+    _count: GuestAddressCountAggregateOutputType | null
+    _min: GuestAddressMinAggregateOutputType | null
+    _max: GuestAddressMaxAggregateOutputType | null
+  }
+
+  type GetGuestAddressGroupByPayload<T extends GuestAddressGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<GuestAddressGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof GuestAddressGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], GuestAddressGroupByOutputType[P]>
+            : GetScalarType<T[P], GuestAddressGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type GuestAddressSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    firstName?: boolean
+    lastName?: boolean
+    phone?: boolean
+    email?: boolean
+    address?: boolean
+    zipCode?: boolean
+    createdAt?: boolean
+    orders?: boolean | GuestAddress$ordersArgs<ExtArgs>
+    _count?: boolean | GuestAddressCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["guestAddress"]>
+
+  export type GuestAddressSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    firstName?: boolean
+    lastName?: boolean
+    phone?: boolean
+    email?: boolean
+    address?: boolean
+    zipCode?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["guestAddress"]>
+
+  export type GuestAddressSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    firstName?: boolean
+    lastName?: boolean
+    phone?: boolean
+    email?: boolean
+    address?: boolean
+    zipCode?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["guestAddress"]>
+
+  export type GuestAddressSelectScalar = {
+    id?: boolean
+    firstName?: boolean
+    lastName?: boolean
+    phone?: boolean
+    email?: boolean
+    address?: boolean
+    zipCode?: boolean
+    createdAt?: boolean
+  }
+
+  export type GuestAddressOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "firstName" | "lastName" | "phone" | "email" | "address" | "zipCode" | "createdAt", ExtArgs["result"]["guestAddress"]>
+  export type GuestAddressInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    orders?: boolean | GuestAddress$ordersArgs<ExtArgs>
+    _count?: boolean | GuestAddressCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type GuestAddressIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type GuestAddressIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $GuestAddressPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "GuestAddress"
+    objects: {
+      orders: Prisma.$OrderPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      firstName: string
+      lastName: string
+      phone: string
+      email: string | null
+      address: string
+      zipCode: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["guestAddress"]>
+    composites: {}
+  }
+
+  type GuestAddressGetPayload<S extends boolean | null | undefined | GuestAddressDefaultArgs> = $Result.GetResult<Prisma.$GuestAddressPayload, S>
+
+  type GuestAddressCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<GuestAddressFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: GuestAddressCountAggregateInputType | true
+    }
+
+  export interface GuestAddressDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['GuestAddress'], meta: { name: 'GuestAddress' } }
+    /**
+     * Find zero or one GuestAddress that matches the filter.
+     * @param {GuestAddressFindUniqueArgs} args - Arguments to find a GuestAddress
+     * @example
+     * // Get one GuestAddress
+     * const guestAddress = await prisma.guestAddress.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends GuestAddressFindUniqueArgs>(args: SelectSubset<T, GuestAddressFindUniqueArgs<ExtArgs>>): Prisma__GuestAddressClient<$Result.GetResult<Prisma.$GuestAddressPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one GuestAddress that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {GuestAddressFindUniqueOrThrowArgs} args - Arguments to find a GuestAddress
+     * @example
+     * // Get one GuestAddress
+     * const guestAddress = await prisma.guestAddress.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends GuestAddressFindUniqueOrThrowArgs>(args: SelectSubset<T, GuestAddressFindUniqueOrThrowArgs<ExtArgs>>): Prisma__GuestAddressClient<$Result.GetResult<Prisma.$GuestAddressPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GuestAddress that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GuestAddressFindFirstArgs} args - Arguments to find a GuestAddress
+     * @example
+     * // Get one GuestAddress
+     * const guestAddress = await prisma.guestAddress.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends GuestAddressFindFirstArgs>(args?: SelectSubset<T, GuestAddressFindFirstArgs<ExtArgs>>): Prisma__GuestAddressClient<$Result.GetResult<Prisma.$GuestAddressPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GuestAddress that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GuestAddressFindFirstOrThrowArgs} args - Arguments to find a GuestAddress
+     * @example
+     * // Get one GuestAddress
+     * const guestAddress = await prisma.guestAddress.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends GuestAddressFindFirstOrThrowArgs>(args?: SelectSubset<T, GuestAddressFindFirstOrThrowArgs<ExtArgs>>): Prisma__GuestAddressClient<$Result.GetResult<Prisma.$GuestAddressPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more GuestAddresses that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GuestAddressFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all GuestAddresses
+     * const guestAddresses = await prisma.guestAddress.findMany()
+     * 
+     * // Get first 10 GuestAddresses
+     * const guestAddresses = await prisma.guestAddress.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const guestAddressWithIdOnly = await prisma.guestAddress.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends GuestAddressFindManyArgs>(args?: SelectSubset<T, GuestAddressFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GuestAddressPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a GuestAddress.
+     * @param {GuestAddressCreateArgs} args - Arguments to create a GuestAddress.
+     * @example
+     * // Create one GuestAddress
+     * const GuestAddress = await prisma.guestAddress.create({
+     *   data: {
+     *     // ... data to create a GuestAddress
+     *   }
+     * })
+     * 
+     */
+    create<T extends GuestAddressCreateArgs>(args: SelectSubset<T, GuestAddressCreateArgs<ExtArgs>>): Prisma__GuestAddressClient<$Result.GetResult<Prisma.$GuestAddressPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many GuestAddresses.
+     * @param {GuestAddressCreateManyArgs} args - Arguments to create many GuestAddresses.
+     * @example
+     * // Create many GuestAddresses
+     * const guestAddress = await prisma.guestAddress.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends GuestAddressCreateManyArgs>(args?: SelectSubset<T, GuestAddressCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many GuestAddresses and returns the data saved in the database.
+     * @param {GuestAddressCreateManyAndReturnArgs} args - Arguments to create many GuestAddresses.
+     * @example
+     * // Create many GuestAddresses
+     * const guestAddress = await prisma.guestAddress.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many GuestAddresses and only return the `id`
+     * const guestAddressWithIdOnly = await prisma.guestAddress.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends GuestAddressCreateManyAndReturnArgs>(args?: SelectSubset<T, GuestAddressCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GuestAddressPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a GuestAddress.
+     * @param {GuestAddressDeleteArgs} args - Arguments to delete one GuestAddress.
+     * @example
+     * // Delete one GuestAddress
+     * const GuestAddress = await prisma.guestAddress.delete({
+     *   where: {
+     *     // ... filter to delete one GuestAddress
+     *   }
+     * })
+     * 
+     */
+    delete<T extends GuestAddressDeleteArgs>(args: SelectSubset<T, GuestAddressDeleteArgs<ExtArgs>>): Prisma__GuestAddressClient<$Result.GetResult<Prisma.$GuestAddressPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one GuestAddress.
+     * @param {GuestAddressUpdateArgs} args - Arguments to update one GuestAddress.
+     * @example
+     * // Update one GuestAddress
+     * const guestAddress = await prisma.guestAddress.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends GuestAddressUpdateArgs>(args: SelectSubset<T, GuestAddressUpdateArgs<ExtArgs>>): Prisma__GuestAddressClient<$Result.GetResult<Prisma.$GuestAddressPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more GuestAddresses.
+     * @param {GuestAddressDeleteManyArgs} args - Arguments to filter GuestAddresses to delete.
+     * @example
+     * // Delete a few GuestAddresses
+     * const { count } = await prisma.guestAddress.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends GuestAddressDeleteManyArgs>(args?: SelectSubset<T, GuestAddressDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GuestAddresses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GuestAddressUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many GuestAddresses
+     * const guestAddress = await prisma.guestAddress.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends GuestAddressUpdateManyArgs>(args: SelectSubset<T, GuestAddressUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GuestAddresses and returns the data updated in the database.
+     * @param {GuestAddressUpdateManyAndReturnArgs} args - Arguments to update many GuestAddresses.
+     * @example
+     * // Update many GuestAddresses
+     * const guestAddress = await prisma.guestAddress.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more GuestAddresses and only return the `id`
+     * const guestAddressWithIdOnly = await prisma.guestAddress.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends GuestAddressUpdateManyAndReturnArgs>(args: SelectSubset<T, GuestAddressUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GuestAddressPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one GuestAddress.
+     * @param {GuestAddressUpsertArgs} args - Arguments to update or create a GuestAddress.
+     * @example
+     * // Update or create a GuestAddress
+     * const guestAddress = await prisma.guestAddress.upsert({
+     *   create: {
+     *     // ... data to create a GuestAddress
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the GuestAddress we want to update
+     *   }
+     * })
+     */
+    upsert<T extends GuestAddressUpsertArgs>(args: SelectSubset<T, GuestAddressUpsertArgs<ExtArgs>>): Prisma__GuestAddressClient<$Result.GetResult<Prisma.$GuestAddressPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of GuestAddresses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GuestAddressCountArgs} args - Arguments to filter GuestAddresses to count.
+     * @example
+     * // Count the number of GuestAddresses
+     * const count = await prisma.guestAddress.count({
+     *   where: {
+     *     // ... the filter for the GuestAddresses we want to count
+     *   }
+     * })
+    **/
+    count<T extends GuestAddressCountArgs>(
+      args?: Subset<T, GuestAddressCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], GuestAddressCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a GuestAddress.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GuestAddressAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends GuestAddressAggregateArgs>(args: Subset<T, GuestAddressAggregateArgs>): Prisma.PrismaPromise<GetGuestAddressAggregateType<T>>
+
+    /**
+     * Group by GuestAddress.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GuestAddressGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends GuestAddressGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: GuestAddressGroupByArgs['orderBy'] }
+        : { orderBy?: GuestAddressGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, GuestAddressGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetGuestAddressGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the GuestAddress model
+   */
+  readonly fields: GuestAddressFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for GuestAddress.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__GuestAddressClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    orders<T extends GuestAddress$ordersArgs<ExtArgs> = {}>(args?: Subset<T, GuestAddress$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the GuestAddress model
+   */
+  interface GuestAddressFieldRefs {
+    readonly id: FieldRef<"GuestAddress", 'String'>
+    readonly firstName: FieldRef<"GuestAddress", 'String'>
+    readonly lastName: FieldRef<"GuestAddress", 'String'>
+    readonly phone: FieldRef<"GuestAddress", 'String'>
+    readonly email: FieldRef<"GuestAddress", 'String'>
+    readonly address: FieldRef<"GuestAddress", 'String'>
+    readonly zipCode: FieldRef<"GuestAddress", 'String'>
+    readonly createdAt: FieldRef<"GuestAddress", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * GuestAddress findUnique
+   */
+  export type GuestAddressFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GuestAddress
+     */
+    select?: GuestAddressSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GuestAddress
+     */
+    omit?: GuestAddressOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GuestAddressInclude<ExtArgs> | null
+    /**
+     * Filter, which GuestAddress to fetch.
+     */
+    where: GuestAddressWhereUniqueInput
+  }
+
+  /**
+   * GuestAddress findUniqueOrThrow
+   */
+  export type GuestAddressFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GuestAddress
+     */
+    select?: GuestAddressSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GuestAddress
+     */
+    omit?: GuestAddressOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GuestAddressInclude<ExtArgs> | null
+    /**
+     * Filter, which GuestAddress to fetch.
+     */
+    where: GuestAddressWhereUniqueInput
+  }
+
+  /**
+   * GuestAddress findFirst
+   */
+  export type GuestAddressFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GuestAddress
+     */
+    select?: GuestAddressSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GuestAddress
+     */
+    omit?: GuestAddressOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GuestAddressInclude<ExtArgs> | null
+    /**
+     * Filter, which GuestAddress to fetch.
+     */
+    where?: GuestAddressWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GuestAddresses to fetch.
+     */
+    orderBy?: GuestAddressOrderByWithRelationInput | GuestAddressOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GuestAddresses.
+     */
+    cursor?: GuestAddressWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GuestAddresses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GuestAddresses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GuestAddresses.
+     */
+    distinct?: GuestAddressScalarFieldEnum | GuestAddressScalarFieldEnum[]
+  }
+
+  /**
+   * GuestAddress findFirstOrThrow
+   */
+  export type GuestAddressFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GuestAddress
+     */
+    select?: GuestAddressSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GuestAddress
+     */
+    omit?: GuestAddressOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GuestAddressInclude<ExtArgs> | null
+    /**
+     * Filter, which GuestAddress to fetch.
+     */
+    where?: GuestAddressWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GuestAddresses to fetch.
+     */
+    orderBy?: GuestAddressOrderByWithRelationInput | GuestAddressOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GuestAddresses.
+     */
+    cursor?: GuestAddressWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GuestAddresses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GuestAddresses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GuestAddresses.
+     */
+    distinct?: GuestAddressScalarFieldEnum | GuestAddressScalarFieldEnum[]
+  }
+
+  /**
+   * GuestAddress findMany
+   */
+  export type GuestAddressFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GuestAddress
+     */
+    select?: GuestAddressSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GuestAddress
+     */
+    omit?: GuestAddressOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GuestAddressInclude<ExtArgs> | null
+    /**
+     * Filter, which GuestAddresses to fetch.
+     */
+    where?: GuestAddressWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GuestAddresses to fetch.
+     */
+    orderBy?: GuestAddressOrderByWithRelationInput | GuestAddressOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing GuestAddresses.
+     */
+    cursor?: GuestAddressWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GuestAddresses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GuestAddresses.
+     */
+    skip?: number
+    distinct?: GuestAddressScalarFieldEnum | GuestAddressScalarFieldEnum[]
+  }
+
+  /**
+   * GuestAddress create
+   */
+  export type GuestAddressCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GuestAddress
+     */
+    select?: GuestAddressSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GuestAddress
+     */
+    omit?: GuestAddressOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GuestAddressInclude<ExtArgs> | null
+    /**
+     * The data needed to create a GuestAddress.
+     */
+    data: XOR<GuestAddressCreateInput, GuestAddressUncheckedCreateInput>
+  }
+
+  /**
+   * GuestAddress createMany
+   */
+  export type GuestAddressCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many GuestAddresses.
+     */
+    data: GuestAddressCreateManyInput | GuestAddressCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * GuestAddress createManyAndReturn
+   */
+  export type GuestAddressCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GuestAddress
+     */
+    select?: GuestAddressSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GuestAddress
+     */
+    omit?: GuestAddressOmit<ExtArgs> | null
+    /**
+     * The data used to create many GuestAddresses.
+     */
+    data: GuestAddressCreateManyInput | GuestAddressCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * GuestAddress update
+   */
+  export type GuestAddressUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GuestAddress
+     */
+    select?: GuestAddressSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GuestAddress
+     */
+    omit?: GuestAddressOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GuestAddressInclude<ExtArgs> | null
+    /**
+     * The data needed to update a GuestAddress.
+     */
+    data: XOR<GuestAddressUpdateInput, GuestAddressUncheckedUpdateInput>
+    /**
+     * Choose, which GuestAddress to update.
+     */
+    where: GuestAddressWhereUniqueInput
+  }
+
+  /**
+   * GuestAddress updateMany
+   */
+  export type GuestAddressUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update GuestAddresses.
+     */
+    data: XOR<GuestAddressUpdateManyMutationInput, GuestAddressUncheckedUpdateManyInput>
+    /**
+     * Filter which GuestAddresses to update
+     */
+    where?: GuestAddressWhereInput
+    /**
+     * Limit how many GuestAddresses to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * GuestAddress updateManyAndReturn
+   */
+  export type GuestAddressUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GuestAddress
+     */
+    select?: GuestAddressSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GuestAddress
+     */
+    omit?: GuestAddressOmit<ExtArgs> | null
+    /**
+     * The data used to update GuestAddresses.
+     */
+    data: XOR<GuestAddressUpdateManyMutationInput, GuestAddressUncheckedUpdateManyInput>
+    /**
+     * Filter which GuestAddresses to update
+     */
+    where?: GuestAddressWhereInput
+    /**
+     * Limit how many GuestAddresses to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * GuestAddress upsert
+   */
+  export type GuestAddressUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GuestAddress
+     */
+    select?: GuestAddressSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GuestAddress
+     */
+    omit?: GuestAddressOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GuestAddressInclude<ExtArgs> | null
+    /**
+     * The filter to search for the GuestAddress to update in case it exists.
+     */
+    where: GuestAddressWhereUniqueInput
+    /**
+     * In case the GuestAddress found by the `where` argument doesn't exist, create a new GuestAddress with this data.
+     */
+    create: XOR<GuestAddressCreateInput, GuestAddressUncheckedCreateInput>
+    /**
+     * In case the GuestAddress was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<GuestAddressUpdateInput, GuestAddressUncheckedUpdateInput>
+  }
+
+  /**
+   * GuestAddress delete
+   */
+  export type GuestAddressDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GuestAddress
+     */
+    select?: GuestAddressSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GuestAddress
+     */
+    omit?: GuestAddressOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GuestAddressInclude<ExtArgs> | null
+    /**
+     * Filter which GuestAddress to delete.
+     */
+    where: GuestAddressWhereUniqueInput
+  }
+
+  /**
+   * GuestAddress deleteMany
+   */
+  export type GuestAddressDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GuestAddresses to delete
+     */
+    where?: GuestAddressWhereInput
+    /**
+     * Limit how many GuestAddresses to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * GuestAddress.orders
+   */
+  export type GuestAddress$ordersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Order
+     */
+    select?: OrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Order
+     */
+    omit?: OrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderInclude<ExtArgs> | null
+    where?: OrderWhereInput
+    orderBy?: OrderOrderByWithRelationInput | OrderOrderByWithRelationInput[]
+    cursor?: OrderWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OrderScalarFieldEnum | OrderScalarFieldEnum[]
+  }
+
+  /**
+   * GuestAddress without action
+   */
+  export type GuestAddressDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GuestAddress
+     */
+    select?: GuestAddressSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GuestAddress
+     */
+    omit?: GuestAddressOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GuestAddressInclude<ExtArgs> | null
   }
 
 
@@ -30924,7 +32233,6 @@ export namespace Prisma {
     tranId: 'tranId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    addressId: 'addressId',
     couponCode: 'couponCode',
     couponRate: 'couponRate',
     discount: 'discount',
@@ -30934,10 +32242,26 @@ export namespace Prisma {
     tax: 'tax',
     userId: 'userId',
     settledAt: 'settledAt',
-    cancelledAt: 'cancelledAt'
+    cancelledAt: 'cancelledAt',
+    addressId: 'addressId',
+    guestAddressId: 'guestAddressId'
   };
 
   export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum]
+
+
+  export const GuestAddressScalarFieldEnum: {
+    id: 'id',
+    firstName: 'firstName',
+    lastName: 'lastName',
+    phone: 'phone',
+    email: 'email',
+    address: 'address',
+    zipCode: 'zipCode',
+    createdAt: 'createdAt'
+  };
+
+  export type GuestAddressScalarFieldEnum = (typeof GuestAddressScalarFieldEnum)[keyof typeof GuestAddressScalarFieldEnum]
 
 
   export const OrderItemScalarFieldEnum: {
@@ -32676,7 +34000,6 @@ export namespace Prisma {
     tranId?: StringFilter<"Order"> | string
     createdAt?: DateTimeFilter<"Order"> | Date | string
     updatedAt?: DateTimeFilter<"Order"> | Date | string
-    addressId?: StringFilter<"Order"> | string
     couponCode?: StringNullableFilter<"Order"> | string | null
     couponRate?: DecimalNullableFilter<"Order"> | Decimal | DecimalJsLike | number | string | null
     discount?: DecimalFilter<"Order"> | Decimal | DecimalJsLike | number | string
@@ -32684,11 +34007,14 @@ export namespace Prisma {
     shippingFee?: DecimalFilter<"Order"> | Decimal | DecimalJsLike | number | string
     subtotal?: DecimalFilter<"Order"> | Decimal | DecimalJsLike | number | string
     tax?: DecimalFilter<"Order"> | Decimal | DecimalJsLike | number | string
-    userId?: StringFilter<"Order"> | string
+    userId?: StringNullableFilter<"Order"> | string | null
     settledAt?: DateTimeNullableFilter<"Order"> | Date | string | null
     cancelledAt?: DateTimeNullableFilter<"Order"> | Date | string | null
-    address?: XOR<UserAddressScalarRelationFilter, UserAddressWhereInput>
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    addressId?: StringNullableFilter<"Order"> | string | null
+    guestAddressId?: StringNullableFilter<"Order"> | string | null
+    address?: XOR<UserAddressNullableScalarRelationFilter, UserAddressWhereInput> | null
+    guestAddress?: XOR<GuestAddressNullableScalarRelationFilter, GuestAddressWhereInput> | null
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     items?: OrderItemListRelationFilter
     payment?: XOR<PaymentNullableScalarRelationFilter, PaymentWhereInput> | null
   }
@@ -32700,7 +34026,6 @@ export namespace Prisma {
     tranId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    addressId?: SortOrder
     couponCode?: SortOrderInput | SortOrder
     couponRate?: SortOrderInput | SortOrder
     discount?: SortOrder
@@ -32708,10 +34033,13 @@ export namespace Prisma {
     shippingFee?: SortOrder
     subtotal?: SortOrder
     tax?: SortOrder
-    userId?: SortOrder
+    userId?: SortOrderInput | SortOrder
     settledAt?: SortOrderInput | SortOrder
     cancelledAt?: SortOrderInput | SortOrder
+    addressId?: SortOrderInput | SortOrder
+    guestAddressId?: SortOrderInput | SortOrder
     address?: UserAddressOrderByWithRelationInput
+    guestAddress?: GuestAddressOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
     items?: OrderItemOrderByRelationAggregateInput
     payment?: PaymentOrderByWithRelationInput
@@ -32727,7 +34055,6 @@ export namespace Prisma {
     status?: StringFilter<"Order"> | string
     createdAt?: DateTimeFilter<"Order"> | Date | string
     updatedAt?: DateTimeFilter<"Order"> | Date | string
-    addressId?: StringFilter<"Order"> | string
     couponCode?: StringNullableFilter<"Order"> | string | null
     couponRate?: DecimalNullableFilter<"Order"> | Decimal | DecimalJsLike | number | string | null
     discount?: DecimalFilter<"Order"> | Decimal | DecimalJsLike | number | string
@@ -32735,11 +34062,14 @@ export namespace Prisma {
     shippingFee?: DecimalFilter<"Order"> | Decimal | DecimalJsLike | number | string
     subtotal?: DecimalFilter<"Order"> | Decimal | DecimalJsLike | number | string
     tax?: DecimalFilter<"Order"> | Decimal | DecimalJsLike | number | string
-    userId?: StringFilter<"Order"> | string
+    userId?: StringNullableFilter<"Order"> | string | null
     settledAt?: DateTimeNullableFilter<"Order"> | Date | string | null
     cancelledAt?: DateTimeNullableFilter<"Order"> | Date | string | null
-    address?: XOR<UserAddressScalarRelationFilter, UserAddressWhereInput>
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    addressId?: StringNullableFilter<"Order"> | string | null
+    guestAddressId?: StringNullableFilter<"Order"> | string | null
+    address?: XOR<UserAddressNullableScalarRelationFilter, UserAddressWhereInput> | null
+    guestAddress?: XOR<GuestAddressNullableScalarRelationFilter, GuestAddressWhereInput> | null
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     items?: OrderItemListRelationFilter
     payment?: XOR<PaymentNullableScalarRelationFilter, PaymentWhereInput> | null
   }, "id" | "tranId">
@@ -32751,7 +34081,6 @@ export namespace Prisma {
     tranId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    addressId?: SortOrder
     couponCode?: SortOrderInput | SortOrder
     couponRate?: SortOrderInput | SortOrder
     discount?: SortOrder
@@ -32759,9 +34088,11 @@ export namespace Prisma {
     shippingFee?: SortOrder
     subtotal?: SortOrder
     tax?: SortOrder
-    userId?: SortOrder
+    userId?: SortOrderInput | SortOrder
     settledAt?: SortOrderInput | SortOrder
     cancelledAt?: SortOrderInput | SortOrder
+    addressId?: SortOrderInput | SortOrder
+    guestAddressId?: SortOrderInput | SortOrder
     _count?: OrderCountOrderByAggregateInput
     _avg?: OrderAvgOrderByAggregateInput
     _max?: OrderMaxOrderByAggregateInput
@@ -32779,7 +34110,6 @@ export namespace Prisma {
     tranId?: StringWithAggregatesFilter<"Order"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Order"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Order"> | Date | string
-    addressId?: StringWithAggregatesFilter<"Order"> | string
     couponCode?: StringNullableWithAggregatesFilter<"Order"> | string | null
     couponRate?: DecimalNullableWithAggregatesFilter<"Order"> | Decimal | DecimalJsLike | number | string | null
     discount?: DecimalWithAggregatesFilter<"Order"> | Decimal | DecimalJsLike | number | string
@@ -32787,9 +34117,81 @@ export namespace Prisma {
     shippingFee?: DecimalWithAggregatesFilter<"Order"> | Decimal | DecimalJsLike | number | string
     subtotal?: DecimalWithAggregatesFilter<"Order"> | Decimal | DecimalJsLike | number | string
     tax?: DecimalWithAggregatesFilter<"Order"> | Decimal | DecimalJsLike | number | string
-    userId?: StringWithAggregatesFilter<"Order"> | string
+    userId?: StringNullableWithAggregatesFilter<"Order"> | string | null
     settledAt?: DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
     cancelledAt?: DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
+    addressId?: StringNullableWithAggregatesFilter<"Order"> | string | null
+    guestAddressId?: StringNullableWithAggregatesFilter<"Order"> | string | null
+  }
+
+  export type GuestAddressWhereInput = {
+    AND?: GuestAddressWhereInput | GuestAddressWhereInput[]
+    OR?: GuestAddressWhereInput[]
+    NOT?: GuestAddressWhereInput | GuestAddressWhereInput[]
+    id?: StringFilter<"GuestAddress"> | string
+    firstName?: StringFilter<"GuestAddress"> | string
+    lastName?: StringFilter<"GuestAddress"> | string
+    phone?: StringFilter<"GuestAddress"> | string
+    email?: StringNullableFilter<"GuestAddress"> | string | null
+    address?: StringFilter<"GuestAddress"> | string
+    zipCode?: StringNullableFilter<"GuestAddress"> | string | null
+    createdAt?: DateTimeFilter<"GuestAddress"> | Date | string
+    orders?: OrderListRelationFilter
+  }
+
+  export type GuestAddressOrderByWithRelationInput = {
+    id?: SortOrder
+    firstName?: SortOrder
+    lastName?: SortOrder
+    phone?: SortOrder
+    email?: SortOrderInput | SortOrder
+    address?: SortOrder
+    zipCode?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    orders?: OrderOrderByRelationAggregateInput
+  }
+
+  export type GuestAddressWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: GuestAddressWhereInput | GuestAddressWhereInput[]
+    OR?: GuestAddressWhereInput[]
+    NOT?: GuestAddressWhereInput | GuestAddressWhereInput[]
+    firstName?: StringFilter<"GuestAddress"> | string
+    lastName?: StringFilter<"GuestAddress"> | string
+    phone?: StringFilter<"GuestAddress"> | string
+    email?: StringNullableFilter<"GuestAddress"> | string | null
+    address?: StringFilter<"GuestAddress"> | string
+    zipCode?: StringNullableFilter<"GuestAddress"> | string | null
+    createdAt?: DateTimeFilter<"GuestAddress"> | Date | string
+    orders?: OrderListRelationFilter
+  }, "id">
+
+  export type GuestAddressOrderByWithAggregationInput = {
+    id?: SortOrder
+    firstName?: SortOrder
+    lastName?: SortOrder
+    phone?: SortOrder
+    email?: SortOrderInput | SortOrder
+    address?: SortOrder
+    zipCode?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: GuestAddressCountOrderByAggregateInput
+    _max?: GuestAddressMaxOrderByAggregateInput
+    _min?: GuestAddressMinOrderByAggregateInput
+  }
+
+  export type GuestAddressScalarWhereWithAggregatesInput = {
+    AND?: GuestAddressScalarWhereWithAggregatesInput | GuestAddressScalarWhereWithAggregatesInput[]
+    OR?: GuestAddressScalarWhereWithAggregatesInput[]
+    NOT?: GuestAddressScalarWhereWithAggregatesInput | GuestAddressScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"GuestAddress"> | string
+    firstName?: StringWithAggregatesFilter<"GuestAddress"> | string
+    lastName?: StringWithAggregatesFilter<"GuestAddress"> | string
+    phone?: StringWithAggregatesFilter<"GuestAddress"> | string
+    email?: StringNullableWithAggregatesFilter<"GuestAddress"> | string | null
+    address?: StringWithAggregatesFilter<"GuestAddress"> | string
+    zipCode?: StringNullableWithAggregatesFilter<"GuestAddress"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"GuestAddress"> | Date | string
   }
 
   export type OrderItemWhereInput = {
@@ -34848,8 +36250,9 @@ export namespace Prisma {
     tax?: Decimal | DecimalJsLike | number | string
     settledAt?: Date | string | null
     cancelledAt?: Date | string | null
-    address: UserAddressCreateNestedOneWithoutOrderInput
-    user: UserCreateNestedOneWithoutOrderInput
+    address?: UserAddressCreateNestedOneWithoutOrderInput
+    guestAddress?: GuestAddressCreateNestedOneWithoutOrdersInput
+    user?: UserCreateNestedOneWithoutOrderInput
     items?: OrderItemCreateNestedManyWithoutOrderInput
     payment?: PaymentCreateNestedOneWithoutOrderInput
   }
@@ -34861,7 +36264,6 @@ export namespace Prisma {
     tranId: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    addressId: string
     couponCode?: string | null
     couponRate?: Decimal | DecimalJsLike | number | string | null
     discount?: Decimal | DecimalJsLike | number | string
@@ -34869,9 +36271,11 @@ export namespace Prisma {
     shippingFee?: Decimal | DecimalJsLike | number | string
     subtotal: Decimal | DecimalJsLike | number | string
     tax?: Decimal | DecimalJsLike | number | string
-    userId: string
+    userId?: string | null
     settledAt?: Date | string | null
     cancelledAt?: Date | string | null
+    addressId?: string | null
+    guestAddressId?: string | null
     items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     payment?: PaymentUncheckedCreateNestedOneWithoutOrderInput
   }
@@ -34892,8 +36296,9 @@ export namespace Prisma {
     tax?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    address?: UserAddressUpdateOneRequiredWithoutOrderNestedInput
-    user?: UserUpdateOneRequiredWithoutOrderNestedInput
+    address?: UserAddressUpdateOneWithoutOrderNestedInput
+    guestAddress?: GuestAddressUpdateOneWithoutOrdersNestedInput
+    user?: UserUpdateOneWithoutOrderNestedInput
     items?: OrderItemUpdateManyWithoutOrderNestedInput
     payment?: PaymentUpdateOneWithoutOrderNestedInput
   }
@@ -34905,7 +36310,6 @@ export namespace Prisma {
     tranId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    addressId?: StringFieldUpdateOperationsInput | string
     couponCode?: NullableStringFieldUpdateOperationsInput | string | null
     couponRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     discount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -34913,9 +36317,11 @@ export namespace Prisma {
     shippingFee?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     tax?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    userId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    addressId?: NullableStringFieldUpdateOperationsInput | string | null
+    guestAddressId?: NullableStringFieldUpdateOperationsInput | string | null
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     payment?: PaymentUncheckedUpdateOneWithoutOrderNestedInput
   }
@@ -34927,7 +36333,6 @@ export namespace Prisma {
     tranId: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    addressId: string
     couponCode?: string | null
     couponRate?: Decimal | DecimalJsLike | number | string | null
     discount?: Decimal | DecimalJsLike | number | string
@@ -34935,9 +36340,11 @@ export namespace Prisma {
     shippingFee?: Decimal | DecimalJsLike | number | string
     subtotal: Decimal | DecimalJsLike | number | string
     tax?: Decimal | DecimalJsLike | number | string
-    userId: string
+    userId?: string | null
     settledAt?: Date | string | null
     cancelledAt?: Date | string | null
+    addressId?: string | null
+    guestAddressId?: string | null
   }
 
   export type OrderUpdateManyMutationInput = {
@@ -34965,7 +36372,6 @@ export namespace Prisma {
     tranId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    addressId?: StringFieldUpdateOperationsInput | string
     couponCode?: NullableStringFieldUpdateOperationsInput | string | null
     couponRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     discount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -34973,9 +36379,92 @@ export namespace Prisma {
     shippingFee?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     tax?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    userId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    addressId?: NullableStringFieldUpdateOperationsInput | string | null
+    guestAddressId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type GuestAddressCreateInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    phone: string
+    email?: string | null
+    address: string
+    zipCode?: string | null
+    createdAt?: Date | string
+    orders?: OrderCreateNestedManyWithoutGuestAddressInput
+  }
+
+  export type GuestAddressUncheckedCreateInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    phone: string
+    email?: string | null
+    address: string
+    zipCode?: string | null
+    createdAt?: Date | string
+    orders?: OrderUncheckedCreateNestedManyWithoutGuestAddressInput
+  }
+
+  export type GuestAddressUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: StringFieldUpdateOperationsInput | string
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orders?: OrderUpdateManyWithoutGuestAddressNestedInput
+  }
+
+  export type GuestAddressUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: StringFieldUpdateOperationsInput | string
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orders?: OrderUncheckedUpdateManyWithoutGuestAddressNestedInput
+  }
+
+  export type GuestAddressCreateManyInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    phone: string
+    email?: string | null
+    address: string
+    zipCode?: string | null
+    createdAt?: Date | string
+  }
+
+  export type GuestAddressUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: StringFieldUpdateOperationsInput | string
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GuestAddressUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: StringFieldUpdateOperationsInput | string
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type OrderItemCreateInput = {
@@ -36677,9 +38166,19 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
-  export type UserAddressScalarRelationFilter = {
-    is?: UserAddressWhereInput
-    isNot?: UserAddressWhereInput
+  export type UserAddressNullableScalarRelationFilter = {
+    is?: UserAddressWhereInput | null
+    isNot?: UserAddressWhereInput | null
+  }
+
+  export type GuestAddressNullableScalarRelationFilter = {
+    is?: GuestAddressWhereInput | null
+    isNot?: GuestAddressWhereInput | null
+  }
+
+  export type UserNullableScalarRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
   }
 
   export type OrderItemListRelationFilter = {
@@ -36704,7 +38203,6 @@ export namespace Prisma {
     tranId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    addressId?: SortOrder
     couponCode?: SortOrder
     couponRate?: SortOrder
     discount?: SortOrder
@@ -36715,6 +38213,8 @@ export namespace Prisma {
     userId?: SortOrder
     settledAt?: SortOrder
     cancelledAt?: SortOrder
+    addressId?: SortOrder
+    guestAddressId?: SortOrder
   }
 
   export type OrderAvgOrderByAggregateInput = {
@@ -36733,7 +38233,6 @@ export namespace Prisma {
     tranId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    addressId?: SortOrder
     couponCode?: SortOrder
     couponRate?: SortOrder
     discount?: SortOrder
@@ -36744,6 +38243,8 @@ export namespace Prisma {
     userId?: SortOrder
     settledAt?: SortOrder
     cancelledAt?: SortOrder
+    addressId?: SortOrder
+    guestAddressId?: SortOrder
   }
 
   export type OrderMinOrderByAggregateInput = {
@@ -36753,7 +38254,6 @@ export namespace Prisma {
     tranId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    addressId?: SortOrder
     couponCode?: SortOrder
     couponRate?: SortOrder
     discount?: SortOrder
@@ -36764,6 +38264,8 @@ export namespace Prisma {
     userId?: SortOrder
     settledAt?: SortOrder
     cancelledAt?: SortOrder
+    addressId?: SortOrder
+    guestAddressId?: SortOrder
   }
 
   export type OrderSumOrderByAggregateInput = {
@@ -36803,6 +38305,39 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type GuestAddressCountOrderByAggregateInput = {
+    id?: SortOrder
+    firstName?: SortOrder
+    lastName?: SortOrder
+    phone?: SortOrder
+    email?: SortOrder
+    address?: SortOrder
+    zipCode?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type GuestAddressMaxOrderByAggregateInput = {
+    id?: SortOrder
+    firstName?: SortOrder
+    lastName?: SortOrder
+    phone?: SortOrder
+    email?: SortOrder
+    address?: SortOrder
+    zipCode?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type GuestAddressMinOrderByAggregateInput = {
+    id?: SortOrder
+    firstName?: SortOrder
+    lastName?: SortOrder
+    phone?: SortOrder
+    email?: SortOrder
+    address?: SortOrder
+    zipCode?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type EnumFitTypeNullableFilter<$PrismaModel = never> = {
@@ -36961,11 +38496,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedJsonNullableFilter<$PrismaModel>
     _max?: NestedJsonNullableFilter<$PrismaModel>
-  }
-
-  export type UserNullableScalarRelationFilter = {
-    is?: UserWhereInput | null
-    isNot?: UserWhereInput | null
   }
 
   export type ProductNullableScalarRelationFilter = {
@@ -38518,6 +40048,12 @@ export namespace Prisma {
     connect?: UserAddressWhereUniqueInput
   }
 
+  export type GuestAddressCreateNestedOneWithoutOrdersInput = {
+    create?: XOR<GuestAddressCreateWithoutOrdersInput, GuestAddressUncheckedCreateWithoutOrdersInput>
+    connectOrCreate?: GuestAddressCreateOrConnectWithoutOrdersInput
+    connect?: GuestAddressWhereUniqueInput
+  }
+
   export type UserCreateNestedOneWithoutOrderInput = {
     create?: XOR<UserCreateWithoutOrderInput, UserUncheckedCreateWithoutOrderInput>
     connectOrCreate?: UserCreateOrConnectWithoutOrderInput
@@ -38562,18 +40098,32 @@ export namespace Prisma {
     set?: Date | string | null
   }
 
-  export type UserAddressUpdateOneRequiredWithoutOrderNestedInput = {
+  export type UserAddressUpdateOneWithoutOrderNestedInput = {
     create?: XOR<UserAddressCreateWithoutOrderInput, UserAddressUncheckedCreateWithoutOrderInput>
     connectOrCreate?: UserAddressCreateOrConnectWithoutOrderInput
     upsert?: UserAddressUpsertWithoutOrderInput
+    disconnect?: UserAddressWhereInput | boolean
+    delete?: UserAddressWhereInput | boolean
     connect?: UserAddressWhereUniqueInput
     update?: XOR<XOR<UserAddressUpdateToOneWithWhereWithoutOrderInput, UserAddressUpdateWithoutOrderInput>, UserAddressUncheckedUpdateWithoutOrderInput>
   }
 
-  export type UserUpdateOneRequiredWithoutOrderNestedInput = {
+  export type GuestAddressUpdateOneWithoutOrdersNestedInput = {
+    create?: XOR<GuestAddressCreateWithoutOrdersInput, GuestAddressUncheckedCreateWithoutOrdersInput>
+    connectOrCreate?: GuestAddressCreateOrConnectWithoutOrdersInput
+    upsert?: GuestAddressUpsertWithoutOrdersInput
+    disconnect?: GuestAddressWhereInput | boolean
+    delete?: GuestAddressWhereInput | boolean
+    connect?: GuestAddressWhereUniqueInput
+    update?: XOR<XOR<GuestAddressUpdateToOneWithWhereWithoutOrdersInput, GuestAddressUpdateWithoutOrdersInput>, GuestAddressUncheckedUpdateWithoutOrdersInput>
+  }
+
+  export type UserUpdateOneWithoutOrderNestedInput = {
     create?: XOR<UserCreateWithoutOrderInput, UserUncheckedCreateWithoutOrderInput>
     connectOrCreate?: UserCreateOrConnectWithoutOrderInput
     upsert?: UserUpsertWithoutOrderInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutOrderInput, UserUpdateWithoutOrderInput>, UserUncheckedUpdateWithoutOrderInput>
   }
@@ -38624,6 +40174,48 @@ export namespace Prisma {
     delete?: PaymentWhereInput | boolean
     connect?: PaymentWhereUniqueInput
     update?: XOR<XOR<PaymentUpdateToOneWithWhereWithoutOrderInput, PaymentUpdateWithoutOrderInput>, PaymentUncheckedUpdateWithoutOrderInput>
+  }
+
+  export type OrderCreateNestedManyWithoutGuestAddressInput = {
+    create?: XOR<OrderCreateWithoutGuestAddressInput, OrderUncheckedCreateWithoutGuestAddressInput> | OrderCreateWithoutGuestAddressInput[] | OrderUncheckedCreateWithoutGuestAddressInput[]
+    connectOrCreate?: OrderCreateOrConnectWithoutGuestAddressInput | OrderCreateOrConnectWithoutGuestAddressInput[]
+    createMany?: OrderCreateManyGuestAddressInputEnvelope
+    connect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+  }
+
+  export type OrderUncheckedCreateNestedManyWithoutGuestAddressInput = {
+    create?: XOR<OrderCreateWithoutGuestAddressInput, OrderUncheckedCreateWithoutGuestAddressInput> | OrderCreateWithoutGuestAddressInput[] | OrderUncheckedCreateWithoutGuestAddressInput[]
+    connectOrCreate?: OrderCreateOrConnectWithoutGuestAddressInput | OrderCreateOrConnectWithoutGuestAddressInput[]
+    createMany?: OrderCreateManyGuestAddressInputEnvelope
+    connect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+  }
+
+  export type OrderUpdateManyWithoutGuestAddressNestedInput = {
+    create?: XOR<OrderCreateWithoutGuestAddressInput, OrderUncheckedCreateWithoutGuestAddressInput> | OrderCreateWithoutGuestAddressInput[] | OrderUncheckedCreateWithoutGuestAddressInput[]
+    connectOrCreate?: OrderCreateOrConnectWithoutGuestAddressInput | OrderCreateOrConnectWithoutGuestAddressInput[]
+    upsert?: OrderUpsertWithWhereUniqueWithoutGuestAddressInput | OrderUpsertWithWhereUniqueWithoutGuestAddressInput[]
+    createMany?: OrderCreateManyGuestAddressInputEnvelope
+    set?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+    disconnect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+    delete?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+    connect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+    update?: OrderUpdateWithWhereUniqueWithoutGuestAddressInput | OrderUpdateWithWhereUniqueWithoutGuestAddressInput[]
+    updateMany?: OrderUpdateManyWithWhereWithoutGuestAddressInput | OrderUpdateManyWithWhereWithoutGuestAddressInput[]
+    deleteMany?: OrderScalarWhereInput | OrderScalarWhereInput[]
+  }
+
+  export type OrderUncheckedUpdateManyWithoutGuestAddressNestedInput = {
+    create?: XOR<OrderCreateWithoutGuestAddressInput, OrderUncheckedCreateWithoutGuestAddressInput> | OrderCreateWithoutGuestAddressInput[] | OrderUncheckedCreateWithoutGuestAddressInput[]
+    connectOrCreate?: OrderCreateOrConnectWithoutGuestAddressInput | OrderCreateOrConnectWithoutGuestAddressInput[]
+    upsert?: OrderUpsertWithWhereUniqueWithoutGuestAddressInput | OrderUpsertWithWhereUniqueWithoutGuestAddressInput[]
+    createMany?: OrderCreateManyGuestAddressInputEnvelope
+    set?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+    disconnect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+    delete?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+    connect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+    update?: OrderUpdateWithWhereUniqueWithoutGuestAddressInput | OrderUpdateWithWhereUniqueWithoutGuestAddressInput[]
+    updateMany?: OrderUpdateManyWithWhereWithoutGuestAddressInput | OrderUpdateManyWithWhereWithoutGuestAddressInput[]
+    deleteMany?: OrderScalarWhereInput | OrderScalarWhereInput[]
   }
 
   export type OrderCreateNestedOneWithoutItemsInput = {
@@ -39430,7 +41022,8 @@ export namespace Prisma {
     tax?: Decimal | DecimalJsLike | number | string
     settledAt?: Date | string | null
     cancelledAt?: Date | string | null
-    address: UserAddressCreateNestedOneWithoutOrderInput
+    address?: UserAddressCreateNestedOneWithoutOrderInput
+    guestAddress?: GuestAddressCreateNestedOneWithoutOrdersInput
     items?: OrderItemCreateNestedManyWithoutOrderInput
     payment?: PaymentCreateNestedOneWithoutOrderInput
   }
@@ -39442,7 +41035,6 @@ export namespace Prisma {
     tranId: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    addressId: string
     couponCode?: string | null
     couponRate?: Decimal | DecimalJsLike | number | string | null
     discount?: Decimal | DecimalJsLike | number | string
@@ -39452,6 +41044,8 @@ export namespace Prisma {
     tax?: Decimal | DecimalJsLike | number | string
     settledAt?: Date | string | null
     cancelledAt?: Date | string | null
+    addressId?: string | null
+    guestAddressId?: string | null
     items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     payment?: PaymentUncheckedCreateNestedOneWithoutOrderInput
   }
@@ -39869,7 +41463,6 @@ export namespace Prisma {
     tranId?: StringFilter<"Order"> | string
     createdAt?: DateTimeFilter<"Order"> | Date | string
     updatedAt?: DateTimeFilter<"Order"> | Date | string
-    addressId?: StringFilter<"Order"> | string
     couponCode?: StringNullableFilter<"Order"> | string | null
     couponRate?: DecimalNullableFilter<"Order"> | Decimal | DecimalJsLike | number | string | null
     discount?: DecimalFilter<"Order"> | Decimal | DecimalJsLike | number | string
@@ -39877,9 +41470,11 @@ export namespace Prisma {
     shippingFee?: DecimalFilter<"Order"> | Decimal | DecimalJsLike | number | string
     subtotal?: DecimalFilter<"Order"> | Decimal | DecimalJsLike | number | string
     tax?: DecimalFilter<"Order"> | Decimal | DecimalJsLike | number | string
-    userId?: StringFilter<"Order"> | string
+    userId?: StringNullableFilter<"Order"> | string | null
     settledAt?: DateTimeNullableFilter<"Order"> | Date | string | null
     cancelledAt?: DateTimeNullableFilter<"Order"> | Date | string | null
+    addressId?: StringNullableFilter<"Order"> | string | null
+    guestAddressId?: StringNullableFilter<"Order"> | string | null
   }
 
   export type PayoutUpsertWithWhereUniqueWithoutMerchantInput = {
@@ -40173,7 +41768,8 @@ export namespace Prisma {
     tax?: Decimal | DecimalJsLike | number | string
     settledAt?: Date | string | null
     cancelledAt?: Date | string | null
-    user: UserCreateNestedOneWithoutOrderInput
+    guestAddress?: GuestAddressCreateNestedOneWithoutOrdersInput
+    user?: UserCreateNestedOneWithoutOrderInput
     items?: OrderItemCreateNestedManyWithoutOrderInput
     payment?: PaymentCreateNestedOneWithoutOrderInput
   }
@@ -40192,9 +41788,10 @@ export namespace Prisma {
     shippingFee?: Decimal | DecimalJsLike | number | string
     subtotal: Decimal | DecimalJsLike | number | string
     tax?: Decimal | DecimalJsLike | number | string
-    userId: string
+    userId?: string | null
     settledAt?: Date | string | null
     cancelledAt?: Date | string | null
+    guestAddressId?: string | null
     items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     payment?: PaymentUncheckedCreateNestedOneWithoutOrderInput
   }
@@ -42850,6 +44447,33 @@ export namespace Prisma {
     create: XOR<UserAddressCreateWithoutOrderInput, UserAddressUncheckedCreateWithoutOrderInput>
   }
 
+  export type GuestAddressCreateWithoutOrdersInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    phone: string
+    email?: string | null
+    address: string
+    zipCode?: string | null
+    createdAt?: Date | string
+  }
+
+  export type GuestAddressUncheckedCreateWithoutOrdersInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    phone: string
+    email?: string | null
+    address: string
+    zipCode?: string | null
+    createdAt?: Date | string
+  }
+
+  export type GuestAddressCreateOrConnectWithoutOrdersInput = {
+    where: GuestAddressWhereUniqueInput
+    create: XOR<GuestAddressCreateWithoutOrdersInput, GuestAddressUncheckedCreateWithoutOrdersInput>
+  }
+
   export type UserCreateWithoutOrderInput = {
     id?: string
     email?: string | null
@@ -43001,6 +44625,39 @@ export namespace Prisma {
     zipCode?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type GuestAddressUpsertWithoutOrdersInput = {
+    update: XOR<GuestAddressUpdateWithoutOrdersInput, GuestAddressUncheckedUpdateWithoutOrdersInput>
+    create: XOR<GuestAddressCreateWithoutOrdersInput, GuestAddressUncheckedCreateWithoutOrdersInput>
+    where?: GuestAddressWhereInput
+  }
+
+  export type GuestAddressUpdateToOneWithWhereWithoutOrdersInput = {
+    where?: GuestAddressWhereInput
+    data: XOR<GuestAddressUpdateWithoutOrdersInput, GuestAddressUncheckedUpdateWithoutOrdersInput>
+  }
+
+  export type GuestAddressUpdateWithoutOrdersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: StringFieldUpdateOperationsInput | string
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GuestAddressUncheckedUpdateWithoutOrdersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: StringFieldUpdateOperationsInput | string
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserUpsertWithoutOrderInput = {
     update: XOR<UserUpdateWithoutOrderInput, UserUncheckedUpdateWithoutOrderInput>
     create: XOR<UserCreateWithoutOrderInput, UserUncheckedCreateWithoutOrderInput>
@@ -43118,6 +44775,76 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type OrderCreateWithoutGuestAddressInput = {
+    id?: string
+    currency?: string
+    status?: string
+    tranId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    couponCode?: string | null
+    couponRate?: Decimal | DecimalJsLike | number | string | null
+    discount?: Decimal | DecimalJsLike | number | string
+    grandTotal: Decimal | DecimalJsLike | number | string
+    shippingFee?: Decimal | DecimalJsLike | number | string
+    subtotal: Decimal | DecimalJsLike | number | string
+    tax?: Decimal | DecimalJsLike | number | string
+    settledAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    address?: UserAddressCreateNestedOneWithoutOrderInput
+    user?: UserCreateNestedOneWithoutOrderInput
+    items?: OrderItemCreateNestedManyWithoutOrderInput
+    payment?: PaymentCreateNestedOneWithoutOrderInput
+  }
+
+  export type OrderUncheckedCreateWithoutGuestAddressInput = {
+    id?: string
+    currency?: string
+    status?: string
+    tranId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    couponCode?: string | null
+    couponRate?: Decimal | DecimalJsLike | number | string | null
+    discount?: Decimal | DecimalJsLike | number | string
+    grandTotal: Decimal | DecimalJsLike | number | string
+    shippingFee?: Decimal | DecimalJsLike | number | string
+    subtotal: Decimal | DecimalJsLike | number | string
+    tax?: Decimal | DecimalJsLike | number | string
+    userId?: string | null
+    settledAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    addressId?: string | null
+    items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
+    payment?: PaymentUncheckedCreateNestedOneWithoutOrderInput
+  }
+
+  export type OrderCreateOrConnectWithoutGuestAddressInput = {
+    where: OrderWhereUniqueInput
+    create: XOR<OrderCreateWithoutGuestAddressInput, OrderUncheckedCreateWithoutGuestAddressInput>
+  }
+
+  export type OrderCreateManyGuestAddressInputEnvelope = {
+    data: OrderCreateManyGuestAddressInput | OrderCreateManyGuestAddressInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OrderUpsertWithWhereUniqueWithoutGuestAddressInput = {
+    where: OrderWhereUniqueInput
+    update: XOR<OrderUpdateWithoutGuestAddressInput, OrderUncheckedUpdateWithoutGuestAddressInput>
+    create: XOR<OrderCreateWithoutGuestAddressInput, OrderUncheckedCreateWithoutGuestAddressInput>
+  }
+
+  export type OrderUpdateWithWhereUniqueWithoutGuestAddressInput = {
+    where: OrderWhereUniqueInput
+    data: XOR<OrderUpdateWithoutGuestAddressInput, OrderUncheckedUpdateWithoutGuestAddressInput>
+  }
+
+  export type OrderUpdateManyWithWhereWithoutGuestAddressInput = {
+    where: OrderScalarWhereInput
+    data: XOR<OrderUpdateManyMutationInput, OrderUncheckedUpdateManyWithoutGuestAddressInput>
+  }
+
   export type OrderCreateWithoutItemsInput = {
     id?: string
     currency?: string
@@ -43134,8 +44861,9 @@ export namespace Prisma {
     tax?: Decimal | DecimalJsLike | number | string
     settledAt?: Date | string | null
     cancelledAt?: Date | string | null
-    address: UserAddressCreateNestedOneWithoutOrderInput
-    user: UserCreateNestedOneWithoutOrderInput
+    address?: UserAddressCreateNestedOneWithoutOrderInput
+    guestAddress?: GuestAddressCreateNestedOneWithoutOrdersInput
+    user?: UserCreateNestedOneWithoutOrderInput
     payment?: PaymentCreateNestedOneWithoutOrderInput
   }
 
@@ -43146,7 +44874,6 @@ export namespace Prisma {
     tranId: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    addressId: string
     couponCode?: string | null
     couponRate?: Decimal | DecimalJsLike | number | string | null
     discount?: Decimal | DecimalJsLike | number | string
@@ -43154,9 +44881,11 @@ export namespace Prisma {
     shippingFee?: Decimal | DecimalJsLike | number | string
     subtotal: Decimal | DecimalJsLike | number | string
     tax?: Decimal | DecimalJsLike | number | string
-    userId: string
+    userId?: string | null
     settledAt?: Date | string | null
     cancelledAt?: Date | string | null
+    addressId?: string | null
+    guestAddressId?: string | null
     payment?: PaymentUncheckedCreateNestedOneWithoutOrderInput
   }
 
@@ -43256,8 +44985,9 @@ export namespace Prisma {
     tax?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    address?: UserAddressUpdateOneRequiredWithoutOrderNestedInput
-    user?: UserUpdateOneRequiredWithoutOrderNestedInput
+    address?: UserAddressUpdateOneWithoutOrderNestedInput
+    guestAddress?: GuestAddressUpdateOneWithoutOrdersNestedInput
+    user?: UserUpdateOneWithoutOrderNestedInput
     payment?: PaymentUpdateOneWithoutOrderNestedInput
   }
 
@@ -43268,7 +44998,6 @@ export namespace Prisma {
     tranId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    addressId?: StringFieldUpdateOperationsInput | string
     couponCode?: NullableStringFieldUpdateOperationsInput | string | null
     couponRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     discount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -43276,9 +45005,11 @@ export namespace Prisma {
     shippingFee?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     tax?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    userId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    addressId?: NullableStringFieldUpdateOperationsInput | string | null
+    guestAddressId?: NullableStringFieldUpdateOperationsInput | string | null
     payment?: PaymentUncheckedUpdateOneWithoutOrderNestedInput
   }
 
@@ -43374,8 +45105,9 @@ export namespace Prisma {
     tax?: Decimal | DecimalJsLike | number | string
     settledAt?: Date | string | null
     cancelledAt?: Date | string | null
-    address: UserAddressCreateNestedOneWithoutOrderInput
-    user: UserCreateNestedOneWithoutOrderInput
+    address?: UserAddressCreateNestedOneWithoutOrderInput
+    guestAddress?: GuestAddressCreateNestedOneWithoutOrdersInput
+    user?: UserCreateNestedOneWithoutOrderInput
     items?: OrderItemCreateNestedManyWithoutOrderInput
   }
 
@@ -43386,7 +45118,6 @@ export namespace Prisma {
     tranId: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    addressId: string
     couponCode?: string | null
     couponRate?: Decimal | DecimalJsLike | number | string | null
     discount?: Decimal | DecimalJsLike | number | string
@@ -43394,9 +45125,11 @@ export namespace Prisma {
     shippingFee?: Decimal | DecimalJsLike | number | string
     subtotal: Decimal | DecimalJsLike | number | string
     tax?: Decimal | DecimalJsLike | number | string
-    userId: string
+    userId?: string | null
     settledAt?: Date | string | null
     cancelledAt?: Date | string | null
+    addressId?: string | null
+    guestAddressId?: string | null
     items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
   }
 
@@ -43432,8 +45165,9 @@ export namespace Prisma {
     tax?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    address?: UserAddressUpdateOneRequiredWithoutOrderNestedInput
-    user?: UserUpdateOneRequiredWithoutOrderNestedInput
+    address?: UserAddressUpdateOneWithoutOrderNestedInput
+    guestAddress?: GuestAddressUpdateOneWithoutOrdersNestedInput
+    user?: UserUpdateOneWithoutOrderNestedInput
     items?: OrderItemUpdateManyWithoutOrderNestedInput
   }
 
@@ -43444,7 +45178,6 @@ export namespace Prisma {
     tranId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    addressId?: StringFieldUpdateOperationsInput | string
     couponCode?: NullableStringFieldUpdateOperationsInput | string | null
     couponRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     discount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -43452,9 +45185,11 @@ export namespace Prisma {
     shippingFee?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     tax?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    userId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    addressId?: NullableStringFieldUpdateOperationsInput | string | null
+    guestAddressId?: NullableStringFieldUpdateOperationsInput | string | null
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
   }
 
@@ -44255,7 +45990,6 @@ export namespace Prisma {
     tranId: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    addressId: string
     couponCode?: string | null
     couponRate?: Decimal | DecimalJsLike | number | string | null
     discount?: Decimal | DecimalJsLike | number | string
@@ -44265,6 +45999,8 @@ export namespace Prisma {
     tax?: Decimal | DecimalJsLike | number | string
     settledAt?: Date | string | null
     cancelledAt?: Date | string | null
+    addressId?: string | null
+    guestAddressId?: string | null
   }
 
   export type PayoutCreateManyMerchantInput = {
@@ -44381,7 +46117,8 @@ export namespace Prisma {
     tax?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    address?: UserAddressUpdateOneRequiredWithoutOrderNestedInput
+    address?: UserAddressUpdateOneWithoutOrderNestedInput
+    guestAddress?: GuestAddressUpdateOneWithoutOrdersNestedInput
     items?: OrderItemUpdateManyWithoutOrderNestedInput
     payment?: PaymentUpdateOneWithoutOrderNestedInput
   }
@@ -44393,7 +46130,6 @@ export namespace Prisma {
     tranId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    addressId?: StringFieldUpdateOperationsInput | string
     couponCode?: NullableStringFieldUpdateOperationsInput | string | null
     couponRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     discount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -44403,6 +46139,8 @@ export namespace Prisma {
     tax?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    addressId?: NullableStringFieldUpdateOperationsInput | string | null
+    guestAddressId?: NullableStringFieldUpdateOperationsInput | string | null
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     payment?: PaymentUncheckedUpdateOneWithoutOrderNestedInput
   }
@@ -44414,7 +46152,6 @@ export namespace Prisma {
     tranId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    addressId?: StringFieldUpdateOperationsInput | string
     couponCode?: NullableStringFieldUpdateOperationsInput | string | null
     couponRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     discount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -44424,6 +46161,8 @@ export namespace Prisma {
     tax?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    addressId?: NullableStringFieldUpdateOperationsInput | string | null
+    guestAddressId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type PayoutUpdateWithoutMerchantInput = {
@@ -44626,9 +46365,10 @@ export namespace Prisma {
     shippingFee?: Decimal | DecimalJsLike | number | string
     subtotal: Decimal | DecimalJsLike | number | string
     tax?: Decimal | DecimalJsLike | number | string
-    userId: string
+    userId?: string | null
     settledAt?: Date | string | null
     cancelledAt?: Date | string | null
+    guestAddressId?: string | null
   }
 
   export type OrderUpdateWithoutAddressInput = {
@@ -44647,7 +46387,8 @@ export namespace Prisma {
     tax?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    user?: UserUpdateOneRequiredWithoutOrderNestedInput
+    guestAddress?: GuestAddressUpdateOneWithoutOrdersNestedInput
+    user?: UserUpdateOneWithoutOrderNestedInput
     items?: OrderItemUpdateManyWithoutOrderNestedInput
     payment?: PaymentUpdateOneWithoutOrderNestedInput
   }
@@ -44666,9 +46407,10 @@ export namespace Prisma {
     shippingFee?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     tax?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    userId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    guestAddressId?: NullableStringFieldUpdateOperationsInput | string | null
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     payment?: PaymentUncheckedUpdateOneWithoutOrderNestedInput
   }
@@ -44687,9 +46429,10 @@ export namespace Prisma {
     shippingFee?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     tax?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    userId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    guestAddressId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CommissionSettingCreateManyBrandInput = {
@@ -45609,6 +47352,90 @@ export namespace Prisma {
     color?: NullableStringFieldUpdateOperationsInput | string | null
     fitType?: NullableEnumFitTypeFieldUpdateOperationsInput | $Enums.FitType | null
     size?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type OrderCreateManyGuestAddressInput = {
+    id?: string
+    currency?: string
+    status?: string
+    tranId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    couponCode?: string | null
+    couponRate?: Decimal | DecimalJsLike | number | string | null
+    discount?: Decimal | DecimalJsLike | number | string
+    grandTotal: Decimal | DecimalJsLike | number | string
+    shippingFee?: Decimal | DecimalJsLike | number | string
+    subtotal: Decimal | DecimalJsLike | number | string
+    tax?: Decimal | DecimalJsLike | number | string
+    userId?: string | null
+    settledAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    addressId?: string | null
+  }
+
+  export type OrderUpdateWithoutGuestAddressInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    tranId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    couponCode?: NullableStringFieldUpdateOperationsInput | string | null
+    couponRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    discount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    grandTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    shippingFee?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tax?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    address?: UserAddressUpdateOneWithoutOrderNestedInput
+    user?: UserUpdateOneWithoutOrderNestedInput
+    items?: OrderItemUpdateManyWithoutOrderNestedInput
+    payment?: PaymentUpdateOneWithoutOrderNestedInput
+  }
+
+  export type OrderUncheckedUpdateWithoutGuestAddressInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    tranId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    couponCode?: NullableStringFieldUpdateOperationsInput | string | null
+    couponRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    discount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    grandTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    shippingFee?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tax?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    addressId?: NullableStringFieldUpdateOperationsInput | string | null
+    items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
+    payment?: PaymentUncheckedUpdateOneWithoutOrderNestedInput
+  }
+
+  export type OrderUncheckedUpdateManyWithoutGuestAddressInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    tranId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    couponCode?: NullableStringFieldUpdateOperationsInput | string | null
+    couponRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    discount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    grandTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    shippingFee?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tax?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    settledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    addressId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
 

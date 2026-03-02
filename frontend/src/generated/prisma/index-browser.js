@@ -348,7 +348,6 @@ exports.Prisma.OrderScalarFieldEnum = {
   tranId: 'tranId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  addressId: 'addressId',
   couponCode: 'couponCode',
   couponRate: 'couponRate',
   discount: 'discount',
@@ -358,7 +357,20 @@ exports.Prisma.OrderScalarFieldEnum = {
   tax: 'tax',
   userId: 'userId',
   settledAt: 'settledAt',
-  cancelledAt: 'cancelledAt'
+  cancelledAt: 'cancelledAt',
+  addressId: 'addressId',
+  guestAddressId: 'guestAddressId'
+};
+
+exports.Prisma.GuestAddressScalarFieldEnum = {
+  id: 'id',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  phone: 'phone',
+  email: 'email',
+  address: 'address',
+  zipCode: 'zipCode',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.OrderItemScalarFieldEnum = {
@@ -491,6 +503,7 @@ exports.Prisma.ModelName = {
   Mockup: 'Mockup',
   MockupVariant: 'MockupVariant',
   Order: 'Order',
+  GuestAddress: 'GuestAddress',
   OrderItem: 'OrderItem',
   Payment: 'Payment',
   CommissionSetting: 'CommissionSetting',

@@ -106,6 +106,7 @@ export async function getOrders(arg1 = null, arg2 = {}) {
         where,
         include: {
           user: { select: { id: true, name: true, email: true } },
+          GuestAddress: true,
           address: true,
           items: true,
           payment: true,
@@ -189,6 +190,7 @@ export async function getSingleOrder(_, { orderId }) {
       include: {
         user: true,
         address: true,
+        GuestAddress: true,
         items: {
           include: {
             Sale: {

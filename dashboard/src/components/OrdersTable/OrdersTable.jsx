@@ -6,6 +6,7 @@ import { EyeOutlined } from "@ant-design/icons";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { updateOrderStatus } from "@/app/actions/order/order.actions";
 import dayjs from "dayjs";
+import Link from "next/link";
 
 const { RangePicker } = DatePicker;
 
@@ -34,6 +35,9 @@ export default function OrdersTable({ initial = [], meta, filters = {} }) {
 
   const [orders, setOrders] = useState(initial);
   const [loadingIds, setLoadingIds] = useState([]);
+
+  console.log("orders", orders);
+  
 
   // filters
   const [status, setStatus] = useState(filters?.status || null);
@@ -98,14 +102,16 @@ export default function OrdersTable({ initial = [], meta, filters = {} }) {
     {
       title: "Order ID",
       dataIndex: "id",
-      render: (id) => <strong>{id.slice(0, 8)}...</strong>,
+      render: (id) => <strong>{id}</strong>,
     },
     {
       title: "Customer",
       render: (_, r) => (
-        <div>
-          <div>{r.user?.name}</div>
-          <small>{r.user?.email}</small>
+        <div className="flex flex-col">
+          <Link href={`/dashboard/orders/${r.id}`}>
+            {r?.user ? r.user?.name:r?.GuestAddress?.firstName + " " + r?.GuestAddress?.lastName}
+          </Link>
+          <small>{r.user?.email || r.GuestAddress?.email}</small>
         </div>
       ),
     },

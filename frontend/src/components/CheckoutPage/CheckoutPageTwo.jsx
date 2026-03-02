@@ -41,10 +41,18 @@ const CheckoutPageTwo = ({ user }) => {
 
   const [imageMap, setImageMap] = useState({});
 
+  // guest checkout state
+const [guestFirstName, setGuestFirstName] = useState("");
+const [guestLastName, setGuestLastName] = useState("");
+const [guestPhone, setGuestPhone] = useState("");
+const [guestEmail, setGuestEmail] = useState("");
+const [guestAddress, setGuestAddress] = useState("");
+const [guestZip, setGuestZip] = useState("");
+
   // require login
-  useEffect(() => {
-    if (!user) router.push("/login?redirect=/checkout");
-  }, [user, router]);
+  // useEffect(() => {
+  //   if (!user) router.push("/login?redirect=/checkout");
+  // }, [user, router]);
 
   // load cart + coupon
   useEffect(() => {
@@ -184,211 +192,7 @@ const CheckoutPageTwo = ({ user }) => {
 
         <div className='row gutter-y-30'>
           <div className='col-xl-8'>
-            {/* Address block */}
-            <div className='cart-one__inner'>
-              <div className='address-item'>
-                <div className='address-item__content'>
-                  <h3 className='address-title'>Shipping Address</h3>
-
-                  {addresses.length === 0 ? (
-                    <div className='address-item__inner__content'>
-                      <p>No saved addresses.</p>
-                    </div>
-                  ) : (
-                    <>
-                      {selectedId && (
-                        <div className='address-item__inner'>
-                          <div className='address-item__icon'>
-                            <i className='icon-reshot-icon-pin-74U6KRPJEH'></i>
-                          </div>
-                          <div className='address-item__inner__content'>
-                            {(() => {
-                              const a = addresses.find(
-                                (x) => x.id === selectedId
-                              );
-                              return a ? (
-                                <>
-                                  <h3 className='address-item__name'>
-                                    {a.firstName} {a.lastName}{" "}
-                                    {a.isDefault && <span>Main Address</span>}
-                                  </h3>
-                                  <p className='address-item__call'>
-                                    {a.phone}
-                                  </p>
-                                  <p className='address-item__info'>
-                                    {a.address}
-                                  </p>
-                                </>
-                              ) : null;
-                            })()}
-                          </div>
-                        </div>
-                      )}
-
-                      <div
-                        className='form-one__control form-one__control--full'
-                        style={{ marginTop: 12 }}
-                      >
-                        <label className='form-one__label'>
-                          Select address
-                        </label>
-                        <Select
-                          options={addresses.map((a) => ({
-                            value: a.id,
-                            label: `${a.firstName} ${a.lastName} — ${
-                              a.address
-                            }${a.isDefault ? " [Default]" : ""}`,
-                          }))}
-                          styles={customStyles}
-                          components={{ IndicatorSeparator: () => null }}
-                          value={
-                            addresses
-                              .map((a) => ({
-                                value: a.id,
-                                label: `${a.firstName} ${a.lastName} — ${
-                                  a.address
-                                }${a.isDefault ? " [Default]" : ""}`,
-                              }))
-                              .find((opt) => opt.value === selectedId) || null
-                          }
-                          onChange={(opt) => setSelectedId(opt?.value || "")}
-                          isClearable={false}
-                          isSearchable={true}
-                          placeholder='Select Shipping Address'
-                        />
-
-                        {/* <select
-                          className="form-one__input"
-                          value={selectedId}
-                          onChange={(e) => setSelectedId(e.target.value)}
-                        >
-                          {addresses.map((a) => (
-                            <option key={a.id} value={a.id}>
-                              {a.firstName} {a.lastName} — {a.address}
-                              {a.isDefault ? " [Default]" : ""}
-                            </option>
-                          ))}
-                        </select> */}
-                      </div>
-                    </>
-                  )}
-                </div>
-
-                <div className='address-item__btn'>
-                  <button
-                    type='button'
-                    className='commerce-btn text-white'
-                    onClick={() => setShowNewForm((v) => !v)}
-                  >
-                    {addresses.length === 0
-                      ? "Add New Address"
-                      : showNewForm
-                      ? "Close"
-                      : "Add New Address"}
-                    
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Add New Address form */}
-            {showNewForm && (
-              <div className='cart-one__inner'>
-                <div className='billing-address'>
-                  <h3 className='billing-address-title'>Add New Address</h3>
-                  <form className='form-one' onSubmit={handleCreateAddress}>
-                    <div className='form-one__group'>
-                      <div className='form-one__control'>
-                        <label className='form-one__label'>First name</label>
-                        <div className='form-one__input-box'>
-                          <input
-                            type='text'
-                            value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)}
-                            placeholder='Enter your first name'
-                          />
-                        </div>
-                      </div>
-                      <div className='form-one__control'>
-                        <label className='form-one__label'>Last name</label>
-                        <div className='form-one__input-box'>
-                          <input
-                            type='text'
-                            value={lastName}
-                            onChange={(e) => setLastName(e.target.value)}
-                            placeholder='Enter your last name'
-                          />
-                        </div>
-                      </div>
-                      <div className='form-one__control'>
-                        <label className='form-one__label'>Your phone</label>
-                        <div className='form-one__input-box'>
-                          <input
-                            type='tel'
-                            value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
-                            placeholder='01xxxxxxxxx'
-                          />
-                        </div>
-                      </div>
-                      <div className='form-one__control'>
-                        <label className='form-one__label'>Your Email</label>
-                        <div className='form-one__input-box'>
-                          <input
-                            type='email'
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder='example@example.com'
-                          />
-                        </div>
-                      </div>
-                      <div className='form-one__control form-one__control--full'>
-                        <label className='form-one__label'>
-                          Shipping address
-                        </label>
-                        <div className='form-one__input-box'>
-                          <input
-                            type='text'
-                            value={address}
-                            onChange={(e) => setAddress(e.target.value)}
-                            placeholder='Street / Address line'
-                          />
-                        </div>
-                      </div>
-
-                      <div className='form-one__control form-one__control--full'>
-                        <div className='checkbox-item'>
-                          <input
-                            type='checkbox'
-                            className='checkbox-item__btn'
-                            id='makeDefault'
-                            checked={makeDefault}
-                            onChange={(e) => setMakeDefault(e.target.checked)}
-                          />
-                          <label
-                            htmlFor='makeDefault'
-                            className='checkbox-item__title'
-                          >
-                            <span>Save as Main Address</span>
-                          </label>
-                        </div>
-                      </div>
-
-                      <div className='form-one__control' />
-                      <div className='form-one__control'>
-                        <div className='form-one__btn'>
-                          <button type='submit' className='commerce-btn'>
-                            Save Now 
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            )}
-
-            {/* Cart list (using sanitizedCart for amounts) */}
+             {/* Cart list (using sanitizedCart for amounts) */}
             <div className='cart-one__inner'>
               <ul className='cart-one__list list-unstyled'>
                 {sanitizedCart.map((item) => {
@@ -507,6 +311,287 @@ const CheckoutPageTwo = ({ user }) => {
                 })}
               </ul>
             </div>
+            {/* Address block */}
+            {
+              user && <div className='cart-one__inner'>
+              <div className='address-item'>
+                <div className='address-item__content'>
+                  <h3 className='address-title'>Shipping Address</h3>
+
+                  {addresses.length === 0 ? (
+                    <div className='address-item__inner__content'>
+                      <p>No saved addresses.</p>
+                    </div>
+                  ) : (
+                    <>
+                      {selectedId && (
+                        <div className='address-item__inner'>
+                          <div className='address-item__icon'>
+                            <i className='icon-reshot-icon-pin-74U6KRPJEH'></i>
+                          </div>
+                          <div className='address-item__inner__content'>
+                            {(() => {
+                              const a = addresses.find(
+                                (x) => x.id === selectedId
+                              );
+                              return a ? (
+                                <>
+                                  <h3 className='address-item__name'>
+                                    {a.firstName} {a.lastName}{" "}
+                                    {a.isDefault && <span>Main Address</span>}
+                                  </h3>
+                                  <p className='address-item__call'>
+                                    {a.phone}
+                                  </p>
+                                  <p className='address-item__info'>
+                                    {a.address}
+                                  </p>
+                                </>
+                              ) : null;
+                            })()}
+                          </div>
+                        </div>
+                      )}
+
+                      <div
+                        className='form-one__control form-one__control--full'
+                        style={{ marginTop: 12 }}
+                      >
+                        <label className='form-one__label'>
+                          Select address
+                        </label>
+                        <Select
+                          options={addresses.map((a) => ({
+                            value: a.id,
+                            label: `${a.firstName} ${a.lastName} — ${
+                              a.address
+                            }${a.isDefault ? " [Default]" : ""}`,
+                          }))}
+                          styles={customStyles}
+                          components={{ IndicatorSeparator: () => null }}
+                          value={
+                            addresses
+                              .map((a) => ({
+                                value: a.id,
+                                label: `${a.firstName} ${a.lastName} — ${
+                                  a.address
+                                }${a.isDefault ? " [Default]" : ""}`,
+                              }))
+                              .find((opt) => opt.value === selectedId) || null
+                          }
+                          onChange={(opt) => setSelectedId(opt?.value || "")}
+                          isClearable={false}
+                          isSearchable={true}
+                          placeholder='Select Shipping Address'
+                        />
+
+                       
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                <div className='address-item__btn'>
+                  <button
+                    type='button'
+                    className='commerce-btn text-white'
+                    onClick={() => setShowNewForm((v) => !v)}
+                  >
+                    {addresses.length === 0
+                      ? "Add New Address"
+                      : showNewForm
+                      ? "Close"
+                      : "Add New Address"}
+                    
+                  </button>
+                </div>
+              </div>
+            </div>
+            }
+
+            {!user && (
+  <div className='cart-one__inner'>
+    <div className='billing-address'>
+      <h3 className='billing-address-title'>Guest Checkout</h3>
+<div className="form-one">
+ <div className='form-one__group'>
+        <div className='form-one__control'>
+          <label className='form-one__label'>First Name</label>
+          <div className='form-one__input-box'>
+          <input
+            type="text"
+            value={guestFirstName}
+            onChange={(e) => setGuestFirstName(e.target.value)}
+            placeholder="Enter Your First Name"
+          />
+          </div>
+        </div>
+
+        <div className='form-one__control'>
+          <label className='form-one__label'>Last Name</label>
+          <div className='form-one__input-box'>
+          <input
+            type="text"
+            value={guestLastName}
+            onChange={(e) => setGuestLastName(e.target.value)}
+            placeholder="Enter Your Last Name"
+          />
+        </div>
+        </div>
+
+        <div className='form-one__control'>
+          <label className='form-one__label'>Phone</label>
+          <div className='form-one__input-box'>
+          <input
+            type="tel"
+            value={guestPhone}
+            onChange={(e) => setGuestPhone(e.target.value)}
+            placeholder="01xxxxxxxxx"
+          />
+        </div>
+        </div>
+
+        <div className='form-one__control'>
+          <label className='form-one__label'>Email</label>
+          <div className='form-one__input-box'>
+          <input
+            type="email"
+            value={guestEmail}
+            onChange={(e) => setGuestEmail(e.target.value)}
+            placeholder="Enter Your Email"
+          />
+        </div>
+        </div>
+
+        <div className='form-one__control form-one__control--full'>
+          <label className='form-one__label'>Shipping Address</label>
+          <div className='form-one__input-box'>
+          <input
+            type="text"
+            value={guestAddress}
+            onChange={(e) => setGuestAddress(e.target.value)}
+            placeholder="Address (ঠিকানা)"
+          />
+        </div>
+        </div>
+
+        <div className='form-one__control'>
+          <label className='form-one__label'>Zip Code</label>
+          <div className='form-one__input-box'>
+          <input
+            type="text"
+            value={guestZip}
+            onChange={(e) => setGuestZip(e.target.value)}
+            placeholder="Zip Code (জিপ কোড)"
+          />
+        </div>
+        </div>
+      </div>
+</div>
+     
+    </div>
+  </div>
+)}
+            
+
+            {/* Add New Address form */}
+            {showNewForm && (
+              <div className='cart-one__inner'>
+                <div className='billing-address'>
+                  <h3 className='billing-address-title'>Add New Address</h3>
+                  <form className='form-one' onSubmit={handleCreateAddress}>
+                    <div className='form-one__group'>
+                      <div className='form-one__control'>
+                        <label className='form-one__label'>First name</label>
+                        <div className='form-one__input-box'>
+                          <input
+                            type='text'
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                            placeholder='Enter your first name'
+                          />
+                        </div>
+                      </div>
+                      <div className='form-one__control'>
+                        <label className='form-one__label'>Last name</label>
+                        <div className='form-one__input-box'>
+                          <input
+                            type='text'
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                            placeholder='Enter your last name'
+                          />
+                        </div>
+                      </div>
+                      <div className='form-one__control'>
+                        <label className='form-one__label'>Your phone</label>
+                        <div className='form-one__input-box'>
+                          <input
+                            type='tel'
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                            placeholder='01xxxxxxxxx'
+                          />
+                        </div>
+                      </div>
+                      <div className='form-one__control'>
+                        <label className='form-one__label'>Your Email</label>
+                        <div className='form-one__input-box'>
+                          <input
+                            type='email'
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder='example@example.com'
+                          />
+                        </div>
+                      </div>
+                      <div className='form-one__control form-one__control--full'>
+                        <label className='form-one__label'>
+                          Shipping address
+                        </label>
+                        <div className='form-one__input-box'>
+                          <input
+                            type='text'
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
+                            placeholder='Street / Address line'
+                          />
+                        </div>
+                      </div>
+
+                      <div className='form-one__control form-one__control--full'>
+                        <div className='checkbox-item'>
+                          <input
+                            type='checkbox'
+                            className='checkbox-item__btn'
+                            id='makeDefault'
+                            checked={makeDefault}
+                            onChange={(e) => setMakeDefault(e.target.checked)}
+                          />
+                          <label
+                            htmlFor='makeDefault'
+                            className='checkbox-item__title'
+                          >
+                            <span>Save as Main Address</span>
+                          </label>
+                        </div>
+                      </div>
+
+                      <div className='form-one__control' />
+                      <div className='form-one__control'>
+                        <div className='form-one__btn'>
+                          <button type='submit' className='commerce-btn'>
+                            Save Now 
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+
+           
           </div>
 
           {/* summary + pay */}
@@ -563,28 +648,63 @@ const CheckoutPageTwo = ({ user }) => {
 
               <button
                 disabled={
-                  pending ||
-                  sanitizedCart.length === 0 ||
-                  !selectedId ||
-                  !(summary.grandTotal > 0)
-                }
+  pending ||
+  sanitizedCart.length === 0 ||
+  !(summary.grandTotal > 0) ||
+  (
+    user
+      ? !selectedId
+      : !guestFirstName ||
+        !guestPhone ||
+        !guestAddress
+  )
+}
                 onClick={() =>
                   start(async () => {
                     try {
+                      // const payload = {
+                      //   items: sanitizedCart.map((i) => ({
+                      //     productId: i.productId,
+                      //     title: i.title,
+                      //     price: i.price,
+                      //     quantity: i.quantity,
+                      //     color: i.color,
+                      //     fit: i.fit,
+                      //     size: i.size,
+                      //   })),
+                      //   couponCode: (appliedCoupon || "").toUpperCase(),
+                      //   userId: user?.id,
+                      //   addressId: selectedId,
+                      // };
+                      
                       const payload = {
-                        items: sanitizedCart.map((i) => ({
-                          productId: i.productId,
-                          title: i.title,
-                          price: i.price,
-                          quantity: i.quantity,
-                          color: i.color,
-                          fit: i.fit,
-                          size: i.size,
-                        })),
-                        couponCode: (appliedCoupon || "").toUpperCase(),
-                        userId: user?.id,
-                        addressId: selectedId,
-                      };
+  items: sanitizedCart.map((i) => ({
+    productId: i.productId,
+    title: i.title,
+    price: i.price,
+    quantity: i.quantity,
+    color: i.color,
+    fit: i.fit,
+    size: i.size,
+  })),
+  couponCode: (appliedCoupon || "").toUpperCase(),
+
+  ...(user
+    ? {
+        userId: user.id,
+        addressId: selectedId,
+      }
+    : {
+        guest: {
+          firstName: guestFirstName,
+          lastName: guestLastName,
+          phone: guestPhone,
+          email: guestEmail,
+          address: guestAddress,
+          zipCode: guestZip,
+        },
+      }),
+};
                       const { url } = await createCheckoutSession(payload);
                       // ✅ Clear cart from localStorage after payment session is created
                       localStorage.removeItem("cart");

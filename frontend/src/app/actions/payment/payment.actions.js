@@ -44,7 +44,7 @@ function computeTotals(items, couponCode) {
   const discount = subtotal * rate;
   const tax = subtotal * 0.1;
   const shippingFee = 0;
-  const grand = subtotal - discount + tax + shippingFee;
+  const grand = subtotal - discount  + shippingFee;
   return { subtotal, discount, tax, shippingFee, grand, rate };
 }
 
@@ -58,34 +58,175 @@ async function loadAddressForUser(userId, addressId) {
   return addr;
 }
 
-export async function createCheckoutSession(payload) {
-  const { items = [], couponCode, userId, addressId } = payload || {};
-  if (!userId) throw new Error("User required.");
+// export async function createCheckoutSession(payload) {
+//   const { items = [], couponCode, userId, addressId, guest } = payload || {};
+//   // if (!userId) throw new Error("User required.");
 
+//   const sanitized = normalizeItems(items);
+//   if (!Array.isArray(items) || items.length === 0 || sanitized.length === 0) {
+//     throw new Error("Cart is empty or items missing price/quantity");
+//   }
+
+//   const code = String((couponCode || "").toUpperCase());
+//   const { subtotal, discount, tax, shippingFee, grand, rate } = computeTotals(
+//     sanitized,
+//     code
+//   );
+//   if (!(grand > 0)) throw new Error("Grand total must be greater than zero");
+
+//   const addr = await loadAddressForUser(userId, addressId);
+//   const userRow = await prisma.user.findUnique({
+//     where: { id: userId },
+//     select: { email: true, name: true },
+//   });
+
+//   const tranId = `tran_${Date.now()}_${Math.floor(Math.random() * 1e6)}`;
+
+//   const order = await prisma.order.create({
+//     data: {
+//       userId,
+//       addressId: addr.id,
+
+//       currency: "BDT",
+//       subtotal: subtotal.toFixed(2),
+//       discount: discount.toFixed(2),
+//       tax: tax.toFixed(2),
+//       shippingFee: shippingFee.toFixed(2),
+//       grandTotal: grand.toFixed(2),
+
+//       couponCode: code || null,
+//       couponRate: rate ? rate.toFixed(4) : null,
+
+//       status: "PENDING",
+//       tranId,
+
+//       items: {
+//         create: sanitized.map((it) => ({
+//           productId: it.productId,
+//           productTitle: it.productTitle,
+//           unitPrice: it.unitPrice.toFixed(2),
+//           quantity: it.quantity,
+//           color: it.color,
+//           size: it.size,
+//           fitType: it.fit, // ← always NULL as requested
+//         })),
+//       },
+//       payment: { create: {} },
+//     },
+//     include: { items: true, payment: true },
+//   });
+
+//   const base = process.env.APP_BASE_URL;
+
+//   // 💡 Point success to a bridge that will update DB and return HTML that self-redirects to /thank-you
+//   const successBridge = joinUrl(
+//     base,
+//     `/sslcz/success-bridge?tran=${encodeURIComponent(tranId)}`
+//   );
+
+//   const resp = await initSslczSession({
+//     store_id: process.env.SSLCZ_STORE_ID,
+//     store_passwd: process.env.SSLCZ_STORE_PASSWORD,
+//     total_amount: Number(order.grandTotal).toFixed(2),
+//     currency: "BDT",
+//     tran_id: order.tranId,
+
+//     success_url: joinUrl(
+//       base,
+//       `/api/sslcz/success?tran=${encodeURIComponent(tranId)}`
+//     ),
+//     fail_url: joinUrl(base, `/api/sslcz/return/fail`),
+//     cancel_url: joinUrl(base, `/api/sslcz/return/cancel`),
+//     ipn_url: joinUrl(base, `/api/sslcz/ipn`), // keep IPN for authoritative update
+
+//     cus_name: `${addr.firstName} ${addr.lastName}`.trim(),
+//     cus_email: addr.email || userRow?.email || "customer@example.com",
+//     cus_add1: addr.address,
+//     cus_city: DEFAULT_CITY,
+//     cus_postcode: DEFAULT_POSTCODE,
+//     cus_country: DEFAULT_COUNTRY,
+//     cus_phone: addr.phone,
+
+//     shipping_method: "NO",
+//     product_name: order.items
+//       .map((i) => i.productTitle)
+//       .slice(0, 3)
+//       .join(", "),
+//     product_category: "general",
+//     product_profile: "general",
+//     emi_option: "0",
+
+//     value_a: order.id,
+//     value_b: order.addressId,
+//   });
+
+//   return { url: resp.GatewayPageURL, orderId: order.id, tranId: order.tranId };
+// }
+export async function createCheckoutSession(payload) {
+  const { items = [], couponCode, userId, addressId, guest } =
+    payload || {};
+
+  // 1️⃣ Validate cart
   const sanitized = normalizeItems(items);
   if (!Array.isArray(items) || items.length === 0 || sanitized.length === 0) {
     throw new Error("Cart is empty or items missing price/quantity");
   }
 
+  // 2️⃣ Compute totals
   const code = String((couponCode || "").toUpperCase());
-  const { subtotal, discount, tax, shippingFee, grand, rate } = computeTotals(
-    sanitized,
-    code
-  );
-  if (!(grand > 0)) throw new Error("Grand total must be greater than zero");
+  const { subtotal, discount, tax, shippingFee, grand, rate } =
+    computeTotals(sanitized, code);
 
-  const addr = await loadAddressForUser(userId, addressId);
-  const userRow = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { email: true, name: true },
-  });
+  if (!(grand > 0)) {
+    throw new Error("Grand total must be greater than zero");
+  }
 
+  // 3️⃣ Resolve Address (User or Guest)
+  let addr = null;
+  let guestAddressId = null;
+
+  if (userId) {
+    addr = await loadAddressForUser(userId, addressId);
+  } else if (guest) {
+    if (!guest.firstName || !guest.phone || !guest.address) {
+      throw new Error("Guest address information incomplete");
+    }
+
+    const createdGuest = await prisma.guestAddress.create({
+      data: {
+        firstName: guest.firstName,
+        lastName: guest.lastName || "",
+        phone: guest.phone,
+        email: guest.email || null,
+        address: guest.address,
+        zipCode: guest.zipCode || null,
+      },
+    });
+
+    addr = createdGuest;
+    guestAddressId = createdGuest.id;
+  } else {
+    throw new Error("No user or guest information provided");
+  }
+
+  // 4️⃣ Load user email if logged in
+  let userRow = null;
+  if (userId) {
+    userRow = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { email: true, name: true },
+    });
+  }
+
+  // 5️⃣ Generate transaction ID
   const tranId = `tran_${Date.now()}_${Math.floor(Math.random() * 1e6)}`;
 
+  // 6️⃣ Create Order
   const order = await prisma.order.create({
     data: {
-      userId,
-      addressId: addr.id,
+      userId: userId || null,
+      addressId: userId ? addr.id : null,
+      guestAddressId: !userId ? guestAddressId : null,
 
       currency: "BDT",
       subtotal: subtotal.toFixed(2),
@@ -108,57 +249,63 @@ export async function createCheckoutSession(payload) {
           quantity: it.quantity,
           color: it.color,
           size: it.size,
-          fitType: it.fit, // ← always NULL as requested
+          fitType: it.fit || null,
         })),
       },
+
       payment: { create: {} },
     },
-    include: { items: true, payment: true },
+    include: {
+      items: true,
+      payment: true,
+    },
   });
 
+  // 7️⃣ Prepare SSLCommerz request
   const base = process.env.APP_BASE_URL;
-
-  // 💡 Point success to a bridge that will update DB and return HTML that self-redirects to /thank-you
-  const successBridge = joinUrl(
-    base,
-    `/sslcz/success-bridge?tran=${encodeURIComponent(tranId)}`
-  );
 
   const resp = await initSslczSession({
     store_id: process.env.SSLCZ_STORE_ID,
     store_passwd: process.env.SSLCZ_STORE_PASSWORD,
+
     total_amount: Number(order.grandTotal).toFixed(2),
     currency: "BDT",
     tran_id: order.tranId,
 
-    success_url: joinUrl(
-      base,
-      `/api/sslcz/success?tran=${encodeURIComponent(tranId)}`
-    ),
-    fail_url: joinUrl(base, `/api/sslcz/return/fail`),
-    cancel_url: joinUrl(base, `/api/sslcz/return/cancel`),
-    ipn_url: joinUrl(base, `/api/sslcz/ipn`), // keep IPN for authoritative update
+    success_url: `${base}/api/sslcz/success?tran=${encodeURIComponent(
+      tranId
+    )}`,
+    fail_url: `${base}/api/sslcz/return/fail`,
+    cancel_url: `${base}/api/sslcz/return/cancel`,
+    ipn_url: `${base}/api/sslcz/ipn`,
 
-    cus_name: `${addr.firstName} ${addr.lastName}`.trim(),
-    cus_email: addr.email || userRow?.email || "customer@example.com",
+    cus_name: `${addr.firstName} ${addr.lastName || ""}`.trim(),
+    cus_email:
+      addr.email || userRow?.email || "customer@example.com",
     cus_add1: addr.address,
     cus_city: DEFAULT_CITY,
-    cus_postcode: DEFAULT_POSTCODE,
+    cus_postcode: addr.zipCode || DEFAULT_POSTCODE,
     cus_country: DEFAULT_COUNTRY,
     cus_phone: addr.phone,
 
     shipping_method: "NO",
+
     product_name: order.items
       .map((i) => i.productTitle)
       .slice(0, 3)
       .join(", "),
+
     product_category: "general",
     product_profile: "general",
     emi_option: "0",
 
     value_a: order.id,
-    value_b: order.addressId,
+    value_b: order.addressId || order.guestAddressId,
   });
 
-  return { url: resp.GatewayPageURL, orderId: order.id, tranId: order.tranId };
+  return {
+    url: resp.GatewayPageURL,
+    orderId: order.id,
+    tranId: order.tranId,
+  };
 }

@@ -2,11 +2,14 @@ import { getSingleOrder } from "@/app/actions/order/order.actions";
 import { Card, Divider, Tag, Button } from "antd";
 
 export default async function OrderDetailsPage({ params }) {
-  const res = await getSingleOrder(null, { orderId: params.id });
+  const { id } = await params;
+  const res = await getSingleOrder(null, { orderId: id });
 
   if (!res?.success) return <div>Order not found</div>;
 
   const order = res.data;
+  console.log("order" , order);
+  
 
   return (
     <div className='space-y-6'>
@@ -19,7 +22,16 @@ export default async function OrderDetailsPage({ params }) {
           <b>Total:</b> ৳{order.grandTotal}
         </p>
         <p>
-          <b>Customer:</b> {order.user?.name}
+          <b>Customer:</b> {order.user? order.user?.name:order.GuestAddress?.firstName + " " + order.GuestAddress?.lastName}
+        </p>
+        <p>
+          <b>Email:</b> {order.user?.email || order.GuestAddress?.email}
+        </p>
+        <p>
+          <b>Address:</b>{" "}
+          {order.address
+            ? `${order.address},  ${order.address.zipCode}`
+            : `${order.GuestAddress?.address || "N/A"}, ${order.GuestAddress?.zipCode || "N/A"}`}
         </p>
       </Card>
 

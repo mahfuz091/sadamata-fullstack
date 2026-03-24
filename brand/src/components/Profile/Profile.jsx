@@ -213,7 +213,7 @@ const Profile = ({ user, countries, profileImageUrl }) => {
                     type='text'
                     name='name'
                     id='name'
-                    value={formData.name}
+                    value={formData?.name ?? ""}
                     onChange={handleChange}
                     readOnly={!editMode}
                   />
@@ -226,7 +226,7 @@ const Profile = ({ user, countries, profileImageUrl }) => {
                     type='email'
                     name='email'
                     id='email'
-                    value={formData.email}
+                    value={formData?.email ?? ""}
                     onChange={handleChange}
                     readOnly
                   />
@@ -238,7 +238,7 @@ const Profile = ({ user, countries, profileImageUrl }) => {
                   <input
                     type='text'
                     name='phone'
-                    value={phoneValue}
+                    value={phoneValue ?? ""}
                     onChange={(e) => setPhoneValue(e.target.value)}
                     readOnly={!editMode}
                   />
@@ -251,7 +251,7 @@ const Profile = ({ user, countries, profileImageUrl }) => {
                     type='date'
                     name='dateOfBirth'
                     id='dateOfBirth'
-                    value={formData.dateOfBirth}
+                    value={formData?.dateOfBirth ?? ""}
                     onChange={handleChange}
                     readOnly={!editMode}
                   />
@@ -271,7 +271,7 @@ const Profile = ({ user, countries, profileImageUrl }) => {
                       type='text'
                       name='country'
                       id='country'
-                      value={user?.brand?.country}
+                      value={user?.brand?.country ?? ""}
                       readOnly={!editMode}
                     />
                   )}
@@ -284,7 +284,7 @@ const Profile = ({ user, countries, profileImageUrl }) => {
                     type='text'
                     name='permanentAddress'
                     id='permanentaddress'
-                    value={formData.permanentAddress}
+                    value={formData?.permanentAddress ?? ""}
                     onChange={handleChange}
                     readOnly={!editMode}
                   />
@@ -296,7 +296,7 @@ const Profile = ({ user, countries, profileImageUrl }) => {
                     type='text'
                     name='presentAddress'
                     id='address'
-                    value={formData.presentAddress}
+                    value={formData?.presentAddress ?? ""}
                     onChange={handleChange}
                     readOnly={!editMode}
                   />
@@ -309,7 +309,7 @@ const Profile = ({ user, countries, profileImageUrl }) => {
                     type='text'
                     name='zipCode'
                     id='zipCode'
-                    value={formData.zipCode}
+                    value={formData?.zipCode ?? ""}
                     onChange={handleChange}
                     readOnly={!editMode}
                   />
@@ -321,7 +321,7 @@ const Profile = ({ user, countries, profileImageUrl }) => {
                     type='text'
                     name='nidOrPassportNo'
                     id='nidOrPassportNo'
-                    value={formData.nidOrPassportNo}
+                    value={formData?.nidOrPassportNo ?? ""}
                     onChange={handleChange}
                     readOnly={!editMode}
                   />
@@ -333,7 +333,7 @@ const Profile = ({ user, countries, profileImageUrl }) => {
                     type='text'
                     name='portfolioUrl'
                     id='portfolioUrl'
-                    value={formData.portfolioUrl}
+                    value={formData?.portfolioUrl ?? ""}
                     onChange={handleChange}
                     readOnly={!editMode}
                   />
@@ -345,7 +345,7 @@ const Profile = ({ user, countries, profileImageUrl }) => {
                     type='text'
                     name='websiteUrl'
                     id='websiteUrl'
-                    value={formData.websiteUrl}
+                    value={formData?.websiteUrl ?? ""}
                     onChange={handleChange}
                     readOnly={!editMode}
                   />

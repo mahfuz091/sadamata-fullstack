@@ -11,17 +11,21 @@
     "postinstall": "prisma generate"
   },
    "overrides": {
-  "hono": "4.11.4",
-  "tar": "^7.5.3"
-},
+    "hono": "4.12.9",
+    "@hono/node-server": "1.19.11",
+    "effect": "3.20.0",
+    "lodash": "4.17.23",
+    "@tootallnate/once": "3.0.1",
+    "tar": "^7.5.3"
+  },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.965.0",
     "@aws-sdk/s3-request-presigner": "^3.965.0",
     "@fontsource/instrument-sans": "^5.2.6",
     "@fontsource/inter": "^5.2.6",
     "@fortawesome/fontawesome-free": "^7.1.0",
-    "@prisma/adapter-pg": "^7.0.1",
-    "@prisma/client": "^7.0.1",
+    "@prisma/adapter-pg": "7.5.0",
+    "@prisma/client": "7.5.0",
     "bcryptjs": "^3.0.2",
     "bootstrap": "^5.3.7",
     "fabric": "^6.7.1",
@@ -44,6 +48,6 @@
     "zod": "^4.1.5"
   },
   "devDependencies": {
-    "prisma": "^7.0.1"
+    "prisma": "7.5.0"
   }
 }

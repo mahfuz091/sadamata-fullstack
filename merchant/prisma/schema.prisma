@@ -146,6 +146,12 @@ model Brand {
   country            String?
   zipCode            String?
   isExclusive        Boolean             @default(false)
+  bannerImage        String?             @db.VarChar(255)
+  facebookLink       String?             @db.VarChar(255)
+  instagramLink      String?             @db.VarChar(255)
+  linkedinLink       String?             @db.VarChar(255)
+  twitterLink        String?             @db.VarChar(255)
+  bannerPosition     String?             @default("50")
   brandCategory      BrandCategory?      @relation(fields: [brandCategoryId], references: [id])
   user               User                @relation(fields: [userId], references: [id])
   CommissionSetting  CommissionSetting[]
@@ -301,14 +307,6 @@ model MockupVariant {
   @@unique([mockupId, color, fitType])
   @@index([mockupId, isVisible])
 }
-enum OrderStatus {
-  PENDING
-  PAID
-  FAILED
-  CANCELLED
-  SHIPPED
-  COMPLETED
-}
 
 model Order {
   id             String        @id @default(cuid())
@@ -328,7 +326,7 @@ model Order {
   settledAt      DateTime?
   cancelledAt    DateTime?
   guestAddressId String?
- status      OrderStatus @default(PENDING) // ✅ was String
+  status         OrderStatus   @default(PENDING)
   address        UserAddress?  @relation(fields: [addressId], references: [id])
   GuestAddress   GuestAddress? @relation(fields: [guestAddressId], references: [id])
   user           User?         @relation(fields: [userId], references: [id])
@@ -427,6 +425,15 @@ model GuestAddress {
   zipCode   String?
   createdAt DateTime @default(now())
   Order     Order[]
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  FAILED
+  CANCELLED
+  SHIPPED
+  COMPLETED
 }
 
 enum ProductStat {

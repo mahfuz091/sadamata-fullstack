@@ -1,6 +1,6 @@
 import sharp from "sharp";
 import { uploadToS3 } from "@/lib/s3";
-import { productKey, designKey, profileKey } from "@/lib/s3Keys";
+import { productKey, designKey, profileKey, bannerBrandKey } from "@/lib/s3Keys";
 
 async function fileToBuffer(file) {
   const bytes = await file.arrayBuffer();
@@ -46,7 +46,22 @@ export async function saveDesignFileS3(file, designId, fieldName) {
     contentType: file.type || "application/octet-stream",
   });
 }
+export async function saveBrandBannerFileS3(file, bannerId, fieldName) {
+  if (!file || !file.size) return null;
 
+  const buffer = await fileToBuffer(file);
+
+  const key = bannerBrandKey({
+    bannerId,
+    filename: file.name, // keep original name & extension
+  });
+
+  return await uploadToS3({
+    key,
+    body: buffer,
+    contentType: file.type || "application/octet-stream",
+  });
+}
 export async function saveProfileImageS3(file, userId) {
   if (!file || !file.size) return null;
 

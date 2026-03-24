@@ -12,6 +12,9 @@ export function productKey({ productId, filename }) {
 export function designKey({ designId = "general", filename }) {
   return `designs/${designId}/${Date.now()}-${cleanName(filename)}`;
 }
+export function bannerBrandKey({ bannerId = "general", filename }) {
+  return `designs/${bannerId}/${Date.now()}-${cleanName(filename)}`;
+}
 
 export function profileKey({ userId, filename }) {
   const ext = filename?.split(".").pop() || "webp";

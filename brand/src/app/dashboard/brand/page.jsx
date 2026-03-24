@@ -54,6 +54,10 @@ const page = async () => {
     ? await getPrivateUrl(user.profileImage, SIGN_EXPIRES)
     : null;
 
+  const brandBannerUrl = user?.brand?.bannerImage
+    ? await getPrivateUrl(user.brand.bannerImage, SIGN_EXPIRES)
+    : null;
+
   // ✅ mockup products signed
   const signedMockups = await attachProductPreviewUrls(data.mockups);
 
@@ -62,6 +66,8 @@ const page = async () => {
       data={signedMockups}
       brandName={data.brandName}
       profileImageUrl={profileImageUrl}
+      brand={user?.brand}
+      brandBannerUrl={brandBannerUrl}
     />
   );
 };

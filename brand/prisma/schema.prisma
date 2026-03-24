@@ -152,6 +152,13 @@ model Brand {
   Payout             Payout[]            @relation("BrandPayouts")
   Product            Product[]
   Sales              Sale[]              @relation("BrandSales")
+  // Adding new fields for banner image and social media links
+  bannerImage        String?             @db.VarChar(255)   // Banner Image URL
+  facebookLink       String?             @db.VarChar(255)   // Facebook Link
+  twitterLink        String?             @db.VarChar(255)   // Twitter Link
+  instagramLink      String?             @db.VarChar(255)   // Instagram Link
+  linkedinLink       String?             @db.VarChar(255)   // LinkedIn Link
+  bannerPosition     String?             @default("50")     // Vertical position in %
 }
 
 model BrandCategory {
@@ -320,7 +327,7 @@ model Order {
   settledAt      DateTime?
   cancelledAt    DateTime?
   guestAddressId String?
-  status         String        @default("PENDING")
+  status         OrderStatus   @default(PENDING)
   address        UserAddress?  @relation(fields: [addressId], references: [id])
   GuestAddress   GuestAddress? @relation(fields: [guestAddressId], references: [id])
   user           User?         @relation(fields: [userId], references: [id])
@@ -454,4 +461,13 @@ enum Visibility {
 enum ImageType {
   FRONT
   BACK
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  FAILED
+  CANCELLED
+  SHIPPED
+  COMPLETED
 }

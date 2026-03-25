@@ -14,7 +14,7 @@ export default async function Page({ searchParams }) {
 
   const res = await getOrders(null, { page, pageSize, status, q, from, to });
 
-  console.log("orders", res?.data);
+  console.log("orders table", res?.data);
   
 
   return (

@@ -257,7 +257,16 @@ import AddToCartModal from "../FeatureProduct/AddToCartModal";
 
                     <div className='product__item__content flex-grow-1 d-flex flex-column pt-3'>
                       <p className='product__item__brand mb-1'>
-                        Brand: <span>{brand}</span>
+                        Brand:{" "}
+                        <span>
+                          {product?.Brand?.id ? (
+                            <Link href={`/brand/${product.Brand.id}`}>
+                              {brand}
+                            </Link>
+                          ) : (
+                            brand
+                          )}
+                        </span>
                       </p>
 
                       <h4 className='product__item__title mb-2 fs-6 fw-semibold'>

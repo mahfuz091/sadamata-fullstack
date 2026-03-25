@@ -6,6 +6,7 @@ const Select = dynamic(() => import("react-select"), {
 });
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import sizeChartImage from "@/assets/images/resources/sadamata-sizechart.png";
 import { Container, Row, Col } from "react-bootstrap";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -512,7 +513,13 @@ export default function ProductDetails2({ product }) {
                 <p className='product-details__brand-name'>
                   Brand:{" "}
                   <span>
-                    {product?.Brand?.name || product?.brandName || "—"}
+                    {product?.Brand?.id ? (
+                      <Link href={`/brand/${product.Brand.id}`}>
+                        {product?.Brand?.name || product?.brandName || "—"}
+                      </Link>
+                    ) : (
+                      product?.Brand?.name || product?.brandName || "—"
+                    )}
                   </span>
                 </p>
                 <h4 className='product-details__title'>

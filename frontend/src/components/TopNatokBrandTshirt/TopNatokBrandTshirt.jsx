@@ -49,7 +49,8 @@ export default function TopNatokBrandTshirt({
       productId: p.productId,
       title: p.title,
       price: p.price,
-      brand: p.brandName || "Brand",
+      brand: p.Brand?.name || p.brandName || "Brand",
+      brandId: p.Brand?.id || null,
       imageUrl: p.previewUrl || null,
       rating: p.rating ?? 5,
       reviews: p.reviews ?? 0,
@@ -175,7 +176,14 @@ return (
 
                 <div className='product__item__content'>
                   <p className='product__item__brand'>
-                    Brand: <span>{prod.brand}</span>
+                    Brand:{" "}
+                    <span>
+                      {prod.brandId ? (
+                        <Link href={`/brand/${prod.brandId}`}>{prod.brand}</Link>
+                      ) : (
+                        prod.brand
+                      )}
+                    </span>
                   </p>
 
                   <h4 className='product__item__title'>

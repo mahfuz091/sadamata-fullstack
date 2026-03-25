@@ -41,7 +41,7 @@ const customStyles = {
 const Header = ({ session, categories }) => {
   const scrollToTop = useScrollUp(500);
 
-  console.log(categories, "session header");
+  // console.log(categories, "session header");
 
   const [options, setOptions] = useState([]);
   const [selected, setSelected] = useState(null);

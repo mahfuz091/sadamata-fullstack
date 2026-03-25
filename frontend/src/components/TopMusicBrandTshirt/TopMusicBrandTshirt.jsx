@@ -48,7 +48,8 @@ export default function TopMusicBrandTshirt({
       id: p.id,
       title: p.title,
       price: p.price,
-      brand: p.brandName || "Brand",
+      brand: p.Brand?.name || p.brandName || "Brand",
+      brandId: p.Brand?.id || null,
       imageUrl: p.previewUrl || null,
       productId: p.productId, // slug-like
       rating: p.rating ?? 5,
@@ -175,7 +176,14 @@ return (
 
                 <div className='product__item__content'>
                   <p className='product__item__brand'>
-                    Brand: <span>{prod.brand}</span>
+                    Brand:{" "}
+                    <span>
+                      {prod.brandId ? (
+                        <Link href={`/brand/${prod.brandId}`}>{prod.brand}</Link>
+                      ) : (
+                        prod.brand
+                      )}
+                    </span>
                   </p>
 
                   <h4 className='product__item__title'>

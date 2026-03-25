@@ -14,6 +14,9 @@ export default async function Page({ searchParams }) {
 
   const res = await getOrders(null, { page, pageSize, status, q, from, to });
 
+  console.log("orders", res?.data);
+  
+
   return (
     <div className='px-4 lg:px-6'>
       <OrdersTable

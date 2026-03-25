@@ -4,7 +4,7 @@ import React from "react";
 import { Button } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 
-export default function DownloadButton({ s3Key, filename }) {
+export default function DownloadButton({ s3Key, filename, children, type }) {
   const handleDownload = () => {
     if (!s3Key) return;
     const qs = new URLSearchParams({
@@ -16,11 +16,12 @@ export default function DownloadButton({ s3Key, filename }) {
 
   return (
     <Button
+      type={type}
       icon={<DownloadOutlined />}
       onClick={handleDownload}
       disabled={!s3Key}
     >
-      Download
+      {children || "Download"}
     </Button>
   );
 }

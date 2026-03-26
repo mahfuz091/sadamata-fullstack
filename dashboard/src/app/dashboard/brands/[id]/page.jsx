@@ -51,6 +51,20 @@ export default async function BrandDetailsPage({ params }) {
         <Item label='Brand Name' value={brand.name} />
         <Item label='Category' value={brand.brand.brandCategory?.name} />
         <Item label='Status' value={brand.isActive ? "Active" : "Inactive"} />
+        <Item
+          label='Exclusivity'
+          value={
+            <span
+              className={`text-xs px-2 py-1 rounded-full ${
+                brand.brand.isExclusive
+                  ? "bg-indigo-100 text-indigo-700"
+                  : "bg-gray-100 text-gray-700"
+              }`}
+            >
+              {brand.brand.isExclusive ? "Exclusive" : "Non-Exclusive"}
+            </span>
+          }
+        />
         <Item label='Owner' value={brand?.name} />
         <Item label='Owner Email' value={brand?.email} />
       </Section>

@@ -13,6 +13,7 @@ export default async function BrandStatsByUser({ params }) {
     select: {
       id: true,
       name: true,
+      isExclusive: true, // ✅ Include exclusivity status
     },
   });
 
@@ -59,7 +60,12 @@ export default async function BrandStatsByUser({ params }) {
 
   return (
     <div className='p-6 space-y-8'>
-      <h1 className='text-2xl font-semibold'>Brand Earnings – {brand.name}</h1>
+      <h1 className='text-2xl font-semibold flex items-center gap-4'>
+        Brand Earnings – {brand.name}
+        <span className={`text-xs px-2 py-1 rounded-full ${brand.isExclusive ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-100 text-gray-700'}`}>
+          {brand.isExclusive ? 'Exclusive' : 'Non-Exclusive'}
+        </span>
+      </h1>
 
       {/* Top Cards */}
       <div className='grid grid-cols-3 gap-4'>

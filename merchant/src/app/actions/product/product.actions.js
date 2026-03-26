@@ -304,7 +304,7 @@ function getTodayRange() {
 //   return { brandPct: 6, merchantPct: 11, source: "hard fallback" };
 // }
 async function resolveEffectiveCommissions({ merchantId, brandId }) {
-  // 🔹 CASE 1: brandId আছে → merchant + brand pair rule
+  // 🔹 CASE 1: Brand provided -> Try merchant + brand pair rule
   if (brandId) {
     const pairRule = await prisma.commissionSetting.findFirst({
       where: {
@@ -324,24 +324,25 @@ async function resolveEffectiveCommissions({ merchantId, brandId }) {
     }
   }
 
-  // 🔹 CASE 2: brandId নাই → merchant-only rule
-  if (!brandId) {
-    const merchantRule = await prisma.commissionSetting.findFirst({
-      where: {
-        isActive: true,
-        merchantId,
-        brandId: null,
-      },
-      orderBy: { effectiveFrom: "desc" },
-    });
+  // 🔹 CASE 2: Fallback to Merchant's general rule (brandId is null)
+  const merchantRule = await prisma.commissionSetting.findFirst({
+    where: {
+      isActive: true,
+      merchantId,
+      brandId: null,
+    },
+    orderBy: { effectiveFrom: "desc" },
+  });
 
-    if (merchantRule) {
-      return {
-        brandPct: merchantRule.brandCommissionPct,
-        merchantPct: merchantRule.merchantCommissionPct,
-        source: "merchant-only rule",
-      };
-    }
+  if (merchantRule) {
+    return {
+      brandPct: merchantRule.brandCommissionPct,
+      // ✅ If brand was selected but no pair rule, use brandSelectedMerchantPct from general rule
+      merchantPct: brandId
+        ? merchantRule.brandSelectedMerchantPct
+        : merchantRule.merchantCommissionPct,
+      source: brandId ? "merchant-only rule (with brand)" : "merchant-only rule",
+    };
   }
 
   // 🔻 Optional fallback (strongly recommended)

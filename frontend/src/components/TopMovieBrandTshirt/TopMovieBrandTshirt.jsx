@@ -17,7 +17,7 @@ import { toast } from "sonner";
     }
   };
 export default function TopMovieBrandTshirt({
-  title = "Movie Merchandise Shop",
+  title = "Movie Merchandise",
   products = [],
 }) {
   const [showModal, setShowModal] = useState(false);

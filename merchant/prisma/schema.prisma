@@ -20,6 +20,7 @@ model User {
   profileImage      String?
   brandId           String?
   brand             Brand?
+  BrandFollow       BrandFollow[]
   CommissionSetting CommissionSetting[]
   merchantProfile   MerchantProfile?
   Order             Order[]
@@ -154,6 +155,7 @@ model Brand {
   bannerPosition     String?             @default("50")
   brandCategory      BrandCategory?      @relation(fields: [brandCategoryId], references: [id])
   user               User                @relation(fields: [userId], references: [id])
+  BrandFollow        BrandFollow[]
   CommissionSetting  CommissionSetting[]
   Payout             Payout[]            @relation("BrandPayouts")
   Product            Product[]
@@ -425,6 +427,19 @@ model GuestAddress {
   zipCode   String?
   createdAt DateTime @default(now())
   Order     Order[]
+}
+
+model BrandFollow {
+  id        String   @id
+  userId    String
+  brandId   String
+  createdAt DateTime @default(now())
+  Brand     Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, brandId])
+  @@index([brandId])
+  @@index([userId])
 }
 
 enum OrderStatus {

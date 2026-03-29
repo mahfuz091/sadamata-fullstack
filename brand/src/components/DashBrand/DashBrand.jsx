@@ -470,7 +470,13 @@ export default function DashBrand({
                       <div className="brand-profile-top__content">
                         <h4 className="brand-profile-top__name">{brandName}</h4>
                         <span className="brand-profile-top__followers">
-                          5.8K Followers
+                          {(() => {
+                            const num = brand?._count?.BrandFollow || 0;
+                            if (num >= 1000000) return (Math.floor(num / 100000) / 10) + "M";
+                            if (num >= 1000) return (Math.floor(num / 100) / 10) + "K";
+                            return num;
+                          })()}{" "}
+                          Followers
                         </span>
                         <div className="brand-socials-wrapper mt-3">
                           {brand?.facebookLink && (

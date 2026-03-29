@@ -17,7 +17,7 @@ import { toast } from "sonner";
     }
   };
 export default function TopNatokBrandTshirt({
-  title = "Drama Merchandise Shop",
+  title = "Drama Merchandise",
   products = [],
 }) {
   const [showModal, setShowModal] = useState(false);

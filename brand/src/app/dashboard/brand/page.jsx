@@ -44,7 +44,13 @@ const page = async () => {
       email: true,
       phone: true,
       merchantProfile: true,
-      brand: true,
+      brand: {
+        include: {
+          _count: {
+            select: { BrandFollow: true },
+          },
+        },
+      },
       addresses: true,
       profileImage: true,
     },

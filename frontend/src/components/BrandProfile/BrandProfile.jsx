@@ -9,10 +9,12 @@ import { Col } from "react-bootstrap";
 
 // A simple ProductCard component
 
+import FollowButton from "../brand/FollowButton";
+
 const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE_URL;
 
 // Main BrandProfile section
-const BrandProfile = ({ brand, products = [] }) => {
+const BrandProfile = ({ brand, products = [], initialIsFollowing = false, followerCount = 0 }) => {
 
   console.log("brand",brand);
   
@@ -43,7 +45,10 @@ const BrandProfile = ({ brand, products = [] }) => {
       <div className='brand-profile-top'>
         <div
           className='brand-profile-top__bg'
-          style={{ backgroundImage: `url(${bannerImg})`, backgroundPosition: `center ${brand?.bannerPosition || '50'}%` }}
+          style={{ 
+            backgroundImage: `url("${bannerImg}"), url("${bg.src}")`, 
+            backgroundPosition: `center ${brand?.bannerPosition || '50'}%, center` 
+          }}
         ></div>
         <div className='container'>
           <div className='brand-profile-top__inner'>
@@ -61,7 +66,7 @@ const BrandProfile = ({ brand, products = [] }) => {
                 <div className='brand-profile-top__content'>
                   <h4 className='brand-profile-top__name'>{brandName}</h4>
                   <span className='brand-profile-top__followers'>
-                    {brand?.followersCount || "0"} Followers
+                    {followerCount} Followers
                   </span>
                 </div>
               </div>
@@ -79,7 +84,7 @@ const BrandProfile = ({ brand, products = [] }) => {
                   </div>
                 </div>
                 <div className='brand-profile-top__btn'>
-                  <a href='#'>Follow Me</a>
+                  <FollowButton brandId={brand?.id} initialIsFollowing={initialIsFollowing} />
                 </div>
               </div>
             </div>

@@ -20,6 +20,7 @@ model User {
   profileImage      String?
   brandId           String?
   brand             Brand?
+  brandFollows      BrandFollow[]
   CommissionSetting CommissionSetting[]
   merchantProfile   MerchantProfile?
   Order             Order[]
@@ -146,8 +147,15 @@ model Brand {
   country            String?
   zipCode            String?
   isExclusive        Boolean             @default(false)
+  bannerImage        String?             @db.VarChar(255)
+  facebookLink       String?             @db.VarChar(255)
+  instagramLink      String?             @db.VarChar(255)
+  linkedinLink       String?             @db.VarChar(255)
+  twitterLink        String?             @db.VarChar(255)
+  bannerPosition     String?             @default("50")
   brandCategory      BrandCategory?      @relation(fields: [brandCategoryId], references: [id])
   user               User                @relation(fields: [userId], references: [id])
+  followers          BrandFollow[]
   CommissionSetting  CommissionSetting[]
   Payout             Payout[]            @relation("BrandPayouts")
   Product            Product[]
@@ -320,7 +328,7 @@ model Order {
   settledAt      DateTime?
   cancelledAt    DateTime?
   guestAddressId String?
-  status         String        @default("PENDING")
+  status         OrderStatus   @default(PENDING)
   address        UserAddress?  @relation(fields: [addressId], references: [id])
   GuestAddress   GuestAddress? @relation(fields: [guestAddressId], references: [id])
   user           User?         @relation(fields: [userId], references: [id])
@@ -421,6 +429,19 @@ model GuestAddress {
   Order     Order[]
 }
 
+model BrandFollow {
+  id        String   @id @default(cuid())
+  userId    String
+  brandId   String
+  createdAt DateTime @default(now())
+  brand     Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, brandId])
+  @@index([userId])
+  @@index([brandId])
+}
+
 enum ProductStat {
   UNDERREVIEW
   PROCESSING
@@ -454,4 +475,13 @@ enum Visibility {
 enum ImageType {
   FRONT
   BACK
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  FAILED
+  CANCELLED
+  SHIPPED
+  COMPLETED
 }

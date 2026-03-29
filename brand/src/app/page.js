@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 import AboutCta from "@/components/AboutCta/AboutCta";
 import ContentCreator from "@/components/ContentCreator/ContentCreator";
 import DoesWork from "@/components/DoesWork/DoesWork";
@@ -8,6 +9,11 @@ import Layout from "@/components/Layout/Layout";
 import RecurringProduct from "@/components/RecurringProduct/RecurringProduct";
 export default async function Home() {
     const session = await auth();
+
+    if (session?.user) {
+        redirect("/dashboard");
+    }
+
   return (
     <Layout session={session}>
       <ContentCreator />

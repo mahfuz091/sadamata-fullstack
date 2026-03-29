@@ -19,8 +19,12 @@ export default async function BrandStatsByUser({ params }) {
 
   if (!brand) notFound();
 
-  // 2️⃣ Product count
+  // 2️⃣ Product & Follower count
   const totalProducts = await prisma.product.count({
+    where: { brandId: brand.id },
+  });
+
+  const followersCount = await prisma.brandFollow.count({
     where: { brandId: brand.id },
   });
 
@@ -79,6 +83,12 @@ export default async function BrandStatsByUser({ params }) {
         <Mini label='Total Sales' value={totalSales} />
         <Mini label='Revenue' value={totalRevenue} />
         <Mini label='Products with Sales' value={productsWithSales} />
+      </Section>
+
+      {/* Metrics */}
+      <Section title='Brand Metrics'>
+        <Mini label='Total Followers' value={followersCount} />
+        <Mini label='Total Products' value={totalProducts} />
       </Section>
     </div>
   );

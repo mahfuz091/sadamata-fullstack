@@ -20,6 +20,7 @@ model User {
   profileImage      String?
   brandId           String?
   brand             Brand?
+  BrandFollow       BrandFollow[]
   CommissionSetting CommissionSetting[]
   merchantProfile   MerchantProfile?
   Order             Order[]
@@ -146,19 +147,19 @@ model Brand {
   country            String?
   zipCode            String?
   isExclusive        Boolean             @default(false)
+  bannerImage        String?             @db.VarChar(255)
+  facebookLink       String?             @db.VarChar(255)
+  instagramLink      String?             @db.VarChar(255)
+  linkedinLink       String?             @db.VarChar(255)
+  twitterLink        String?             @db.VarChar(255)
+  bannerPosition     String?             @default("50")
   brandCategory      BrandCategory?      @relation(fields: [brandCategoryId], references: [id])
   user               User                @relation(fields: [userId], references: [id])
+  BrandFollow        BrandFollow[]
   CommissionSetting  CommissionSetting[]
   Payout             Payout[]            @relation("BrandPayouts")
   Product            Product[]
   Sales              Sale[]              @relation("BrandSales")
-  // Adding new fields for banner image and social media links
-  bannerImage        String?             @db.VarChar(255)   // Banner Image URL
-  facebookLink       String?             @db.VarChar(255)   // Facebook Link
-  twitterLink        String?             @db.VarChar(255)   // Twitter Link
-  instagramLink      String?             @db.VarChar(255)   // Instagram Link
-  linkedinLink       String?             @db.VarChar(255)   // LinkedIn Link
-  bannerPosition     String?             @default("50")     // Vertical position in %
 }
 
 model BrandCategory {
@@ -426,6 +427,19 @@ model GuestAddress {
   zipCode   String?
   createdAt DateTime @default(now())
   Order     Order[]
+}
+
+model BrandFollow {
+  id        String   @id
+  userId    String
+  brandId   String
+  createdAt DateTime @default(now())
+  Brand     Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, brandId])
+  @@index([brandId])
+  @@index([userId])
 }
 
 enum ProductStat {

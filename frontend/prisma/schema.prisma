@@ -28,6 +28,7 @@ model User {
   sales             Sale[]              @relation("MerchantSales")
   addresses         UserAddress[]
   userProfile       UserProfile?
+  brandFollows      BrandFollow[]
 }
 
 model UserProfile {
@@ -158,6 +159,7 @@ model Brand {
   Payout             Payout[]            @relation("BrandPayouts")
   Product            Product[]
   Sales              Sale[]              @relation("BrandSales")
+  followers          BrandFollow[]
 }
 
 model BrandCategory {
@@ -469,4 +471,18 @@ enum OrderStatus {
   CANCELLED
   SHIPPED
   COMPLETED
+}
+
+model BrandFollow {
+  id        String   @id @default(cuid())
+  userId    String
+  brandId   String
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  brand     Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, brandId])
+  @@index([userId])
+  @@index([brandId])
 }

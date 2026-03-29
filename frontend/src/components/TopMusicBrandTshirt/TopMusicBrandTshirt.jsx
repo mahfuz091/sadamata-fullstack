@@ -17,7 +17,7 @@ import { toast } from "sonner";
     }
   };
 export default function TopMusicBrandTshirt({
-  title = "Music Merchandise Shop",
+  title = "Music Merchandise",
   products = [],
 }) {
   const [showModal, setShowModal] = useState(false);

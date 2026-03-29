@@ -183,12 +183,12 @@ export async function getProducts(input = {}) {
   const variantsFilter =
     fitType?.length || colors?.length
       ? {
-          some: {
-            ...PUBLIC_VARIANT_WHERE,
-            ...(fitType?.length && { fitType: { in: fitType } }),
-            ...(colors?.length && { color: { in: colors } }),
-          },
-        }
+        some: {
+          ...PUBLIC_VARIANT_WHERE,
+          ...(fitType?.length && { fitType: { in: fitType } }),
+          ...(colors?.length && { color: { in: colors } }),
+        },
+      }
       : undefined;
 
   const where = {
@@ -263,16 +263,16 @@ export async function getProducts(input = {}) {
   const productIds = items.map((p) => p.id);
   const grouped = productIds.length
     ? await prisma.sale.groupBy({
-        by: ["productId"],
-        where: { productId: { in: productIds } },
-        _sum: {
-          quantity: true,
-          total: true,
-          brandEarning: true,
-          merchantEarning: true,
-          platformEarning: true,
-        },
-      })
+      by: ["productId"],
+      where: { productId: { in: productIds } },
+      _sum: {
+        quantity: true,
+        total: true,
+        brandEarning: true,
+        merchantEarning: true,
+        platformEarning: true,
+      },
+    })
     : [];
 
   const aggByProduct = new Map();
@@ -313,11 +313,11 @@ export async function getProducts(input = {}) {
 export async function getProductOptions({ q, limit = 20 } = {}) {
   const where = q
     ? {
-        OR: [
-          { title: { contains: q, mode: "insensitive" } },
-          { brandName: { contains: q, mode: "insensitive" } },
-        ],
-      }
+      OR: [
+        { title: { contains: q, mode: "insensitive" } },
+        { brandName: { contains: q, mode: "insensitive" } },
+      ],
+    }
     : undefined;
 
   const rows = await prisma.product.findMany({
@@ -596,12 +596,12 @@ export async function getProductsByCategorySlug(input = {}) {
   const variantsFilter =
     fitType?.length || colors?.length
       ? {
-          some: {
-            ...PUBLIC_VARIANT_WHERE,
-            ...(fitType?.length && { fitType: { in: fitType } }),
-            ...(colors?.length && { color: { in: colors } }),
-          },
-        }
+        some: {
+          ...PUBLIC_VARIANT_WHERE,
+          ...(fitType?.length && { fitType: { in: fitType } }),
+          ...(colors?.length && { color: { in: colors } }),
+        },
+      }
       : { some: { ...PUBLIC_VARIANT_WHERE } }; // ensure at least one active variant
 
   // -------- WHERE --------
@@ -690,3 +690,5 @@ export async function getProductsByCategorySlug(input = {}) {
     items: itemsWithPreview,
   };
 }
+
+

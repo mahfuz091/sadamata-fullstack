@@ -20,6 +20,7 @@ model User {
   profileImage      String?
   brandId           String?
   brand             Brand?
+  brandFollows      BrandFollow[]
   CommissionSetting CommissionSetting[]
   merchantProfile   MerchantProfile?
   Order             Order[]
@@ -28,7 +29,6 @@ model User {
   sales             Sale[]              @relation("MerchantSales")
   addresses         UserAddress[]
   userProfile       UserProfile?
-  brandFollows      BrandFollow[]
 }
 
 model UserProfile {
@@ -153,13 +153,15 @@ model Brand {
   linkedinLink       String?             @db.VarChar(255)
   twitterLink        String?             @db.VarChar(255)
   bannerPosition     String?             @default("50")
+  productCategoryId  String?
   brandCategory      BrandCategory?      @relation(fields: [brandCategoryId], references: [id])
+  ProductCategory    ProductCategory?    @relation(fields: [productCategoryId], references: [id])
   user               User                @relation(fields: [userId], references: [id])
+  followers          BrandFollow[]
   CommissionSetting  CommissionSetting[]
   Payout             Payout[]            @relation("BrandPayouts")
   Product            Product[]
   Sales              Sale[]              @relation("BrandSales")
-  followers          BrandFollow[]
 }
 
 model BrandCategory {
@@ -215,6 +217,7 @@ model ProductCategory {
   sortOrder Int?      @default(0)
   slug      String?   @unique
   isActive  Boolean   @default(true)
+  Brand     Brand[]
   products  Product[] @relation("ProductCategories")
 
   @@index([slug])
@@ -429,6 +432,19 @@ model Payout {
   @@index([actor, brandId, merchantId, createdAt])
 }
 
+model BrandFollow {
+  id        String   @id @default(cuid())
+  userId    String
+  brandId   String
+  createdAt DateTime @default(now())
+  brand     Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, brandId])
+  @@index([userId])
+  @@index([brandId])
+}
+
 enum ProductStat {
   UNDERREVIEW
   PROCESSING
@@ -471,18 +487,4 @@ enum OrderStatus {
   CANCELLED
   SHIPPED
   COMPLETED
-}
-
-model BrandFollow {
-  id        String   @id @default(cuid())
-  userId    String
-  brandId   String
-  createdAt DateTime @default(now())
-
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  brand     Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, brandId])
-  @@index([userId])
-  @@index([brandId])
 }

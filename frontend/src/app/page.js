@@ -14,6 +14,7 @@ import {
   getProductsByCategorySlug,
 } from "./actions/product/product.actions";
 import { auth } from "@/auth";
+import { getBrandsByCategorySlug } from "./actions/brand/brand.actions";
 
 export default async function Home() {
   // const newA  =  await getNewArrivals()
@@ -22,7 +23,13 @@ export default async function Home() {
     getProductsByCategorySlug({ slug: "movies" }),
     getProductsByCategorySlug({ slug: "drama" }), // or "natok"
   ]);
+  const [musicBrands, movieBrands, natokBrands] = await Promise.all([
+    getBrandsByCategorySlug({ slug: "music" }),
+    getBrandsByCategorySlug({ slug: "movies" }),
+    getBrandsByCategorySlug({ slug: "drama" }), // or "natok"
+  ]);
   // console.log(musicProducts, movieProducts, natokProducts, "music Products");
+  console.log(musicBrands, movieBrands, natokBrands, "music Brands");
 
   const session = await auth();
   // console.log(session, "session");
@@ -32,11 +39,11 @@ export default async function Home() {
       <BrandInfo />
       <PopularProduct />
       <FeatureProduct />
-      <TopMusicBrand />
+      <TopMusicBrand brands={musicBrands?.items} />
       <TopMusicBrandTshirt products={musicProducts?.items} />
-      <TopMovieBrand />
+      <TopMovieBrand brands={movieBrands?.items} />
       <TopMovieBrandTshirt products={movieProducts?.items} />
-      <TopNatokBrand />
+      <TopNatokBrand brands={natokBrands?.items} />
       <TopNatokBrandTshirt products={natokProducts?.items} />
     </Layout>
   );

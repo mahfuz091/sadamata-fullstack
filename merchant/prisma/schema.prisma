@@ -153,7 +153,9 @@ model Brand {
   linkedinLink       String?             @db.VarChar(255)
   twitterLink        String?             @db.VarChar(255)
   bannerPosition     String?             @default("50")
+  productCategoryId  String?
   brandCategory      BrandCategory?      @relation(fields: [brandCategoryId], references: [id])
+  ProductCategory    ProductCategory?    @relation(fields: [productCategoryId], references: [id])
   user               User                @relation(fields: [userId], references: [id])
   BrandFollow        BrandFollow[]
   CommissionSetting  CommissionSetting[]
@@ -215,6 +217,7 @@ model ProductCategory {
   sortOrder Int?      @default(0)
   slug      String?   @unique
   isActive  Boolean   @default(true)
+  Brand     Brand[]
   products  Product[] @relation("ProductCategories")
 
   @@index([slug])

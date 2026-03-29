@@ -1,11 +1,19 @@
 // BrandProfile.jsx
-import React from "react";
+"use client"
+import React, { useMemo, useState } from "react";
 import ProductCard from "../ProductCard/ProductCard";
 import image from "@/assets/images/products/item-1-1.png";
 import bg from "@/assets/images/backgrounds/bg-home.jpg";
 import user from "@/assets/images/resources/user-1-1.png";
 import Image from "next/image";
 import { Col } from "react-bootstrap";
+import Link from "next/link";
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaLinkedinIn,
+  FaTwitter,
+} from "react-icons/fa";
 
 // A simple ProductCard component
 
@@ -38,6 +46,59 @@ const BrandProfile = ({ brand, products = [], initialIsFollowing = false, follow
 
       console.log("bannerImg",bannerImg);
       console.log("profileImg",profileImg);
+
+      const socialLinks = [
+  {
+    key: "facebook",
+    href: brand?.facebookLink,
+    icon: <FaFacebookF />,
+    label: "Facebook",
+  },
+  {
+    key: "instagram",
+    href: brand?.instagramLink,
+    icon: <FaInstagram />,
+    label: "Instagram",
+  },
+  {
+    key: "linkedin",
+    href: brand?.linkedinLink,
+    icon: <FaLinkedinIn />,
+    label: "LinkedIn",
+  },
+  {
+    key: "twitter",
+    href: brand?.twitterLink,
+    icon: <FaTwitter />,
+    label: "Twitter",
+  },
+].filter((item) => item.href);
+
+
+// group products by mockup
+  const mockupGroups = useMemo(() => {
+    const map = new Map();
+
+    for (const product of products) {
+      const mockupId = product?.Mockup?.id || "no-mockup";
+      const mockupName = product?.Mockup?.name || "Other Products";
+
+      if (!map.has(mockupId)) {
+        map.set(mockupId, {
+          id: mockupId,
+          name: mockupName,
+          products: [],
+        });
+      }
+
+      map.get(mockupId).products.push(product);
+    }
+
+    return Array.from(map.values());
+  }, [products]);
+
+  const [activeIdx, setActiveIdx] = useState(0);
+  const activeGroup = mockupGroups[activeIdx] || null;
       
 
   return (
@@ -68,6 +129,20 @@ const BrandProfile = ({ brand, products = [], initialIsFollowing = false, follow
                   <span className='brand-profile-top__followers'>
                     {followerCount} Followers
                   </span>
+                  <div className="brand-profile-top__social">
+                    {socialLinks.map((link) => (
+                      <Link
+                        key={link.key}
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="brand-social-link"
+                        aria-label={link.label}
+                      >
+                        {link.icon}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               </div>
               <div className='brand-profile-top__right'>
@@ -89,28 +164,53 @@ const BrandProfile = ({ brand, products = [], initialIsFollowing = false, follow
               </div>
             </div>
             {/* Brand navigation/tabs could go here if needed, keeping placeholder for now */}
-            <ul className='brand-profile-top__list list-unstyled'>
-               <li className='active'>
-                <a href='#'>All Products</a>
-              </li>
+            <ul className="brand-profile-top__list list-unstyled">
+              {mockupGroups.length > 0 ? (
+                mockupGroups.map((group, idx) => (
+                  <li
+                    key={group.id}
+                    className={idx === activeIdx ? "active" : ""}
+                  >
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setActiveIdx(idx);
+                      }}
+                      title={`${group.name} • ${group.products.length} products`}
+                    >
+                      {group.name}
+                    </a>
+                  </li>
+                ))
+              ) : (
+                <li className="active">
+                  <a href="#">All Products</a>
+                </li>
+              )}
             </ul>
           </div>
         </div>
       </div>
-      <section className='brand-profile'>
-        {/* Product Grid Section */}
-        <div className='brand-profile__bottom pb-120'>
-          <div className='container'>
-            <div className='row gutter-y-32 gutter-x-32'>
-              {products.length > 0 ? (
-                products.map((product, index) => (
-                  <Col key={index} xl={3} lg={4} md={6} sm={6}>
+     <section className="brand-profile">
+        <div className="brand-profile__bottom pb-120">
+          <div className="container">
+            <div className="row gutter-y-32 gutter-x-32">
+              {activeGroup?.products?.length > 0 ? (
+                activeGroup.products.map((product) => (
+                  <Col key={product.id} xl={3} lg={4} md={6} sm={6}>
+                    <ProductCard product={product} />
+                  </Col>
+                ))
+              ) : products.length > 0 ? (
+                products.map((product) => (
+                  <Col key={product.id} xl={3} lg={4} md={6} sm={6}>
                     <ProductCard product={product} />
                   </Col>
                 ))
               ) : (
                 <div className="col-12 text-center py-5">
-                   <p>No products found for this brand.</p>
+                  <p>No products found for this brand.</p>
                 </div>
               )}
             </div>

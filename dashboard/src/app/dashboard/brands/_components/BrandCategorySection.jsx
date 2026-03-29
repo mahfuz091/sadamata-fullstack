@@ -133,14 +133,14 @@ export default function BrandCategorySection({
       )}
 
       {selected && (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 mt-2">
           <span className="rounded border px-3 py-1 text-sm">
             {selected.name}
           </span>
 
           <Button
             type="button"
-            variant="destructive"
+            variant="outline"
             size="sm"
             onClick={handleRemove}
             disabled={loading}

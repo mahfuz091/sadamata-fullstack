@@ -35,13 +35,16 @@ export default async function BrandDetailsPage({ params }) {
 
   const brandCommission = await prisma.commissionSetting.findFirst({
     where: {
-      brandId: brand.id,
+      brandId: brand.brand?.id,
       merchantId: null,
       productId: null,
       isActive: true,
     },
     orderBy: { createdAt: "desc" },
   });
+
+  console.log("brandCommission", brandCommission);
+  
 
   const brandCommissionPct =
     brandCommission?.brandCommissionPct ?? brand.defaultBrandPct ?? 10;

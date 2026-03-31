@@ -7,7 +7,9 @@ import bgImage from "@/assets/images/backgrounds/admin-bg-home.jpg";
 import userImage from "@/assets/images/resources/user-1-1.png";
 import { useTransition } from "react";
 import { updateBrand } from "@/app/actions/brandActions";
-import { Modal } from "react-bootstrap";
+import { Col, Modal } from "react-bootstrap";
+import ProductCard from "./ProductCard";
+import Pagination from "react-bootstrap/Pagination";
 
 // Custom styles for brand socials
 const brandStyles = `
@@ -185,6 +187,38 @@ const brandStyles = `
     border-radius: 6px;
     font-weight: 600;
   }
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .pagination .page-item {
+    margin: 0 4px;
+  }
+
+  .pagination .page-item.active .page-link {
+    background-color: var(--commerce-base);
+    border-color: var(--commerce-base);
+    color: white;
+  }
+
+  .pagination .page-link {
+    border-radius: 4px;
+    padding: 6px 12px;
+    border: 1px solid #dee2e6;
+    color: #6c757d;
+    transition: background-color 0.3s, color 0.3s;
+    outline: none;
+  }
+    .pagination .page-link:focus{
+    box-shadow: none;
+    }
+
+  .pagination .page-link:hover {
+    background-color: var(--commerce-base) !important;
+    color: white;
+  }
 `;
 
 export default function DashBrand({
@@ -195,7 +229,26 @@ export default function DashBrand({
   brandBannerUrl,
 }) {
   const [activeIdx, setActiveIdx] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(30);
+  const sectionRef = useRef(null);
+
   const activeMockup = useMemo(() => data[activeIdx], [data, activeIdx]);
+  const paginatedProducts = useMemo(() => {
+    const startIdx = (currentPage - 1) * itemsPerPage;
+    return activeMockup?.products?.slice(startIdx, startIdx + itemsPerPage) || [];
+  }, [activeMockup, currentPage, itemsPerPage]);
+
+  const totalPages = useMemo(() => {
+    return Math.ceil((activeMockup?.products?.length || 0) / itemsPerPage);
+  }, [activeMockup, itemsPerPage]);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    if (sectionRef.current) {
+      sectionRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   // State for the form inputs
   const [newBanner, setNewBanner] = useState(null);
@@ -203,6 +256,8 @@ export default function DashBrand({
   const [twitterLink, setTwitterLink] = useState(brand?.twitterLink || "");
   const [instagramLink, setInstagramLink] = useState(brand?.instagramLink || "");
   const [linkedinLink, setLinkedinLink] = useState(brand?.linkedinLink || "");
+  const [tiktokLink, setTiktokLink] = useState(brand?.tiktokLink || "");
+  const [youtubeLink, setYoutubeLink] = useState(brand?.youtubeLink || "");
 
   const [bannerPreviewUrl, setBannerPreviewUrl] = useState(brandBannerUrl); // For the banner image preview
   const [isPending, startTransition] = useTransition(); // For handling transitions
@@ -371,6 +426,8 @@ export default function DashBrand({
     formData.append("twitterLink", twitterLink);
     formData.append("instagramLink", instagramLink);
     formData.append("linkedinLink", linkedinLink);
+    formData.append("tiktokLink", tiktokLink);
+    formData.append("youtubeLink", youtubeLink);
     formData.append("bannerPosition", bannerPos);
 
     startTransition(async () => {
@@ -391,7 +448,7 @@ export default function DashBrand({
   };
 
   return (
-    <section className="dashboard-area section-space">
+    <section className="dashboard-area section-space" >
       <style>{brandStyles}</style>
       <div className="container">
         <div className="row gutter-x-40">
@@ -479,6 +536,16 @@ export default function DashBrand({
                           Followers
                         </span>
                         <div className="brand-socials-wrapper mt-3">
+                          {brand?.youtubeLink && (
+                            <a href={brand.youtubeLink} target="_blank" rel="noopener noreferrer" className="brand-social-link">
+                              <i className="fab fa-youtube"></i>
+                            </a>
+                          )}
+                          {brand?.tiktokLink && (
+                            <a href={brand.tiktokLink} target="_blank" rel="noopener noreferrer" className="brand-social-link">
+                              <i className="fab fa-tiktok"></i>
+                            </a>
+                          )}
                           {brand?.facebookLink && (
                             <a href={brand.facebookLink} target="_blank" rel="noopener noreferrer" className="brand-social-link">
                               <i className="fab fa-facebook-f"></i>
@@ -532,6 +599,38 @@ export default function DashBrand({
                     ))}
                   </ul>
                 </div>
+                 <section className="brand-profile" ref={sectionRef}>
+        <div className="brand-profile__bottom pb-120">
+          <div className="container">
+            <div className="row gutter-y-32">
+              {paginatedProducts.length > 0 ? (
+                paginatedProducts.map((product) => (
+                  <Col key={product.id} xl={4} lg={4} md={6} sm={6}>
+                    <ProductCard product={product} />
+                  </Col>
+                ))
+              ) : (
+                <div className="col-12 text-center py-5">
+                  <p>No products found for this brand.</p>
+                </div>
+              )}
+            </div>
+            <div className="d-flex justify-content-center mt-4">
+              <Pagination>
+                {Array.from({ length: totalPages }, (_, idx) => (
+                  <Pagination.Item
+                    key={idx + 1}
+                    active={idx + 1 === currentPage}
+                    onClick={() => handlePageChange(idx + 1)}
+                  >
+                    {idx + 1}
+                  </Pagination.Item>
+                ))}
+              </Pagination>
+            </div>
+          </div>
+        </div>
+      </section>
               </div>
 
               {/* Modal to update brand */}
@@ -542,12 +641,35 @@ export default function DashBrand({
                 <form onSubmit={handleUpdateBrand}>
                   <Modal.Body>
 
-                    <hr />
+                
 
                     <div className="mb-3">
                       <label className="form-label fw-bold">Social Media Links</label>
                     </div>
-                    
+                    <div className="mb-3">
+                      <div className="input-group">
+                        <span className="input-group-text"><i className="fab fa-youtube"></i></span>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={youtubeLink}
+                          onChange={(e) => setYoutubeLink(e.target.value)}
+                          placeholder="YouTube Profile URL"
+                        />
+                      </div>
+                    </div>
+                     <div className="mb-3">
+                      <div className="input-group">
+                        <span className="input-group-text"><i className="fab fa-tiktok"></i></span>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={tiktokLink}
+                          onChange={(e) => setTiktokLink(e.target.value)}
+                          placeholder="TikTok Profile URL"
+                        />
+                      </div>
+                    </div>
                     <div className="mb-3">
                       <div className="input-group">
                         <span className="input-group-text"><i className="fab fa-facebook-f"></i></span>

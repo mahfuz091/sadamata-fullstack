@@ -14,6 +14,7 @@ import {
   FaLinkedinIn,
   FaTwitter,
 } from "react-icons/fa";
+import Pagination from 'react-bootstrap/Pagination';
 
 // A simple ProductCard component
 
@@ -99,11 +100,234 @@ const BrandProfile = ({ brand, products = [], initialIsFollowing = false, follow
 
   const [activeIdx, setActiveIdx] = useState(0);
   const activeGroup = mockupGroups[activeIdx] || null;
-      
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 40;
+
+  const paginatedProducts = useMemo(() => {
+    const startIdx = (currentPage - 1) * itemsPerPage;
+    return products.slice(startIdx, startIdx + itemsPerPage);
+  }, [products, currentPage]);
+
+  const totalPages = Math.ceil(products.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const brandStyles = `
+  .brand-socials-wrapper {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .brand-social-link {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.05);
+    color: var(--commerce-text);
+    transition: all 0.3s ease;
+    font-size: 14px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  .brand-social-link:hover {
+    background-color: var(--commerce-base);
+    color: white;
+    transform: translateY(-2px);
+  }
+  .input-group-text {
+    background-color: #f8f9fa;
+    border-color: #e8effc;
+    width: 45px;
+    justify-content: center;
+    color: var(--commerce-text);
+  }
+  .banner-upload-preview {
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    background-color: #f7f8fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.3s ease;
+  }
+  .banner-upload-preview:hover {
+    border-color: var(--commerce-base) !important;
+  }
+  .banner-upload-preview.is-dragging {
+    border: 2px dashed var(--commerce-base) !important;
+    background-color: rgba(var(--commerce-base-rgb), 0.05);
+  }
+  .banner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .banner-upload-preview:hover .banner-overlay {
+    opacity: 1;
+  }
+  .banner-upload-preview i {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+  .reposition-hint {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.6);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    pointer-events: none;
+    z-index: 3;
+  }
+  .grabbing {
+    cursor: grabbing !important;
+  }
+  .grab {
+    cursor: grab !important;
+  }
+  .banner-edit-container {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 10;
+  }
+  .banner-edit-btn {
+    background: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: none;
+    font-weight: 600;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #1c1e21;
+    transition: background 0.2s;
+  }
+  .banner-edit-btn:hover {
+    background: #f2f2f2;
+  }
+  .banner-dropdown-menu {
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    width: 200px;
+    padding: 8px 0;
+    margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+  }
+  .banner-dropdown-item {
+    background: none;
+    border: none;
+    padding: 8px 16px;
+    text-align: left;
+    font-size: 14px;
+    color: #1c1e21;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: background 0.2s;
+  }
+  .banner-dropdown-item:hover {
+    background: #f2f2f2;
+  }
+  .banner-reposition-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 12px 20px;
+    background: rgba(0,0,0,0.6);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 15;
+  }
+  .banner-reposition-controls {
+    display: flex;
+    gap: 12px;
+  }
+  .banner-btn-save {
+    background: var(--commerce-base);
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+  }
+  .banner-btn-cancel {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+  }
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 24px;
+  }
+
+  .pagination .page-item {
+    margin: 0 4px;
+  }
+
+  .pagination .page-item.active .page-link {
+    background-color: var(--commerce-base);
+    border-color: var(--commerce-base);
+    color: white;
+  }
+
+  .pagination .page-link {
+    border-radius: 4px;
+    padding: 6px 12px;
+    border: 1px solid #dee2e6;
+    color: #6c757d;
+    transition: background-color 0.3s, color 0.3s;
+    outline: none;
+  }
+    .pagination .page-link:focus{
+    box-shadow: none;
+    }
+
+  .pagination .page-link:hover {
+    background-color: var(--commerce-base) !important;
+    color: white;
+  }
+`;
 
   return (
     <>
       <div className='brand-profile-top'>
+        <style>{brandStyles}</style>
         <div
           className='brand-profile-top__bg'
           style={{ 
@@ -197,13 +421,13 @@ const BrandProfile = ({ brand, products = [], initialIsFollowing = false, follow
           <div className="container">
             <div className="row gutter-y-32 gutter-x-32">
               {activeGroup?.products?.length > 0 ? (
-                activeGroup.products.map((product) => (
+                paginatedProducts.map((product) => (
                   <Col key={product.id} xl={3} lg={4} md={6} sm={6}>
                     <ProductCard product={product} />
                   </Col>
                 ))
               ) : products.length > 0 ? (
-                products.map((product) => (
+                paginatedProducts.map((product) => (
                   <Col key={product.id} xl={3} lg={4} md={6} sm={6}>
                     <ProductCard product={product} />
                   </Col>
@@ -214,6 +438,21 @@ const BrandProfile = ({ brand, products = [], initialIsFollowing = false, follow
                 </div>
               )}
             </div>
+            <Pagination className="justify-content-center">
+              <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPage === 1} />
+              <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
+              {Array.from({ length: totalPages }, (_, idx) => (
+                <Pagination.Item
+                  key={idx + 1}
+                  active={currentPage === idx + 1}
+                  onClick={() => handlePageChange(idx + 1)}
+                >
+                  {idx + 1}
+                </Pagination.Item>
+              ))}
+              <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
+              <Pagination.Last onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages} />
+            </Pagination>
           </div>
         </div>
       </section>

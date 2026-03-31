@@ -149,6 +149,8 @@ model Brand {
   isExclusive        Boolean             @default(false)
   bannerImage        String?             @db.VarChar(255)
   facebookLink       String?             @db.VarChar(255)
+  youtubeLink       String?             @db.VarChar(255)
+  tiktokLink       String?             @db.VarChar(255)
   instagramLink      String?             @db.VarChar(255)
   linkedinLink       String?             @db.VarChar(255)
   twitterLink        String?             @db.VarChar(255)

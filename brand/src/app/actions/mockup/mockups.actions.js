@@ -41,6 +41,7 @@ export async function getMockupsWithProducts(userId) {
         orderBy: { createdAt: "desc" },
         select: {
           id: true,
+          productId: true,
           title: true,
           price: true,
           brandName: true,
@@ -70,6 +71,7 @@ export async function getMockupsWithProducts(userId) {
       id: p.id,
       title: p.title,
       price: p.price,
+      productId: p.productId,
       brandName: p.brandName,
       brand: p.Brand,
       variant: p.variants[0] || null,

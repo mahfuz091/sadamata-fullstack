@@ -9,10 +9,12 @@ export async function updateBrand(formData) {
   try {
     const brandId = formData.get("brandId");
     const bannerFile = formData.get("bannerFile");
+    const youtubeLink = formData.get("youtubeLink");
     const facebookLink = formData.get("facebookLink");
     const twitterLink = formData.get("twitterLink");
     const instagramLink = formData.get("instagramLink");
     const linkedinLink = formData.get("linkedinLink");
+    const tiktokLink = formData.get("tiktokLink");
     const bannerPosition = formData.get("bannerPosition");
 
     console.log("Updating Brand:", { brandId, bannerPosition, facebookLink });
@@ -37,6 +39,9 @@ export async function updateBrand(formData) {
         twitterLink: twitterLink ?? undefined,
         instagramLink: instagramLink ?? undefined,
         linkedinLink: linkedinLink ?? undefined,
+        youtubeLink: youtubeLink ?? undefined,
+        tiktokLink: tiktokLink ?? undefined,
+
         bannerPosition: bannerPosition ?? undefined,
       },
     });

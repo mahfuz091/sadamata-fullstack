@@ -493,6 +493,8 @@ const ProductArea = ({ result: initialResult, slug, q, brands, mockups }) => {
                 {itemsForGrid.length > 0
                   ? itemsForGrid.map((item) => {
                       const cardVariant = pickVariantForCard(item);
+                      console.log("Item", item);
+                      
 
                       // ✅ Prefer signed URLs from server
                       const imgUrl =
@@ -555,9 +557,13 @@ const ProductArea = ({ result: initialResult, slug, q, brands, mockups }) => {
                             <div className='product__item__content'>
                               <p className='product__item__brand'>
                                 Brand:{" "}
-                                <a href='#' onClick={(e) => e.preventDefault()}>
-                                  {item.brandName || "N/A"}
-                                </a>
+                                {item?.brandId ? (
+                          <Link href={`/brand/${item.brandId}`}>
+                            {item?.brandName ?? "—"}
+                          </Link>
+                        ) : (
+                          item?.brandName ?? item?.brandName ?? "—"
+                        )}
                               </p>
 
                               <h4 className='product__item__title'>

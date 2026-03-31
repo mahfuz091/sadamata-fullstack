@@ -12,7 +12,9 @@ import {
   FaFacebookF,
   FaInstagram,
   FaLinkedinIn,
+  FaTiktok,
   FaTwitter,
+  FaYoutube,
 } from "react-icons/fa";
 import Pagination from 'react-bootstrap/Pagination';
 
@@ -49,6 +51,18 @@ const BrandProfile = ({ brand, products = [], initialIsFollowing = false, follow
       console.log("profileImg",profileImg);
 
       const socialLinks = [
+        {
+    key: "youtube",
+    href: brand?.youtubeLink,
+    icon: <FaYoutube />,
+    label: "YouTube",
+  },
+  {
+    key: "tiktok",
+    href: brand?.tiktokLink,
+    icon: <FaTiktok />,
+    label: "TikTok",
+  },
   {
     key: "facebook",
     href: brand?.facebookLink,

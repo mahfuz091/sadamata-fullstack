@@ -1,7 +1,11 @@
 img {
   height: auto;
 }
-
+.commerce-btn:disabled {
+  background-color: var(--commerce-border-color);
+  color: var(--commerce-text);
+  cursor: not-allowed;
+}
 .mx-32 {
   padding-left: 16px;
   padding-right: 16px;

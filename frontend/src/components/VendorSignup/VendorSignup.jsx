@@ -62,7 +62,7 @@ const VendorSignup = () => {
               <p>
                 By continuing, you agree to sadamata’s{" "}
                 <Link href='/terms'>conditions of use</Link> and{" "}
-                <Link href='/privecy'>privacy notice</Link>.
+                <Link href='/privacy'>privacy notice</Link>.
               </p>
             </div>
           </form>

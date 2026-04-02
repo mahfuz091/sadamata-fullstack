@@ -49,6 +49,9 @@ const [guestEmail, setGuestEmail] = useState("");
 const [guestAddress, setGuestAddress] = useState("");
 const [guestZip, setGuestZip] = useState("");
 
+
+  const [termsAccepted, setTermsAccepted] = useState(false);
+
   // require login
   // useEffect(() => {
   //   if (!user) router.push("/login?redirect=/checkout");
@@ -645,12 +648,29 @@ const [guestZip, setGuestZip] = useState("");
                   ৳{summary.grandTotal.toFixed(2)}
                 </h3>
               </div>
+                {/* Terms & Conditions checkbox */}
+              <div className="terms-checkbox d-flex align-items-start gap-3 mb-3 mt-3">
+                <input
+                  type="checkbox"
+                  id="terms-conditions"
+                  checked={termsAccepted}
+                  onChange={() => setTermsAccepted((prev) => !prev)}
+                  className="mt-2"
+                />
+                <label htmlFor="terms-conditions">
+                  I agree to the{" "}
+                  <a href="/terms" target="_blank">Terms & Conditions</a>,{" "}
+                  <a href="/privacy" target="_blank">Privacy Policy</a>, and{" "}
+                  <a href="/refund" target="_blank">Refund & Return Policy</a>.
+                </label>
+              </div>
 
               <button
                 disabled={
   pending ||
   sanitizedCart.length === 0 ||
   !(summary.grandTotal > 0) ||
+   !termsAccepted ||
   (
     user
       ? !selectedId

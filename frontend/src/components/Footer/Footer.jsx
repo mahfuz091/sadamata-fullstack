@@ -164,7 +164,7 @@ const Footer = ({session}) => {
                       <a href='/about'>About Us</a>
                     </li>
                     <li>
-                      <a href='/privecy'>Privacy Policy</a>
+                      <a href='/privacy'>Privacy Policy</a>
                     </li>
                     <li>
                       <a href='/terms'>Terms and Condition</a>

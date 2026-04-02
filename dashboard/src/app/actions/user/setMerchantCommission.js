@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
+import { revalidatePath } from "next/cache";
 
 export async function setMerchantCommission(
   _,
@@ -24,6 +25,10 @@ export async function setMerchantCommission(
     ) {
       return { success: false, msg: "Unauthorized" };
     }
+  // Get the current brandSelectedMerchantPct
+    const currentCommissionSetting = await prisma.commissionSetting.findFirst({
+      where: { merchantId, brandId: null, productId: null, isActive: true },
+    });
 
     // Deactivate previous merchant-level commissions
     await prisma.commissionSetting.updateMany({
@@ -38,15 +43,19 @@ export async function setMerchantCommission(
         effectiveTo: new Date(),
       },
     });
+ // If there is an existing `brandSelectedMerchantPct`, use that value
+    const brandSelectedMerchantPct = currentCommissionSetting?.brandSelectedMerchantPct ?? 6.0;
 
     // Create new active merchant commission
     await prisma.commissionSetting.create({
       data: {
         merchantId,
         merchantCommissionPct,
+        brandSelectedMerchantPct,
         isActive: true,
       },
     });
+    revalidatePath(`/dashboard/merch/${merchantId}`);
 
     return { success: true, msg: "Merchant commission updated" };
   } catch (err) {
@@ -76,6 +85,11 @@ export async function updateCommissionWithBrandPctAction(
       return { success: false, msg: "Unauthorized" };
     }
 
+    // Get the current brandSelectedMerchantPct
+    const currentCommissionSetting = await prisma.commissionSetting.findFirst({
+      where: { merchantId, brandId: null, productId: null, isActive: true },
+    });
+
     // Deactivate previous merchant-level commissions
     await prisma.commissionSetting.updateMany({
       where: {
@@ -90,14 +104,20 @@ export async function updateCommissionWithBrandPctAction(
       },
     });
 
+    // If there is an existing `merchantCommissionPct`, use that value
+    const merchantCommissionPct = currentCommissionSetting?.merchantCommissionPct ?? 11.0;
+
     // Create new active merchant commission
     await prisma.commissionSetting.create({
       data: {
         merchantId,
         brandSelectedMerchantPct,
+         merchantCommissionPct,
         isActive: true,
       },
     });
+
+    revalidatePath(`/dashboard/merch/${merchantId}`);
 
     return { success: true, msg: "Merchant With Brand commission updated" };
   } catch (err) {

@@ -154,6 +154,8 @@ model Brand {
   twitterLink        String?             @db.VarChar(255)
   bannerPosition     String?             @default("50")
   productCategoryId  String?
+  tiktokLink         String?             @db.VarChar(255)
+  youtubeLink        String?             @db.VarChar(255)
   brandCategory      BrandCategory?      @relation(fields: [brandCategoryId], references: [id])
   productCategory    ProductCategory?    @relation("BrandProductCategories", fields: [productCategoryId], references: [id])
   user               User                @relation(fields: [userId], references: [id])

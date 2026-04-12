@@ -45,7 +45,7 @@ const ProductCard = ({ product }) => {
         </h4>
         <div className='product__item__box d-flex justify-content-between align-items-center'>
           <div className='product__item__price fw-bold'>{price}</div>
-          <div className='product__item__ratings d-flex align-items-center gap-1'>
+          <div className='product__item__ratings d-flex align-items-center gap-1 d-none'>
             {Array(5)
               .fill(0)
               .map((_, i) => (

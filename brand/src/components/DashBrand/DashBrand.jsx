@@ -541,19 +541,9 @@ export default function DashBrand({
                               <i className="fab fa-youtube"></i>
                             </a>
                           )}
-                          {brand?.tiktokLink && (
-                            <a href={brand.tiktokLink} target="_blank" rel="noopener noreferrer" className="brand-social-link">
-                              <i className="fab fa-tiktok"></i>
-                            </a>
-                          )}
-                          {brand?.facebookLink && (
+                           {brand?.facebookLink && (
                             <a href={brand.facebookLink} target="_blank" rel="noopener noreferrer" className="brand-social-link">
                               <i className="fab fa-facebook-f"></i>
-                            </a>
-                          )}
-                          {brand?.twitterLink && (
-                            <a href={brand.twitterLink} target="_blank" rel="noopener noreferrer" className="brand-social-link">
-                              <i className="icon-twitter"></i>
                             </a>
                           )}
                           {brand?.instagramLink && (
@@ -561,6 +551,18 @@ export default function DashBrand({
                               <i className="icon-instragram"></i>
                             </a>
                           )}
+                          {brand?.tiktokLink && (
+                            <a href={brand.tiktokLink} target="_blank" rel="noopener noreferrer" className="brand-social-link">
+                              <i className="fab fa-tiktok"></i>
+                            </a>
+                          )}
+                         
+                          {brand?.twitterLink && (
+                            <a href={brand.twitterLink} target="_blank" rel="noopener noreferrer" className="brand-social-link">
+                              <i className="icon-twitter"></i>
+                            </a>
+                          )}
+                          
                           {brand?.linkedinLink && (
                             <a href={brand.linkedinLink} target="_blank" rel="noopener noreferrer" className="brand-social-link">
                               <i className="fab fa-linkedin-in"></i>
@@ -658,6 +660,32 @@ export default function DashBrand({
                         />
                       </div>
                     </div>
+                      <div className="mb-3">
+                      <div className="input-group">
+                        <span className="input-group-text"><i className="fab fa-facebook-f"></i></span>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={facebookLink}
+                          onChange={(e) => setFacebookLink(e.target.value)}
+                          placeholder="Facebook Profile URL"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="mb-3">
+                      <div className="input-group">
+                        <span className="input-group-text"><i className="icon-instragram"></i></span>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={instagramLink}
+                          onChange={(e) => setInstagramLink(e.target.value)}
+                          placeholder="Instagram Profile URL"
+                        />
+                      </div>
+                    </div>
+                    
                      <div className="mb-3">
                       <div className="input-group">
                         <span className="input-group-text"><i className="fab fa-tiktok"></i></span>
@@ -670,18 +698,7 @@ export default function DashBrand({
                         />
                       </div>
                     </div>
-                    <div className="mb-3">
-                      <div className="input-group">
-                        <span className="input-group-text"><i className="fab fa-facebook-f"></i></span>
-                        <input
-                          type="text"
-                          className="form-control"
-                          value={facebookLink}
-                          onChange={(e) => setFacebookLink(e.target.value)}
-                          placeholder="Facebook Profile URL"
-                        />
-                      </div>
-                    </div>
+                  
                     
                     <div className="mb-3">
                       <div className="input-group">
@@ -696,18 +713,7 @@ export default function DashBrand({
                       </div>
                     </div>
                     
-                    <div className="mb-3">
-                      <div className="input-group">
-                        <span className="input-group-text"><i className="icon-instragram"></i></span>
-                        <input
-                          type="text"
-                          className="form-control"
-                          value={instagramLink}
-                          onChange={(e) => setInstagramLink(e.target.value)}
-                          placeholder="Instagram Profile URL"
-                        />
-                      </div>
-                    </div>
+                    
                     
                     <div className="mb-3">
                       <div className="input-group">

@@ -16,6 +16,10 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE_URL;
 
+function formatCurrencyAmount(value) {
+  return Number(value || 0).toFixed(2);
+}
+
 const options = [
   { value: "chocolate", label: "Marketplace: All" },
   { value: "strawberry", label: "Marketplace: All" },
@@ -38,6 +42,7 @@ const Analyze = ({
   summery,
 }) => {
   const tableTopRef = useRef(null);
+  const hasMountedSearchRef = useRef(false);
 
   const [items, setItems] = useState(initialItems);
   const [page, setPage] = useState(initialPage);
@@ -87,6 +92,19 @@ const Analyze = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fromDate, toDate]);
 
+  useEffect(() => {
+    if (!hasMountedSearchRef.current) {
+      hasMountedSearchRef.current = true;
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
+      fetchPage(1, pageSize, { scroll: false, searchTerm });
+    }, 150);
+
+    return () => clearTimeout(timeoutId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTerm]);
   return (
     <section className="dashboard-area section-space">
       <div className="container">
@@ -146,7 +164,7 @@ const Analyze = ({
                         </div>
                         <div className="earnings-card__price">
                           <h4 className="earnings-card__count">
-                            ৳{summery?.totalAfterWithdraw}{" "}
+                            ৳{formatCurrencyAmount(summery?.totalAfterWithdraw)}{" "}
                           </h4>
                           <p className="earnings-card__text">
                             Estimated Royalties
@@ -168,7 +186,7 @@ const Analyze = ({
                         </div>
                         <div className="earnings-card__price">
                           <h4 className="earnings-card__count">
-                            ৳{summery?.brandTotalIncome}{" "}
+                            ৳{formatCurrencyAmount(summery?.brandTotalIncome)}{" "}
                           </h4>
                           <p className="earnings-card__text">
                             Estimated Royalties
@@ -186,7 +204,7 @@ const Analyze = ({
                       <div className="earnings-card__main">
                         <div className="earnings-card__price">
                           <h4 className="earnings-card__count">
-                            ৳{summery?.withdrawAmount}{" "}
+                            ৳{formatCurrencyAmount(summery?.withdrawAmount)}{" "}
                           </h4>
                           <p className="earnings-card__text">
                             Estimated Royalties
@@ -211,16 +229,13 @@ const Analyze = ({
                       <input
                         type="text"
                         name="text"
-                        placeholder="Search"
+                        placeholder="Search by title"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") fetchPage(1, pageSize, { scroll: false });
-                        }}
                       />
                       <button
                         type="button"
-                        onClick={() => fetchPage(1, pageSize, { scroll: false })}
+                        onClick={() => fetchPage(1, pageSize, { scroll: false, searchTerm })}
                       >
                         <i className="fas fa-search"></i>
                       </button>
@@ -334,3 +349,6 @@ const Analyze = ({
 };
 
 export default Analyze;
+
+
+

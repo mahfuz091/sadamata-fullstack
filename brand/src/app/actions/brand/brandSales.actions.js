@@ -100,23 +100,43 @@ async function fetchSalesByRange({ userId, startUTC, endUTC }) {
     where: { id: { in: productIds } },
     select: {
       id: true,
+      productId: true,
       title: true,
-      frontDesign: true,
       variants: {
-        take: 1,
-        select: { frontImg: true },
+        select: {
+          color: true,
+          frontImg: true,
+          backImg: true,
+        },
       },
     },
   });
 
   const productMap = new Map(
-    products.map((p) => [
-      p.id,
-      {
-        title: p.title,
-        image: p.frontImg || (p.variants[0]?.frontImg ?? null),
-      },
-    ])
+    products.map((p) => {
+      const variants = Array.isArray(p.variants) ? p.variants : [];
+      const normalizedVariants = variants.map((variant) => ({
+        ...variant,
+        normalizedColor: String(variant.color || "").trim().toLowerCase(),
+      }));
+
+      const preferredVariant =
+        normalizedVariants.find((variant) => variant.normalizedColor === "black" && variant.frontImg) ||
+        normalizedVariants.find((variant) => variant.normalizedColor === "white" && variant.frontImg) ||
+        normalizedVariants.find((variant) => variant.frontImg) ||
+        normalizedVariants.find((variant) => variant.backImg) ||
+        null;
+
+      return [
+        p.id,
+        {
+          id: p.id,
+          productId: p.productId,
+          title: p.title,
+          image: preferredVariant?.frontImg || preferredVariant?.backImg || null,
+        },
+      ];
+    })
   );
 
   // 3️⃣ Generate signed URLs properly (async)
@@ -131,7 +151,8 @@ async function fetchSalesByRange({ userId, startUTC, endUTC }) {
         : null;
 
       return {
-        productId: g.productId,
+        id: product.id || g.productId,
+        productId: product.productId || null,
         productName: product.title || "Unknown Product",
         image: signedImageUrl,
         qty,

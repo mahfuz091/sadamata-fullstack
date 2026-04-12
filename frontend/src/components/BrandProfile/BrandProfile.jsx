@@ -57,24 +57,25 @@ const BrandProfile = ({ brand, products = [], initialIsFollowing = false, follow
     icon: <FaYoutube />,
     label: "YouTube",
   },
+   {
+    key: "facebook",
+    href: brand?.facebookLink,
+    icon: <FaFacebookF />,
+    label: "Facebook",
+  },
+   {
+    key: "instagram",
+    href: brand?.instagramLink,
+    icon: <FaInstagram />,
+    label: "Instagram",
+  },
   {
     key: "tiktok",
     href: brand?.tiktokLink,
     icon: <FaTiktok />,
     label: "TikTok",
   },
-  {
-    key: "facebook",
-    href: brand?.facebookLink,
-    icon: <FaFacebookF />,
-    label: "Facebook",
-  },
-  {
-    key: "instagram",
-    href: brand?.instagramLink,
-    icon: <FaInstagram />,
-    label: "Instagram",
-  },
+ 
   {
     key: "linkedin",
     href: brand?.linkedinLink,

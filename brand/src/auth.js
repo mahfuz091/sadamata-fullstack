@@ -1,6 +1,11 @@
-import NextAuth from "next-auth";
+﻿import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { prisma } from "./lib/prisma";
+
+const normalizeIdentifier = (value) => {
+  const identifier = String(value || "").trim();
+  return identifier.includes("@") ? identifier.toLowerCase() : identifier;
+};
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   trustHost: true,
@@ -13,12 +18,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: {},
       },
       authorize: async (credentials) => {
+        const identifier = normalizeIdentifier(credentials?.identifier);
+
         const user = await prisma.user.findFirst({
           where: {
-            OR: [
-              { email: credentials.identifier },
-              { phone: credentials.identifier },
-            ],
+            OR: [{ email: identifier }, { phone: identifier }],
           },
           include: {
             addresses: true,
@@ -32,7 +36,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           email: user.email,
           phone: user.phone,
           name: user.name,
-          profileImage: user?.profileImage || null, // ✅ from UserAddress
+          profileImage: user?.profileImage || null,
         };
       },
     }),
@@ -44,32 +48,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
   session: { strategy: "jwt" },
 
-  // callbacks: {
-  //   jwt({ token, user }) {
-  //     if (user) {
-  //       token.id = user.id;
-  //       token.profileImage = user.profileImage;
-  //     }
-  //     return token;
-  //   },
-
-  //   session({ session, token }) {
-  //     session.user.id = token.id;
-  //     session.user.profileImage = token.profileImage;
-  //     return session;
-  //   },
-  // },
   callbacks: {
     async jwt({ token, user }) {
-      // On sign in, NextAuth passes `user`
       if (user) {
         token.id = user.id;
-        // if you already have profileImage on sign in, set it
         token.profileImage = user.profileImage ?? token.profileImage;
         return token;
       }
 
-      // For subsequent requests, token exists — fetch latest from DB
       if (token?.id) {
         try {
           const dbUser = await prisma.user.findUnique({

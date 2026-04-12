@@ -9,13 +9,38 @@ import { prisma } from "@/lib/prisma"; // ✅ তুমি prisma use করছ�
 
 const SIGN_EXPIRES = 60 * 60; // 1 hour
 
+function getPreferredProductImageKey(product) {
+  const variants = Array.isArray(product?.variants) ? product.variants : [];
+  const normalizedVariants = variants.map((variant) => ({
+    ...variant,
+    normalizedColor: String(variant?.color || "").trim().toLowerCase(),
+  }));
+
+  const preferredVariant =
+    normalizedVariants.find((variant) => variant.normalizedColor === "black" && variant.frontImg) ||
+    normalizedVariants.find((variant) => variant.normalizedColor === "white" && variant.frontImg) ||
+    normalizedVariants.find((variant) => variant.frontImg) ||
+    normalizedVariants.find((variant) => variant.backImg) ||
+    null;
+
+  return (
+    preferredVariant?.frontImg ||
+    preferredVariant?.backImg ||
+    product?.previewImg ||
+    product?.variant?.frontImg ||
+    product?.variant?.backImg ||
+    product?.frontDesign ||
+    null
+  );
+}
+
 async function attachProductPreviewUrls(mockups) {
   return Promise.all(
     (mockups || []).map(async (m) => {
       const products = await Promise.all(
         (m.products || []).map(async (p) => {
           // তোমার client code অনুযায়ী: item.variant.frontImg
-          const key = p?.variant?.frontImg || p?.previewImg || p?.frontDesign || null;
+          const key = getPreferredProductImageKey(p);
 
           return {
             ...p,
@@ -79,3 +104,5 @@ const page = async () => {
 };
 
 export default page;
+
+

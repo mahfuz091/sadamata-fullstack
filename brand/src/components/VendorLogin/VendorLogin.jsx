@@ -135,7 +135,7 @@ const VendorLogin = () => {
                 ) : (
                   <>
                     {" "}
-                    Login <i className='icon-right-arrow' />{" "}
+                    Login {" "}
                   </>
                 )}
               </button>

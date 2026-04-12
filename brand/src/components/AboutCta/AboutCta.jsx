@@ -13,7 +13,7 @@ export default function AboutCta() {
             Amazon? Create an account during the sign up process.
           </p>
           <Link href='/signup' className='commerce-btn'>
-            Sign Up <i className='icon-right-arrow'></i>
+            Sign Up 
           </Link>
         </div>
       </div>

@@ -1166,7 +1166,7 @@ export default function VendorRegister({ brandCategories = [] }) {
                     disabled={submitting || !canSubmitStep2}
                   >
                     {submitting ? "Submitting..." : "Submit Registration"}{" "}
-                    <i className='icon-right-arrow' />
+                   
                   </button>
                 </div>
               </div>

@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 // Image imports from @assets/images
 
@@ -10,13 +11,16 @@ import saleAvatar from "@/assets/images/resources/salse-avater.png";
 import DashSidebar from "../DashSidebar/DashSidebar";
 import CustomSelect from "../CustomSelect/CustomSelect";
 const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE_URL ;
-const DashboardMain = ({report, today, stats, salesReport, salesData}) => {
+const DashboardMain = ({report, today, stats, salesReport, salesData, todaySalesReport}) => {
   const options2 = [
   { label: 'Today', value: 'today' },
   { label: 'Last 7 days', value: 'last7d' },
   { label: 'Last 30 days', value: 'last30d' },
   { label: 'Last 90 days', value: 'last90d' },
 ];
+
+console.log(salesData, "salesDtata");
+
   const [data, setData] = useState([]);
   const [selected, setSelected] = useState(options2[0]); // default: today
 
@@ -178,15 +182,15 @@ const DashboardMain = ({report, today, stats, salesReport, salesData}) => {
                     <div className='dashboard-dverview__item'>
                       <div className='dashboard-dverview__top'>
                         <h3 className='dashboard-dverview__title'>
-                          Today’s Sales
+                          Today's Sales
                         </h3>
-                        <p className='dashboard-dverview__date'>3/14/25</p>
+                        <p className='dashboard-dverview__date'>{new Date().toLocaleDateString("en-GB")}</p>
                       </div>
                       <div className='row gutter-x-10 gutter-y-10'>
                         <div className='col-12'>
                           <div className='dashboard-dverview__count'>
                             <h2 className='dashboard-dverview__count-text'>
-                              0
+                              {todaySalesReport?.soldUnits || 0}
                             </h2>
                           </div>
                         </div>
@@ -194,7 +198,12 @@ const DashboardMain = ({report, today, stats, salesReport, salesData}) => {
                           (label, i) => (
                             <div className='col-md-6 col-lg-3' key={i}>
                               <div className='count-box'>
-                                <h3 className='count-box__numbner'>0</h3>
+                                <h3 className='count-box__numbner'>
+                                  {label === "Sold" && (todaySalesReport?.soldOrders || 0)}
+                                  {label === "Cancelled" && (todaySalesReport?.canceledOrders || 0)}
+                                  {label === "Returned" && (todaySalesReport?.refundedUnits || 0)}
+                                  {label === "Royalties" && `৳ ${(todaySalesReport?.merchantRoyalty || 0).toFixed(2)}`}
+                                </h3>
                                 <p className='count-box__text'>{label}</p>
                               </div>
                             </div>
@@ -221,7 +230,7 @@ const DashboardMain = ({report, today, stats, salesReport, salesData}) => {
                           No Sales Yet
                         </h3>
                         <p className='dashboard-dverview__salse-text'>
-                          Hang in there... We’ll notify you the moment you make
+                          Hang in there... Weâ€™ll notify you the moment you make
                           a sale!
                         </p>
                         <div className='dashboard-dverview__salse-thumb'>
@@ -233,7 +242,7 @@ const DashboardMain = ({report, today, stats, salesReport, salesData}) => {
         <div className="dashboard-dverview__salse-box">
           <h3 className="dashboard-dverview__salse-title">No Sales Yet</h3>
           <p className="dashboard-dverview__salse-text">
-            Hang in there... We’ll notify you the moment you make a sale!
+            Hang in there... Weâ€™ll notify you the moment you make a sale!
           </p>
           <div className="dashboard-dverview__salse-thumb">
             {saleAvatar && (
@@ -269,7 +278,13 @@ const DashboardMain = ({report, today, stats, salesReport, salesData}) => {
                   </div>
                   <div className="dashboard-dverview__salse-li-meta">
                     <h4 className="dashboard-dverview__salse-li-title">
-                      {item.productName || 'Unknown Product'}
+                      {item.productId ? (
+                        <Link href={`https://sadamata.com/products/${item.productId}`} target="_blank" rel="noreferrer">
+                          {item.productName || 'Unknown Product'}
+                        </Link>
+                      ) : (
+                        item.productName || 'Unknown Product'
+                      )}
                     </h4>
                    
                   </div>

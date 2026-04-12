@@ -11,7 +11,7 @@ const page = async() => {
     const session = await auth();
   const report = await getUserFirstBrandStats(session?.user?.id)
   const stats = await getUserProductStats(session?.user?.id, { useVisibility: true });
-  // const salesReport = await getTodayBrandSalesReportFromOrders(session?.user?.id);
+  const todaySalesReport = await getTodayBrandSalesReportFromOrders(session?.user?.id);
   const salesReport  = await getBrandSalesSummary(session?.user?.id);
   const today = await getTodayUploadedProducts(session?.user?.id);
   const salesData= await getBrandSalesKpis(session?.user?.id);
@@ -23,7 +23,14 @@ console.log(salesData, "salesData");
 
   return (
     // <Layout>
-      <DashboardMain report={report} today={today} stats={stats} salesReport={salesReport} salesData={salesData}/>
+      <DashboardMain
+        report={report}
+        today={today}
+        stats={stats}
+        salesReport={salesReport}
+        salesData={salesData}
+        todaySalesReport={todaySalesReport}
+      />
     // </Layout>
   );
 };

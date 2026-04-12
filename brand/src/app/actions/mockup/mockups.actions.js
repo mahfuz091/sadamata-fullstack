@@ -48,7 +48,6 @@ export async function getMockupsWithProducts(userId) {
           Brand: { select: { id: true, name: true } },
           variants: {
             orderBy: { id: "asc" },
-            take: 1,
             select: {
               id: true,
               frontImg: true,
@@ -62,20 +61,41 @@ export async function getMockupsWithProducts(userId) {
     },
   });
 
-  const mockups =  rows.map((m) => ({
-    id: m.id,
-    name: m.name,
-    variants: m.variants,
-    productCount: m.Product.length,
-    products: m.Product.map((p) => ({
+  const mockups = rows.map((m) => ({
+  id: m.id,
+  name: m.name,
+  variants: m.variants,
+  productCount: m.Product.length,
+  products: m.Product.map((p) => {
+    const variants = Array.isArray(p.variants) ? p.variants : [];
+    const normalizedVariants = variants.map((variant) => ({
+      ...variant,
+      normalizedColor: String(variant?.color || "").trim().toLowerCase(),
+    }));
+
+    const preferredVariant =
+      normalizedVariants.find((variant) => variant.normalizedColor === "black" && variant.frontImg) ||
+      normalizedVariants.find((variant) => variant.normalizedColor === "white" && variant.frontImg) ||
+      normalizedVariants.find((variant) => variant.frontImg) ||
+      normalizedVariants.find((variant) => variant.backImg) ||
+      null;
+
+    return {
       id: p.id,
       title: p.title,
       price: p.price,
       productId: p.productId,
       brandName: p.brandName,
       brand: p.Brand,
-      variant: p.variants[0] || null,
-    })),
-  }));
+      variants,
+      variant: preferredVariant,
+      previewImg: preferredVariant?.frontImg || preferredVariant?.backImg || null,
+    };
+  }),
+}));
   return { mockups, brandName };
 }
+
+
+
+

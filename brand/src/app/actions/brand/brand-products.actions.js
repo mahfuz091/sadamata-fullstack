@@ -145,12 +145,32 @@ export async function getBrandProductsByUser({
         userId: true,
         Mockup: { select: { name: true } },
         Brand: { select: { id: true, name: true, isActive: true } },
-        variants: { select: { frontImg: true }, take: 1 },
+        variants: {
+          select: {
+            color: true,
+            frontImg: true,
+            backImg: true,
+          },
+        },
       },
     }),
   ]);
 
-  const items = rows.map((p) => ({
+  const items = rows.map((p) => {
+  const variants = Array.isArray(p.variants) ? p.variants : [];
+  const normalizedVariants = variants.map((variant) => ({
+    ...variant,
+    normalizedColor: String(variant.color || "").trim().toLowerCase(),
+  }));
+
+  const preferredVariant =
+    normalizedVariants.find((variant) => variant.normalizedColor === "black" && variant.frontImg) ||
+    normalizedVariants.find((variant) => variant.normalizedColor === "white" && variant.frontImg) ||
+    normalizedVariants.find((variant) => variant.frontImg) ||
+    normalizedVariants.find((variant) => variant.backImg) ||
+    null;
+
+  return {
     id: p.id,
     productId: p.productId,
     title: p.title,
@@ -164,8 +184,9 @@ export async function getBrandProductsByUser({
     brand: p.Brand,
     merchantId: p.userId,
     mockupName: p.Mockup?.name || null,
-    previewImg: p.variants?.[0]?.frontImg || null,
-  }));
+    previewImg: preferredVariant?.frontImg || preferredVariant?.backImg || null,
+  };
+});
 
   return {
     brand: { id: brand.id, name: brand.name, isActive: brand.isActive },
@@ -279,27 +300,48 @@ export async function getAllBrandProductsOfUser({
         userId: true,
         Mockup: { select: { name: true } },
         Brand: { select: { id: true, name: true, isActive: true } },
-        variants: { select: { frontImg: true }, take: 1 },
+        variants: {
+          select: {
+            color: true,
+            frontImg: true,
+            backImg: true,
+          },
+        },
       },
     }),
   ]);
 
-  const items = rows.map((p) => ({
-    id: p.id,
-    productId: p.productId,
-    title: p.title,
-    price: p.price,
-    isActive: p.isActive,
-    visibility: p.visibility,
-    createdAt: p.createdAt,
-    updatedAt: p.updatedAt,
-    brandId: p.brandId,
-    brandName: p.brandName,
-    brand: p.Brand,
-    merchantId: p.userId,
-    mockupName: p.Mockup?.name || null,
-    previewImg: p.variants?.[0]?.frontImg || null,
-  }));
+  const items = rows.map((p) => {
+    const variants = Array.isArray(p.variants) ? p.variants : [];
+    const normalizedVariants = variants.map((variant) => ({
+      ...variant,
+      normalizedColor: String(variant.color || "").trim().toLowerCase(),
+    }));
+
+    const preferredVariant =
+      normalizedVariants.find((variant) => variant.normalizedColor === "black" && variant.frontImg) ||
+      normalizedVariants.find((variant) => variant.normalizedColor === "white" && variant.frontImg) ||
+      normalizedVariants.find((variant) => variant.frontImg) ||
+      normalizedVariants.find((variant) => variant.backImg) ||
+      null;
+
+    return {
+      id: p.id,
+      productId: p.productId,
+      title: p.title,
+      price: p.price,
+      isActive: p.isActive,
+      visibility: p.visibility,
+      createdAt: p.createdAt,
+      updatedAt: p.updatedAt,
+      brandId: p.brandId,
+      brandName: p.brandName,
+      brand: p.Brand,
+      merchantId: p.userId,
+      mockupName: p.Mockup?.name || null,
+      previewImg: preferredVariant?.frontImg || preferredVariant?.backImg || null,
+    };
+  });
 
   return {
     items,

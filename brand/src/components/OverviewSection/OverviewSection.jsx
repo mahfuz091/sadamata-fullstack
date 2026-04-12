@@ -72,7 +72,7 @@ export default function OverviewSection() {
                   Have feedback? Can&apos;t find answers?
                 </p>
                 <Link href='/contact.html' className='commerce-btn'>
-                  Contact Us <i className='icon-right-arrow'></i>
+                  Contact Us 
                 </Link>
               </div>
             </aside>

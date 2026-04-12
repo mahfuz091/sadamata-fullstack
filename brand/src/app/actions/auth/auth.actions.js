@@ -1,4 +1,4 @@
-"use server";
+﻿"use server";
 import { removeAuthCookie, setAuthCookie, signAuthToken } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { signIn, signOut, auth } from "@/auth";
@@ -13,6 +13,10 @@ function pick(...vals) {
 const opt = (v) => (v && v.length ? v : null);
 const toDate = (v) => (v ? new Date(v) : null);
 const toLower = (v) => (v ? v.toLowerCase() : null);
+const normalizeIdentifier = (v) => {
+  const value = pick(v);
+  return value.includes("@") ? value.toLowerCase() : value;
+};
 
 
 
@@ -30,7 +34,7 @@ const toLower = (v) => (v ? v.toLowerCase() : null);
 //     const brandCategoryId = opt(brandCategoryIdRaw); // null if empty string
 //     const industryType = pick(formData.get("industryType"));
 //     const socialProfile = pick(formData.get("socialProfileLink"));
-//     // ✅ exclusive flag (supports both "isExclusive" and "plan"/"brand-plan")
+//     // âœ… exclusive flag (supports both "isExclusive" and "plan"/"brand-plan")
 //     const exclusiveRaw = pick(
 //       formData.get("isExclusive"),
 //       formData.get("plan"),
@@ -73,7 +77,7 @@ const toLower = (v) => (v ? v.toLowerCase() : null);
 //       return { success: false, message: "Email or phone already taken." };
 //     }
 
-//     // ✅ If brandCategoryId provided, check it exists (avoid connect error)
+//     // âœ… If brandCategoryId provided, check it exists (avoid connect error)
 //     if (role === "BRAND" && brandCategoryId) {
 //       const cat = await prisma.brandCategory.findUnique({
 //         where: { id: brandCategoryId },
@@ -203,9 +207,9 @@ const toLower = (v) => (v ? v.toLowerCase() : null);
 //             message,
 //             socialProfile,
 //             industryType,
-//              isExclusive, // ✅ IMPORTANT
+//              isExclusive, // âœ… IMPORTANT
 
-//             // ✅ ONLY connect if brandCategoryId exists
+//             // âœ… ONLY connect if brandCategoryId exists
 //             ...(brandCategoryRelation ? { brandCategory: brandCategoryRelation } : {}),
 //           },
 //         });
@@ -256,13 +260,13 @@ export async function registerUser(formData) {
     const roleRaw = pick(formData.get("role"));
     const role = (roleRaw || "USER").toUpperCase();
 
-    // ✅ optional category
+    // âœ… optional category
     const brandCategoryId = opt(pick(formData.get("brandCategoryId")));
 
     const industryType = opt(pick(formData.get("industryType")));
     const socialProfile = opt(pick(formData.get("socialProfileLink")));
 
-    // ✅ exclusive
+    // âœ… exclusive
     const exclusiveRaw = pick(
       formData.get("isExclusive"),
       formData.get("plan"),
@@ -284,7 +288,7 @@ export async function registerUser(formData) {
       return { success: false, message: "Invalid role." };
     }
 
-    // ✅ make email safe
+    // âœ… make email safe
     const email = emailRaw ? toLower(emailRaw) : null;
     const phone = phoneRaw || null;
 
@@ -305,7 +309,7 @@ export async function registerUser(formData) {
       return { success: false, message: "Email or phone already taken." };
     }
 
-    // ✅ If category id is provided, validate exists (still optional)
+    // âœ… If category id is provided, validate exists (still optional)
     if (role === "BRAND" && brandCategoryId) {
       const cat = await prisma.brandCategory.findUnique({
         where: { id: brandCategoryId },
@@ -368,11 +372,11 @@ export async function registerUser(formData) {
             industryType,
             isExclusive,
 
-            // ✅ set defaults based on isExclusive
+            // âœ… set defaults based on isExclusive
       defaultBrandPct,
       defaultMerchantPct,
 
-            // ✅ optional connect
+            // âœ… optional connect
             ...(brandCategoryId
               ? { brandCategory: { connect: { id: brandCategoryId } } }
               : {}),
@@ -462,25 +466,25 @@ export async function updateUserAccount(userId, action) {
 }
 
 // export async function loginUser(_prevState, formData) {
-//   const identifier = formData.get("identifier");
+//   const identifier = normalizeIdentifier(formData.get("identifier"));
 //   const password = formData.get("password");
 
 //   if (!identifier) return { success: false, message: "Email or phone is required" };
 //   if (!password) return { success: false, message: "Password is required" };
 
-//   // সফল হলে Next.js সার্ভার অ্যাকশন অটো-রিডাইরেক্ট থ্রো করবে
+//   // à¦¸à¦«à¦² à¦¹à¦²à§‡ Next.js à¦¸à¦¾à¦°à§à¦­à¦¾à¦° à¦…à§à¦¯à¦¾à¦•à¦¶à¦¨ à¦…à¦Ÿà§‹-à¦°à¦¿à¦¡à¦¾à¦‡à¦°à§‡à¦•à§à¦Ÿ à¦¥à§à¦°à§‹ à¦•à¦°à¦¬à§‡
 //   await signIn("credentials", {
 //     identifier,
 //     password,
 //     redirectTo: "/dashboard",
 //   });
 
-//   // সাধারণত এখানে এক্সিকিউশন পৌঁছায় না (রিডাইরেক্ট হয়ে যায়)
+//   // à¦¸à¦¾à¦§à¦¾à¦°à¦£à¦¤ à¦à¦–à¦¾à¦¨à§‡ à¦à¦•à§à¦¸à¦¿à¦•à¦¿à¦‰à¦¶à¦¨ à¦ªà§Œà¦à¦›à¦¾à§Ÿ à¦¨à¦¾ (à¦°à¦¿à¦¡à¦¾à¦‡à¦°à§‡à¦•à§à¦Ÿ à¦¹à§Ÿà§‡ à¦¯à¦¾à§Ÿ)
 //   return { success: true, message: "Logged in" };
 // }
 
 // export const loginUser = async (prevState, formData) => {
-//   const identifier = formData.get("identifier");
+//   const identifier = normalizeIdentifier(formData.get("identifier"));
 //   const password = formData.get("password");
 
 //   if (!identifier) {
@@ -532,7 +536,7 @@ export async function updateUserAccount(userId, action) {
 // };
 
 export const loginUser = async (prevState, formData) => {
-  const identifier = formData.get("identifier");
+  const identifier = normalizeIdentifier(formData.get("identifier"));
   const password = formData.get("password");
 
   if (!identifier) {
@@ -610,3 +614,4 @@ export async function logoutUser() {
     };
   }
 }
+

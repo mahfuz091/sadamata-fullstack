@@ -1,4 +1,4 @@
-img {
+﻿img {
   height: auto;
 }
 
@@ -575,4 +575,28 @@ button.profileImageButton {
   border: 1px solid #d7e1ff;
   border-radius: 6px;
   padding: 6px 10px
+}
+
+
+button.profileImageButton {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+button.profileImageButton img {
+  display: block;
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+@media (max-width: 767px) {
+  button.profileImageButton,
+  button.profileImageButton img {
+    border-radius: 9999px;
+  }
 }

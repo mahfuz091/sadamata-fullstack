@@ -6,8 +6,19 @@ import { prisma } from "@/lib/prisma";
 /** --------- helpers --------- */
 function buildDateRange(from, to) {
   const range = {};
-  if (from) range.gte = new Date(from);
-  if (to) range.lte = new Date(to);
+
+  if (from) {
+    const start = new Date(from);
+    start.setHours(0, 0, 0, 0);
+    range.gte = start;
+  }
+
+  if (to) {
+    const end = new Date(to);
+    end.setHours(23, 59, 59, 999);
+    range.lte = end;
+  }
+
   return Object.keys(range).length ? range : undefined;
 }
 
@@ -23,20 +34,20 @@ async function assertUserActive(userId) {
 
 /**
  * Brand product-wise sales summary (like merchant version)
- * - প্রথমে userId দিয়ে ইউজারের brand গুলো বের করি
- * - যদি brandId প্যারাম থাকে: সেটি ওই ইউজারের কিনা ভেরিফাই করি
- * - তারপর সেই brandId/brandIds দিয়ে প্রোডাক্ট বের করে sales/cancelled অ্যাগ্রিগেট করি
+ * - Ã Â¦ÂªÃ Â§ÂÃ Â¦Â°Ã Â¦Â¥Ã Â¦Â®Ã Â§â€¡ userId Ã Â¦Â¦Ã Â¦Â¿Ã Â§Å¸Ã Â§â€¡ Ã Â¦â€¡Ã Â¦â€°Ã Â¦Å“Ã Â¦Â¾Ã Â¦Â°Ã Â§â€¡Ã Â¦Â° brand Ã Â¦â€”Ã Â§ÂÃ Â¦Â²Ã Â§â€¹ Ã Â¦Â¬Ã Â§â€¡Ã Â¦Â° Ã Â¦â€¢Ã Â¦Â°Ã Â¦Â¿
+ * - Ã Â¦Â¯Ã Â¦Â¦Ã Â¦Â¿ brandId Ã Â¦ÂªÃ Â§ÂÃ Â¦Â¯Ã Â¦Â¾Ã Â¦Â°Ã Â¦Â¾Ã Â¦Â® Ã Â¦Â¥Ã Â¦Â¾Ã Â¦â€¢Ã Â§â€¡: Ã Â¦Â¸Ã Â§â€¡Ã Â¦Å¸Ã Â¦Â¿ Ã Â¦â€œÃ Â¦â€¡ Ã Â¦â€¡Ã Â¦â€°Ã Â¦Å“Ã Â¦Â¾Ã Â¦Â°Ã Â§â€¡Ã Â¦Â° Ã Â¦â€¢Ã Â¦Â¿Ã Â¦Â¨Ã Â¦Â¾ Ã Â¦Â­Ã Â§â€¡Ã Â¦Â°Ã Â¦Â¿Ã Â¦Â«Ã Â¦Â¾Ã Â¦â€¡ Ã Â¦â€¢Ã Â¦Â°Ã Â¦Â¿
+ * - Ã Â¦Â¤Ã Â¦Â¾Ã Â¦Â°Ã Â¦ÂªÃ Â¦Â° Ã Â¦Â¸Ã Â§â€¡Ã Â¦â€¡ brandId/brandIds Ã Â¦Â¦Ã Â¦Â¿Ã Â§Å¸Ã Â§â€¡ Ã Â¦ÂªÃ Â§ÂÃ Â¦Â°Ã Â§â€¹Ã Â¦Â¡Ã Â¦Â¾Ã Â¦â€¢Ã Â§ÂÃ Â¦Å¸ Ã Â¦Â¬Ã Â§â€¡Ã Â¦Â° Ã Â¦â€¢Ã Â¦Â°Ã Â§â€¡ sales/cancelled Ã Â¦â€¦Ã Â§ÂÃ Â¦Â¯Ã Â¦Â¾Ã Â¦â€”Ã Â§ÂÃ Â¦Â°Ã Â¦Â¿Ã Â¦â€”Ã Â§â€¡Ã Â¦Å¸ Ã Â¦â€¢Ã Â¦Â°Ã Â¦Â¿
  *
  * params:
  *  - userId (required)
- *  - brandId (optional) -> নির্দিষ্ট ব্র্যান্ড; না দিলে ইউজারের সব ব্র্যান্ড
+ *  - brandId (optional) -> Ã Â¦Â¨Ã Â¦Â¿Ã Â¦Â°Ã Â§ÂÃ Â¦Â¦Ã Â¦Â¿Ã Â¦Â·Ã Â§ÂÃ Â¦Å¸ Ã Â¦Â¬Ã Â§ÂÃ Â¦Â°Ã Â§ÂÃ Â¦Â¯Ã Â¦Â¾Ã Â¦Â¨Ã Â§ÂÃ Â¦Â¡; Ã Â¦Â¨Ã Â¦Â¾ Ã Â¦Â¦Ã Â¦Â¿Ã Â¦Â²Ã Â§â€¡ Ã Â¦â€¡Ã Â¦â€°Ã Â¦Å“Ã Â¦Â¾Ã Â¦Â°Ã Â§â€¡Ã Â¦Â° Ã Â¦Â¸Ã Â¦Â¬ Ã Â¦Â¬Ã Â§ÂÃ Â¦Â°Ã Â§ÂÃ Â¦Â¯Ã Â¦Â¾Ã Â¦Â¨Ã Â§ÂÃ Â¦Â¡
  *  - page, pageSize
- *  - dateFrom, dateTo (Order.createdAt উইন্ডো)
- *  - merchantId (optional) -> ওই ব্র্যান্ডের ভিতরে নির্দিষ্ট owner/merchant-এর প্রোডাক্টেই সীমাবদ্ধ
+ *  - dateFrom, dateTo (Order.createdAt Ã Â¦â€°Ã Â¦â€¡Ã Â¦Â¨Ã Â§ÂÃ Â¦Â¡Ã Â§â€¹)
+ *  - merchantId (optional) -> Ã Â¦â€œÃ Â¦â€¡ Ã Â¦Â¬Ã Â§ÂÃ Â¦Â°Ã Â§ÂÃ Â¦Â¯Ã Â¦Â¾Ã Â¦Â¨Ã Â§ÂÃ Â¦Â¡Ã Â§â€¡Ã Â¦Â° Ã Â¦Â­Ã Â¦Â¿Ã Â¦Â¤Ã Â¦Â°Ã Â§â€¡ Ã Â¦Â¨Ã Â¦Â¿Ã Â¦Â°Ã Â§ÂÃ Â¦Â¦Ã Â¦Â¿Ã Â¦Â·Ã Â§ÂÃ Â¦Å¸ owner/merchant-Ã Â¦ÂÃ Â¦Â° Ã Â¦ÂªÃ Â§ÂÃ Â¦Â°Ã Â§â€¹Ã Â¦Â¡Ã Â¦Â¾Ã Â¦â€¢Ã Â§ÂÃ Â¦Å¸Ã Â§â€¡Ã Â¦â€¡ Ã Â¦Â¸Ã Â§â‚¬Ã Â¦Â®Ã Â¦Â¾Ã Â¦Â¬Ã Â¦Â¦Ã Â§ÂÃ Â¦Â§
  */
 export async function getBrandProductSalesSummaryByUser({
   userId,
-  brandId,          // optional; দিলে ওই ব্র্যান্ডে সীমাবদ্ধ
+  brandId,          // optional; Ã Â¦Â¦Ã Â¦Â¿Ã Â¦Â²Ã Â§â€¡ Ã Â¦â€œÃ Â¦â€¡ Ã Â¦Â¬Ã Â§ÂÃ Â¦Â°Ã Â§ÂÃ Â¦Â¯Ã Â¦Â¾Ã Â¦Â¨Ã Â§ÂÃ Â¦Â¡Ã Â§â€¡ Ã Â¦Â¸Ã Â§â‚¬Ã Â¦Â®Ã Â¦Â¾Ã Â¦Â¬Ã Â¦Â¦Ã Â§ÂÃ Â¦Â§
   page = 1,
   pageSize = 12,
   dateFrom,
@@ -48,7 +59,7 @@ export async function getBrandProductSalesSummaryByUser({
   if (!userId) throw new Error("userId is required");
   await assertUserActive(userId);
 
-  // 1) এই ইউজারের brand(s) আনুন
+  // 1) Ã Â¦ÂÃ Â¦â€¡ Ã Â¦â€¡Ã Â¦â€°Ã Â¦Å“Ã Â¦Â¾Ã Â¦Â°Ã Â§â€¡Ã Â¦Â° brand(s) Ã Â¦â€ Ã Â¦Â¨Ã Â§ÂÃ Â¦Â¨
   const brands = await prisma.brand.findMany({
     where: { userId },
     select: { id: true, name: true, isActive: true },
@@ -66,7 +77,7 @@ export async function getBrandProductSalesSummaryByUser({
     };
   }
 
-  // যদি brandId দেওয়া থাকে → ওনারশিপ/এক্সিস্টেন্স চেক
+  // Ã Â¦Â¯Ã Â¦Â¦Ã Â¦Â¿ brandId Ã Â¦Â¦Ã Â§â€¡Ã Â¦â€œÃ Â§Å¸Ã Â¦Â¾ Ã Â¦Â¥Ã Â¦Â¾Ã Â¦â€¢Ã Â§â€¡ Ã¢â€ â€™ Ã Â¦â€œÃ Â¦Â¨Ã Â¦Â¾Ã Â¦Â°Ã Â¦Â¶Ã Â¦Â¿Ã Â¦Âª/Ã Â¦ÂÃ Â¦â€¢Ã Â§ÂÃ Â¦Â¸Ã Â¦Â¿Ã Â¦Â¸Ã Â§ÂÃ Â¦Å¸Ã Â§â€¡Ã Â¦Â¨Ã Â§ÂÃ Â¦Â¸ Ã Â¦Å¡Ã Â§â€¡Ã Â¦â€¢
   let brandIds;
   if (brandId) {
     const found = brands.find(b => b.id === brandId);
@@ -83,7 +94,7 @@ export async function getBrandProductSalesSummaryByUser({
     }
     brandIds = [brandId];
   } else {
-    // না দিলে ইউজারের সব Active brand
+    // Ã Â¦Â¨Ã Â¦Â¾ Ã Â¦Â¦Ã Â¦Â¿Ã Â¦Â²Ã Â§â€¡ Ã Â¦â€¡Ã Â¦â€°Ã Â¦Å“Ã Â¦Â¾Ã Â¦Â°Ã Â§â€¡Ã Â¦Â° Ã Â¦Â¸Ã Â¦Â¬ Active brand
     brandIds = brands.filter(b => b.isActive).map(b => b.id);
     if (!brandIds.length) {
       return {
@@ -97,11 +108,13 @@ export async function getBrandProductSalesSummaryByUser({
     }
   }
 
-  // 2) প্রোডাক্ট পেজিনেশন (brandIds + optional merchantId filter)
+  // 2) Ã Â¦ÂªÃ Â§ÂÃ Â¦Â°Ã Â§â€¹Ã Â¦Â¡Ã Â¦Â¾Ã Â¦â€¢Ã Â§ÂÃ Â¦Å¸ Ã Â¦ÂªÃ Â§â€¡Ã Â¦Å“Ã Â¦Â¿Ã Â¦Â¨Ã Â§â€¡Ã Â¦Â¶Ã Â¦Â¨ (brandIds + optional merchantId filter)
  const take = Math.min(100, Math.max(1, pageSize));
   const skip = (Math.max(1, page) - 1) * take;
 
-  const productWhere = {
+  const orderDateFilter = buildDateRange(dateFrom, dateTo);
+
+  const productWhereBase = {
     brandId: { in: brandIds },
     ...(merchantId ? { userId: merchantId } : {}),
     ...(searchTerm
@@ -113,6 +126,74 @@ export async function getBrandProductSalesSummaryByUser({
         }
       : {}),
   };
+
+  let productWhere = productWhereBase;
+
+  if (orderDateFilter) {
+    const candidateProducts = await prisma.product.findMany({
+      where: productWhereBase,
+      select: { id: true },
+    });
+
+    const candidateProductIds = candidateProducts.map((product) => product.id);
+
+    if (!candidateProductIds.length) {
+      return {
+        items: [],
+        page,
+        pageSize: take,
+        total: 0,
+        totalPages: 0,
+        meta: {
+          userId,
+          brandIds,
+          brandCount: brandIds.length,
+          dateFrom: dateFrom || null,
+          dateTo: dateTo || null,
+          merchantFilter: merchantId || null,
+        },
+      };
+    }
+
+    const [paidProductRows, cancelledProductRows] = await Promise.all([
+      prisma.sale.findMany({
+        where: {
+          productId: { in: candidateProductIds },
+          orderItem: {
+            order: {
+              status: "PAID",
+              createdAt: orderDateFilter,
+            },
+          },
+        },
+        select: { productId: true },
+        distinct: ["productId"],
+      }),
+      prisma.orderItem.findMany({
+        where: {
+          productId: { in: candidateProductIds },
+          order: {
+            status: "CANCELLED",
+            createdAt: orderDateFilter,
+          },
+        },
+        select: { productId: true },
+        distinct: ["productId"],
+      }),
+    ]);
+
+    const filteredProductIds = Array.from(
+      new Set([
+        ...paidProductRows.map((row) => row.productId).filter(Boolean),
+        ...cancelledProductRows.map((row) => row.productId).filter(Boolean),
+      ])
+    );
+
+    productWhere = {
+      ...productWhereBase,
+      id: { in: filteredProductIds },
+    };
+  }
 
   const [total, products] = await prisma.$transaction([
     prisma.product.count({ where: productWhere }),
@@ -129,7 +210,13 @@ export async function getBrandProductSalesSummaryByUser({
         updatedAt: true,
         brandName: true,
         Brand: { select: { id: true, name: true } },
-        variants: { select: { frontImg: true }, take: 1 },
+        variants: {
+          select: {
+            color: true,
+            frontImg: true,
+            backImg: true,
+          },
+        },
       },
     }),
   ]);
@@ -146,10 +233,9 @@ export async function getBrandProductSalesSummaryByUser({
     };
   }
 
-  // 3) ডেট ফিল্টার (Order.createdAt)
-  const orderDateFilter = buildDateRange(dateFrom, dateTo);
+  // 3) Ã Â¦Â¡Ã Â§â€¡Ã Â¦Å¸ Ã Â¦Â«Ã Â¦Â¿Ã Â¦Â²Ã Â§ÂÃ Â¦Å¸Ã Â¦Â¾Ã Â¦Â° (Order.createdAt)
 
-  // 4) PAID sales → JS reduce
+  // 4) PAID sales Ã¢â€ â€™ JS reduce
   const saleRows = await prisma.sale.findMany({
     where: {
       productId: { in: ids },
@@ -164,7 +250,7 @@ export async function getBrandProductSalesSummaryByUser({
       productId: true,
       quantity: true,
       total: true,
-      // royalty breakdowns থাকলে সেগুলোও যোগ করতে পারেন:
+      // royalty breakdowns Ã Â¦Â¥Ã Â¦Â¾Ã Â¦â€¢Ã Â¦Â²Ã Â§â€¡ Ã Â¦Â¸Ã Â§â€¡Ã Â¦â€”Ã Â§ÂÃ Â¦Â²Ã Â§â€¹Ã Â¦â€œ Ã Â¦Â¯Ã Â§â€¹Ã Â¦â€” Ã Â¦â€¢Ã Â¦Â°Ã Â¦Â¤Ã Â§â€¡ Ã Â¦ÂªÃ Â¦Â¾Ã Â¦Â°Ã Â§â€¡Ã Â¦Â¨:
       brandEarning: true,
       merchantEarning: true,
       platformEarning: true,
@@ -188,7 +274,7 @@ export async function getBrandProductSalesSummaryByUser({
     paidMap.set(r.productId, cur);
   }
 
-  // 5) CANCELLED → OrderItem থেকে (JS reduce)
+  // 5) CANCELLED Ã¢â€ â€™ OrderItem Ã Â¦Â¥Ã Â§â€¡Ã Â¦â€¢Ã Â§â€¡ (JS reduce)
   const cancelRows = await prisma.orderItem.findMany({
     where: {
       productId: { in: ids },
@@ -206,7 +292,7 @@ export async function getBrandProductSalesSummaryByUser({
     cancelMap.set(r.productId, cur + (r.quantity || 0));
   }
 
-  // 6) ফলাফল ম্যাপিং
+  // 6) Ã Â¦Â«Ã Â¦Â²Ã Â¦Â¾Ã Â¦Â«Ã Â¦Â² Ã Â¦Â®Ã Â§ÂÃ Â¦Â¯Ã Â¦Â¾Ã Â¦ÂªÃ Â¦Â¿Ã Â¦â€š
   const items = products.map(p => {
     const paid = paidMap.get(p.id) || {
       purchasedQty: 0,
@@ -216,6 +302,18 @@ export async function getBrandProductSalesSummaryByUser({
       platformEarning: 0,
     };
     const cancelledQty = cancelMap.get(p.id) || 0;
+    const variants = Array.isArray(p.variants) ? p.variants : [];
+    const normalizedVariants = variants.map((variant) => ({
+      ...variant,
+      normalizedColor: String(variant.color || "").trim().toLowerCase(),
+    }));
+
+    const preferredVariant =
+      normalizedVariants.find((variant) => variant.normalizedColor === "black" && variant.frontImg) ||
+      normalizedVariants.find((variant) => variant.normalizedColor === "white" && variant.frontImg) ||
+      normalizedVariants.find((variant) => variant.frontImg) ||
+      normalizedVariants.find((variant) => variant.backImg) ||
+      null;
 
     return {
       id: p.id,
@@ -225,7 +323,7 @@ export async function getBrandProductSalesSummaryByUser({
 
       purchasedQty: paid.purchasedQty,
       cancelledQty,
-      returnedQty: 0, // Refund না থাকায় 0
+      returnedQty: 0, // Refund Ã Â¦Â¨Ã Â¦Â¾ Ã Â¦Â¥Ã Â¦Â¾Ã Â¦â€¢Ã Â¦Â¾Ã Â§Å¸ 0
 
       revenue: Number(paid.revenue.toFixed(2)),
       brandRoyalty: Number(paid.brandRoyalty.toFixed(2)),
@@ -233,7 +331,7 @@ export async function getBrandProductSalesSummaryByUser({
       platformEarning: Number(paid.platformEarning.toFixed(2)),
 
       updatedAt: p.updatedAt,
-      previewImg: p.variants?.[0]?.frontImg || null,
+      previewImg: preferredVariant?.frontImg || preferredVariant?.backImg || null,
     };
   });
 

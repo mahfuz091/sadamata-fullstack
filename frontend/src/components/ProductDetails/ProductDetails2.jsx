@@ -4,11 +4,12 @@ import dynamic from "next/dynamic";
 const Select = dynamic(() => import("react-select"), {
   ssr: false,
 });
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import sizeChartImage from "@/assets/images/resources/sadamata-sizechart.png";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Modal } from "react-bootstrap";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Thumbs } from "swiper/modules";
 import "swiper/css";
@@ -19,6 +20,7 @@ import { isLightColor } from "@/lib/helper";
 import { toast } from "sonner";
 import { useFavorites } from "@/hooks/useFavorites";
 import AddToCartModal from "../FeatureProduct/AddToCartModal";
+import { submitProductReview } from "@/app/actions/review/review.actions";
 // --------------- Helpers ---------------
 const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE_URL;
 // const getImgSrc = (src) => {
@@ -66,6 +68,26 @@ const hexToName = (hex) => {
   return map[hex?.toLowerCase?.()] ?? hex?.toUpperCase?.() ?? "Unknown";
 };
 
+
+const formatReviewDate = (date) => {
+  if (!date) return "";
+  return new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(date));
+};
+const REVIEW_TABS = [
+  { key: "all", label: "All Reviews" },
+  { key: "media", label: "With Photo & Video" },
+  { key: "description", label: "With Description" },
+];
+
+const hasReviewMedia = (review) => Boolean(review?.mediaUrl);
+const hasReviewDescription = (review) => Boolean(review?.comment?.trim());
+
 const groupByFit = (variants = []) =>
   variants.reduce(
     (acc, v) => {
@@ -89,11 +111,72 @@ const colorsForFit = (vs = []) => {
 };
 
 // --------------- Component ---------------
-export default function ProductDetails2({ product }) {
+export default function ProductDetails2({ product, user, reviewOrderItemId = "" }) {
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
+  const router = useRouter();
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   console.log(product, "product");
 
+  const reviews = product?.reviews || [];
+  const reviewCount = reviews.length;
+  const averageRating = reviewCount
+    ? reviews.reduce((total, review) => total + Number(review.rating || 0), 0) /
+      reviewCount
+    : 0;
+  const averageRatingText = averageRating.toFixed(1);
+  const ratingCounts = [5, 4, 3, 2, 1].map(
+    (rating) => reviews.filter((review) => review.rating === rating).length
+  );
+  const ratingPercentages = ratingCounts.map((count) =>
+    reviewCount ? Math.round((count / reviewCount) * 100) : 0
+  );
+  const circleOffset = 190 - (averageRating / 5) * 190;
+  const hasReviewedCurrentItem = Boolean(
+    reviewOrderItemId &&
+      reviews.some((review) => review.orderItemId === reviewOrderItemId)
+  );
+  const canReviewCurrentItem = Boolean(
+    reviewOrderItemId && user?.id && !hasReviewedCurrentItem
+  );
+
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [reviewRating, setReviewRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [reviewComment, setReviewComment] = useState("");
+  const [reviewMediaFile, setReviewMediaFile] = useState(null);
+  const [reviewPending, startReviewTransition] = useTransition();
+  const [selectedReviewRatings, setSelectedReviewRatings] = useState([]);
+  const [activeReviewTab, setActiveReviewTab] = useState("all");
+
+  const filteredReviews = useMemo(
+    () =>
+      reviews.filter((review) => {
+        const ratingMatches =
+          selectedReviewRatings.length === 0 ||
+          selectedReviewRatings.includes(Number(review.rating));
+
+        if (!ratingMatches) return false;
+
+        if (activeReviewTab === "media") {
+          return hasReviewMedia(review);
+        }
+
+        if (activeReviewTab === "description") {
+          return hasReviewDescription(review) && !hasReviewMedia(review);
+        }
+
+        return true;
+      }),
+    [activeReviewTab, reviews, selectedReviewRatings]
+  );
+
+  const toggleReviewRating = (rating) => {
+    setSelectedReviewRatings((current) =>
+      current.includes(rating)
+        ? current.filter((item) => item !== rating)
+        : [...current, rating]
+    );
+  };
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
@@ -101,6 +184,65 @@ export default function ProductDetails2({ product }) {
   const [lockedImage, setLockedImage] = useState(null);
 
   const mainSwiperRef = useRef(null);
+
+  useEffect(() => {
+    if (canReviewCurrentItem) {
+      setShowReviewModal(true);
+      const reviewSection = document.getElementById("product-reviews");
+      if (reviewSection) {
+        reviewSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  }, [canReviewCurrentItem]);
+
+  const handleReviewMediaChange = (event) => {
+    const file = event.target.files?.[0] || null;
+
+    if (!file) {
+      setReviewMediaFile(null);
+      return;
+    }
+
+    if (file.type.startsWith("video/") && file.size > 2 * 1024 * 1024) {
+      toast.error("Video file must be 2MB or smaller.");
+      event.target.value = "";
+      setReviewMediaFile(null);
+      return;
+    }
+
+    setReviewMediaFile(file);
+  };
+
+  const handleReviewSubmit = (event) => {
+    event.preventDefault();
+
+    if (!user?.id) {
+      toast.error("Please login to review this product.");
+      return;
+    }
+
+    startReviewTransition(async () => {
+      const result = await submitProductReview({
+        productId: product?.id,
+        orderItemId: reviewOrderItemId,
+        rating: reviewRating,
+        comment: reviewComment,
+        mediaFile: reviewMediaFile,
+      });
+
+      if (!result?.ok) {
+        toast.error(result?.error || "Failed to submit review.");
+        return;
+      }
+
+      toast.success("Review submitted successfully.");
+      setReviewComment("");
+      setReviewMediaFile(null);
+      setReviewRating(0);
+      setShowReviewModal(false);
+      router.refresh();
+    });
+  };
 
   const grouped = useMemo(
     () => groupByFit(product?.variants || []),
@@ -981,10 +1123,21 @@ export default function ProductDetails2({ product }) {
         </Container>
       </section>
 
-      <section className='product-reviews d-none'>
+      <section className='product-reviews ' id='product-reviews'>
         <div className='product-reviews__top'>
           <div className='container'>
-            <h2 className='circle-rating__title'>Product Reviews</h2>
+            <div className='product-reviews__heading'>
+              <h2 className='circle-rating__title'>Product Reviews</h2>
+              {canReviewCurrentItem && (
+                <button
+                  type='button'
+                  className='commerce-btn product-reviews__review-btn'
+                  onClick={() => setShowReviewModal(true)}
+                >
+                  Review this product
+                </button>
+              )}
+            </div>
             <div className='product-reviews__inner'>
               <div className='row'>
                 <div className='col-lg-5'>
@@ -1007,29 +1160,36 @@ export default function ProductDetails2({ product }) {
                           strokeWidth='6'
                           fill='none'
                           strokeDasharray='190'
-                          strokeDashoffset='9.3'
+                          strokeDashoffset={circleOffset}
                           strokeLinecap='round'
                         />
                       </svg>
-                      <div className='number'>4.8</div>
+                      <div className='number'>{averageRatingText}</div>
                     </div>
                     <div className='circle-rating__content'>
                       <div className='circle-rating__start'>
-                        <i className='fas fa-star'></i>
-                        <i className='fas fa-star'></i>
-                        <i className='fas fa-star'></i>
-                        <i className='fas fa-star'></i>
-                        <i className='fas fa-star'></i>
+                        {[...Array(5)].map((_, i) => (
+                          <i
+                            className={
+                              i < Math.round(averageRating)
+                                ? 'fas fa-star'
+                                : 'far fa-star'
+                            }
+                            key={i}
+                          ></i>
+                        ))}
                       </div>
-                      <p className='circle-rating__text'>from 1,25k reviews</p>
+                      <p className='circle-rating__text'>
+                        from {reviewCount} {reviewCount === 1 ? 'review' : 'reviews'}
+                      </p>
                     </div>
                   </div>
                 </div>
                 <div className='col-lg-7'>
                   <div className='rating-card__right'>
                     {[5, 4, 3, 2, 1].map((rating, index) => {
-                      const widths = [90, 70, 40, 0, 0];
-                      const counts = [2823, 38, 4, 0, 0];
+                      const widths = ratingPercentages;
+                      const counts = ratingCounts;
                       return (
                         <div className='rating-row' key={rating}>
                           <div className='rating-label'>
@@ -1076,43 +1236,15 @@ export default function ProductDetails2({ product }) {
                           <li className='checkbox' key={star}>
                             <input
                               type='checkbox'
-                              name='filter'
+                              name='review-rating-filter'
                               id={`rating${i === 0 ? "" : i}`}
+                              checked={selectedReviewRatings.includes(star)}
+                              onChange={() => toggleReviewRating(star)}
                             />
                             <label htmlFor={`rating${i === 0 ? "" : i}`}>
                               <span></span>
                               <i className='fas fa-star'></i>
                               {star}
-                            </label>
-                          </li>
-                        ))}
-                      </ul>
-                    </li>
-
-                    {/* Review Topics Filter */}
-                    <li className='sidebar__menu__area__item'>
-                      <a href='#' className='sidebar__menu__title'>
-                        Review Topics{" "}
-                        <i className='icon-reshot-icon-arrow-chevron-right-WDGHUKQ634'></i>
-                      </a>
-                      <ul className='sidebar__menu__sub-menu list-unstyled'>
-                        {[
-                          "Product Quality",
-                          "Sk Brand",
-                          "Seller Services",
-                          "Product Price",
-                          "Shipment",
-                          "Match with Description",
-                        ].map((topic, i) => (
-                          <li className='checkbox' key={topic}>
-                            <input
-                              type='checkbox'
-                              name='filter'
-                              id={`brand${i === 0 ? "" : i}`}
-                            />
-                            <label htmlFor={`brand${i === 0 ? "" : i}`}>
-                              <span></span>
-                              {topic}
                             </label>
                           </li>
                         ))}
@@ -1127,80 +1259,182 @@ export default function ProductDetails2({ product }) {
                 <div className='review-header'>
                   <h2 className='review-title'>Review Lists</h2>
                   <div className='review-filters'>
-                    <button className='filter-tab active'>All Reviews</button>
-                    <button className='filter-tab'>With Photo & Video</button>
-                    <button className='filter-tab'>With Description</button>
+                    {REVIEW_TABS.map((tab) => (
+                      <button
+                        type='button'
+                        className={`filter-tab ${activeReviewTab === tab.key ? 'active' : ''}`}
+                        onClick={() => setActiveReviewTab(tab.key)}
+                        key={tab.key}
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
                   </div>
                 </div>
 
                 <div className='product-reviews__user__list'>
-                  {[1, 2, 3].map((_, index) => (
-                    <div className='product-reviews__user__item' key={index}>
-                      <div className='product-reviews__user__star'>
-                        {[...Array(5)].map((_, i) => (
-                          <i className='fas fa-star' key={i}></i>
-                        ))}
-                      </div>
-                      <p className='product-reviews__user__text'>
-                        This is amazing product I have.
-                      </p>
-                      <span className='product-reviews__user__date'>
-                        July 2, 2020 03:29 PM
-                      </span>
-                      <div className='product-reviews__user__avatar'>
-                        <div className='product-reviews__user__info'>
-                          <Image
-                            src={user1}
-                            width={50}
-                            height={50}
-                            alt='User Avatar'
-                          />
-                          <h5 className='product-reviews__user__name'>
-                            Darrell Steward
-                          </h5>
-                        </div>
-                        <div className='product-reviews__user__action'>
-                          <button className='product-reviews__user__action__btn'>
-                            <i className='fas fa-thumbs-up'></i> 128
-                          </button>
-                          <button className='product-reviews__user__action__btn'>
-                            <i className='fas fa-thumbs-down'></i>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                  {filteredReviews.length ? (
+                    filteredReviews.map((review) => {
+                      const avatarSrc = review.user?.profileImage
+                        ? `${process.env.NEXT_PUBLIC_BASE_URL}/${review.user.profileImage}`
+                        : user1;
 
-                {/* Pagination */}
-                <div className='product-reviews__user__pagination'>
-                  <ul className='list-unstyled'>
-                    <li>
-                      <a className='active' href='#'>
-                        1
-                      </a>
-                    </li>
-                    <li>
-                      <a href='#'>2</a>
-                    </li>
-                    <li>
-                      <a href='#'>...</a>
-                    </li>
-                    <li>
-                      <a href='#'>19</a>
-                    </li>
-                    <li>
-                      <a className='next-page' href='#'>
-                        <i className='icon-reshot-icon-arrow-chevron-right-WDGHUKQ634'></i>
-                      </a>
-                    </li>
-                  </ul>
+                      return (
+                        <div className='product-reviews__user__item' key={review.id}>
+                          <div className='product-reviews__user__star'>
+                            {[...Array(5)].map((_, i) => (
+                              <i
+                                className={
+                                  i < review.rating ? 'fas fa-star' : 'far fa-star'
+                                }
+                                key={i}
+                              ></i>
+                            ))}
+                          </div>
+                          <p className='product-reviews__user__text'>
+                            {review.comment}
+                          </p>
+                          <span className='product-reviews__user__date'>
+                            {formatReviewDate(review.createdAt)}
+                          </span>
+                          {review.mediaUrl && (
+                            <div className='product-reviews__media'>
+                              {review.mediaType === 'VIDEO' ? (
+                                <video src={review.mediaUrl} controls />
+                              ) : (
+                                <img src={review.mediaUrl} alt='Review media' />
+                              )}
+                            </div>
+                          )}
+                          <div className='product-reviews__user__avatar'>
+                            <div className='product-reviews__user__info'>
+                              <Image
+                                src={avatarSrc}
+                                width={50}
+                                height={50}
+                                alt='User Avatar'
+                                unoptimized
+                              />
+                              <h5 className='product-reviews__user__name'>
+                                {review.user?.name || 'Customer'}
+                              </h5>
+                            </div>
+                            <div className='product-reviews__user__action'>
+                              <button className='product-reviews__user__action__btn'>
+                                <i className='fas fa-thumbs-up'></i> 0
+                              </button>
+                              <button className='product-reviews__user__action__btn'>
+                                <i className='fas fa-thumbs-down'></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <div className='product-reviews__user__item'>
+                      <p className='product-reviews__user__text'>
+                        {reviews.length
+                          ? 'No reviews match the selected filters.'
+                          : 'No reviews yet.'}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
           </div>
         </div>
       </section>
+
+      <Modal
+        show={showReviewModal}
+        onHide={() => setShowReviewModal(false)}
+        centered
+        className='add-to-cart__modal product-review-modal'
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Write a Review</Modal.Title>
+        </Modal.Header>
+        <form onSubmit={handleReviewSubmit}>
+          <Modal.Body>
+            <div className='product-info__form-box review-form-box'>
+              <div className='form-one__group'>
+                <div className='form-one__control form-one__control--full'>
+                  <label className='form-one__label'>Your Rating</label>
+                  <div className='review-form-stars' onMouseLeave={() => setHoverRating(0)}>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <span
+                        type='button'
+                        key={star}
+                        className={`review-form-star-btn ${
+                          star <= (hoverRating || reviewRating) ? 'active' : ''
+                        }`}
+                        onMouseEnter={() => setHoverRating(star)}
+                        onMouseLeave={() => setHoverRating(0)}
+                        onFocus={() => setHoverRating(star)}
+                        onBlur={() => setHoverRating(0)}
+                        onClick={() => setReviewRating(star)}
+                        aria-label={`${star} star`}
+                      >
+                        <i
+                          className={
+                            star <= (hoverRating || reviewRating) ? 'fas fa-star' : 'fas fa-star'
+                          }
+                        ></i>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <div className='form-one__control form-one__control--full'>
+                  <label htmlFor='review-media' className='form-one__label'>
+                    Share Photo or Video
+                  </label>
+                  <div className='form-one__input-box review-media-input-box'>
+                    <input
+                      type='file'
+                      id='review-media'
+                      accept='image/*,video/mp4,video/webm,video/ogg'
+                      onChange={handleReviewMediaChange}
+                    />
+                    <span>
+                      {reviewMediaFile
+                        ? reviewMediaFile.name
+                        : 'Optional image or video. Video max 2MB.'}
+                    </span>
+                  </div>
+                </div>
+                <div className='form-one__control form-one__control--full'>
+                  <label htmlFor='review-comment' className='form-one__label'>
+                    Your Review
+                  </label>
+                  <div className='form-one__input-box'>
+                    <textarea
+                      id='review-comment'
+                      value={reviewComment}
+                      onChange={(event) => setReviewComment(event.target.value)}
+                      placeholder='Write your review..'
+                      required
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <button
+              type='button'
+              className='commerce-btn review-modal-cancel'
+              onClick={() => setShowReviewModal(false)}
+            >
+              Cancel
+            </button>
+            <button type='submit' className='commerce-btn text-white' disabled={reviewPending}>
+              {reviewPending ? 'Submitting...' : 'Submit Review'}
+            </button>
+          </Modal.Footer>
+        </form>
+      </Modal>
     </>
   );
 }

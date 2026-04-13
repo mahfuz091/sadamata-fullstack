@@ -26,6 +26,7 @@ model User {
   Order             Order[]
   Payout            Payout[]            @relation("MerchantPayouts")
   products          Product[]
+  ProductReview     ProductReview[]
   sales             Sale[]              @relation("MerchantSales")
   addresses         UserAddress[]
   userProfile       UserProfile?
@@ -154,6 +155,8 @@ model Brand {
   twitterLink        String?             @db.VarChar(255)
   bannerPosition     String?             @default("50")
   productCategoryId  String?
+  tiktokLink         String?             @db.VarChar(255)
+  youtubeLink        String?             @db.VarChar(255)
   brandCategory      BrandCategory?      @relation(fields: [brandCategoryId], references: [id])
   ProductCategory    ProductCategory?    @relation(fields: [productCategoryId], references: [id])
   user               User                @relation(fields: [userId], references: [id])
@@ -196,6 +199,7 @@ model Product {
   Brand                 Brand?              @relation(fields: [brandId], references: [id])
   Mockup                Mockup?             @relation(fields: [mockupId], references: [id])
   User                  User                @relation(fields: [userId], references: [id])
+  ProductReview         ProductReview[]
   variants              ProductVariant[]
   sales                 Sale[]
   tags                  Tag[]
@@ -343,18 +347,19 @@ model Order {
 }
 
 model OrderItem {
-  id           String   @id @default(cuid())
-  orderId      String
-  productId    String?
-  productTitle String
-  unitPrice    Decimal  @db.Decimal(12, 2)
-  quantity     Int      @default(1)
-  color        String?
-  fitType      FitType?
-  size         String?
-  order        Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  Refund       Refund?
-  Sale         Sale?
+  id            String         @id @default(cuid())
+  orderId       String
+  productId     String?
+  productTitle  String
+  unitPrice     Decimal        @db.Decimal(12, 2)
+  quantity      Int            @default(1)
+  color         String?
+  fitType       FitType?
+  size          String?
+  order         Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  ProductReview ProductReview?
+  Refund        Refund?
+  Sale          Sale?
 }
 
 model Payment {
@@ -445,6 +450,26 @@ model BrandFollow {
   @@index([userId])
 }
 
+model ProductReview {
+  id          String           @id
+  productId   String
+  userId      String
+  orderItemId String           @unique
+  rating      Int
+  comment     String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime
+  mediaKey    String?
+  mediaType   ReviewMediaType?
+  OrderItem   OrderItem        @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  Product     Product          @relation(fields: [productId], references: [id], onDelete: Cascade)
+  User        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, userId, orderItemId])
+  @@index([productId, createdAt])
+  @@index([userId])
+}
+
 enum OrderStatus {
   PENDING
   PAID
@@ -487,4 +512,9 @@ enum Visibility {
 enum ImageType {
   FRONT
   BACK
+}
+
+enum ReviewMediaType {
+  IMAGE
+  VIDEO
 }

@@ -252,6 +252,9 @@ const Header = ({ session, categories }) => {
                         <Link href='/profile' className='dropdown-item'>
                           My Account
                         </Link>
+                        <Link href='/orders' className='dropdown-item'>
+                          My Orders
+                        </Link>
 
                         <button
                           onClick={logOut}
@@ -304,3 +307,4 @@ const Header = ({ session, categories }) => {
 };
 
 export default Header;
+

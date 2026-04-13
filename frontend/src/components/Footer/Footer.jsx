@@ -192,7 +192,7 @@ const Footer = ({session}) => {
                     </li>
 
                     <li>
-                      <a href='#'>Track your order</a>
+                      <Link href='/orders'>Track your order</Link>
                     </li>
                     <li>
                       <a href='#'>Size guide</a>
@@ -311,3 +311,4 @@ const Footer = ({session}) => {
 };
 
 export default Footer;
+

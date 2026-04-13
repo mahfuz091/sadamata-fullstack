@@ -524,10 +524,35 @@ export async function getProductsByProductId(productId) {
       // visibility: true,
       variants: { some: { isActive: true } },
     },
-    include: PUBLIC_PRODUCT_INCLUDE,
+    include: {
+      ...PUBLIC_PRODUCT_INCLUDE,
+      reviews: {
+        orderBy: { createdAt: "desc" },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              profileImage: true,
+            },
+          },
+        },
+      },
+    },
   });
 
   const [signed] = await attachPreviewUrlTwo(product ? [product] : []);
+
+  if (signed?.reviews?.length) {
+    signed.reviews = await Promise.all(
+      signed.reviews.map(async (review) => ({
+        ...review,
+        mediaUrl: review.mediaKey
+          ? await getPrivateUrl(review.mediaKey, SIGN_EXPIRES)
+          : null,
+      }))
+    );
+  }
 
   return {
     kind: "product_by_id",
@@ -690,5 +715,9 @@ export async function getProductsByCategorySlug(input = {}) {
     items: itemsWithPreview,
   };
 }
+
+
+
+
 
 

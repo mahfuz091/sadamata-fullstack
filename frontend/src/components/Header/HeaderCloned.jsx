@@ -241,6 +241,9 @@ const HeaderCloned = ({ session }) => {
                         <Link href='/profile' className='dropdown-item'>
                           My Account
                         </Link>
+                        <Link href='/orders' className='dropdown-item'>
+                          My Orders
+                        </Link>
 
                         <button
                           onClick={logOut}
@@ -273,3 +276,4 @@ const HeaderCloned = ({ session }) => {
 };
 
 export default HeaderCloned;
+

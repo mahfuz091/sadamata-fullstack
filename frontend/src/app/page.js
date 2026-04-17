@@ -9,6 +9,7 @@ import TopMovieBrand from "@/components/TopMovieBrand/TopMovieBrand";
 import TopNatokBrand from "@/components/TopNatokBrand/TopNatokBrand";
 import TopMovieBrandTshirt from "@/components/TopMovieBrandTshirt/TopMovieBrandTshirt";
 import TopNatokBrandTshirt from "@/components/TopNatokBrandTshirt/TopNatokBrandTshirt";
+import RecentlyViewedProducts from "@/components/RecentlyViewedProducts/RecentlyViewedProducts";
 import {
   getNewArrivals,
   getProductsByCategorySlug,
@@ -45,6 +46,7 @@ export default async function Home() {
       <TopMovieBrandTshirt products={movieProducts?.items} />
       <TopNatokBrand brands={natokBrands?.items} />
       <TopNatokBrandTshirt products={natokProducts?.items} />
+      <RecentlyViewedProducts />
     </Layout>
   );
 }

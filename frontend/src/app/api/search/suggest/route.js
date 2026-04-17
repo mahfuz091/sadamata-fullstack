@@ -36,6 +36,7 @@ const buildQOr = (qq) => {
     { tags: { some: { value: { contains: term, mode: "insensitive" } } } },
     { Brand: { is: { name: { contains: term, mode: "insensitive" } } } },
     { Mockup: { is: { name: { contains: term, mode: "insensitive" } } } },
+    { categories: { some: { name: { contains: term, mode: "insensitive" } } } },
     { brandName: { contains: term, mode: "insensitive" } },
   ]);
 };

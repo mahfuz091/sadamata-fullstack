@@ -2,7 +2,10 @@ import Layout from "@/components/Layout/Layout";
 
 import { auth } from "@/auth";
 import { notFound } from "next/navigation";
-import { getProductsByCategorySlug } from "@/app/actions/product/product.actions";
+import {
+  getProductsByCategorySlug,
+  getRandomProductsByCategorySlug,
+} from "@/app/actions/product/product.actions";
 import CategoryProductsClient from "@/components/CategoryProducts/CategoryProductsClient";
 import prisma from "@/lib/prisma";
 
@@ -29,6 +32,7 @@ export default async function Page({ params }) {
 
     const q = formData.get("q") || "";
     const sort = formData.get("sort") || "newest";
+    const brandId = formData.get("brandId") || "";
 
     const fitType = JSON.parse(formData.get("fitType") || "[]");
     const colors = JSON.parse(formData.get("colors") || "[]");
@@ -39,16 +43,26 @@ export default async function Page({ params }) {
       pageSize: 24,
       q,
       sort,
+      brandId: brandId || null,
       fitType,
       colors,
     });
   }
 
   const brands = await prisma.brand.findMany({
+    where: {
+      productCategoryId: firstPage.category.id,
+      isActive: true,
+    },
     select: { id: true, name: true },
+    orderBy: { name: "asc" },
   });
   const mockups = await prisma.mockup.findMany({
     select: { id: true, name: true },
+  });
+  const relatedProducts = await getRandomProductsByCategorySlug({
+    slug,
+    limit: 8,
   });
 
   return (
@@ -61,6 +75,7 @@ export default async function Page({ params }) {
         category={firstPage.category}
         brands={brands}
         mockups={mockups}
+        relatedProducts={relatedProducts?.items || []}
       />
     </Layout>
   );

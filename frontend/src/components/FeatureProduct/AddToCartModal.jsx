@@ -67,11 +67,17 @@ export default function AddToCartModal({ show, onHide, product }) {
   useEffect(() => {
     if (!availableFits.length) return;
 
-    // keep previous if still valid, otherwise set first
+    const preferredFit = product?._preferredFit;
+
+    // keep previous if still valid, otherwise prefer the fit selected in filters
     setFit((prev) =>
-      prev && availableFits.includes(prev) ? prev : availableFits[0],
+      prev && availableFits.includes(prev)
+        ? prev
+        : preferredFit && availableFits.includes(preferredFit)
+          ? preferredFit
+          : availableFits[0],
     );
-  }, [availableFits]);
+  }, [availableFits, product?._preferredFit]);
 
   // console.log(availableFits, availableFits[0], fit, "avail");
 
@@ -198,6 +204,11 @@ export default function AddToCartModal({ show, onHide, product }) {
 
   /* ---------------- JSX ---------------- */
 
+  const modalPriceLabel =
+    typeof product?.price === "string" && product.price.includes("\u09F3")
+      ? product.price
+      : `\u09F3 ${product?.price ?? ""}`;
+
   return (
     <Modal show={show} onHide={onHide} centered className='add-to-cart__modal'>
       <Modal.Header closeButton>
@@ -217,7 +228,7 @@ export default function AddToCartModal({ show, onHide, product }) {
 
           <div>
             <h6 className='product__item__title'>{product?.title}</h6>
-            <p className='mb-2 product__item__price'>৳ {product?.price}</p>
+            <p className='mb-2 product__item__price'>{modalPriceLabel}</p>
 
             {/* -------- FIT -------- */}
             <div className='mb-2'>

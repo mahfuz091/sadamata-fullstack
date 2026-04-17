@@ -94,6 +94,7 @@ const ProductAreaTop = ({ slug, q, result, sortBy, setSortBy }) => {
               isClearable={false}
               isSearchable={false}
               placeholder='Relevant Products'
+              className="product-header-top__showing-sort__select"
             />
           </div>
 

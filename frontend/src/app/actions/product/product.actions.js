@@ -567,6 +567,7 @@ export async function getProductsByCategorySlug(input = {}) {
     page = 1,
     pageSize = 24,
     q = "",
+    brandId = null,
     fitType = [], // ["MEN","WOMEN"]
     colors = [], // ["#000","#fff"]
     sort = "newest", // newest|oldest|price_asc|price_desc|title_asc|title_desc|best_selling
@@ -629,12 +630,29 @@ export async function getProductsByCategorySlug(input = {}) {
       }
       : { some: { ...PUBLIC_VARIANT_WHERE } }; // ensure at least one active variant
 
+  const selectedBrand = brandId
+    ? await prisma.brand.findUnique({
+        where: { id: brandId },
+        select: { name: true },
+      })
+    : null;
+
+  const brandFilters = brandId
+    ? [
+        { brandId },
+        selectedBrand?.name
+          ? { brandName: { equals: selectedBrand.name, mode: "insensitive" } }
+          : null,
+      ].filter(Boolean)
+    : [];
+
   // -------- WHERE --------
   const where = {
     AND: [
       PUBLIC_PRODUCT_WHERE,
       // ✅ category match (m:n)
       { categories: { some: { id: category.id } } },
+      brandFilters.length ? { OR: brandFilters } : {},
       orSearch ? { OR: orSearch } : {},
       { variants: variantsFilter },
     ],
@@ -681,43 +699,105 @@ export async function getProductsByCategorySlug(input = {}) {
   ]);
 
   // ✅ attach previewUrl (signed S3)
-  const SIGN_EXPIRES = 60 * 60;
-
-  const itemsWithPreview = await Promise.all(
-    items.map(async (p) => {
-      const activeVariant =
-        p.variants?.find((v) => v.isActive && (v.frontImg || v.backImg)) ||
-        null;
-
-      const key =
-        activeVariant?.frontImg ||
-        activeVariant?.backImg ||
-        p.variants?.[0]?.frontImg ||
-        p.variants?.[0]?.backImg ||
-        p.frontDesign ||
-        p.backDesign ||
-        null;
-
-      const previewUrl = key ? await getPrivateUrl(key, SIGN_EXPIRES) : null;
-
-      return { ...p, previewUrl };
-    }),
-  );
+  const itemsWithPreview = await attachPreviewUrlTwo(items);
+  const totalPages = Math.max(1, Math.ceil(total / take));
 
   return {
     found: true,
     kind: "category_products",
     category,
-    page,
+    page: Math.max(1, page),
     pageSize: take,
     total,
-    totalPages: Math.max(1, Math.ceil(total / take)),
+    totalPages,
     items: itemsWithPreview,
   };
+
 }
 
 
+export async function getRandomProductsByCategorySlug({ slug, limit = 8 } = {}) {
+  if (!slug) throw new Error("slug is required");
 
+  const pageSize = Math.max(1, limit);
 
+  const category = await prisma.productCategory.findFirst({
+    where: { slug: { equals: slug, mode: "insensitive" } },
+    select: { id: true, name: true, slug: true, sortOrder: true },
+  });
 
+  if (!category) {
+    return {
+      found: false,
+      category: null,
+      page: 1,
+      pageSize,
+      total: 0,
+      totalPages: 1,
+      items: [],
+    };
+  }
 
+  const seedProducts = await prisma.product.findMany({
+    where: {
+      AND: [
+        PUBLIC_PRODUCT_WHERE,
+        { categories: { some: { id: category.id } } },
+      ],
+    },
+    take: 50,
+    include: {
+      categories: { select: { id: true } },
+    },
+  });
+
+  const relatedCategoryIds = Array.from(
+    new Set([
+      category.id,
+      ...seedProducts.flatMap((product) =>
+        (product.categories || []).map((item) => item.id)
+      ),
+    ])
+  );
+
+  const where = {
+    AND: [
+      PUBLIC_PRODUCT_WHERE,
+      { categories: { some: { id: { in: relatedCategoryIds } } } },
+    ],
+  };
+
+  const total = await prisma.product.count({ where });
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const randomPage = totalPages > 1 ? Math.floor(Math.random() * totalPages) + 1 : 1;
+  const skip = (randomPage - 1) * pageSize;
+
+  const items = await prisma.product.findMany({
+    where,
+    orderBy: [{ createdAt: "desc" }],
+    skip,
+    take: pageSize * 2,
+    include: PUBLIC_PRODUCT_INCLUDE,
+  });
+
+  const itemsWithPreview = await attachPreviewUrlTwo(items);
+
+  for (let i = itemsWithPreview.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [itemsWithPreview[i], itemsWithPreview[j]] = [
+      itemsWithPreview[j],
+      itemsWithPreview[i],
+    ];
+  }
+
+  return {
+    found: true,
+    kind: "random_category_products",
+    category,
+    page: randomPage,
+    pageSize,
+    total,
+    totalPages,
+    items: itemsWithPreview.slice(0, pageSize),
+  };
+}

@@ -281,7 +281,7 @@ const Footer = ({session}) => {
         <div className='main-footer__bottom'>
           <div className='container'>
             <div
-              className='main-footer__bottom__inner wow fadeInUp flex-column gap-3'
+              className='main-footer__bottom__inner wow fadeInUp  gap-3'
               data-wow-duration='1500ms'
               data-wow-delay='500ms'
             >

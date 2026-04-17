@@ -21,6 +21,7 @@ import { toast } from "sonner";
 import { useFavorites } from "@/hooks/useFavorites";
 import AddToCartModal from "../FeatureProduct/AddToCartModal";
 import { submitProductReview } from "@/app/actions/review/review.actions";
+import { trackRecentlyViewedProduct } from "../RecentlyViewedProducts/RecentlyViewedProducts";
 // --------------- Helpers ---------------
 const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE_URL;
 // const getImgSrc = (src) => {
@@ -278,6 +279,38 @@ export default function ProductDetails2({ product, user, reviewOrderItemId = "" 
 
   const currentVariant =
     fitVariants.find((v) => v.color === color) || fitVariants[0] || null;
+
+  useEffect(() => {
+    if (!product?.id) return;
+
+    trackRecentlyViewedProduct({
+      id: product.id,
+      productId: product.productId,
+      title: product.title,
+      price: product.price,
+      brand: product.Brand?.name || product.brandName || "Brand",
+      brandId: product.Brand?.id || null,
+      imageUrl:
+        currentVariant?.frontImgUrl ||
+        currentVariant?.backImgUrl ||
+        product.previewUrl ||
+        null,
+      previewUrl: product.previewUrl || null,
+      variants: product.variants || [],
+    });
+  }, [
+    currentVariant?.backImgUrl,
+    currentVariant?.frontImgUrl,
+    product?.Brand?.id,
+    product?.Brand?.name,
+    product?.brandName,
+    product?.id,
+    product?.previewUrl,
+    product?.price,
+    product?.variants,
+    product?.productId,
+    product?.title,
+  ]);
 
   const variantImages = useMemo(() => {
     if (!currentVariant) return [];

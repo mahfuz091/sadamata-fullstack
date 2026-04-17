@@ -149,6 +149,7 @@ export async function searchProducts(input) {
         { tags: { some: { value: { contains: token, mode: "insensitive" } } } },
         { Brand: { is: { name: { contains: token, mode: "insensitive" } } } },
         { Mockup: { is: { name: { contains: token, mode: "insensitive" } } } },
+        { categories: { some: { name: { contains: token, mode: "insensitive" } } } },
         { brandName: { contains: token, mode: "insensitive" } },
       ],
     });
@@ -167,6 +168,7 @@ export async function searchProducts(input) {
       p.Brand?.name || "",
       p.brandName || "",
       p.Mockup?.name || "",
+      ...(p.categories?.map((x) => x.name) || []),
       ...(p.tags?.map((x) => x.value) || []),
     ]
       .join(" ")
@@ -187,7 +189,23 @@ export async function searchProducts(input) {
   // -------------------------
   // Base filters (public)
   // -------------------------
-  const activeVariantWhere = { OR: [{ isActive: true }, { isActive: null }] };
+  const activeVariantWhere = { isActive: true };
+
+  const selectedBrand = brandId
+    ? await prisma.brand.findUnique({
+        where: { id: brandId },
+        select: { name: true },
+      })
+    : null;
+
+  const brandFilters = brandId
+    ? [
+        { brandId },
+        selectedBrand?.name
+          ? { brandName: { equals: selectedBrand.name, mode: "insensitive" } }
+          : null,
+      ].filter(Boolean)
+    : [];
 
   const baseWhere = {
     isActive: true,
@@ -197,17 +215,20 @@ export async function searchProducts(input) {
       slug
         ? { Mockup: { is: { name: { contains: slug, mode: "insensitive" } } } }
         : null,
-      brandId ? { brandId } : null,
+      brandFilters.length ? { OR: brandFilters } : null,
       minPrice != null ? { price: { gte: minPrice } } : null,
       maxPrice != null ? { price: { lte: maxPrice } } : null,
       color
         ? {
             variants: {
-              some: { color: { contains: color, mode: "insensitive" } },
+              some: {
+                ...activeVariantWhere,
+                color: { contains: color, mode: "insensitive" },
+              },
             },
           }
         : null,
-      fitType ? { variants: { some: { fitType } } } : null,
+      fitType ? { variants: { some: { ...activeVariantWhere, fitType } } } : null,
       tag
         ? { tags: { some: { value: { contains: tag, mode: "insensitive" } } } }
         : null,
@@ -228,6 +249,7 @@ export async function searchProducts(input) {
       },
     },
     tags: { select: { value: true } },
+    categories: { select: { id: true, name: true, slug: true } },
   };
 
   // -------------------------
@@ -353,6 +375,7 @@ export async function searchProducts(input) {
         where: {
           ...baseWhere,
           AND: [
+            ...baseWhere.AND,
             { id: { notIn: exactIds } },
             deepOr ? { OR: deepOr } : null,
           ].filter(Boolean),
@@ -368,13 +391,13 @@ export async function searchProducts(input) {
         include,
       });
 
-  // score + filter low relevance
-  const scored = candidateProducts
-    .map((p) => ({ p, s: scoreProduct(p, tokens) }))
-    .filter((x) => x.s >= minMatch) // ✅ drop noisy results
-    .sort((a, b) => b.s - a.s);
-
-  const similarProducts = scored.map((x) => x.p);
+  const similarProducts = qTrim
+    ? candidateProducts
+        .map((p) => ({ p, s: scoreProduct(p, tokens) }))
+        .filter((x) => x.s >= minMatch)
+        .sort((a, b) => b.s - a.s)
+        .map((x) => x.p)
+    : candidateProducts;
 
   // merge: exact first, then best similar
   const merged = [...exactProducts, ...similarProducts];

@@ -104,7 +104,7 @@ export default function TopNatokBrandTshirt({
     };
 
   return (
-    <section className='history-product slider-wrapper py-5'>
+    <section className='TopNatokBrandTshirt history-product slider-wrapper py-5'>
       <Container>
         <div className='history-product__top'>
           <h2 className='history-product__title'>{title}</h2>

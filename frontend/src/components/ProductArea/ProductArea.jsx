@@ -25,7 +25,7 @@ export const toPublicUrl = (path) => {
   return `${ASSET_BASE}/${rel}`;
 };
 
-const ProductArea = ({ result: initialResult, slug, q, brands, mockups }) => {
+const ProductArea = ({ result: initialResult, slug, q, brands, mockups, relatedProducts = [], loadMoreAction = null }) => {
   console.log(initialResult, "initial result");
 
   const initialQueryKeyRef = useRef(null);
@@ -112,20 +112,42 @@ const ProductArea = ({ result: initialResult, slug, q, brands, mockups }) => {
     const vs = product?.variants || [];
     if (!vs.length) return null;
 
-    // if user selected a gender, prefer that fitType variant
+    const pickImageVariant = (variants) =>
+      variants.find(
+        (v) =>
+          String(v.color || "").toLowerCase() === "#000" &&
+          (v.frontImgUrl || v.backImgUrl || v.frontImg || v.backImg)
+      ) ||
+      variants.find((v) => v.frontImgUrl || v.backImgUrl || v.frontImg || v.backImg) ||
+      variants[0] ||
+      null;
+
     if (activeFitType) {
-      const matched = vs.find(
+      const matchedFitVariants = vs.filter(
         (v) => String(v.fitType || "").toUpperCase() === activeFitType
+      );
+      const matched = pickImageVariant(matchedFitVariants);
+      if (matched) return matched;
+    }
+
+    const preferredFits = ["MEN", "WOMEN", "YOUTH"];
+    for (const fitType of preferredFits) {
+      const matched = pickImageVariant(
+        vs.filter((v) => String(v.fitType || "").toUpperCase() === fitType)
       );
       if (matched) return matched;
     }
 
-    // fallback: prefer MEN -> WOMEN -> YOUTH (or just first)
+    return pickImageVariant(vs);
+  };
+
+  const getCardImage = (product) => {
+    const selectedVariant = pickVariantForCard(product);
     return (
-      vs.find((v) => String(v.fitType || "").toUpperCase() === "MEN") ||
-      vs.find((v) => String(v.fitType || "").toUpperCase() === "WOMEN") ||
-      vs.find((v) => String(v.fitType || "").toUpperCase() === "YOUTH") ||
-      vs[0]
+      selectedVariant?.frontImgUrl ||
+      selectedVariant?.backImgUrl ||
+      product?.previewUrl ||
+      "/placeholder.png"
     );
   };
 
@@ -189,35 +211,42 @@ const ProductArea = ({ result: initialResult, slug, q, brands, mockups }) => {
 
   const fetchPage = (nextCursor, pushStack = true) => {
     const myReqId = ++reqIdRef.current;
-
-    // ✅ capture current queryKey
     const myKey = queryKey;
 
-    console.log("FETCH PARAMS", {
-      activeFitType,
-      activeSlug,
-      activeBrandId,
-      minPrice,
-      maxPrice,
-    });
-
     startTransition(async () => {
-      const res = await searchProducts({
-        q: q ? String(q) : undefined,
-        slug: activeSlug ?? undefined,
-        brandId: activeBrandId ?? undefined,
-        minPrice: minPrice || null,
-        maxPrice: maxPrice || null,
-        fitType: activeFitType ?? undefined,
-        sort: sortBy,
-        pageSize,
-        cursor: nextCursor ? JSON.stringify(nextCursor) : null,
-      });
+      let res;
 
-      // ✅ ignore stale req OR stale queryKey
+      if (loadMoreAction) {
+        const form = new FormData();
+        form.append("q", q || "");
+        form.append("slug", activeSlug || "");
+        form.append("sort", sortBy);
+        form.append(
+          "fitType",
+          JSON.stringify(activeFitType ? [activeFitType] : [])
+        );
+        form.append("brandId", activeBrandId || "");
+        form.append("minPrice", minPrice || "");
+        form.append("maxPrice", maxPrice || "");
+        form.append("cursor", nextCursor ? JSON.stringify(nextCursor) : "");
+
+        res = await loadMoreAction(null, form);
+      } else {
+        res = await searchProducts({
+          q: q ? String(q) : undefined,
+          slug: activeSlug ?? undefined,
+          brandId: activeBrandId ?? undefined,
+          minPrice: minPrice || null,
+          maxPrice: maxPrice || null,
+          fitType: activeFitType ?? undefined,
+          sort: sortBy,
+          pageSize,
+          cursor: nextCursor ? JSON.stringify(nextCursor) : null,
+        });
+      }
+
       if (myReqId !== reqIdRef.current) return;
       if (myKey !== queryKey) return;
-
       if (!res || !Array.isArray(res.items)) return;
 
       setResult(res);
@@ -257,18 +286,13 @@ const ProductArea = ({ result: initialResult, slug, q, brands, mockups }) => {
   const itemsForGrid = useMemo(() => {
     let items = [...safeItems];
 
-    // Multi-brand UI filter (client-side)
-    if (selectedBrands.length) {
-      items = items.filter((it) => selectedBrands.includes(it.brandName));
-    }
-
     // Multi-category UI filter (client-side)
     if (selectedCategories.length) {
       items = items.filter((it) => selectedCategories.includes(it.mockupName));
     }
 
     return items;
-  }, [safeItems, selectedBrands, selectedCategories]);
+  }, [safeItems, selectedCategories]);
 
   const currentPage = cursorStack.length; // 1-based
 
@@ -467,10 +491,8 @@ const ProductArea = ({ result: initialResult, slug, q, brands, mockups }) => {
                           id={`brand-${b.id}`}
                           checked={selectedBrands.includes(b.name)}
                           onChange={() =>
-                            toggleFilter(
-                              b.name,
-                              setSelectedBrands,
-                              selectedBrands
+                            setSelectedBrands((current) =>
+                              current.includes(b.name) ? [] : [b.name]
                             )
                           }
                         />
@@ -492,23 +514,7 @@ const ProductArea = ({ result: initialResult, slug, q, brands, mockups }) => {
               <Row className='gutter-y-32 gutter-x-32'>
                 {itemsForGrid.length > 0
                   ? itemsForGrid.map((item) => {
-                      const cardVariant = pickVariantForCard(item);
-                      console.log("Item", item);
-                      
-
-                      // ✅ Prefer signed URLs from server
-                      const imgUrl =
-                        cardVariant?.frontImgUrl ||
-                        cardVariant?.backImgUrl ||
-                        null;
-
-                      // fallback: if you still sometimes get keys (optional)
-                      const imgKey =
-                        cardVariant?.frontImg || cardVariant?.backImg || null;
-
-                      const finalSrc =
-                        imgUrl ||
-                        (imgKey ? toPublicUrl(imgKey) : "/placeholder.png");
+                      const finalSrc = getCardImage(item);
                       const isFavorite = favorites.some(
                         (p) => p.id === item.id
                       );
@@ -636,7 +642,7 @@ const ProductArea = ({ result: initialResult, slug, q, brands, mockups }) => {
                 </button>
               </div>
 
-              <RelatedProducts />
+              <RelatedProducts products={relatedProducts} title="Related Product" seeAllHref="/products" />
             </div>
           </div>
         </Container>

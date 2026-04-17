@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, {
   useEffect,
@@ -13,18 +13,10 @@ import Image from "next/image";
 import RelatedProducts from "../RelatedProducts/RelatedProducts";
 import Link from "next/link";
 import AddToCartModal from "../FeatureProduct/AddToCartModal";
-import { getProductImage } from "@/lib/helper";
 import { toast } from "sonner";
 
-const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE_URL;
 
-export const toPublicUrl = (path) => {
-  if (!path) return `/uploads/placeholder.png`;
-  const rel = String(path).replace(/^\/+/, "");
-  return `${ASSET_BASE}/${rel}`;
-};
-
-// ✅ ProductArea clone, but uses loadMoreAction (page-based)
+// âœ… ProductArea clone, but uses loadMoreAction (page-based)
 const CategoryProductsClient = ({
   initialItems,
   initialPage,
@@ -35,6 +27,7 @@ const CategoryProductsClient = ({
   q,
   brands = [],
   mockups = [],
+  relatedProducts = [],
 }) => {
   // normalize initialResult like ProductArea expects
   const initialResult = useMemo(
@@ -64,7 +57,7 @@ const CategoryProductsClient = ({
   const prevRouteKeyRef = useRef(routeKey);
 
   // UI states
-  const [sortBy, setSortBy] = useState("newest"); // ✅ keep same as backend
+  const [sortBy, setSortBy] = useState("newest"); // âœ… keep same as backend
   const [selectedGenders, setSelectedGenders] = useState([]); // MEN/WOMEN/YOUTH/ALL
   const [selectedBrands, setSelectedBrands] = useState([]); // brand names
   const [selectedCategories, setSelectedCategories] = useState([]); // mockup names
@@ -102,7 +95,7 @@ const CategoryProductsClient = ({
 
   const selectGender = (g) => {
     if (g === "ALL") return setSelectedGenders(["ALL"]);
-    setSelectedGenders([g]); // ✅ only one
+    setSelectedGenders([g]); // âœ… only one
   };
 
   const activeBrandId = useMemo(() => {
@@ -113,7 +106,7 @@ const CategoryProductsClient = ({
   }, [selectedBrands, brands]);
 
   const activeSlug = useMemo(() => {
-    // ✅ for category page: prefer route slug always
+    // âœ… for category page: prefer route slug always
     if (slug && slug.trim()) return slug;
     return null;
   }, [slug]);
@@ -127,18 +120,42 @@ const CategoryProductsClient = ({
     const vs = product?.variants || [];
     if (!vs.length) return null;
 
+    const pickImageVariant = (variants) =>
+      variants.find(
+        (v) =>
+          String(v.color || "").toLowerCase() === "#000" &&
+          (v.frontImg || v.backImg)
+      ) ||
+      variants.find((v) => v.frontImg || v.backImg) ||
+      variants[0] ||
+      null;
+
     if (activeFitType) {
-      const matched = vs.find(
+      const matchedFitVariants = vs.filter(
         (v) => String(v.fitType || "").toUpperCase() === activeFitType
+      );
+      const matched = pickImageVariant(matchedFitVariants);
+      if (matched) return matched;
+    }
+
+    const preferredFits = ["MEN", "WOMEN", "YOUTH"];
+    for (const fitType of preferredFits) {
+      const matched = pickImageVariant(
+        vs.filter((v) => String(v.fitType || "").toUpperCase() === fitType)
       );
       if (matched) return matched;
     }
 
+    return pickImageVariant(vs);
+  };
+
+  const getCardImage = (product) => {
+    const selectedVariant = pickVariantForCard(product);
     return (
-      vs.find((v) => String(v.fitType || "").toUpperCase() === "MEN") ||
-      vs.find((v) => String(v.fitType || "").toUpperCase() === "WOMEN") ||
-      vs.find((v) => String(v.fitType || "").toUpperCase() === "YOUTH") ||
-      vs[0]
+      selectedVariant?.frontImgUrl ||
+      selectedVariant?.backImgUrl ||
+      product?.previewUrl ||
+      "/placeholder.png"
     );
   };
 
@@ -167,7 +184,7 @@ const CategoryProductsClient = ({
 
   const lastQueryKeyRef = useRef("");
 
-  // ✅ init once (server already loaded)
+  // âœ… init once (server already loaded)
   useEffect(() => {
     if (initialQueryKeyRef.current == null) {
       initialQueryKeyRef.current = queryKey;
@@ -184,7 +201,7 @@ const CategoryProductsClient = ({
       const form = new FormData();
       form.append("nextPage", String(nextPage));
 
-      // ✅ send filters same as ProductArea (server must support these)
+      // âœ… send filters same as ProductArea (server must support these)
       form.append("q", q || "");
       form.append("sort", sortBy);
       form.append(
@@ -243,16 +260,12 @@ const CategoryProductsClient = ({
   const itemsForGrid = useMemo(() => {
     let items = [...safeItems];
 
-    if (selectedBrands.length) {
-      items = items.filter((it) => selectedBrands.includes(it.brandName));
-    }
-
     if (selectedCategories.length) {
       items = items.filter((it) => selectedCategories.includes(it.mockupName));
     }
 
     return items;
-  }, [safeItems, selectedBrands, selectedCategories]);
+  }, [safeItems, selectedCategories]);
 
   const toggleFavorite = (product) => {
     let action = null;
@@ -432,10 +445,8 @@ const CategoryProductsClient = ({
                           id={`brand-${b.id}`}
                           checked={selectedBrands.includes(b.name)}
                           onChange={() =>
-                            toggleFilter(
-                              b.name,
-                              setSelectedBrands,
-                              selectedBrands
+                            setSelectedBrands((current) =>
+                              current.includes(b.name) ? [] : [b.name]
                             )
                           }
                         />
@@ -457,12 +468,13 @@ const CategoryProductsClient = ({
               <Row className='gutter-y-32 gutter-x-32'>
                 {itemsForGrid.length > 0
                   ? itemsForGrid.map((item) => {
-                      const cardVariant = pickVariantForCard(item);
-                      const img =
-                        cardVariant?.frontImg || cardVariant?.backImg || null;
+                      const cardImage = getCardImage(item);
                       const isFavorite = favorites.some(
                         (p) => p.id === item.id
                       );
+                      const brandId = item?.Brand?.id || item?.brandId || null;
+                      const brandName = item?.Brand?.name || item?.brandName || "";
+
 
                       return (
                         <Col xl={3} lg={4} md={6} key={item.id}>
@@ -473,7 +485,7 @@ const CategoryProductsClient = ({
                                 className='product__item__img__item d-block'
                               >
                                 <Image
-                                  src={item.previewUrl || "/placeholder.png"}
+                                  src={cardImage}
                                   alt={item.title || "product image"}
                                   width={300}
                                   height={300}
@@ -496,12 +508,23 @@ const CategoryProductsClient = ({
                             </div>
 
                             <div className='product__item__content'>
-                              <p className='product__item__brand'>
-                                Brand:{" "}
-                                <a href='#' onClick={(e) => e.preventDefault()}>
-                                  {item.brandName || "N/A"}
-                                </a>
-                              </p>
+                              {brandName && (
+                                <p className='product__item__brand'>
+                                  Brand:{" "}
+                                  <span>
+                                    {brandId ? (
+                                      <Link
+                                        href={`/brand/${brandId}`}
+                                        className='category-products__brand-link'
+                                      >
+                                        {brandName}
+                                      </Link>
+                                    ) : (
+                                      brandName
+                                    )}
+                                  </span>
+                                </p>
+                              )}
 
                               <h4 className='product__item__title'>
                                 <Link href={`/products/${item.productId}`}>
@@ -511,7 +534,7 @@ const CategoryProductsClient = ({
 
                               <div className='product__item__box'>
                                 <div className='product__item__price'>
-                                  ৳ {item.price}
+                                  ৳{Number(item.price || 0).toFixed(2)}
                                 </div>
                               </div>
 
@@ -566,7 +589,11 @@ const CategoryProductsClient = ({
                 </button>
               </div>
 
-              <RelatedProducts />
+              <RelatedProducts
+                products={relatedProducts}
+                title="Related Product"
+                seeAllHref={category?.slug ? `/categories/${category.slug}` : "/products"}
+              />
             </div>
           </div>
         </Container>
@@ -584,3 +611,5 @@ const CategoryProductsClient = ({
 };
 
 export default CategoryProductsClient;
+
+

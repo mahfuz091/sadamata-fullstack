@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { PayoutActor } from '@/generated/prisma';
-import { OrderStatus } from '@/generated/prisma';
+import { OrderStatus, PayoutActor, Prisma } from '@/generated/prisma';
 
 
 // Helper: only count sales from paid orders
@@ -12,47 +11,95 @@ const paidSaleWhere = {
 
 // BRAND total income, withdrawals, and remaining balance
 export async function getBrandFinancialSummary(brandId) {
-    const paidOrderItems = await prisma.orderItem.findMany({
-    where: { order: { status: { in: [OrderStatus.PAID, OrderStatus.SHIPPED, OrderStatus.COMPLETED] }, } },
-    select: { id: true },
-  });
-  const paidOrderItemIds = paidOrderItems.map((x) => x.id);
-  // 2️⃣ Only match sales for this merchant + paid order items
-  const saleWhere =
-    paidOrderItemIds.length > 0
-      ? { brandId, orderItemId: { in: paidOrderItemIds } }
-      : { brandId, id: { in: [] } }; // no matches → 0 results
-  const [salesAgg, payoutsAgg] = await Promise.all([
-    prisma.sale.aggregate({
-       where: saleWhere,
-      _sum: { total: true, brandEarning: true, quantity: true },
+  if (!brandId) {
+    return {
+      brandId,
+      totalSell: 0,
+      brandTotalIncome: 0,
+      withdrawAmount: 0,
+      totalAfterWithdraw: 0,
+      totalProductsSold: 0,
+    };
+  }
+
+  const soldStatuses = [
+    OrderStatus.PAID,
+    OrderStatus.SHIPPED,
+    OrderStatus.COMPLETED,
+  ];
+
+  const [orders, payoutsAgg] = await Promise.all([
+    prisma.order.findMany({
+      where: { status: { in: soldStatuses } },
+      select: {
+        items: {
+          select: {
+            productId: true,
+            unitPrice: true,
+            quantity: true,
+          },
+        },
+      },
     }),
     prisma.payout.aggregate({
-      where: { actor: 'BRAND', brandId },
+      where: { actor: PayoutActor.BRAND, brandId },
       _sum: { amount: true },
     }),
   ]);
 
-  console.log(salesAgg, payoutsAgg, "mahfuz");
-  
+  const productIds = Array.from(
+    new Set(
+      orders
+        .flatMap((order) => order.items.map((item) => item.productId))
+        .filter(Boolean)
+    )
+  );
 
-  // 4️⃣ Compute final values
-  const totalSell = Number(salesAgg._sum.total ?? 0);
-  const brandTotalIncome = Number(salesAgg._sum.brandEarning ?? 0);
-  const totalProductsSold = Number(salesAgg._sum.quantity ?? 0);
+  const products = productIds.length
+    ? await prisma.product.findMany({
+        where: { id: { in: productIds }, brandId },
+        select: {
+          id: true,
+          brandCommissionPct: true,
+          Brand: { select: { defaultBrandPct: true } },
+        },
+      })
+    : [];
+
+  const productMap = new Map(products.map((product) => [product.id, product]));
+  let totalSell = new Prisma.Decimal(0);
+  let brandTotalIncome = new Prisma.Decimal(0);
+  let totalProductsSold = 0;
+
+  for (const order of orders) {
+    for (const item of order.items) {
+      const product = item.productId ? productMap.get(item.productId) : null;
+      if (!product) continue;
+
+      const quantity = item.quantity || 0;
+      const lineTotal = new Prisma.Decimal(item.unitPrice || 0).mul(quantity);
+      const brandPct =
+        product.brandCommissionPct ?? product.Brand?.defaultBrandPct ?? 0;
+
+      totalSell = totalSell.add(lineTotal);
+      brandTotalIncome = brandTotalIncome.add(lineTotal.mul(brandPct).div(100));
+      totalProductsSold += quantity;
+    }
+  }
+
   const withdrawAmount = Number(payoutsAgg._sum.amount ?? 0);
-  const totalAfterWithdraw = brandTotalIncome - withdrawAmount;
+  const brandTotalIncomeNumber = Number(brandTotalIncome);
+  const totalAfterWithdraw = brandTotalIncomeNumber - withdrawAmount;
 
   return {
     brandId,
-    totalSell,
-  brandTotalIncome,
+    totalSell: Number(totalSell),
+    brandTotalIncome: brandTotalIncomeNumber,
     withdrawAmount,
     totalAfterWithdraw,
     totalProductsSold,
   };
 }
-
 // MERCHANT total income, withdrawals, and remaining balance
 // export async function getMerchantFinancialSummary(merchantId) {
 //   const [sales, payouts, productSales] = await Promise.all([
@@ -164,17 +211,3 @@ export async function getPlatformTotals() {
   };
 }
 
-// Example usage
-async function main() {
-  const brandSummary = await getBrandFinancialSummary('BRAND_ID_HERE');
-  const merchantSummary = await getMerchantFinancialSummary('MERCHANT_ID_HERE');
-  const platformTotals = await getPlatformTotals();
-
-  console.log('Brand Summary:', brandSummary);
-  console.log('Merchant Summary:', merchantSummary);
-  console.log('Platform Totals:', platformTotals);
-}
-
-main()
-  .catch(console.error)
-  .finally();

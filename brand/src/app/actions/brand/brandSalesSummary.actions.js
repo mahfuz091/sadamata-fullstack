@@ -1,8 +1,7 @@
 'use server';
 
 import { prisma } from '@/lib/prisma';
-import { Prisma } from '@/generated/prisma';
-import { OrderStatus } from '@/generated/prisma';
+import { OrderStatus, Prisma } from '@/generated/prisma';
 
 /** ---------- Time helpers (Asia/Dhaka) ---------- */
 const DHAKA_OFFSET_MS = 6 * 60 * 60 * 1000;
@@ -105,14 +104,17 @@ const firstBrand = await prisma.brand.findFirst({
   }
 
   const { id: brandId, name: brandName } = firstBrand
-  // 1) PAID orders in range (prefer settledAt, else createdAt)
+  const soldStatuses = [
+    OrderStatus.PAID,
+    OrderStatus.SHIPPED,
+    OrderStatus.COMPLETED,
+  ];
+
+  // 1) Sold/royalty orders in range by order status and createdAt
   const paidOrders = await prisma.order.findMany({
     where: {
-      status: { in: [OrderStatus.PAID, OrderStatus.SHIPPED, OrderStatus.COMPLETED] },
-      OR: [
-        { settledAt: { gte: startUTC, lte: endUTC } },
-        { AND: [{ settledAt: null }, { createdAt: { gte: startUTC, lte: endUTC } }] },
-      ],
+      status: { in: soldStatuses },
+      createdAt: { gte: startUTC, lte: endUTC },
     },
     select: {
       id: true,
@@ -122,11 +124,23 @@ const firstBrand = await prisma.brand.findFirst({
 
   // 2) CANCELLED orders in range (by createdAt)
   const cancelledOrders = await prisma.order.findMany({
-    where: { status: 'CANCELLED', createdAt: { gte: startUTC, lte: endUTC } },
+    where: {
+      status: OrderStatus.CANCELLED,
+      createdAt: { gte: startUTC, lte: endUTC },
+    },
     select: { id: true, items: { select: { productId: true } } },
   });
 
-  // 3) REFUNDS in range (by createdAt)
+  // 3) RETURNED orders in range (by createdAt)
+  const returnedOrders = await prisma.order.findMany({
+    where: {
+      status: OrderStatus.RETURNED,
+      createdAt: { gte: startUTC, lte: endUTC },
+    },
+    select: { id: true, items: { select: { productId: true } } },
+  });
+
+  // Refund totals are kept for net values, but returned order counts come from OrderStatus.RETURNED.
   const refunds = await prisma.refund.findMany({
     where: { createdAt: { gte: startUTC, lte: endUTC } },
     select: {
@@ -145,6 +159,7 @@ const firstBrand = await prisma.brand.findFirst({
     new Set([
       ...paidOrders.flatMap(o => o.items.map(i => i.productId)).filter(Boolean),
       ...cancelledOrders.flatMap(o => o.items.map(i => i.productId)).filter(Boolean),
+      ...returnedOrders.flatMap(o => o.items.map(i => i.productId)).filter(Boolean),
       ...refunds.map(r => r.orderItem.productId).filter(Boolean),
     ])
   );
@@ -215,6 +230,16 @@ const firstBrand = await prisma.brand.findFirst({
     if (hit) canceledOrders++;
   }
 
+  // === RETURNED aggregation (count only per order) ===
+  let returnedOrdersCount = 0;
+  for (const order of returnedOrders) {
+    const hit = order.items.some(it => {
+      const p = it.productId ? pmap.get(it.productId) : null;
+      return p && p.brandId === brandId;
+    });
+    if (hit) returnedOrdersCount++;
+  }
+
   // === REFUNDS aggregation ===
   let refundedUnits = 0;
   let refundTotal = new Prisma.Decimal(0);
@@ -244,6 +269,7 @@ const firstBrand = await prisma.brand.findFirst({
     soldUnits,
     soldOrders,
     canceledOrders,
+    returnedOrders: returnedOrdersCount,
     refundedUnits,
     grossRevenue: Number(grossRevenue),
     brandRoyalty: Number(brandRoyalty),

@@ -2,10 +2,18 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 // Image imports from @assets/images
 
-import cartImg from "@/assets/images/resources/admin-cart.png";
 import saleAvatar from "@/assets/images/resources/salse-avater.png";
 
 import DashSidebar from "../DashSidebar/DashSidebar";
@@ -27,6 +35,11 @@ console.log(salesData, "salesDtata");
   const rangeKey = selected?.value ?? 'today';
   const current = salesData?.ranges?.[rangeKey] ?? { items: [], totalQty: 0 };
   const hasSales = (current.items?.length ?? 0) > 0;
+  const last7DaysChart = salesData?.last7DaysChart ?? [];
+  const last7DaysTotal = last7DaysChart.reduce(
+    (total, item) => total + Number(item.sales || 0),
+    0
+  );
 
   useEffect(() => {
     if (!salesReport) return;
@@ -36,50 +49,50 @@ console.log(salesData, "salesDtata");
         label: "Yesterday",
         date: salesReport.yesterday?.label || "",
         count: salesReport.yesterday?.soldOrders || 0,
-        money: `৳${(salesReport.yesterday?.merchantRoyalty || 0).toFixed(2)}`,
+        money: `৳${(salesReport.yesterday?.brandRoyalty || 0).toFixed(2)}`,
         orders: `${salesReport.yesterday?.soldOrders || 0}-${
           salesReport.yesterday?.canceledOrders || 0
-        } (${salesReport.yesterday?.refundedUnits || 0})`,
+        } (${salesReport.yesterday?.returnedOrders || 0})`,
         col: "6",
       },
       {
         label: "Last 7 Days",
         date: salesReport.last7?.label || "",
         count: salesReport.last7?.soldOrders || 0,
-        money: `৳${(salesReport.last7?.gmerchantRoyalty || 0).toFixed(2)}`,
+        money: `৳${(salesReport.last7?.brandRoyalty || 0).toFixed(2)}`,
         orders: `${salesReport.last7?.soldOrders || 0}-${
           salesReport.last7?.canceledOrders || 0
-        } (${salesReport.last7?.refundedUnits || 0})`,
+        } (${salesReport.last7?.returnedOrders || 0})`,
         col: "6",
       },
       {
         label: "This Month",
         date: salesReport.thisMonth?.label || "",
         count: salesReport.thisMonth?.soldOrders || 0,
-        money: `৳${(salesReport.thisMonth?.merchantRoyalty || 0).toFixed(2)}`,
+        money: `৳${(salesReport.thisMonth?.brandRoyalty || 0).toFixed(2)}`,
         orders: `${salesReport.thisMonth?.soldOrders || 0}-${
           salesReport.thisMonth?.canceledOrders || 0
-        } (${salesReport.thisMonth?.refundedUnits || 0})`,
+        } (${salesReport.thisMonth?.returnedOrders || 0})`,
         col: "6",
       },
       {
         label: "Previous Month",
         date: salesReport.prevMonth?.label || "",
         count: salesReport.prevMonth?.soldOrders || 0,
-        money: `৳${(salesReport.prevMonth?.merchantRoyalty || 0).toFixed(2)}`,
+        money: `৳${(salesReport.prevMonth?.brandRoyalty || 0).toFixed(2)}`,
         orders: `${salesReport.prevMonth?.soldOrders || 0}-${
           salesReport.prevMonth?.canceledOrders || 0
-        } (${salesReport.prevMonth?.refundedUnits || 0})`,
+        } (${salesReport.prevMonth?.returnedOrders || 0})`,
         col: "6",
       },
       {
         label: "All Time",
         date: salesReport.allTime?.label || "",
         count: salesReport.allTime?.soldOrders || 0,
-        money: `৳${(salesReport.allTime?.merchantRoyalty || 0).toFixed(2)}`,
+        money: `৳${(salesReport.allTime?.brandRoyalty || 0).toFixed(2)}`,
         orders: `${salesReport.allTime?.soldOrders || 0}-${
           salesReport.allTime?.canceledOrders || 0
-        } (${salesReport.allTime?.refundedUnits || 0})`,
+        } (${salesReport.allTime?.returnedOrders || 0})`,
         col: "12",
       },
     ];
@@ -190,7 +203,7 @@ console.log(salesData, "salesDtata");
                         <div className='col-12'>
                           <div className='dashboard-dverview__count'>
                             <h2 className='dashboard-dverview__count-text'>
-                              {todaySalesReport?.soldUnits || 0}
+                              {todaySalesReport?.todayOrders || 0}
                             </h2>
                           </div>
                         </div>
@@ -201,7 +214,7 @@ console.log(salesData, "salesDtata");
                                 <h3 className='count-box__numbner'>
                                   {label === "Sold" && (todaySalesReport?.soldOrders || 0)}
                                   {label === "Cancelled" && (todaySalesReport?.canceledOrders || 0)}
-                                  {label === "Returned" && (todaySalesReport?.refundedUnits || 0)}
+                                  {label === "Returned" && (todaySalesReport?.returnedOrders || 0)}
                                   {label === "Royalties" && `৳ ${(todaySalesReport?.merchantRoyalty || 0).toFixed(2)}`}
                                 </h3>
                                 <p className='count-box__text'>{label}</p>
@@ -213,8 +226,50 @@ console.log(salesData, "salesDtata");
                     </div>
                   </div>
                   <div className='col-xl-6 col-lg-12 col-md-6 col-sm-12'>
-                    <div className='cart'>
-                      <Image src={cartImg} alt='cart image' />
+                    <div className='dashboard-dverview__item dashboard-dverview__item--two dashboard-sales-chart'>
+                      <div className='dashboard-dverview__top'>
+                        <h3 className='dashboard-dverview__title'>
+                          Last 7 Days Sales
+                        </h3>
+                        <p className='dashboard-dverview__date'>
+                          Total Qty {last7DaysTotal}
+                        </p>
+                      </div>
+                      <div style={{ width: "100%", height: 260 }}>
+                        <ResponsiveContainer width='100%' height='100%'>
+                          <LineChart
+                            data={last7DaysChart}
+                            margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                          >
+                            <CartesianGrid stroke='#ececec' strokeDasharray='3 3' />
+                            <XAxis
+                              dataKey='label'
+                              tickLine={false}
+                              axisLine={false}
+                              tick={{ fill: "#6f6f6f", fontSize: 12 }}
+                            />
+                            <YAxis
+                              allowDecimals={false}
+                              tickLine={false}
+                              axisLine={false}
+                              tick={{ fill: "#6f6f6f", fontSize: 12 }}
+                            />
+                            <Tooltip
+                              formatter={(value) => [value, "Sales"]}
+                              labelFormatter={(label) => `Date: ${label}`}
+                            />
+                            <Line
+                              type='monotone'
+                              dataKey='sales'
+                              name='Sales'
+                              stroke='var(--commerce-base, #f37927)'
+                              strokeWidth={3}
+                              dot={{ r: 4, strokeWidth: 2 }}
+                              activeDot={{ r: 6 }}
+                            />
+                          </LineChart>
+                        </ResponsiveContainer>
+                      </div>
                     </div>
                   </div>
                   <div className='col-xl-6 col-lg-12 col-md-6 col-sm-12'>
@@ -242,7 +297,7 @@ console.log(salesData, "salesDtata");
         <div className="dashboard-dverview__salse-box">
           <h3 className="dashboard-dverview__salse-title">No Sales Yet</h3>
           <p className="dashboard-dverview__salse-text">
-            Hang in there... Weâ€™ll notify you the moment you make a sale!
+            Hang in there... We will notify you the moment you make a sale!
           </p>
           <div className="dashboard-dverview__salse-thumb">
             {saleAvatar && (
@@ -262,7 +317,7 @@ console.log(salesData, "salesDtata");
 
           <ul className="dashboard-dverview__salse-ul">
             {current.items.map((item) => (
-              <li key={item.productId} className="dashboard-dverview__salse-li">
+              <li key={item.id} className="dashboard-dverview__salse-li">
                 <div className="dashboard-dverview__salse-li-left">
                   <div className="dashboard-dverview__salse-li-thumb">
                   {item.image ? (
@@ -347,3 +402,6 @@ console.log(salesData, "salesDtata");
 };
 
 export default DashboardMain;
+
+
+

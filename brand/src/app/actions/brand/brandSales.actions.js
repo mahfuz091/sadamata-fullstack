@@ -2,6 +2,7 @@
 
 import { prisma } from '@/lib/prisma'
 import { getPrivateUrl } from "@/lib/s3";
+import { OrderStatus } from '@/generated/prisma'
 
 // ======== Time helpers (Dhaka-aligned, UTC+6) ========
 const DHAKA_OFFSET_MS = 6 * 60 * 60 * 1000
@@ -23,6 +24,19 @@ function addDays(date, days) {
 
 function toUTC(dateInDhakaLocalMidnight) {
   return new Date(dateInDhakaLocalMidnight.getTime() - DHAKA_OFFSET_MS)
+}
+
+function getDhakaDayKey(date) {
+  const d = new Date(date.getTime() + DHAKA_OFFSET_MS)
+  const year = d.getUTCFullYear()
+  const month = String(d.getUTCMonth() + 1).padStart(2, "0")
+  const day = String(d.getUTCDate()).padStart(2, "0")
+  return `${year}-${month}-${day}`
+}
+
+function getDhakaDayLabel(date) {
+  const d = new Date(date.getTime() + DHAKA_OFFSET_MS)
+  return `${d.getUTCMonth() + 1}/${d.getUTCDate()}`
 }
 
 function buildDhakaRanges() {
@@ -80,24 +94,48 @@ async function fetchSalesByRange({ userId, startUTC, endUTC }) {
   const { id: brandId } = firstBrand;
 
   // 1️⃣ Group by productId & sum quantity
-  const grouped = await prisma.sale.groupBy({
-    by: ["productId"],
+  const soldStatuses = [
+    OrderStatus.PAID,
+    OrderStatus.SHIPPED,
+    OrderStatus.COMPLETED,
+  ];
+
+  const orders = await prisma.order.findMany({
     where: {
-      brandId: brandId,
+      status: { in: soldStatuses },
       createdAt: { gte: startUTC, lt: endUTC },
     },
-    _sum: { quantity: true },
+    select: {
+      items: {
+        select: {
+          productId: true,
+          quantity: true,
+        },
+      },
+    },
   });
 
-  if (grouped.length === 0) {
+  const quantityByProductId = new Map();
+  for (const order of orders) {
+    for (const item of order.items) {
+      if (!item.productId) continue;
+      quantityByProductId.set(
+        item.productId,
+        (quantityByProductId.get(item.productId) || 0) +
+          Number(item.quantity || 0)
+      );
+    }
+  }
+
+  if (quantityByProductId.size === 0) {
     return { items: [], totalQty: 0 };
   }
 
   // 2️⃣ Fetch product titles + image
-  const productIds = grouped.map((g) => g.productId);
+  const productIds = Array.from(quantityByProductId.keys());
 
   const products = await prisma.product.findMany({
-    where: { id: { in: productIds } },
+    where: { id: { in: productIds }, brandId },
     select: {
       id: true,
       productId: true,
@@ -140,10 +178,11 @@ async function fetchSalesByRange({ userId, startUTC, endUTC }) {
   );
 
   // 3️⃣ Generate signed URLs properly (async)
+  const salesProducts = Array.from(productMap.values());
+
   const items = await Promise.all(
-    grouped.map(async (g) => {
-      const qty = Number(g._sum.quantity || 0);
-      const product = productMap.get(g.productId) || {};
+    salesProducts.map(async (product) => {
+      const qty = Number(quantityByProductId.get(product.id) || 0);
 
       const imageKey = product.image;
       const signedImageUrl = imageKey
@@ -151,7 +190,7 @@ async function fetchSalesByRange({ userId, startUTC, endUTC }) {
         : null;
 
       return {
-        id: product.id || g.productId,
+        id: product.id,
         productId: product.productId || null,
         productName: product.title || "Unknown Product",
         image: signedImageUrl,
@@ -168,6 +207,89 @@ async function fetchSalesByRange({ userId, startUTC, endUTC }) {
   return { items, totalQty };
 }
 
+async function fetchLast7DaysSalesChart({ userId, startUTC, endUTC }) {
+  if (!userId) throw new Error("userId required");
+
+  const firstBrand = await prisma.brand.findFirst({
+    where: { userId },
+    orderBy: { createdAt: "asc" },
+    select: { id: true },
+  });
+
+  if (!firstBrand) {
+    return [];
+  }
+
+  const soldStatuses = [
+    OrderStatus.PAID,
+    OrderStatus.SHIPPED,
+    OrderStatus.COMPLETED,
+  ];
+
+  const orders = await prisma.order.findMany({
+    where: {
+      status: { in: soldStatuses },
+      createdAt: { gte: startUTC, lt: endUTC },
+    },
+    select: {
+      createdAt: true,
+      items: {
+        select: {
+          productId: true,
+          quantity: true,
+        },
+      },
+    },
+  });
+
+  const productIds = Array.from(
+    new Set(
+      orders
+        .flatMap((order) => order.items.map((item) => item.productId))
+        .filter(Boolean)
+    )
+  );
+
+  const products = productIds.length
+    ? await prisma.product.findMany({
+        where: { id: { in: productIds }, brandId: firstBrand.id },
+        select: { id: true },
+      })
+    : [];
+
+  const brandProductIds = new Set(products.map((product) => product.id));
+  const salesByDay = new Map();
+
+  for (const order of orders) {
+    const key = getDhakaDayKey(order.createdAt);
+    const qty = order.items.reduce((total, item) => {
+      if (!item.productId || !brandProductIds.has(item.productId)) {
+        return total;
+      }
+      return total + Number(item.quantity || 0);
+    }, 0);
+
+    if (qty > 0) {
+      salesByDay.set(key, (salesByDay.get(key) || 0) + qty);
+    }
+  }
+
+  const days = [];
+  for (let i = 0; i < 7; i++) {
+    const dhakaDay = addDays(startOfDhakaDay(nowDhaka()), i - 6);
+    const utcDay = toUTC(dhakaDay);
+    const key = getDhakaDayKey(utcDay);
+
+    days.push({
+      date: key,
+      label: getDhakaDayLabel(utcDay),
+      sales: salesByDay.get(key) || 0,
+    });
+  }
+
+  return days;
+}
+
 // ======== Public Server Action ========
 
 export async function getBrandSalesKpis(brandId) {
@@ -175,15 +297,17 @@ export async function getBrandSalesKpis(brandId) {
 
   const ranges = buildDhakaRanges()
 
-  const [today, last7d, last30d, last90d] = await Promise.all([
+  const [today, last7d, last30d, last90d, last7DaysChart] = await Promise.all([
     fetchSalesByRange({ userId: brandId, ...ranges.today }),
     fetchSalesByRange({ userId: brandId, ...ranges.last7d }),
     fetchSalesByRange({ userId: brandId, ...ranges.last30d }),
     fetchSalesByRange({ userId: brandId, ...ranges.last90d }),
+    fetchLast7DaysSalesChart({ userId: brandId, ...ranges.last7d }),
   ])
 
   return {
     brandId,
+    last7DaysChart,
     ranges: {
       today,
       last7d,

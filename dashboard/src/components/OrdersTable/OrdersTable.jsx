@@ -17,7 +17,28 @@ const ORDER_STATUS = [
   "CANCELLED",
   "SHIPPED",
   "COMPLETED",
+  "RETURNED",
 ];
+
+const ORDER_STATUS_LABELS = {
+  COMPLETED: "DELIVERED",
+};
+
+const getOrderStatusLabel = (status) => ORDER_STATUS_LABELS[status] || status;
+
+const formatOrderDate = (date) => {
+  const value = new Date(date);
+
+  if (Number.isNaN(value.getTime())) return "-";
+
+  return value
+    .toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    })
+    .toUpperCase();
+};
 
 function debounce(fn, delay = 250) {
   let t;
@@ -132,7 +153,7 @@ export default function OrdersTable({ initial = [], meta, filters = {} }) {
         >
           {ORDER_STATUS.map((x) => (
             <Select.Option key={x} value={x}>
-              {x}
+              {getOrderStatusLabel(x)}
             </Select.Option>
           ))}
         </Select>
@@ -141,7 +162,7 @@ export default function OrdersTable({ initial = [], meta, filters = {} }) {
     {
       title: "Created",
       dataIndex: "createdAt",
-      render: (d) => new Date(d).toLocaleDateString(),
+      render: (d) => formatOrderDate(d),
     },
     {
       title: "Action",
@@ -173,7 +194,7 @@ export default function OrdersTable({ initial = [], meta, filters = {} }) {
         >
           {ORDER_STATUS.map((s) => (
             <Select.Option key={s} value={s}>
-              {s}
+              {getOrderStatusLabel(s)}
             </Select.Option>
           ))}
         </Select>

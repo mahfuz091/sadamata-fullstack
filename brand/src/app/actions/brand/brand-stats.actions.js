@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { Prisma } from "@/generated/prisma";
+import { OrderStatus, Prisma } from "@/generated/prisma";
 
 /**
  * ইউজারের ১ম ব্র্যান্ডের স্ট্যাটস (createdAt ASC অনুযায়ী প্রথম Brand)
@@ -203,11 +203,16 @@ export async function getTodayBrandSalesReportFromOrders(userId) {
 
   const { id: brandId, name: brandName } = firstBrand;
   const { startUTC, endUTC } = getDhakaDayWindowUTC();
+  const soldStatuses = [
+    OrderStatus.PAID,
+    OrderStatus.SHIPPED,
+    OrderStatus.COMPLETED,
+  ];
 
-  // === ১️⃣ আজকের "PAID" অর্ডার ===
+  // Today's sold orders and royalty base: PAID, SHIPPED, COMPLETED.
   const paidOrders = await prisma.order.findMany({
     where: {
-      status: "PAID",
+      status: { in: soldStatuses },
       OR: [
         { settledAt: { gte: startUTC, lt: endUTC } },
         {
@@ -226,9 +231,28 @@ export async function getTodayBrandSalesReportFromOrders(userId) {
     },
   });
 
-  // === ২️⃣ আজকের "CANCELLED" অর্ডার ===
+  // Today's cancelled orders.
   const cancelledOrders = await prisma.order.findMany({
-    where: { status: "CANCELLED", createdAt: { gte: startUTC, lt: endUTC } },
+    where: {
+      status: OrderStatus.CANCELLED,
+      createdAt: { gte: startUTC, lt: endUTC },
+    },
+    select: { id: true, items: { select: { productId: true } } },
+  });
+
+  const todayCreatedSoldOrders = await prisma.order.findMany({
+    where: {
+      status: { in: soldStatuses },
+      createdAt: { gte: startUTC, lt: endUTC },
+    },
+    select: { id: true, items: { select: { productId: true } } },
+  });
+
+  const returnedOrders = await prisma.order.findMany({
+    where: {
+      status: OrderStatus.RETURNED,
+      createdAt: { gte: startUTC, lt: endUTC },
+    },
     select: { id: true, items: { select: { productId: true } } },
   });
 
@@ -254,6 +278,12 @@ export async function getTodayBrandSalesReportFromOrders(userId) {
         .flatMap((o) => o.items.map((i) => i.productId))
         .filter(Boolean),
       ...cancelledOrders
+        .flatMap((o) => o.items.map((i) => i.productId))
+        .filter(Boolean),
+      ...todayCreatedSoldOrders
+        .flatMap((o) => o.items.map((i) => i.productId))
+        .filter(Boolean),
+      ...returnedOrders
         .flatMap((o) => o.items.map((i) => i.productId))
         .filter(Boolean),
       ...refunds.map((r) => r.orderItem.productId).filter(Boolean),
@@ -317,9 +347,27 @@ export async function getTodayBrandSalesReportFromOrders(userId) {
   for (const order of cancelledOrders) {
     const hasThisMerchant = order.items.some((it) => {
       const p = pmap.get(it.productId);
-      return p && p.userId === merchantId;
+      return p && p.brandId === brandId;
     });
     if (hasThisMerchant) canceledOrders++;
+  }
+
+  let todayOrderCount = 0;
+  for (const order of todayCreatedSoldOrders) {
+    const hasThisBrand = order.items.some((it) => {
+      const p = pmap.get(it.productId);
+      return p && p.brandId === brandId;
+    });
+    if (hasThisBrand) todayOrderCount++;
+  }
+
+  let returnedOrderCount = 0;
+  for (const order of returnedOrders) {
+    const hasThisBrand = order.items.some((it) => {
+      const p = pmap.get(it.productId);
+      return p && p.brandId === brandId;
+    });
+    if (hasThisBrand) returnedOrderCount++;
   }
 
   // === REFUND হিসাব ===
@@ -332,7 +380,7 @@ export async function getTodayBrandSalesReportFromOrders(userId) {
   for (const r of refunds) {
     const productId = r.orderItem.productId;
     const p = pmap.get(productId);
-    if (!p || p.userId !== merchantId) continue;
+    if (!p || p.brandId !== brandId) continue;
 
     refundedUnits += r.quantity;
     refundTotal = refundTotal.add(r.amount);
@@ -351,9 +399,11 @@ export async function getTodayBrandSalesReportFromOrders(userId) {
   return {
     brandId,
     brandName,
+    todayOrders: todayOrderCount,
     soldUnits: Number(soldUnits),
     soldOrders,
     canceledOrders,
+    returnedOrders: returnedOrderCount,
     refundedUnits,
     grossRevenue: Number(grossRevenue),
     brandRoyalty: Number(brandRoyalty),

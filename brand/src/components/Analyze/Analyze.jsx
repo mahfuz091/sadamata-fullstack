@@ -284,7 +284,11 @@ const Analyze = ({
                           <td><div className="ps-2">{item.cancelledQty}</div></td>
                           <td><div className="ps-2">{item.returnedQty}</div></td>
                           <td><div className="ps-2">{item.revenue}</div></td>
-                          <td><div className="ps-2">{item.royalties}</div></td>
+                          <td>
+                            <div className="ps-2">
+                              {formatCurrencyAmount(item.royalties ?? item.brandRoyalty)}
+                            </div>
+                          </td>
                         </tr>
                       ))}
                     </tbody>

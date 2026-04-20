@@ -2,6 +2,7 @@
 
 import { unstable_noStore as noStore } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { OrderStatus } from "@/generated/prisma";
 
 /** --------- helpers --------- */
 function buildDateRange(from, to) {
@@ -113,6 +114,11 @@ export async function getBrandProductSalesSummaryByUser({
   const skip = (Math.max(1, page) - 1) * take;
 
   const orderDateFilter = buildDateRange(dateFrom, dateTo);
+  const soldStatuses = [
+    OrderStatus.PAID,
+    OrderStatus.SHIPPED,
+    OrderStatus.COMPLETED,
+  ];
 
   const productWhereBase = {
     brandId: { in: brandIds },
@@ -155,13 +161,13 @@ export async function getBrandProductSalesSummaryByUser({
       };
     }
 
-    const [paidProductRows, cancelledProductRows] = await Promise.all([
+    const [paidProductRows, cancelledProductRows, returnedProductRows] = await Promise.all([
       prisma.sale.findMany({
         where: {
           productId: { in: candidateProductIds },
           orderItem: {
             order: {
-              status: "PAID",
+              status: { in: soldStatuses },
               createdAt: orderDateFilter,
             },
           },
@@ -173,7 +179,18 @@ export async function getBrandProductSalesSummaryByUser({
         where: {
           productId: { in: candidateProductIds },
           order: {
-            status: "CANCELLED",
+            status: OrderStatus.CANCELLED,
+            createdAt: orderDateFilter,
+          },
+        },
+        select: { productId: true },
+        distinct: ["productId"],
+      }),
+      prisma.orderItem.findMany({
+        where: {
+          productId: { in: candidateProductIds },
+          order: {
+            status: OrderStatus.RETURNED,
             createdAt: orderDateFilter,
           },
         },
@@ -186,6 +203,7 @@ export async function getBrandProductSalesSummaryByUser({
       new Set([
         ...paidProductRows.map((row) => row.productId).filter(Boolean),
         ...cancelledProductRows.map((row) => row.productId).filter(Boolean),
+        ...returnedProductRows.map((row) => row.productId).filter(Boolean),
       ])
     );
 
@@ -233,7 +251,8 @@ export async function getBrandProductSalesSummaryByUser({
     };
   }
 
-  // 3) Ã Â¦Â¡Ã Â§â€¡Ã Â¦Å¸ Ã Â¦Â«Ã Â¦Â¿Ã Â¦Â²Ã Â§ÂÃ Â¦Å¸Ã Â¦Â¾Ã Â¦Â° (Order.createdAt)
+  // 3) Ã Â¦Â¡Ã Â§â€¡Ã Â¦Å¸ Ã Â¦Â«Ã Â¦Â¿Ã Â¦Â²Ã Â§ÂÃ Â¦Å¸Ã Â¦Â¾Ã Â¦Â° (Order.createdAt)
+
 
   // 4) PAID sales Ã¢â€ â€™ JS reduce
   const saleRows = await prisma.sale.findMany({
@@ -241,7 +260,7 @@ export async function getBrandProductSalesSummaryByUser({
       productId: { in: ids },
       orderItem: {
         order: {
-          status: "PAID",
+          status: { in: soldStatuses },
           ...(orderDateFilter ? { createdAt: orderDateFilter } : {}),
         },
       },
@@ -279,7 +298,7 @@ export async function getBrandProductSalesSummaryByUser({
     where: {
       productId: { in: ids },
       order: {
-        status: "CANCELLED",
+        status: OrderStatus.CANCELLED,
         ...(orderDateFilter ? { createdAt: orderDateFilter } : {}),
       },
     },
@@ -292,6 +311,23 @@ export async function getBrandProductSalesSummaryByUser({
     cancelMap.set(r.productId, cur + (r.quantity || 0));
   }
 
+  const returnRows = await prisma.orderItem.findMany({
+    where: {
+      productId: { in: ids },
+      order: {
+        status: OrderStatus.RETURNED,
+        ...(orderDateFilter ? { createdAt: orderDateFilter } : {}),
+      },
+    },
+    select: { productId: true, quantity: true },
+  });
+
+  const returnMap = new Map();
+  for (const r of returnRows) {
+    const cur = returnMap.get(r.productId) || 0;
+    returnMap.set(r.productId, cur + (r.quantity || 0));
+  }
+
   // 6) Ã Â¦Â«Ã Â¦Â²Ã Â¦Â¾Ã Â¦Â«Ã Â¦Â² Ã Â¦Â®Ã Â§ÂÃ Â¦Â¯Ã Â¦Â¾Ã Â¦ÂªÃ Â¦Â¿Ã Â¦â€š
   const items = products.map(p => {
     const paid = paidMap.get(p.id) || {
@@ -302,6 +338,7 @@ export async function getBrandProductSalesSummaryByUser({
       platformEarning: 0,
     };
     const cancelledQty = cancelMap.get(p.id) || 0;
+    const returnedQty = returnMap.get(p.id) || 0;
     const variants = Array.isArray(p.variants) ? p.variants : [];
     const normalizedVariants = variants.map((variant) => ({
       ...variant,
@@ -323,11 +360,12 @@ export async function getBrandProductSalesSummaryByUser({
 
       purchasedQty: paid.purchasedQty,
       cancelledQty,
-      returnedQty: 0, // Refund Ã Â¦Â¨Ã Â¦Â¾ Ã Â¦Â¥Ã Â¦Â¾Ã Â¦â€¢Ã Â¦Â¾Ã Â§Å¸ 0
+      returnedQty,
 
       revenue: Number(paid.revenue.toFixed(2)),
       brandRoyalty: Number(paid.brandRoyalty.toFixed(2)),
       merchantRoyalty: Number(paid.merchantRoyalty.toFixed(2)),
+      royalties: Number(paid.brandRoyalty.toFixed(2)),
       platformEarning: Number(paid.platformEarning.toFixed(2)),
 
       updatedAt: p.updatedAt,

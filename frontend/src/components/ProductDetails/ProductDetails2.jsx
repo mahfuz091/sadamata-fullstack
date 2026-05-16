@@ -112,7 +112,7 @@ const colorsForFit = (vs = []) => {
 };
 
 // --------------- Component ---------------
-export default function ProductDetails2({ product, user, reviewOrderItemId = "" }) {
+export default function ProductDetails2({ product, user, reviewOrderItemId = "", salesRank }) {
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
   const router = useRouter();
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
@@ -290,6 +290,10 @@ export default function ProductDetails2({ product, user, reviewOrderItemId = "" 
       price: product.price,
       brand: product.Brand?.name || product.brandName || "Brand",
       brandId: product.Brand?.id || null,
+      imageKey:
+        currentVariant?.frontImg ||
+        currentVariant?.backImg ||
+        null,
       imageUrl:
         currentVariant?.frontImgUrl ||
         currentVariant?.backImgUrl ||
@@ -1104,10 +1108,14 @@ export default function ProductDetails2({ product, user, reviewOrderItemId = "" 
                         : "N/A"}
                     </li>
                      <li>
-                      <span>SMPIN :</span>
+                      <span>SMPIN : </span>
+                      {product?.smpin || ""}
                     </li>
-                     <li>
+                    <li>
                       <span>Sales Rank (Sadamata) : </span>
+                      {salesRank?.totalUnitsSold > 0
+                        ? `#${salesRank.rank} in All Departments (${salesRank.totalUnitsSold} units sold)`
+                        : ""}
                     </li>
                    
                     <li>

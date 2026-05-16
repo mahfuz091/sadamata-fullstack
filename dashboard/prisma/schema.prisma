@@ -193,6 +193,7 @@ model Product {
   backDesign            String?
   frontDesign           String?
   productId             String              @unique
+  smpin                 String?             @unique
   status                ProductStat?        @default(UNDERREVIEW)
   CommissionSetting     CommissionSetting[]
   features              Feature[]

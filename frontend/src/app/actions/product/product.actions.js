@@ -554,11 +554,80 @@ export async function getProductsByProductId(productId) {
     );
   }
 
+  // explicitly fetch smpin — scalar may be dropped by adapter in some Prisma versions
+  if (signed && !signed.smpin && product?.id) {
+    const row = await prisma.$queryRaw`SELECT smpin FROM "Product" WHERE id = ${product.id} LIMIT 1`;
+    if (row?.[0]?.smpin) signed.smpin = row[0].smpin;
+  }
+
   return {
     kind: "product_by_id",
     found: !!product,
     item: signed || null,
   };
+}
+
+export async function getProductSalesRank(productId) {
+  if (!productId) return { rank: null, totalUnitsSold: 0 };
+
+  const [currentAgg, allGroups] = await Promise.all([
+    prisma.sale.aggregate({
+      where: { productId },
+      _sum: { quantity: true },
+    }),
+    prisma.sale.groupBy({
+      by: ["productId"],
+      _sum: { quantity: true },
+    }),
+  ]);
+
+  const currentUnits = currentAgg._sum.quantity ?? 0;
+  const rank =
+    allGroups.filter((g) => (g._sum.quantity ?? 0) > currentUnits).length + 1;
+
+  return { rank, totalUnitsSold: currentUnits };
+}
+
+export async function getRelatedProducts({ excludeId, brandId, userId, limit = 12 } = {}) {
+  if (!excludeId) return [];
+
+  const src = await prisma.product.findUnique({
+    where: { id: excludeId },
+    select: { categories: { select: { id: true } } },
+  });
+  const categoryIds = src?.categories?.map((c) => c.id) ?? [];
+  const hasCat = categoryIds.length > 0;
+  const catWhere = hasCat ? { categories: { some: { id: { in: categoryIds } } } } : null;
+
+  const base = { ...PUBLIC_PRODUCT_WHERE, id: { not: excludeId } };
+  const seen = new Set();
+  const merged = [];
+
+  const run = async (where, take) => {
+    const rows = await prisma.product.findMany({
+      where: { ...base, ...where },
+      include: PUBLIC_PRODUCT_INCLUDE,
+      take,
+      orderBy: { createdAt: "desc" },
+    });
+    for (const r of rows) {
+      if (!seen.has(r.id)) { seen.add(r.id); merged.push(r); }
+    }
+  };
+
+  // tier 1 — same brand AND same category
+  if (brandId && hasCat) await run({ brandId, ...catWhere }, limit);
+
+  // tier 2 — same brand only
+  if (brandId && merged.length < limit) await run({ brandId }, limit - merged.length);
+
+  // tier 3 — same category only
+  if (hasCat && merged.length < limit) await run(catWhere, limit - merged.length);
+
+  // tier 4 — same merchant
+  if (userId && merged.length < limit) await run({ userId }, limit - merged.length);
+
+  return attachPreviewUrl(merged.slice(0, limit));
 }
 
 export async function getProductsByCategorySlug(input = {}) {

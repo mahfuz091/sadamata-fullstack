@@ -38,7 +38,7 @@ const customStyles = {
     borderBottom: "1px solid grey",
   }),
 };
-const HeaderCloned = ({ session }) => {
+const HeaderCloned = ({ session, categories, profileImageUrl }) => {
   const scrollToTop = useScrollUp(500);
 
   const [options, setOptions] = useState([]);
@@ -222,9 +222,7 @@ const HeaderCloned = ({ session }) => {
                     >
                       <Image
                         src={
-                          session.user.profileImage
-                            ? `${process.env.NEXT_PUBLIC_BASE_URL}/${session.user.profileImage}`
-                            : "/avatar.png" // fallback image
+                          profileImageUrl || "/avatar.png"
                         }
                         width={40}
                         height={40}

@@ -9,7 +9,7 @@ import {
 } from "@/app/actions/userAddressActions";
 import Link from "next/link";
 
-const Profile = ({ user, countries }) => {
+const Profile = ({ user, countries, profileImageUrl }) => {
   const [editMode, setEditMode] = useState(false);
   const [phoneValue, setPhoneValue] = useState(user?.userProfile?.phone || "");
   const [country, setCountry] = useState(null);
@@ -27,9 +27,7 @@ const Profile = ({ user, countries }) => {
   }, [user, countries]);
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(
-    user?.profileImage
-      ? `${process.env.NEXT_PUBLIC_BASE_URL}/${user?.profileImage}`
-      : "/assets/images/resources/avater.png"
+    profileImageUrl || "/assets/images/resources/avater.png"
   );
   const [formData, setFormData] = useState({
     firstName: user.userProfile?.firstName
@@ -62,8 +60,7 @@ const Profile = ({ user, countries }) => {
 
     try {
       const updated = await updateUserProfileImageFile(user.id, selectedFile);
-      // setPreview(updated.profileImage);
-      setPreview(`${process.env.NEXT_PUBLIC_BASE_URL}${updated.profileImage}`);
+      setPreview(updated.signedUrl);
       toast.success("Profile image updated!");
     } catch (err) {
       console.error(err);

@@ -38,7 +38,7 @@ const customStyles = {
     borderBottom: "1px solid grey",
   }),
 };
-const Header = ({ session, categories }) => {
+const Header = ({ session, categories, profileImageUrl }) => {
   const scrollToTop = useScrollUp(500);
 
   // console.log(categories, "session header");
@@ -47,6 +47,7 @@ const Header = ({ session, categories }) => {
   const [selected, setSelected] = useState(null);
   const [text, setText] = useState("");
   const [open, setOpen] = useState(false);
+  const [offcanvasOpen, setOffcanvasOpen] = useState(false);
 
   const [cartTotal, setCartTotal] = useState(0);
   const [favoriteCount, setFavoriteCount] = useState(0);
@@ -138,8 +139,14 @@ const Header = ({ session, categories }) => {
     };
   }, []);
 
+  useEffect(() => {
+    document.body.style.overflow = offcanvasOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [offcanvasOpen]);
+
   const placeholder = useMemo(() => "All", []);
   return (
+    <>
     <header
       className={`main-header main-header--one sticky-header sticky-header--normal ${
         scrollToTop ? "active" : ""
@@ -150,7 +157,7 @@ const Header = ({ session, categories }) => {
           <div className='main-header__inner'>
             <div className='main-header__logo'>
               <Link href='/'>
-                <Image src={logo} alt='sadamata' width={200} height={40} />
+                <Image src={logo} alt='sadamata' width={140} height={30} />
               </Link>
             </div>
             {/* <div className='main-header__search-box'>
@@ -233,12 +240,10 @@ const Header = ({ session, categories }) => {
                     >
                       <img
                         src={
-                          session.user.profileImage
-                            ? `${process.env.NEXT_PUBLIC_BASE_URL}/${session?.user?.profileImage}`
-                            : "/avatar.png" // fallback image
+                          profileImageUrl || "/avatar.png"
                         }
-                        width={40}
-                        height={40}
+                        width={32}
+                        height={32}
                         alt='User Avatar'
                         style={{
                           objectFit: "cover",
@@ -273,11 +278,15 @@ const Header = ({ session, categories }) => {
                   </>
                 )}
               </div>
-              <div className='mobile-nav__btn mobile-nav__toggler'>
+              <button
+                className='mobile-nav__btn mobile-nav__toggler'
+                onClick={() => setOffcanvasOpen(true)}
+                aria-label='Open menu'
+              >
                 <span></span>
                 <span></span>
                 <span></span>
-              </div>
+              </button>
             </div>
           </div>
         </div>
@@ -303,6 +312,92 @@ const Header = ({ session, categories }) => {
         </div>
       </div>
     </header>
+
+    {/* Offcanvas overlay */}
+    {offcanvasOpen && (
+      <div
+        className='offcanvas-overlay'
+        onClick={() => setOffcanvasOpen(false)}
+      />
+    )}
+
+    {/* Offcanvas panel */}
+    <div className={`mobile-offcanvas ${offcanvasOpen ? "is-open" : ""}`}>
+      <div className='mobile-offcanvas__head'>
+        <Link href='/' onClick={() => setOffcanvasOpen(false)}>
+          <Image src={logo} alt='sadamata' width={120} height={26} />
+        </Link>
+        <button
+          className='mobile-offcanvas__close'
+          onClick={() => setOffcanvasOpen(false)}
+          aria-label='Close menu'
+        >
+          <i className='fas fa-times'></i>
+        </button>
+      </div>
+
+      <div className='mobile-offcanvas__body'>
+        {/* Auth */}
+        <div className='mobile-offcanvas__auth'>
+          {session?.user ? (
+            <>
+              <Link href='/profile' className='mobile-offcanvas__auth-link' onClick={() => setOffcanvasOpen(false)}>
+                <i className='fas fa-user'></i> My Account
+              </Link>
+              <Link href='/orders' className='mobile-offcanvas__auth-link' onClick={() => setOffcanvasOpen(false)}>
+                <i className='fas fa-box'></i> My Orders
+              </Link>
+              <button className='mobile-offcanvas__auth-link' onClick={() => { setOffcanvasOpen(false); logOut(); }}>
+                <i className='fas fa-sign-out-alt'></i> Logout
+              </button>
+            </>
+          ) : (
+            <Link href='/login' className='mobile-offcanvas__signin' onClick={() => setOffcanvasOpen(false)}>
+              <i className='fas fa-user'></i> Sign In
+            </Link>
+          )}
+        </div>
+
+        <div className='mobile-offcanvas__divider' />
+
+        {/* Cart & Favourites */}
+        <div className='mobile-offcanvas__actions'>
+          <Link href='/favorites' className='mobile-offcanvas__action-item' onClick={() => setOffcanvasOpen(false)}>
+            <i className='far fa-heart'></i>
+            <span>Favourites</span>
+            <span className='mobile-offcanvas__badge'>{favoriteCount.toString().padStart(2, "0")}</span>
+          </Link>
+          <Link href='/cart' className='mobile-offcanvas__action-item' onClick={() => setOffcanvasOpen(false)}>
+            <i className='fas fa-shopping-cart'></i>
+            <span>Cart</span>
+            <span className='mobile-offcanvas__badge'>৳{cartTotal.toFixed(2)}</span>
+          </Link>
+        </div>
+
+        <div className='mobile-offcanvas__divider' />
+
+        {/* Categories */}
+        <nav className='mobile-offcanvas__nav'>
+          <p className='mobile-offcanvas__nav-title'>Categories</p>
+          <ul>
+            {categories.map((category) => (
+              <li key={category.id}>
+                <Link
+                  href='/categories/[slug]'
+                  as={`/categories/${category.slug}`}
+                  prefetch={false}
+                  className='mobile-offcanvas__nav-item'
+                  onClick={() => setOffcanvasOpen(false)}
+                >
+                  {category.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </div>
+    </>
   );
 };
 

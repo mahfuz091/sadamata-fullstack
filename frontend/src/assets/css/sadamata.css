@@ -1046,7 +1046,7 @@ p {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 30px;
+  padding: 0px 30px;
   background-color: #131921;
   gap: 15px;
 }

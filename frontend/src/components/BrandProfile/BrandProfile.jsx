@@ -1,6 +1,7 @@
 // BrandProfile.jsx
 "use client"
 import React, { useMemo, useState } from "react";
+import { useFavorites } from "@/hooks/useFavorites";
 import ProductCard from "../ProductCard/ProductCard";
 import image from "@/assets/images/products/item-1-1.png";
 import bg from "@/assets/images/backgrounds/bg-home.jpg";
@@ -21,6 +22,7 @@ import Pagination from 'react-bootstrap/Pagination';
 // A simple ProductCard component
 
 import FollowButton from "../brand/FollowButton";
+import AddToCartModal from "../FeatureProduct/AddToCartModal";
 
 const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE_URL;
 
@@ -116,17 +118,36 @@ const BrandProfile = ({ brand, products = [], initialIsFollowing = false, follow
   const [activeIdx, setActiveIdx] = useState(0);
   const activeGroup = mockupGroups[activeIdx] || null;
   const [currentPage, setCurrentPage] = useState(1);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const { toggleFavorite, isFavorite } = useFavorites();
   const itemsPerPage = 40;
+
+  const sourceProducts = activeGroup?.products?.length > 0 ? activeGroup.products : products;
+
+  const filteredProducts = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return sourceProducts;
+    return sourceProducts.filter((p) =>
+      (p.title || "").toLowerCase().includes(q) ||
+      (p.Brand?.name || p.brandName || "").toLowerCase().includes(q)
+    );
+  }, [sourceProducts, searchQuery]);
 
   const paginatedProducts = useMemo(() => {
     const startIdx = (currentPage - 1) * itemsPerPage;
-    return products.slice(startIdx, startIdx + itemsPerPage);
-  }, [products, currentPage]);
+    return filteredProducts.slice(startIdx, startIdx + itemsPerPage);
+  }, [filteredProducts, currentPage]);
 
-  const totalPages = Math.ceil(products.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
   };
 
   const brandStyles = `
@@ -386,16 +407,18 @@ const BrandProfile = ({ brand, products = [], initialIsFollowing = false, follow
               </div>
               <div className='brand-profile-top__right'>
                 <div className='brand-profile-top__form'>
-                  <div className='brand-profile-top__form__group__form'>
+                  <form className='brand-profile-top__form__group__form' onSubmit={handleSearch}>
                     <input
                       type='text'
                       name='text'
                       placeholder='Search products'
+                      value={searchQuery}
+                      onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
                     />
                     <button type='submit' className='commerce-btn'>
                       <i className='fas fa-search'></i>
                     </button>
-                  </div>
+                  </form>
                 </div>
                 <div className='brand-profile-top__btn'>
                   <FollowButton brandId={brand?.id} initialIsFollowing={initialIsFollowing} />
@@ -435,21 +458,20 @@ const BrandProfile = ({ brand, products = [], initialIsFollowing = false, follow
         <div className="brand-profile__bottom pb-120">
           <div className="container">
             <div className="row gutter-y-32 gutter-x-32">
-              {activeGroup?.products?.length > 0 ? (
+              {paginatedProducts.length > 0 ? (
                 paginatedProducts.map((product) => (
                   <Col key={product.id} xl={3} lg={4} md={6} sm={6}>
-                    <ProductCard product={product} />
-                  </Col>
-                ))
-              ) : products.length > 0 ? (
-                paginatedProducts.map((product) => (
-                  <Col key={product.id} xl={3} lg={4} md={6} sm={6}>
-                    <ProductCard product={product} />
+                    <ProductCard
+                      product={product}
+                      onAddToCart={(p) => { setSelectedProduct(p); setShowModal(true); }}
+                      onToggleFavorite={toggleFavorite}
+                      isFavorite={isFavorite}
+                    />
                   </Col>
                 ))
               ) : (
                 <div className="col-12 text-center py-5">
-                  <p>No products found for this brand.</p>
+                  <p>{searchQuery ? "No products match your search." : "No products found for this brand."}</p>
                 </div>
               )}
             </div>
@@ -471,6 +493,14 @@ const BrandProfile = ({ brand, products = [], initialIsFollowing = false, follow
           </div>
         </div>
       </section>
+
+      {selectedProduct && (
+        <AddToCartModal
+          show={showModal}
+          onHide={() => setShowModal(false)}
+          product={selectedProduct}
+        />
+      )}
     </>
   );
 };

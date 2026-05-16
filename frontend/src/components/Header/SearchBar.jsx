@@ -5,13 +5,22 @@ import Select from "react-select";
 import { useRouter } from "next/navigation";
 
 const customStyles = {
-  container: (base) => ({ ...base, width: "100%" }),
+  container: (base) => ({ ...base, width: "100%", height: "100%" }),
   control: (base) => ({
     ...base,
     border: "none",
     boxShadow: "none",
+    minHeight: "36px",
+    height: "36px",
     "&:hover": { border: "none" },
   }),
+  valueContainer: (base) => ({ ...base, padding: "0 8px", height: "36px" }),
+  indicatorsContainer: (base) => ({ ...base, height: "36px" }),
+  input: (base) => ({ ...base, height: "auto", margin: 0, padding: 0 }),
+  singleValue: (base) => ({ ...base, fontSize: "14px" }),
+  placeholder: (base) => ({ ...base, fontSize: "14px" }),
+  menu: (base) => ({ ...base, zIndex: 99999 }),
+  menuPortal: (base) => ({ ...base, zIndex: 99999 }),
   indicatorSeparator: () => null,
   option: (base, state) => ({
     ...base,
@@ -194,6 +203,8 @@ export default function SearchBar({ options = [] }) {
             onChange={(opt) => setSelected(opt)}
             styles={customStyles}
             components={{ IndicatorSeparator: () => null }}
+            menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+            menuPosition="fixed"
             isClearable
             isSearchable
             placeholder={placeholder}
@@ -201,8 +212,7 @@ export default function SearchBar({ options = [] }) {
         </div>
 
         <div
-          className='main-header__search__input-box'
-          style={{ maxWidth: "650px", width: "100%" }}
+          className='main-header__search__input-box main-header__search__input-box--text'
         >
           <input
             type='text'

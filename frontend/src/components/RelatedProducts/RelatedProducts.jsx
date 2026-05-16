@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Image from "next/image";
 import item1 from "@/assets/images/products/item-1-1.png";
 import item2 from "@/assets/images/products/item-1-2.png";
@@ -12,8 +12,9 @@ import { useFavorites } from "@/hooks/useFavorites";
 import AddToCartModal from "../FeatureProduct/AddToCartModal";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination } from "swiper/modules";
+import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
+import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 const BDT_SYMBOL = "\u09F3";
@@ -122,7 +123,6 @@ const normalizeProduct = (product) => {
 const RelatedProducts = ({
   products,
   title = "Related Product",
-  seeAllHref = "/products",
 }) => {
   const list = Array.isArray(products)
     ? products.map(normalizeProduct)
@@ -130,6 +130,7 @@ const RelatedProducts = ({
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const { toggleFavorite, isFavorite } = useFavorites();
+  const swiperRef = useRef(null);
 
   if (!list.length) return null;
 
@@ -138,17 +139,31 @@ const RelatedProducts = ({
       <Container>
         <div className='product-slider__top'>
           <h2 className='product-slider__title'>{title}</h2>
-          <div className='product-slider__btn'>
-            <Link href={seeAllHref} className='inline-flex items-center gap-2'>
-              See All Product
-            </Link>
+          <div className='history-product__btn'>
+            <button
+              className='slick-custom-prev slick-arrow'
+              type='button'
+              aria-label='Previous'
+              onClick={() => swiperRef.current?.slidePrev()}
+            >
+              <i className='icon-left-arrow' />
+            </button>
+            <button
+              className='slick-custom-next slick-arrow'
+              type='button'
+              aria-label='Next'
+              onClick={() => swiperRef.current?.slideNext()}
+            >
+              <i className='icon-left-arrow' />
+            </button>
           </div>
         </div>
 
         <div className='product-slider__carousel commerce-swiper__carousel'>
           <Swiper
-            modules={[Pagination]}
+            modules={[Navigation, Pagination]}
             pagination={{ clickable: true }}
+            onSwiper={(swiper) => { swiperRef.current = swiper; }}
             loop={list.length > 4}
             speed={300}
             spaceBetween={24}

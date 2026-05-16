@@ -6,6 +6,7 @@ import sharp from "sharp";
 import { prisma } from "@/lib/prisma";
 import generateBlogId from "@/utils/generateTitle";
 import { saveDesignFileS3, saveProductFileS3 } from "@/lib/s3helper";
+import { generateUniqueSmpin } from "@/lib/smpin";
 import { revalidatePath } from "next/cache";
 
 const uploadDir = path.join(process.cwd(), "public", "uploads");
@@ -1029,10 +1030,12 @@ export async function createProduct(formData) {
       }
 
       // ✅ Create product using the RESERVED productId (matches S3 folder)
+      const smpin = await generateUniqueSmpin(tx);
       await tx.product.create({
         data: {
           title: finalTitle,
           productId: reservedProductId,
+          smpin,
           description,
           price,
           brandCommissionPct: brandPct,

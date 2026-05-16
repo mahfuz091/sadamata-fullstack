@@ -3,23 +3,23 @@ import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import HeaderCloned from "../Header/HeaderCloned";
 import prisma from "@/lib/prisma";
+import { getPrivateUrl } from "@/lib/s3";
 
 const Layout = async ({ children, session }) => {
-  
-  const categories = await prisma.productCategory.findMany({
-  where: {
-    isActive: true, // filter to get only active categories
-  },
-  orderBy: [
-    { sortOrder: "asc" }, 
-    { createdAt: "desc" }
-  ],
-});
+  const [categories, profileImageUrl] = await Promise.all([
+    prisma.productCategory.findMany({
+      where: { isActive: true },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+    }),
+    session?.user?.profileImage
+      ? getPrivateUrl(session.user.profileImage, 604800).catch(() => null)
+      : Promise.resolve(null),
+  ]);
 
   return (
     <>
-      <Header session={session} categories={categories} />
-      <HeaderCloned session={session} categories={categories} />
+      <Header session={session} categories={categories} profileImageUrl={profileImageUrl} />
+      <HeaderCloned session={session} categories={categories} profileImageUrl={profileImageUrl} />
       {children}
       <Footer session={session} />
     </>

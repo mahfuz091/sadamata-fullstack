@@ -7,9 +7,12 @@ import { Container } from "react-bootstrap";
 import { useEffect, useRef, useState } from "react";
 import { useFavorites } from "@/hooks/useFavorites";
 import AddToCartModal from "../FeatureProduct/AddToCartModal";
+import { getSignedUrls } from "@/app/actions/product/getSignedUrls";
 
 export const RECENTLY_VIEWED_PRODUCTS_KEY = "recently_viewed_products";
 export const RECENTLY_VIEWED_PRODUCTS_LIMIT = 15;
+
+const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 
 const readRecentlyViewedProducts = () => {
   if (typeof window === "undefined") return [];
@@ -19,7 +22,21 @@ const readRecentlyViewedProducts = () => {
       window.localStorage.getItem(RECENTLY_VIEWED_PRODUCTS_KEY) || "[]"
     );
 
-    return Array.isArray(products) ? products : [];
+    if (!Array.isArray(products)) return [];
+
+    const now = Date.now();
+    const fresh = products.filter(
+      (p) => p?.viewedAt && now - new Date(p.viewedAt).getTime() < SEVEN_DAYS_MS
+    );
+
+    if (fresh.length !== products.length) {
+      window.localStorage.setItem(
+        RECENTLY_VIEWED_PRODUCTS_KEY,
+        JSON.stringify(fresh)
+      );
+    }
+
+    return fresh;
   } catch {
     return [];
   }
@@ -35,6 +52,7 @@ export const trackRecentlyViewedProduct = (product) => {
     price: product.price ?? null,
     brand: product.brand || "Brand",
     brandId: product.brandId || null,
+    imageKey: product.imageKey || null,
     imageUrl: product.imageUrl || null,
     previewUrl: product.imageUrl || product.previewUrl || null,
     variants: Array.isArray(product.variants) ? product.variants : [],
@@ -63,8 +81,25 @@ export default function RecentlyViewedProducts({ title = "Inspired by Your Brows
   const sliderRef = useRef(null);
   const { toggleFavorite, isFavorite } = useFavorites();
 
+  const refreshAndSet = async (list) => {
+    const keys = list.map((p) => p.imageKey).filter(Boolean);
+    if (!keys.length) { setProducts(list); return; }
+    try {
+      const urlMap = await getSignedUrls(keys);
+      setProducts(
+        list.map((p) =>
+          p.imageKey && urlMap[p.imageKey]
+            ? { ...p, imageUrl: urlMap[p.imageKey], previewUrl: urlMap[p.imageKey] }
+            : p
+        )
+      );
+    } catch {
+      setProducts(list);
+    }
+  };
+
   useEffect(() => {
-    const syncProducts = () => setProducts(readRecentlyViewedProducts());
+    const syncProducts = () => refreshAndSet(readRecentlyViewedProducts());
 
     syncProducts();
     window.addEventListener("storage", syncProducts);
@@ -190,7 +225,7 @@ export default function RecentlyViewedProducts({ title = "Inspired by Your Brows
 
                     <div className='product__item__box'>
                       <div className='product__item__price'>
-                        à§³{Number(product.price ?? 0).toFixed(2)}
+                        ৳{Number(product.price ?? 0).toFixed(2)}
                       </div>
 
                       <div className='product__item__ratings'>

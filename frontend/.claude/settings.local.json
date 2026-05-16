@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem \"E:\\\\sadamata-fullstack\\\\frontend\" -Depth 2 | Select-Object FullName, PSIsContainer | Where-Object { $_.PSIsContainer -or $_.FullName -match '\\\\.\\(ts|tsx|js|json|md|prisma\\)$' })",
+      "PowerShell(Get-ChildItem \"E:\\\\sadamata-fullstack\\\\frontend\\\\src\" -Recurse -Depth 3 | Select-Object FullName, PSIsContainer | Where-Object { $_.PSIsContainer } | Format-Table -AutoSize)",
+      "Bash(dir \"E:\\\\sadamata-fullstack\\\\frontend\\\\src\\\\lib\")",
+      "Bash(dir \"E:\\\\sadamata-fullstack\\\\frontend\\\\src\\\\app\\\\actions\" /s /b)",
+      "Bash(dir \"E:\\\\sadamata-fullstack\\\\frontend\\\\src\\\\hooks\" /s /b)",
+      "Bash(dir \"E:\\\\sadamata-fullstack\\\\frontend\\\\src\\\\utils\" /s /b)",
+      "Skill(caveman:caveman)",
+      "PowerShell(Get-ChildItem \"E:\\\\sadamata-fullstack\" -Recurse -Force -Depth 3 | Where-Object { $_.Name -match \"^\\\\.env\" } | Select-Object FullName)",
+      "PowerShell(Get-Item \"E:\\\\sadamata-fullstack\\\\backups\\\\sadamata_2026-05-16_07-43-50.sql\" | Select-Object Name, @{N=\"Size\";E={\"{0:N0} KB\" -f \\($_.Length/1KB\\)}})",
+      "PowerShell(New-Item *)",
+      "Bash(npx prisma *)",
+      "Bash(node -e ' *)",
+      "Bash(node scripts/backfill-smpin.mjs)",
+      "Bash(node --input-type=module)",
+      "Bash(2>&1)"
+    ]
+  }
+}

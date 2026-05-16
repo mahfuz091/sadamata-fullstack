@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import fs from "fs";
 import { revalidatePath } from "next/cache";
 import path from "path";
+import { uploadToS3, getPrivateUrl } from "@/lib/s3";
 
 // export async function updateUserProfileImageFile(id, file) {
 //   if (!file) throw new Error("No file provided");
@@ -39,45 +40,22 @@ import path from "path";
 // }
 
 export async function updateUserProfileImageFile(id, file) {
-  try {
-    if (!file) throw new Error("No file provided");
+  if (!file) throw new Error("No file provided");
 
-    // Ensure the directory exists
-    const uploadDir = path.join(process.cwd(), "uploads/profileImage");
+  const fileExt = path.extname(file.name);
+  const key = `profile-images/${id}/${Date.now()}${fileExt}`;
+  const buffer = Buffer.from(await file.arrayBuffer());
 
-    // Note: Usually better to serve from 'public' if using Next.js
+  await uploadToS3({ key, body: buffer, contentType: file.type });
 
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
+  await prisma.user.update({
+    where: { id },
+    data: { profileImage: key, updatedAt: new Date() },
+  });
 
-    // Generate unique file name
-    const fileExt = path.extname(file.name);
-    const fileName = `${Date.now()}-${Math.random()
-      .toString(36)
-      .substr(2, 6)}${fileExt}`;
-    const filePath = path.join(uploadDir, fileName);
-
-    // Save the file to disk
-    const buffer = Buffer.from(await file.arrayBuffer());
-    fs.writeFileSync(filePath, buffer);
-
-    // Update Database
-    const updatedUser = await prisma.user.update({
-      where: { id },
-      data: {
-        profileImage: `uploads/profileImage/${fileName}`,
-        updatedAt: new Date(),
-      },
-    });
-
-    return updatedUser;
-  } catch (error) {
-    console.error("Error updating user profile image:", error);
-
-    // Optional: If DB update fails, you might want to delete the file you just saved
-    // to prevent "orphaned" images taking up disk space.
-  }
+  const signedUrl = await getPrivateUrl(key, 604800);
+  revalidatePath("/profile");
+  return { signedUrl };
 }
 export async function updateUserInfo(userId, data) {
   try {

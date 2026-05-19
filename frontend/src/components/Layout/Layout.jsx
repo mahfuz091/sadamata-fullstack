@@ -12,7 +12,7 @@ const Layout = async ({ children, session }) => {
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
     }),
     session?.user?.profileImage
-      ? getPrivateUrl(session.user.profileImage, 604800).catch(() => null)
+      ? getPrivateUrl(session.user.profileImage, 86400).catch(() => null)
       : Promise.resolve(null),
   ]);
 

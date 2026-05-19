@@ -220,16 +220,13 @@ const HeaderCloned = ({ session, categories, profileImageUrl }) => {
                       className='profileImageButton'
                       onClick={() => setOpen((prev) => !prev)}
                     >
-                      <Image
-                        src={
-                          profileImageUrl || "/avatar.png"
-                        }
+                      <img
+                        src={profileImageUrl || "/avatar.png"}
                         width={40}
                         height={40}
                         alt='User Avatar'
-                        style={{
-                          objectFit: "cover",
-                        }}
+                        style={{ objectFit: "cover" }}
+                        onError={() => logOut()}
                       />
                     </button>
 

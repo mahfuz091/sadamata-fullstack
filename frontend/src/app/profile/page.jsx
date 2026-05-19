@@ -30,7 +30,7 @@ const page = async () => {
       },
     }),
     session?.user?.profileImage
-      ? getPrivateUrl(session.user.profileImage, 604800).catch(() => null)
+      ? getPrivateUrl(session.user.profileImage, 86400).catch(() => null)
       : Promise.resolve(null),
   ]);
   return (

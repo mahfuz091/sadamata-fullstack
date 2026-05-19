@@ -573,7 +573,7 @@ const CategoryProductsClient = ({
                     });
                   }}
                 >
-                  <i className='icon-left-arrow'></i> Previous
+                   Previous
                 </button>
 
                 <span style={{ padding: "0 12px" }}>Page {currentPage}</span>

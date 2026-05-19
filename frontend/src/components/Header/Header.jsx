@@ -48,6 +48,7 @@ const Header = ({ session, categories, profileImageUrl }) => {
   const [text, setText] = useState("");
   const [open, setOpen] = useState(false);
   const [offcanvasOpen, setOffcanvasOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
   const [cartTotal, setCartTotal] = useState(0);
   const [favoriteCount, setFavoriteCount] = useState(0);
@@ -280,6 +281,13 @@ const Header = ({ session, categories, profileImageUrl }) => {
                 )}
               </div>
               <button
+                className='mobile-search-btn'
+                onClick={() => setMobileSearchOpen(true)}
+                aria-label='Open search'
+              >
+                <i className='fas fa-search'></i>
+              </button>
+              <button
                 className='mobile-nav__btn mobile-nav__toggler'
                 onClick={() => setOffcanvasOpen(true)}
                 aria-label='Open menu'
@@ -396,6 +404,26 @@ const Header = ({ session, categories, profileImageUrl }) => {
             ))}
           </ul>
         </nav>
+      </div>
+    </div>
+
+    {/* Mobile search overlay */}
+    <div
+      className={`mobile-search-overlay${mobileSearchOpen ? " is-open" : ""}`}
+      onMouseDown={(e) => { if (e.target === e.currentTarget) setMobileSearchOpen(false); }}
+    >
+      <div className='mobile-search-overlay__card'>
+        <div className='mobile-search-overlay__header'>
+          <span className='mobile-search-overlay__title'>Search</span>
+          <button
+            className='mobile-search-close'
+            onClick={() => setMobileSearchOpen(false)}
+            aria-label='Close search'
+          >
+            <i className='fas fa-times'></i>
+          </button>
+        </div>
+        <SearchBar options={options} onSearch={() => setMobileSearchOpen(false)} />
       </div>
     </div>
     </>

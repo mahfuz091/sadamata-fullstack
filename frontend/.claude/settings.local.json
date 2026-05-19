@@ -15,7 +15,8 @@
       "Bash(node -e ' *)",
       "Bash(node scripts/backfill-smpin.mjs)",
       "Bash(node --input-type=module)",
-      "Bash(2>&1)"
+      "Bash(2>&1)",
+      "Bash(npm install)"
     ]
   }
 }

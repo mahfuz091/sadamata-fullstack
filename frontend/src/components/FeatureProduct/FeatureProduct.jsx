@@ -305,7 +305,7 @@ const FeatureProduct = () => {
                 requestAnimationFrame(() => scrollToSectionTop());
               }}
             >
-              <i className='icon-left-arrow'></i> Previous
+             Previous
             </button>
 
             {/* <ul className='post-pagination-list justify-content-center'>

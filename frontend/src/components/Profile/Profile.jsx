@@ -8,6 +8,8 @@ import {
   updateUserProfileImageFile,
 } from "@/app/actions/userAddressActions";
 import Link from "next/link";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const Profile = ({ user, countries, profileImageUrl }) => {
   const [editMode, setEditMode] = useState(false);
@@ -41,6 +43,9 @@ const Profile = ({ user, countries, profileImageUrl }) => {
     address: user?.userProfile?.address || "",
     zipCode: user?.userProfile?.zipCode || "",
   });
+  const [dobDate, setDobDate] = useState(
+    user.userProfile?.dateOfBirth ? new Date(user.userProfile.dateOfBirth) : null
+  );
   const [loading, setLoading] = useState(false);
 
   function formatDateForInput(date) {
@@ -49,6 +54,13 @@ const Profile = ({ user, countries, profileImageUrl }) => {
     const month = `${d.getMonth() + 1}`.padStart(2, "0");
     const day = `${d.getDate()}`.padStart(2, "0");
     return `${d.getFullYear()}-${month}-${day}`;
+  }
+
+  function formatDateDisplay(date) {
+    if (!date) return "";
+    const d = new Date(date);
+    if (isNaN(d)) return "";
+    return d.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
   }
 
   const handleFileChange = async (e) => {
@@ -245,14 +257,32 @@ const Profile = ({ user, countries, profileImageUrl }) => {
                 <div className='user-profile__group__item'>
                   <label htmlFor='dateOfBirth'>Date of Birth</label>
 
-                  <input
-                    type='date'
-                    name='dateOfBirth'
-                    id='dateOfBirth'
-                    value={formData.dateOfBirth}
-                    onChange={handleChange}
-                    readOnly={!editMode}
-                  />
+                  {editMode ? (
+                    <DatePicker
+                      selected={dobDate}
+                      onChange={(date) => {
+                        setDobDate(date);
+                        setFormData((prev) => ({
+                          ...prev,
+                          dateOfBirth: date ? formatDateForInput(date) : "",
+                        }));
+                      }}
+                      dateFormat="dd MMM yyyy"
+                      placeholderText="Select date of birth"
+                      showMonthDropdown
+                      showYearDropdown
+                      dropdownMode="select"
+                      maxDate={new Date()}
+                      className="form-control"
+                      id="dateOfBirth"
+                    />
+                  ) : (
+                    <input
+                      type='text'
+                      readOnly
+                      value={formatDateDisplay(formData.dateOfBirth)}
+                    />
+                  )}
                 </div>
 
                 <div className='user-profile__group__item'>

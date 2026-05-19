@@ -16,23 +16,22 @@ const page = async () => {
   }
   const countries = await GetCountries();
   const userId = session?.user.id;
-  const [user, profileImageUrl] = await Promise.all([
-    prisma.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        phone: true,
-        userProfile: true,
-        addresses: true,
-        profileImage: true,
-      },
-    }),
-    session?.user?.profileImage
-      ? getPrivateUrl(session.user.profileImage, 86400).catch(() => null)
-      : Promise.resolve(null),
-  ]);
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      userProfile: true,
+      addresses: true,
+      profileImage: true,
+    },
+  });
+
+  const profileImageUrl = user?.profileImage
+    ? await getPrivateUrl(user.profileImage, 86400).catch(() => null)
+    : null;
   return (
     <Layout session={session}>
       <Profile user={user} countries={countries} profileImageUrl={profileImageUrl} />

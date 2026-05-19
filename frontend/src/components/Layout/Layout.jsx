@@ -6,15 +6,24 @@ import prisma from "@/lib/prisma";
 import { getPrivateUrl } from "@/lib/s3";
 
 const Layout = async ({ children, session }) => {
-  const [categories, profileImageUrl] = await Promise.all([
+  const userId = session?.user?.id;
+
+  const [categories, freshUser] = await Promise.all([
     prisma.productCategory.findMany({
       where: { isActive: true },
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
     }),
-    session?.user?.profileImage
-      ? getPrivateUrl(session.user.profileImage, 86400).catch(() => null)
+    userId
+      ? prisma.user.findUnique({
+          where: { id: userId },
+          select: { profileImage: true },
+        })
       : Promise.resolve(null),
   ]);
+
+  const profileImageUrl = freshUser?.profileImage
+    ? await getPrivateUrl(freshUser.profileImage, 86400).catch(() => null)
+    : null;
 
   return (
     <>

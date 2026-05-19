@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import prisma from "./lib/prisma";
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+export const { handlers, signIn, signOut, auth, update } = NextAuth({
   secret: process.env.AUTH_SECRET,
   providers: [
     Credentials({
@@ -33,12 +33,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     signIn: "/login",
   },
-  session: { strategy: "jwt" },
+  session: { strategy: "jwt", maxAge: 86400 },
   callbacks: {
-    jwt({ token, user }) {
+    jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id;
         token.profileImage = user.profileImage;
+      }
+      if (trigger === "update" && session?.user?.profileImage !== undefined) {
+        token.profileImage = session.user.profileImage;
       }
       return token;
     },

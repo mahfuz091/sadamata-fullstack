@@ -248,6 +248,7 @@ const Header = ({ session, categories, profileImageUrl }) => {
                         style={{
                           objectFit: "cover",
                         }}
+                        onError={() => logOut()}
                       />
                     </button>
 

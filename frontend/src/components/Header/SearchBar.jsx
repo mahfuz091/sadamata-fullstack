@@ -62,7 +62,7 @@ const clearHistory = () => {
   localStorage.removeItem(HISTORY_KEY);
 };
 
-export default function SearchBar({ options = [] }) {
+export default function SearchBar({ options = [], onSearch }) {
   const router = useRouter();
 
   const [history, setHistory] = useState([]);
@@ -75,9 +75,6 @@ export default function SearchBar({ options = [] }) {
     brands: [],
     categories: [],
   });
-
-  console.log(sug, "sug");
-  
 
   const [openSug, setOpenSug] = useState(false);
   const [loadingSug, setLoadingSug] = useState(false);
@@ -107,7 +104,8 @@ export default function SearchBar({ options = [] }) {
     if (slug) sp.set("slug", slug);
 
     setOpenSug(false);
-    router.push(`/products?${sp.toString()}`); // change to /search if needed
+    onSearch?.();
+    router.push(`/products?${sp.toString()}`);
   };
 
   const debouncedFetch = useMemo(() => {

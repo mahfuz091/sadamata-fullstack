@@ -5,7 +5,6 @@ import fs from "fs";
 import { revalidatePath } from "next/cache";
 import path from "path";
 import { uploadToS3, getPrivateUrl } from "@/lib/s3";
-import { update } from "@/auth";
 
 // export async function updateUserProfileImageFile(id, file) {
 //   if (!file) throw new Error("No file provided");
@@ -53,9 +52,6 @@ export async function updateUserProfileImageFile(id, file) {
     where: { id },
     data: { profileImage: key, updatedAt: new Date() },
   });
-
-  // sync new S3 key into JWT so header picks it up immediately
-  await update({ user: { profileImage: key } });
 
   const signedUrl = await getPrivateUrl(key, 86400);
   revalidatePath("/", "layout");

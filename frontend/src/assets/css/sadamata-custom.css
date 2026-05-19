@@ -1,6 +1,9 @@
 img {
   height: auto;
 }
+.user-profile__form {
+  margin-bottom: 60px;
+}
 .commerce-btn:disabled {
   background-color: var(--commerce-border-color);
   color: var(--commerce-text);
@@ -574,6 +577,184 @@ margin-top: 10px;
   .main-header__search-box {
     margin: 0 6px;
   }
+}
+
+/* ======= Mobile search ======= */
+@media (max-width: 991px) {
+  .main-header__search-box {
+    display: none !important;
+  }
+}
+
+.mobile-search-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  font-size: 18px;
+  color: inherit;
+  line-height: 1;
+}
+
+@media (max-width: 991px) {
+  .mobile-search-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* ======= Mobile search modal ======= */
+.mobile-search-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99997;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease;
+}
+
+.mobile-search-overlay.is-open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Card matches header dark bg */
+.mobile-search-overlay__card {
+  background: #131921;
+  border-radius: 12px;
+  padding: 18px 18px 22px;
+  width: 100%;
+  max-width: 560px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+  transform: translateY(-18px) scale(0.97);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mobile-search-overlay.is-open .mobile-search-overlay__card {
+  transform: translateY(0) scale(1);
+}
+
+.mobile-search-overlay__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.mobile-search-overlay__title {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.mobile-search-close {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.75);
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+
+.mobile-search-close:hover {
+  background: var(--commerce-base);
+  color: #fff;
+}
+
+/* ---- Search box: match desktop exactly ---- */
+
+/* 1. Un-hide — overrides @media(max-width:991px) display:none */
+.mobile-search-overlay__card .main-header__search-box {
+  display: block !important;
+  height: 36px !important;
+  width: 100% !important;
+  margin: 0 !important;
+  background: var(--commerce-white) !important;
+  border-radius: 8px !important;
+  overflow: visible !important;
+  position: relative !important;
+}
+
+/* 2. Inner flex row */
+.mobile-search-overlay__card .main-header__search {
+  display: flex !important;
+  align-items: center !important;
+  height: 36px !important;
+  width: 100% !important;
+  position: relative !important;
+}
+
+/* 3. Both input-box wrappers */
+.mobile-search-overlay__card .main-header__search__input-box {
+  display: flex !important;
+  align-items: center !important;
+  height: 36px !important;
+  min-width: 0 !important;
+}
+
+/* 4. Show category Select in modal even on narrow viewports */
+.mobile-search-overlay__card .main-header__search__input-box:not(.main-header__search__input-box--text) {
+  display: flex !important;
+  min-width: 110px !important;
+  max-width: 130px !important;
+  border-right: 1px solid var(--commerce-border-color) !important;
+}
+
+/* 5. Text input box fills rest */
+.mobile-search-overlay__card .main-header__search__input-box--text {
+  flex: 1 !important;
+  width: auto !important;
+  max-width: none !important;
+  position: relative !important;
+  height: 36px !important;
+}
+
+/* 6. Actual input */
+.mobile-search-overlay__card .main-header__search__input-box input[type="text"] {
+  height: 36px !important;
+  width: 100% !important;
+  font-size: 14px !important;
+  padding-right: 50px !important;
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+}
+
+/* 7. Orange button — same as desktop */
+.mobile-search-overlay__card .main-header__search__button {
+  position: absolute !important;
+  top: 5px !important;
+  right: 5px !important;
+  bottom: 5px !important;
+  width: 38px !important;
+  height: auto !important;
+  border-radius: 8px !important;
+  background: var(--commerce-base) !important;
+  color: #fff !important;
+  font-size: 18px !important;
+  border: none !important;
+  outline: none !important;
+}
+
+/* 8. Suggest dropdown above backdrop */
+.mobile-search-overlay__card .search-suggest-dropdown {
+  z-index: 100000;
 }
 
 .main-header__search {

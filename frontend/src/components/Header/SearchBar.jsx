@@ -112,8 +112,10 @@ export default function SearchBar({ options = [] }) {
 
   const debouncedFetch = useMemo(() => {
     let t;
+    let controller;
     return (q, slug) => {
       clearTimeout(t);
+      if (controller) controller.abort();
       t = setTimeout(async () => {
         const query = (q || "").trim();
 
@@ -124,14 +126,18 @@ export default function SearchBar({ options = [] }) {
           return;
         }
 
+        // skip very short queries — saves DB round-trip
+        if (query.length < 2) return;
+
         try {
           setLoadingSug(true);
+          controller = new AbortController();
 
           const res = await fetch(
             `/api/search/suggest?q=${encodeURIComponent(
               query
             )}&slug=${encodeURIComponent(slug || "")}`,
-            { cache: "no-store" }
+            { cache: "no-store", signal: controller.signal }
           );
 
           const ct = res.headers.get("content-type") || "";
@@ -158,7 +164,7 @@ export default function SearchBar({ options = [] }) {
         } finally {
           setLoadingSug(false);
         }
-      }, 250);
+      }, 450);
     };
   }, []);
 

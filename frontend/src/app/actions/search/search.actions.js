@@ -4,26 +4,30 @@ import { FitType } from "@/generated/prisma"; // adjust if needed
 import { getPrivateUrl } from "@/lib/s3";
 // --- add this helper inside the same file ---
 const attachVariantUrls = async (products) => {
-  return await Promise.all(
-    products.map(async (p) => {
-      const variants = await Promise.all(
-        (p.variants || []).map(async (v) => {
-          const frontImgUrl = v.frontImg
-            ? await getPrivateUrl(v.frontImg)
-            : null;
-          const backImgUrl = v.backImg ? await getPrivateUrl(v.backImg) : null;
-
-          return {
-            ...v,
-            frontImgUrl, // ✅ signed url
-            backImgUrl, // ✅ signed url
-          };
-        })
-      );
-
-      return { ...p, variants };
-    })
+  // Flatten all frontImg keys, resolve in one batch, then redistribute
+  const allVariants = products.flatMap((p) =>
+    (p.variants || []).map((v, vi) => ({ pi: p.id, vi, key: v.frontImg }))
   );
+
+  const urlMap = new Map();
+  await Promise.all(
+    allVariants
+      .filter((x) => x.key)
+      .map(async (x) => {
+        if (!urlMap.has(x.key)) {
+          urlMap.set(x.key, await getPrivateUrl(x.key));
+        }
+      })
+  );
+
+  return products.map((p) => ({
+    ...p,
+    variants: (p.variants || []).map((v) => ({
+      ...v,
+      frontImgUrl: v.frontImg ? (urlMap.get(v.frontImg) ?? null) : null,
+      backImgUrl: null, // not needed in search results
+    })),
+  }));
 };
 
 export async function searchProducts(input) {
@@ -122,7 +126,7 @@ export async function searchProducts(input) {
   // Build AND groups: require at least N tokens matched
   // We do: OR of (AND token combos) like: (t1 AND t2) OR (t1 AND t3) OR (t2 AND t3)
   const buildMinMatchOr = (tokens, minMatch = 2) => {
-    const t = [...new Set(tokens)].slice(0, 8); // keep it small
+    const t = [...new Set(tokens)].slice(0, 5); // cap at 5 → max C(5,3)=10 combos
     if (!t.length) return null;
 
     const m = Math.min(minMatch, t.length);
@@ -145,7 +149,7 @@ export async function searchProducts(input) {
     const tokenWhere = (token) => ({
       OR: [
         { title: { contains: token, mode: "insensitive" } },
-        { description: { contains: token, mode: "insensitive" } },
+        // description excluded — ILIKE on long text = full table scan
         { tags: { some: { value: { contains: token, mode: "insensitive" } } } },
         { Brand: { is: { name: { contains: token, mode: "insensitive" } } } },
         { Mockup: { is: { name: { contains: token, mode: "insensitive" } } } },
@@ -381,13 +385,13 @@ export async function searchProducts(input) {
           ].filter(Boolean),
         },
         orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-        take: pageSize * 3, // candidates for scoring
+        take: pageSize + 12,
         include,
       })
     : await prisma.product.findMany({
         where: baseWhere,
         orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-        take: pageSize * 3,
+        take: pageSize,
         include,
       });
 

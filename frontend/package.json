@@ -11,7 +11,9 @@
   },
   "overrides": {
     "hono": "latest",
-    "fast-xml-parser": "^5.3.8"
+    "fast-xml-parser": "^5.3.8",
+    "postcss": "^8.5.10",
+    "@hono/node-server": "^1.19.13"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.965.0",

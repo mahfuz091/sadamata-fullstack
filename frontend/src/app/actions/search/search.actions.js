@@ -116,7 +116,7 @@ export async function searchProducts(input) {
   const tokenize = (s) =>
     (s || "")
       .toLowerCase()
-      .replace(/[^a-z0-9\s]/g, " ")
+      .replace(/[^\p{L}\p{N}\s]/gu, " ")
       .split(/\s+/)
       .filter(Boolean)
       .map((w) => w.trim())
@@ -297,13 +297,30 @@ export async function searchProducts(input) {
     const tokens = tokenize(q || "");
     const minMatch = tokens.length >= 4 ? 3 : tokens.length >= 2 ? 2 : 1;
     const deepOr = q ? buildMinMatchOr(tokens, minMatch) : null;
+    const qTrimCursor = q?.trim();
+    const rawOrCursor = qTrimCursor
+      ? [
+          { title: { contains: qTrimCursor, mode: "insensitive" } },
+          { tags: { some: { value: { contains: qTrimCursor, mode: "insensitive" } } } },
+          { Brand: { is: { name: { contains: qTrimCursor, mode: "insensitive" } } } },
+          { Mockup: { is: { name: { contains: qTrimCursor, mode: "insensitive" } } } },
+          { categories: { some: { name: { contains: qTrimCursor, mode: "insensitive" } } } },
+          { brandName: { contains: qTrimCursor, mode: "insensitive" } },
+        ]
+      : null;
+    const combinedOrCursor = q
+      ? [...(deepOr || []), ...(rawOrCursor || [])]
+      : null;
 
     const where = q
       ? {
           ...baseWhere,
-          AND: [...baseWhere.AND, deepOr ? { OR: deepOr } : null].filter(
-            Boolean
-          ),
+          AND: [
+            ...baseWhere.AND,
+            combinedOrCursor && combinedOrCursor.length
+              ? { OR: combinedOrCursor }
+              : null,
+          ].filter(Boolean),
         }
       : baseWhere;
 
@@ -355,6 +372,19 @@ export async function searchProducts(input) {
   const tokens = tokenize(qTrim || "");
   const minMatch = tokens.length >= 4 ? 3 : tokens.length >= 2 ? 2 : 1;
 
+  // raw whole-string contains across same fields — guarantees parity with suggest API,
+  // and recovers queries that tokenize to nothing (e.g. non-Latin scripts, symbols)
+  const rawOr = qTrim
+    ? [
+        { title: { contains: qTrim, mode: "insensitive" } },
+        { tags: { some: { value: { contains: qTrim, mode: "insensitive" } } } },
+        { Brand: { is: { name: { contains: qTrim, mode: "insensitive" } } } },
+        { Mockup: { is: { name: { contains: qTrim, mode: "insensitive" } } } },
+        { categories: { some: { name: { contains: qTrim, mode: "insensitive" } } } },
+        { brandName: { contains: qTrim, mode: "insensitive" } },
+      ]
+    : null;
+
   // 1) exact title match (best)
   const exactProducts = qTrim
     ? await prisma.product.findMany({
@@ -370,8 +400,11 @@ export async function searchProducts(input) {
 
   const exactIds = exactProducts.map((p) => p.id);
 
-  // 2) deep similar match (requires minMatch tokens)
+  // 2) deep similar match — combine token AND-combos with raw whole-string OR
   const deepOr = qTrim ? buildMinMatchOr(tokens, minMatch) : null;
+  const combinedOr = qTrim
+    ? [...(deepOr || []), ...(rawOr || [])]
+    : null;
 
   // fetch a bit more, then score/sort in JS
   const candidateProducts = qTrim
@@ -381,7 +414,7 @@ export async function searchProducts(input) {
           AND: [
             ...baseWhere.AND,
             { id: { notIn: exactIds } },
-            deepOr ? { OR: deepOr } : null,
+            combinedOr && combinedOr.length ? { OR: combinedOr } : null,
           ].filter(Boolean),
         },
         orderBy: [{ createdAt: "desc" }, { id: "desc" }],
@@ -395,10 +428,25 @@ export async function searchProducts(input) {
         include,
       });
 
+  const qLower = (qTrim || "").toLowerCase();
   const similarProducts = qTrim
     ? candidateProducts
-        .map((p) => ({ p, s: scoreProduct(p, tokens) }))
-        .filter((x) => x.s >= minMatch)
+        .map((p) => {
+          let s = scoreProduct(p, tokens);
+          const hay = [
+            p.title,
+            p.Brand?.name || "",
+            p.brandName || "",
+            p.Mockup?.name || "",
+            ...(p.categories?.map((x) => x.name) || []),
+            ...(p.tags?.map((x) => x.value) || []),
+          ]
+            .join(" ")
+            .toLowerCase();
+          if (qLower && hay.includes(qLower)) s += 2;
+          return { p, s };
+        })
+        .filter((x) => x.s >= 1)
         .sort((a, b) => b.s - a.s)
         .map((x) => x.p)
     : candidateProducts;

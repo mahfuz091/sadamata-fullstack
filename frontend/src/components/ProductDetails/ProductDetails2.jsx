@@ -447,6 +447,43 @@ export default function ProductDetails2({ product, user, reviewOrderItemId = "",
   const selectedFitOption = fitOptions.find((o) => o.value === fit) ?? null;
   // console.log(fit, "fit");
 
+  const sizeOptions = useMemo(
+    () => ["S", "M", "L", "XL", "XXL", "3XL"].map((s) => ({ value: s, label: s })),
+    []
+  );
+  const selectedSizeOption = sizeOptions.find((o) => o.value === size) ?? null;
+
+  // shared react-select styling (orange theme) for Size + Fit
+  const selectStyles = {
+    control: (base, state) => ({
+      ...base,
+      minHeight: 38,
+      borderColor: state.isFocused ? "#ff8a00" : base.borderColor,
+      boxShadow: state.isFocused ? "0 0 0 1px #ff8a00" : "none",
+      ":hover": { borderColor: "#ff8a00" },
+    }),
+    option: (base, state) => ({
+      ...base,
+      backgroundColor: state.isSelected
+        ? "#ff8a00"
+        : state.isFocused
+        ? "rgba(255,138,0,0.15)"
+        : "transparent",
+      color: state.isSelected ? "#fff" : "#111",
+      ":active": {
+        backgroundColor: state.isSelected ? "#ff8a00" : "rgba(255,138,0,0.25)",
+      },
+    }),
+    menu: (base) => ({ ...base, zIndex: 10 }),
+    singleValue: (base) => ({ ...base, color: "#111" }),
+    placeholder: (base) => ({ ...base, color: "#818b9c" }),
+    dropdownIndicator: (base, state) => ({
+      ...base,
+      color: state.isFocused ? "#ff8a00" : base.color,
+      ":hover": { color: "#ff8a00" },
+    }),
+  };
+
   const [shareOpen, setShareOpen] = useState(false);
   const shareRef = useRef(null);
 
@@ -561,6 +598,29 @@ export default function ProductDetails2({ product, user, reviewOrderItemId = "",
                 <span>{product?.title || "Product"}</span>
               </li>
             </ul>
+          </div>
+
+          {/* -------- Mobile-only header (brand / title / status) — matches Figma order -------- */}
+          <div className='pd-mobile-head d-md-none'>
+            <p className='product-details__brand-name'>
+              Brand:{" "}
+              <span>
+                {product?.Brand?.id ? (
+                  <Link href={`/brand/${product.Brand.id}`}>
+                    {product?.Brand?.name || product?.brandName || "—"}
+                  </Link>
+                ) : (
+                  product?.Brand?.name || product?.brandName || "—"
+                )}
+              </span>
+            </p>
+            <h4 className='product-details__title'>
+              {product?.title || "Untitled"}
+            </h4>
+            <p className='product-details__status product-details__status--pill'>
+              Status:{" "}
+              <span>{product?.isActive ? "In Stock" : "Unavailable"}</span>
+            </p>
           </div>
 
           <Row>
@@ -689,7 +749,7 @@ export default function ProductDetails2({ product, user, reviewOrderItemId = "",
             {/* -------- Right: Content & Controls -------- */}
             <Col lg={6}>
               <div className='product-details__content'>
-                <p className='product-details__brand-name'>
+                <p className='product-details__brand-name d-none d-md-block'>
                   Brand:{" "}
                   <span>
                     {product?.Brand?.id ? (
@@ -701,10 +761,10 @@ export default function ProductDetails2({ product, user, reviewOrderItemId = "",
                     )}
                   </span>
                 </p>
-                <h4 className='product-details__title'>
+                <h4 className='product-details__title d-none d-md-block'>
                   {product?.title || "Untitled"}
                 </h4>
-                <p className='product-details__status'>
+                <p className='product-details__status d-none d-md-block'>
                   Status:{" "}
                   <span>{product?.isActive ? "In Stock" : "Unavailable"}</span>
                 </p>
@@ -782,33 +842,16 @@ export default function ProductDetails2({ product, user, reviewOrderItemId = "",
                     <h4 className='product-details__box__title'>
                       Product Size:
                     </h4>
-                    {/* <select
-                      className='form-select'
-                      value={size}
-                      onChange={(e) => setSize(e.target.value)}
-                    >
-                      <option>Select Size</option>
-                      {["S", "M", "L", "XL", "XXL", "3XL"].map((ft) => (
-                        <option key={ft} value={ft}>
-                          {ft}
-                        </option>
-                      ))}
-                    </select> */}
-                    <select
-                      className='form-select'
-                      value={size}
-                      onChange={(e) => setSize(e.target.value)}
-                    >
-                      <option value='' disabled>
-                        Select Size
-                      </option>
-
-                      {["S", "M", "L", "XL", "XXL", "3XL"].map((ft) => (
-                        <option key={ft} value={ft}>
-                          {ft}
-                        </option>
-                      ))}
-                    </select>
+                    <Select
+                      className='fit-select'
+                      classNamePrefix='fit'
+                      options={sizeOptions}
+                      value={selectedSizeOption}
+                      onChange={(opt) => setSize(opt?.value ?? "")}
+                      placeholder='Select Size'
+                      isSearchable={false}
+                      styles={selectStyles}
+                    />
                   </div>
                   <div className='product-details__size'>
                     <h4 className='product-details__box__title'>Fit Type:</h4>
@@ -822,41 +865,7 @@ export default function ProductDetails2({ product, user, reviewOrderItemId = "",
                         setFit(opt?.value ?? fitOptions[0]?.value ?? "")
                       }
                       isSearchable={false}
-                      // orange theming for hover/selected states
-                      styles={{
-                        control: (base, state) => ({
-                          ...base,
-                          minHeight: 38,
-                          borderColor: state.isFocused
-                            ? "#ff8a00"
-                            : base.borderColor,
-                          boxShadow: state.isFocused
-                            ? "0 0 0 1px #ff8a00"
-                            : "none",
-                          ":hover": { borderColor: "#ff8a00" },
-                        }),
-                        option: (base, state) => ({
-                          ...base,
-                          backgroundColor: state.isSelected
-                            ? "#ff8a00" // selected bg
-                            : state.isFocused
-                            ? "rgba(255,138,0,0.15)" // hover bg
-                            : "transparent",
-                          color: state.isSelected ? "#fff" : "#111",
-                          ":active": {
-                            backgroundColor: state.isSelected
-                              ? "#ff8a00"
-                              : "rgba(255,138,0,0.25)",
-                          },
-                        }),
-                        menu: (base) => ({ ...base, zIndex: 10 }),
-                        singleValue: (base) => ({ ...base, color: "#111" }),
-                        dropdownIndicator: (base, state) => ({
-                          ...base,
-                          color: state.isFocused ? "#ff8a00" : base.color,
-                          ":hover": { color: "#ff8a00" },
-                        }),
-                      }}
+                      styles={selectStyles}
                     />
                   </div>
 

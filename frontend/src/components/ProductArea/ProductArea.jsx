@@ -54,6 +54,14 @@ const ProductArea = ({ result: initialResult, slug, q, brands, mockups, relatedP
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [favorites, setFavorites] = useState([]);
+  const [filterOpen, setFilterOpen] = useState(false);
+
+  useEffect(() => {
+    document.body.style.overflow = filterOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [filterOpen]);
 
   // server pagination (cursor)
   const [cursorStack, setCursorStack] = useState([null]); // stack of cursors for Prev
@@ -366,11 +374,27 @@ const ProductArea = ({ result: initialResult, slug, q, brands, mockups, relatedP
             result={result}
             sortBy={sortBy}
             setSortBy={setSortBy}
+            onOpenFilter={() => setFilterOpen(true)}
           />
 
           <div className='product-area__inner'>
             {/* Sidebar */}
-            <aside className='sidebar__menu'>
+            <div
+              className={`sidebar__overlay ${filterOpen ? "is-open" : ""}`}
+              onClick={() => setFilterOpen(false)}
+            />
+            <aside className={`sidebar__menu ${filterOpen ? "is-open" : ""}`}>
+              <div className='sidebar__menu__head'>
+                <span>Filters</span>
+                <button
+                  type='button'
+                  className='sidebar__menu__close'
+                  aria-label='Close filters'
+                  onClick={() => setFilterOpen(false)}
+                >
+                  <i className='fas fa-times'></i>
+                </button>
+              </div>
               <ul className='sidebar__menu__area list-unstyled'>
                 {/* Gender */}
                 <li className='sidebar__menu__area__item'>
@@ -520,7 +544,7 @@ const ProductArea = ({ result: initialResult, slug, q, brands, mockups, relatedP
                       );
 
                       return (
-                        <Col xl={3} lg={4} md={6} key={item.id}>
+                        <Col xl={3} lg={4} md={6} xs={6} key={item.id}>
                           <div className='product__item'>
                             <div className='product__item__img'>
                               <Link
@@ -611,35 +635,41 @@ const ProductArea = ({ result: initialResult, slug, q, brands, mockups, relatedP
               </Row>
 
               {/* Pagination (cursor-based) */}
-              <div className='post-pagination' style={{ marginTop: 24 }}>
-                <button
-                  className='previous'
-                  disabled={cursorStack.length <= 1 || isPending}
-                  onClick={() => {
-                    // pop current cursor and go back
-                    setCursorStack((s) => {
-                      if (s.length <= 1) return s;
-                      const next = s.slice(0, -1);
-                      const prevCursor = next[next.length - 1] || null;
-                      fetchPage(prevCursor, false);
-                      return next;
-                    });
-                  }}
-                >
-              Previous
-                </button>
+              <div className='product-pagination'>
+                <div className='product-pagination__pages'>
+                  <span className='product-pagination__current'>
+                    {currentPage}
+                  </span>
+                </div>
 
-                <span style={{ padding: "0 12px" }}>Page {currentPage}</span>
+                <div className='product-pagination__nav'>
+                  <button
+                    type='button'
+                    className='product-pagination__btn product-pagination__btn--prev'
+                    disabled={cursorStack.length <= 1 || isPending}
+                    onClick={() => {
+                      // pop current cursor and go back
+                      setCursorStack((s) => {
+                        if (s.length <= 1) return s;
+                        const next = s.slice(0, -1);
+                        const prevCursor = next[next.length - 1] || null;
+                        fetchPage(prevCursor, false);
+                        return next;
+                      });
+                    }}
+                  >
+                    Previous
+                  </button>
 
-                <button
-                  className='next'
-                  disabled={!hasMore || isPending}
-                  onClick={() => {
-                    fetchPage(nextCursor, true);
-                  }}
-                >
-                  Next 
-                </button>
+                  <button
+                    type='button'
+                    className='product-pagination__btn product-pagination__btn--next'
+                    disabled={!hasMore || isPending}
+                    onClick={() => fetchPage(nextCursor, true)}
+                  >
+                    Next
+                  </button>
+                </div>
               </div>
 
               <RelatedProducts products={relatedProducts} title="Related Product" seeAllHref="/products" />

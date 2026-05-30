@@ -44,7 +44,7 @@ function rangeLabel(total, page, pageSize) {
   }`;
 }
 
-const ProductAreaTop = ({ slug, q, result, sortBy, setSortBy }) => {
+const ProductAreaTop = ({ slug, q, result, sortBy, setSortBy, onOpenFilter }) => {
   const { total = 0, page = 1, pageSize = 12 } = result || {};
 
   console.log(total, "total");
@@ -97,6 +97,15 @@ const ProductAreaTop = ({ slug, q, result, sortBy, setSortBy }) => {
               className="product-header-top__showing-sort__select"
             />
           </div>
+
+          <button
+            type='button'
+            className='product-filter-toggle'
+            onClick={onOpenFilter}
+          >
+            <i className='fas fa-sliders-h'></i>
+            Filters
+          </button>
 
           {/* <Link
             className='product-header-top__showing-box'

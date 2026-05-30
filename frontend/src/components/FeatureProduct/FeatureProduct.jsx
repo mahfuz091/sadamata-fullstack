@@ -194,7 +194,7 @@ const FeatureProduct = () => {
             const isFavorite = favorites.some((p) => p.id === product.id);
 
             return (
-              <Col key={product.id} md={6} lg={4} xl={3}>
+              <Col key={product.id} xs={6} sm={6} md={6} lg={4} xl={3}>
                 <div className='product__item h-100 d-flex flex-column'>
                   <div className='product__item__img position-relative'>
                     <Link
@@ -276,7 +276,7 @@ const FeatureProduct = () => {
                         setShowModal(true);
                       }}
                     >
-                      Add to Cart 
+                      Add to Cart
                     </button>
                   </div>
                 </div>

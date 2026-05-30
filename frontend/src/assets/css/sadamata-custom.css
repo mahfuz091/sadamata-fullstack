@@ -1309,9 +1309,13 @@ button.profileImageButton img {
   margin-top: auto;
 }
 
-.product__item__ratings {
-  display: none !important;
+/* reviews hidden on desktop, shown on mobile (Figma 1:360) */
+@media (min-width: 992px) {
+  .product__item__ratings {
+    display: none !important;
+  }
 }
+
 
 .product-header-top__showing-sort:after {
   content: "";
@@ -1666,11 +1670,50 @@ button.profileImageButton img {
 @media (max-width: 991px) {
   .order-history__shell {
     flex-direction: column;
+    gap: 20px;
   }
 
   .order-history__sidebar {
     flex: 0 0 auto;
     max-width: none;
+    width: 100%;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .order-history__shell.user-profile__form {
+    padding: 16px;
+  }
+  .order-history__sidebar.user-profile__info {
+    padding: 20px 16px;
+  }
+  .order-history__profile img {
+    width: 96px;
+    height: 96px;
+    margin-bottom: 14px;
+  }
+  .order-history__profile h1 {
+    font-size: 20px;
+  }
+  .order-history__section-head h3 {
+    font-size: 20px;
+  }
+  .order-history__card {
+    padding: 16px;
+  }
+  .order-history__card-title {
+    font-size: 17px;
+  }
+  .order-history__meta {
+    gap: 8px;
+    margin: 14px 0;
+  }
+  .order-history__meta span {
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+  .order-history__item-info h4 {
+    font-size: 15px;
   }
 }
 
@@ -1684,12 +1727,24 @@ button.profileImageButton img {
 
   .order-history__item {
     align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
   }
 
   .order-history__item strong,
   .order-history__totals {
     text-align: left;
     white-space: normal;
+  }
+
+  /* item img + info side by side, action drops below full width */
+  .order-history__item-info {
+    flex: 1;
+  }
+  .order-history__item-action {
+    width: 100%;
+    justify-items: start;
+    margin-left: 0;
   }
 }
 
@@ -2200,4 +2255,1346 @@ button.profileImageButton img {
 
 .mobile-offcanvas__nav-item:hover {
   color: var(--commerce-base);
+}
+
+/* ===========================================================
+   Mobile header — Figma node 1:252
+   Inline search + favorites/cart pill + sign-in + category scroll
+   =========================================================== */
+.header-signin-icon {
+  display: none;
+}
+
+@media (max-width: 991px) {
+  /* ---- top bar layout: logo + right on row 1, search on row 2 ---- */
+  .main-header__top {
+    background: #131921;
+  }
+  .main-header__inner {
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+  }
+  .main-header__logo {
+    order: 1;
+    margin-top: 0;
+  }
+  .main-header__logo img {
+    width: 80px;
+    height: auto;
+  }
+  .main-header__right {
+    order: 2;
+    margin-left: auto;
+    gap: 10px;
+  }
+
+  /* show info + author, hide hamburger + standalone search button */
+  .main-header__info,
+  .main-header__author {
+    display: flex !important;
+  }
+  .mobile-nav__btn,
+  .mobile-search-btn {
+    display: none !important;
+  }
+
+  /* ---- favorites + cart pill ---- */
+  .main-header__info {
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    padding: 6px 8px;
+  }
+  .main-header__info__item {
+    font-size: 12px;
+    gap: 4px;
+  }
+  .main-header__info__item i {
+    font-size: 12px;
+  }
+  .main-header__info__item + .main-header__info__item {
+    border-left: 1px solid rgba(255, 255, 255, 0.2);
+    padding-left: 8px;
+    margin-left: 0;
+  }
+
+  /* ---- sign in: plain text + user icon ---- */
+  .main-header__info + .main-header__author {
+    margin-left: 0;
+  }
+  .main-header__author .commerce-btn.login {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.6;
+    text-transform: none;
+  }
+  .main-header__author .commerce-btn.login:hover {
+    background: transparent;
+    color: var(--commerce-base);
+  }
+  .main-header__author .header-signin-icon {
+    display: inline-block;
+    font-size: 14px;
+  }
+  .main-header__author button.profileImageButton img {
+    width: 28px;
+    height: 28px;
+  }
+
+  /* ---- search bar: full-width second row ---- */
+  .main-header__search-box {
+    display: block !important;
+    order: 3;
+    flex-basis: 100%;
+    width: 100%;
+    max-width: none;
+    height: 40px;
+    margin: 0;
+    border-radius: 6px;
+  }
+  .main-header__search {
+    height: 40px;
+  }
+  .main-header__search__input-box {
+    height: 40px;
+  }
+  .main-header .main-header__search__input-box::after {
+    display: none;
+  }
+  .main-header__search__input-box:not(.main-header__search__input-box--text) {
+    flex: 0 0 auto;
+    width: 58px;
+    border-right: 1px solid var(--commerce-border-color);
+  }
+  .main-header__search__input-box--text {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .main-header input[type="text"] {
+    height: 40px;
+    font-size: 12px;
+  }
+  .main-header input[type="text"]::placeholder {
+    font-size: 12px;
+  }
+  .main-header .main-header__search__button {
+    top: 4px;
+    right: 4px;
+    bottom: 4px;
+    width: 32px;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+
+  /* ---- category nav: horizontal scroll bar ---- */
+  .main-header__bottom {
+    display: flex !important;
+    background: #232e3f;
+    padding: 8px 20px;
+    justify-content: flex-start;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .main-header__bottom::-webkit-scrollbar {
+    display: none;
+  }
+  .main-menu .main-menu__list {
+    display: flex !important;
+    flex-wrap: nowrap;
+    gap: 18px;
+    align-items: center;
+  }
+  .main-menu .main-menu__list > li {
+    padding: 0;
+    white-space: nowrap;
+  }
+  .main-menu .main-menu__list > li + li {
+    margin-left: 0;
+  }
+  .main-menu .main-menu__list > li > a {
+    font-size: 12px;
+    font-weight: 500;
+  }
+}
+
+/* ===========================================================
+   Mobile hero slider — Figma node 1:245
+   =========================================================== */
+.hero-mobile-slider {
+  display: none;
+}
+
+.hero-mobile-card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 334 / 423;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.hero-mobile-card__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.hero-mobile-card__title {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  padding: 16px;
+  max-width: 262px;
+  color: #fff;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.14px;
+}
+
+@media (max-width: 991px) {
+  .hero-area {
+    padding-top: 24px;
+    padding-bottom: 32px;
+  }
+  .hero-area__desktop {
+    display: none;
+  }
+  .hero-mobile-slider {
+    display: block;
+  }
+  .hero-mobile-slider .swiper {
+    overflow: visible;
+  }
+
+  /* section vertical padding reduced on mobile */
+  .popular-product.py-5,
+  .feature-product.py-5 {
+    padding-top: 24px !important;
+    padding-bottom: 24px !important;
+  }
+
+  /* section titles: 26px on mobile (Figma 1:360 / 1:777) */
+  .product-slider__title,
+  .feature-product .feature-product__title {
+    font-size: 26px;
+  }
+
+  /* product grids: 10px row + column gap (Figma 1:360 / 1:777) */
+  .popular-product .row,
+  .feature-product .row {
+    --bs-gutter-x: 10px;
+    --bs-gutter-y: 10px;
+  }
+
+  /* feature tabs: full-width horizontal scroll (Figma 1:777) */
+  .feature-product__filter__list {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 16px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .feature-product__filter__list::-webkit-scrollbar {
+    display: none;
+  }
+  .feature-product__filter__list li {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  /* add-to-cart button: light pill + arrow (Figma 1:360 / 1:777) */
+  .product__item__link {
+    width: 100%;
+    justify-content: center;
+    gap: 4px;
+    padding: 10px 20px;
+    border-radius: 100px;
+    background: #f7f8fa;
+    border: 1px solid #e8effc;
+    color: #131921;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: none;
+  }
+  .product__item__link:hover {
+    background: #131921;
+    color: #fff;
+  }
+
+  /* content: no left/right padding on mobile */
+  .product__item__content {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* product card ratings: shrink to fit 2-col cards (Figma 1:360) */
+  .product__item__ratings {
+    gap: 2px;
+  }
+  .product__item__ratings i {
+    font-size: 10px;
+  }
+  .product__item__ratings span {
+    font-size: 10px;
+  }
+
+  /* brand-info: drop hero-colored overlap strip, keep 2-col grid (Figma 1:298) */
+  .brand-info.py-5 {
+    padding-top: 20px !important;
+    padding-bottom: 20px !important;
+  }
+  .brand-info::after {
+    display: none;
+  }
+  .brand-info__item__group {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* product card price + reviews: smaller on small phones */
+@media (max-width: 575px) {
+  .product__item__title {
+    font-size: 12px !important;
+  }
+  .product__item__price {
+    font-size: 12px;
+  }
+  .product__item__ratings i {
+    font-size: 8px;
+  }
+  .product__item__ratings span {
+    font-size: 9px;
+  }
+  .product__item__box {
+    gap: 8px;
+  }
+}
+
+/* ===========================================================
+   Top brand sections — mobile scroll strip (Figma 1:1226)
+   =========================================================== */
+.top-brand__mobile {
+  display: none;
+}
+
+@media (max-width: 991px) {
+  .top-brand {
+    padding: 24px 0;
+  }
+  .top-brand__top {
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 0;
+  }
+  .top-brand__title {
+    width: 100%;
+    text-align: center;
+    font-size: 26px;
+  }
+  .top-brand__btn {
+    display: none;
+  }
+
+  /* hide slick, show native scroll strip */
+  .top-brand__carousel {
+    display: none;
+  }
+  .top-brand__mobile {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .top-brand__mobile::-webkit-scrollbar {
+    display: none;
+  }
+  .top-brand__mobile .item {
+    flex: 0 0 auto;
+  }
+  .top-brand__mobile .top-brand__item__image {
+    width: 76px;
+    height: 76px;
+  }
+  .top-brand__mobile .top-brand__item__title {
+    margin-top: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+}
+
+/* ===========================================================
+   Top brand T-shirt sections — mobile 2-col grid (Figma 1:1244)
+   =========================================================== */
+.history-product__mobile {
+  display: none;
+}
+
+.product-slider__mobile {
+  display: none;
+}
+
+.history-product__loadmore {
+  display: none;
+}
+
+@media (max-width: 991px) {
+  .history-product.py-5 {
+    padding-top: 24px !important;
+    padding-bottom: 24px !important;
+  }
+  .history-product__top {
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 0;
+  }
+  .history-product__title {
+    width: 100%;
+    text-align: center;
+    font-size: 26px;
+  }
+  .history-product__btn {
+    display: none;
+  }
+
+  /* hide slick, show 2-col grid */
+  .history-product__carousel {
+    display: none !important;
+  }
+  .history-product__mobile {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  /* related products (swiper) -> 2-col grid */
+  .product-slider {
+    padding-bottom: 24px;
+  }
+  .product-slider.mt-5 {
+    margin-top: 24px !important;
+  }
+  .product-slider__top {
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .product-slider__top .history-product__btn {
+    display: none;
+  }
+  .product-slider .product-slider__title {
+    width: 100%;
+    text-align: center;
+    font-size: 26px;
+  }
+  .product-slider__carousel {
+    display: none !important;
+  }
+  .product-slider__mobile {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .history-product__loadmore {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  .history-product__loadmore .commerce-btn {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 14px 24px;
+    text-transform: none;
+  }
+}
+
+/* ===========================================================
+   Footer — mobile layout (Figma 1:1837)
+   =========================================================== */
+@media (max-width: 767px) {
+  /* reduced footer top/bottom padding */
+  .main-footer__middle.section-space {
+    padding-top: 30px;
+    padding-bottom: 30px;
+  }
+
+  /* logo + social centered */
+  .main-footer__middle .footer-widget--about {
+    text-align: center;
+  }
+  .main-footer__middle .footer-widget--about .footer-widget__logo a {
+    display: inline-block;
+  }
+  .main-footer__middle .footer-widget--about .footer-widget__social__icon {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* Company + Market side by side */
+  .main-footer__middle .row > div:nth-child(2),
+  .main-footer__middle .row > div:nth-child(3) {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+
+  /* copyright + payment centered */
+  .main-footer__bottom__inner {
+    align-items: center;
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 24px;
+    gap: 16px;
+  }
+  .main-footer__bottom__payment {
+    width: 100%;
+    max-width: 100%;
+  }
+  .main-footer__bottom__payment img {
+    width: 100%;
+    height: auto;
+  }
+}
+
+/* ===========================================================
+   Products page — mobile filter drawer (Figma 12:688 / 12:2419)
+   =========================================================== */
+.product-filter-toggle {
+  display: none;
+}
+.sidebar__overlay {
+  display: none;
+}
+.sidebar__menu__head {
+  display: none;
+}
+
+/* products pagination — Figma 12:1810 */
+.product-pagination {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+.product-pagination__pages {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.product-pagination__current {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 1000px;
+  background: #131921;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+}
+.product-pagination__nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.product-pagination__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 30px;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.6;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.product-pagination__btn i {
+  font-size: 14px;
+}
+.product-pagination__btn--prev {
+  background: #fff;
+  border: 1px solid #e8effc;
+  color: #131921;
+}
+.product-pagination__btn--prev:hover:not(:disabled) {
+  border-color: #131921;
+}
+.product-pagination__btn--next {
+  background: #f37927;
+  border: 1px solid #f37927;
+  color: #fff;
+}
+.product-pagination__btn--next:hover:not(:disabled) {
+  background: #d8651a;
+  border-color: #d8651a;
+}
+.product-pagination__btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 991px) {
+  /* tighter grid gutters */
+  .product-area .row {
+    --bs-gutter-x: 10px;
+    --bs-gutter-y: 10px;
+  }
+
+  /* hide sort dropdown */
+  .product-header-top__showing-sort {
+    display: none;
+  }
+
+  /* Filters toggle button */
+  .product-filter-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border: 1px solid #e8effc;
+    border-radius: 100px;
+    background: #fff;
+    color: #131921;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .product-filter-toggle i {
+    color: #4273f1;
+  }
+
+  /* dim overlay behind sheet */
+  .sidebar__overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 99998;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  .sidebar__overlay.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* sidebar -> bottom sheet */
+  .product-area .sidebar__menu {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: auto;
+    width: 100%;
+    max-width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    margin: 0;
+    border-radius: 14px 14px 0 0;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    z-index: 99999;
+  }
+  .product-area .sidebar__menu.is-open {
+    transform: translateY(0);
+  }
+  .sidebar__menu__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #131921;
+  }
+  .sidebar__menu__close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    line-height: 1;
+    color: #131921;
+    cursor: pointer;
+  }
+
+  /* Review filter sidebar full width when stacked */
+  .product-reviews .sidebar__menu {
+    width: 100%;
+    max-width: 100%;
+  }
+  .product-reviews .sidebar__menu__head {
+    display: none;
+  }
+}
+
+/* Review filter sidebar must NOT become the off-canvas drawer (base
+   .sidebar__menu uses position:absolute + translateX(-100%) ≤991px) */
+@media (max-width: 991px) {
+  .product-reviews .sidebar__menu {
+    position: static;
+    height: auto;
+    overflow: visible;
+    transform: none;
+  }
+}
+
+/* ===================================================================
+   Product Details (ProductDetails2) — MOBILE, matches Figma node 4:81
+   Applies only <= 767.98px. Desktop untouched.
+   =================================================================== */
+@media (max-width: 767.98px) {
+  .product-details.py-5 {
+    padding-top: 16px !important;
+    padding-bottom: 24px !important;
+  }
+  /* Flush content — no card border/padding/shadow on mobile (Figma is edge-to-edge) */
+  .product-details .product-details__content {
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    padding: 0;
+  }
+  .product-details .row > [class*="col-"] {
+    margin-bottom: 20px;
+  }
+  .product-details .row > [class*="col-"]:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Breadcrumb */
+  .product-details .commerce-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+  }
+  .product-details .commerce-breadcrumb li a {
+    font-size: 12px;
+    color: #4273f1;
+  }
+  .product-details .commerce-breadcrumb li span {
+    font-size: 12px;
+    color: #131921;
+    font-weight: 500;
+  }
+
+  /* Mobile head: brand / title / status above the image */
+  .pd-mobile-head {
+    margin-bottom: 16px;
+  }
+  .pd-mobile-head .product-details__brand-name {
+    font-size: 12px;
+    color: #818b9c;
+    margin-bottom: 6px;
+  }
+  .pd-mobile-head .product-details__brand-name span {
+    color: #131921;
+    font-weight: 500;
+  }
+  .pd-mobile-head .product-details__title {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.6;
+    letter-spacing: -0.09px;
+    color: #131921;
+    margin-bottom: 10px;
+  }
+  .product-details__status--pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #ebfaf1;
+    border-radius: 50px;
+    padding: 4px 8px;
+    margin: 0;
+    font-size: 12px;
+    color: #6e6e75;
+  }
+  .product-details__status--pill span {
+    color: #57c684;
+    font-weight: 500;
+  }
+
+  /* Gallery: main image on top, thumbnails in a row below */
+  .product-details .image-hover-layout {
+    flex-direction: column-reverse;
+    gap: 15px;
+  }
+  .product-details .thumbnail-column {
+    flex: 0 0 auto;
+    flex-direction: row;
+    width: 100%;
+    gap: 10px;
+  }
+  .product-details .thumbnail-item {
+    flex: 0 0 78px;
+    width: 78px;
+    height: 78px;
+    aspect-ratio: 1 / 1;
+    border-radius: 5px;
+    border: 0.5px solid #e8effc;
+    background: #f7f8fa;
+    padding: 8px;
+  }
+  .product-details .thumbnail-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .product-details .thumbnail-item.active {
+    border-color: #f37927;
+  }
+  .product-details .main-image-box {
+    width: 100%;
+    min-height: 0;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: #f7f8fa;
+    border: 0.5px solid #e8effc;
+    border-radius: 10px;
+  }
+  .product-details .main-image-box img {
+    max-height: 350px;
+  }
+
+  /* Product Features */
+  .product-details .populer-feature {
+    margin-bottom: 20px;
+  }
+  .product-details .populer-feature__title {
+    font-size: 20px;
+    letter-spacing: -0.1px;
+  }
+  .product-details .populer-feature__list li {
+    font-size: 14px;
+    color: #131921;
+    letter-spacing: -0.07px;
+  }
+  .product-details .populer-feature__list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .product-details .populer-feature__list li + li {
+    margin-top: 8px;
+  }
+  .product-details .populer-feature__list li .dot {
+    flex: 0 0 16px;
+    width: 16px;
+    height: 16px;
+    margin-right: 0;
+    border-radius: 50%;
+    background: #4273f1;
+    position: relative;
+  }
+  .product-details .populer-feature__list li .dot::after {
+    content: "\2713";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 9px;
+    line-height: 1;
+  }
+
+  /* Selectors: Quantity / Size / Fit on one line, Color full width below */
+  .product-details .product-details__box {
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-start;
+    border-top: 1px solid #e8effc;
+    padding-top: 16px;
+    margin-bottom: 20px;
+  }
+  .product-details .product-details__quantity,
+  .product-details .product-details__size {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  .product-details .product-details__box__title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #818b9c;
+    letter-spacing: -0.07px;
+  }
+  /* Quantity: same as desktop (absolute up/down buttons), just smaller */
+  .product-details .product-details__quantity__box {
+    position: relative;
+    width: 100%;
+    height: 42px;
+  }
+  .product-details .product-details__quantity__box input {
+    width: 100%;
+    height: 42px;
+    padding: 0 24px 0 12px;
+    border: 1px solid #e8effc;
+    border-radius: 6px;
+    background: #f7f8fa;
+    color: #585d64;
+    font-weight: 500;
+  }
+  .product-details .product-details__quantity__box .sub,
+  .product-details .product-details__quantity__box .add {
+    font-size: 13px;
+  }
+  .product-details .product-details__size .fit-select {
+    width: 100%;
+  }
+  .product-details .product-details__size .fit__control {
+    min-height: 42px;
+    background: #f7f8fa;
+    border-color: #e8effc;
+    border-radius: 6px;
+  }
+
+  /* Color swatches */
+  .product-details .product-details__color {
+    flex: 1 1 100%;
+  }
+  .product-details .product-details__color .color-radio__swatch {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+  }
+
+  /* Price — blue, 28px, semibold */
+  .product-details .product-details__price span {
+    font-size: 28px;
+    font-weight: 600;
+    color: #4273f1;
+    letter-spacing: -0.14px;
+  }
+
+  /* CTA: Add to Cart full width (row 1); Buy Now + heart + share (row 2) */
+  .product-details .product-details__btn {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 16px;
+  }
+  .product-details .product-details__btn__item:nth-child(1) {
+    flex: 1 1 100%;
+  }
+  .product-details .product-details__btn__item:nth-child(2) {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  .product-details .product-details__btn .commerce-btn {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    border-radius: 100px;
+    padding: 18px 24px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .product-details .product-details__btn__item:nth-child(2) .commerce-btn,
+  .product-details .product-details__btn__item:nth-child(2) .commerce-btn:hover {
+    background: transparent;
+    color: #f37927;
+    border: 1.5px solid #f37927;
+  }
+  /* heart + share circles stay 60px per Figma */
+  .product-details .product-details__btn__info,
+  .product-details .product-details__btn__info:hover,
+  .product-details .product-details__btn__info.active {
+    width: 60px;
+    height: 60px;
+    flex: 0 0 60px;
+    border-radius: 50%;
+    font-size: 22px;
+  }
+
+  /* Product Info section — kill desktop 100px/120px padding */
+  .product-info {
+    padding: 8px 0 32px;
+  }
+  .product-info__tabs .nav-tabs {
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .product-info__tabs .nav-tabs .nav-item button {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 8px 0;
+    color: #585d64;
+  }
+  .product-info__tabs .nav-tabs .nav-item button.active {
+    color: #4273f1;
+  }
+  .product-info__tabs .tab-pane {
+    padding-top: 16px;
+  }
+  .product-info__title {
+    font-size: 18px;
+    line-height: 1.6;
+    letter-spacing: -0.09px;
+    color: #0b0f0e;
+    margin-bottom: 16px;
+  }
+  .product-info__list__info {
+    margin-bottom: 16px;
+  }
+  .product-info__list__title {
+    font-size: 16px;
+    line-height: 1.6;
+    letter-spacing: -0.08px;
+    color: #0b0f0e;
+    margin-bottom: 6px;
+  }
+  .product-info__list li,
+  .product-info__list li span,
+  .product-info__text {
+    font-size: 14px;
+    line-height: 1.5;
+    letter-spacing: -0.07px;
+    color: #585d64;
+  }
+
+  /* ---------- Product Reviews ---------- */
+  .product-reviews {
+    padding-bottom: 40px;
+  }
+  .product-reviews__top {
+    margin-bottom: 16px;
+  }
+  .product-reviews__inner {
+    padding: 16px;
+  }
+  /* rating summary: stack score card over bars */
+  .product-reviews__inner .row > [class*="col-"] + [class*="col-"] {
+    margin-top: 20px;
+  }
+  .product-reviews__top .rating-card {
+    gap: 12px;
+  }
+  .product-reviews .rating-bar-container {
+    width: 100%;
+  }
+
+  /* heading: title + review button stack */
+  .product-reviews__heading {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .product-reviews__review-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* bottom: filter sidebar above list */
+  .product-reviews__inner-box {
+    flex-direction: column;
+    gap: 24px;
+  }
+  .product-reviews__filter {
+    max-width: 100%;
+  }
+
+  /* review header tabs wrap */
+  .product-reviews .review-header {
+    margin-bottom: 20px;
+  }
+  .product-reviews .review-header .review-title {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+  .product-reviews .review-header .review-filters {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .product-reviews .review-header button {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  /* review item sizing */
+  .product-reviews__user__text {
+    font-size: 14px;
+  }
+  .product-reviews__user__date {
+    font-size: 12px;
+    margin-bottom: 16px;
+  }
+  .product-reviews__user__item + .product-reviews__user__item {
+    margin-top: 20px;
+    padding-top: 20px;
+  }
+  .product-reviews__user__action button {
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+}
+
+/* ===================================================================
+   Profile page (Profile.jsx) — responsive
+   Base layout lives in sadamata.css; here only the breakpoints.
+   =================================================================== */
+@media (max-width: 991px) {
+  /* sidebar + content stack */
+  .user-profile .user-form {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .user-profile__info {
+    max-width: 100%;
+  }
+  .user-profile__form {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .user-profile {
+    padding: 24px 0 48px;
+  }
+  .user-profile-top__title {
+    font-size: 22px;
+  }
+  .user-profile__form {
+    padding: 16px;
+  }
+  .user-profile__info {
+    padding: 20px 16px;
+  }
+  /* smaller avatar */
+  .user-profile .avatar-container,
+  .user-profile .avatar {
+    width: 140px;
+    height: 140px;
+  }
+  .user-profile .avatar-container {
+    margin-bottom: 28px;
+  }
+  .user-profile .verified-badge label {
+    width: 42px;
+    height: 42px;
+    right: calc(50% - 80px);
+  }
+  .user-profile__info__avater .profile-name {
+    font-size: 20px;
+  }
+  .user-profile__info__menu li {
+    font-size: 14px;
+    padding: 14px 16px;
+  }
+  /* contact: title + edit/update buttons stack */
+  .user-profile .user-profile__top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+  .user-profile__top > div {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+  }
+  .user-profile__contact .commerce-btn {
+    flex: 1 1 0;
+    justify-content: center;
+    white-space: nowrap;
+  }
+  .user-profile__contact__title {
+    font-size: 18px;
+  }
+  /* single column fields, shorter inputs */
+  .user-profile__group {
+    grid-template-columns: 1fr;
+    grid-gap: 16px;
+  }
+  .user-profile__group input[type="text"],
+  .user-profile__group input[type="email"],
+  .user-profile__group input[type="date"],
+  .user-profile__group input[type="number"],
+  .user-profile__group .form-control,
+  .user-profile__group .stdropdown-container {
+    height: 52px;
+    font-size: 15px;
+  }
+  .user-profile__group label {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+}
+
+/* ===================================================================
+   Brand profile page (BrandProfile.jsx) — responsive
+   Base layout in sadamata.css; here only breakpoints.
+   =================================================================== */
+@media (max-width: 991px) {
+  /* base padding-top:495px overlaps 585px banner — shrink both together */
+  .brand-profile-top {
+    padding-top: 240px;
+  }
+  .brand-profile-top__bg {
+    height: 300px;
+  }
+  /* stack: left (logo+name) over right (search+follow) */
+  .brand-profile-top__profile {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  /* follow on top, search below */
+  .brand-profile-top__right {
+    display: flex;
+    width: 100%;
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 16px;
+  }
+  .brand-profile-top__form {
+    flex: 1 1 auto;
+    margin-bottom: 0;
+  }
+  .brand-profile-top__form__group__form {
+    width: 100%;
+    margin-bottom: 0;
+  }
+  .brand-profile-top__form input[type="text"] {
+    width: 100%;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .brand-profile-top {
+    padding-top: 150px;
+    margin-bottom: 28px;
+  }
+  .brand-profile-top__bg {
+    height: 200px;
+  }
+  .brand-profile-top__profile {
+    padding: 20px 16px;
+  }
+  /* logo + name centered as a unit */
+  .brand-profile-top__left {
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+  }
+  .brand-profile-top__image {
+    width: 88px;
+    height: 88px;
+  }
+  .brand-profile-top__name {
+    font-size: 20px;
+  }
+  .brand-profile-top__social {
+    justify-content: center;
+  }
+  /* follow on top, search below — stack full width with gap */
+  .brand-profile-top__right {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 16px;
+  }
+  .brand-profile-top__form,
+  .brand-profile-top__form__group__form {
+    margin-bottom: 0;
+  }
+  .brand-profile-top__btn,
+  .brand-profile-top__btn a,
+  .brand-profile-top__btn .brand-profile-follow__btn,
+  .brand-profile-top__right .brand-profile-follow__btn {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+  /* tab list scrolls horizontally, hide scrollbar */
+  .brand-profile-top__list {
+    padding: 0 16px;
+    gap: 0;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .brand-profile-top__list li {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    padding: 12px 0;
+  }
+  .brand-profile-top__list::-webkit-scrollbar {
+    display: none;
+  }
+  .brand-profile-top__list li + li {
+    margin-left: 22px;
+  }
+  .brand-profile-top__list li a {
+    padding: 12px 0;
+    font-size: 14px;
+  }
+  /* product grid bottom padding */
+  .brand-profile__bottom.pb-120 {
+    padding-bottom: 48px;
+  }
+}
+
+/* two product cards per row on small screens (match other sections) */
+@media (max-width: 575px) {
+  .brand-profile__bottom .row.gutter-y-32 {
+    --bs-gutter-y: 14px;
+    --bs-gutter-x: 14px;
+  }
+  .brand-profile__bottom .row > [class*="col-"] {
+    width: 50%;
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+
+/* ===================================================================
+   Pagination — mobile redesign: page number on top, Prev/Next below
+   =================================================================== */
+@media (max-width: 575px) {
+  .post-pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+  /* page number first, full width centered */
+  .post-pagination > span {
+    order: -1;
+    width: 100%;
+    text-align: center;
+    padding: 0 !important;
+    font-weight: 600;
+    color: #131921;
+  }
+  /* prev + next share the row below */
+  .post-pagination .previous,
+  .post-pagination .next {
+    flex: 1 1 0;
+    justify-content: center;
+  }
 }

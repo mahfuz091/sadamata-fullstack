@@ -182,6 +182,7 @@ const OrderHistory = ({
   user,
   productImages = {},
   productLinks = {},
+  profileImageUrl = null,
 }) => {
   const currentOrders = orders.filter((order) => activeStatuses.has(order.status));
   const previousOrders = orders.filter(
@@ -206,11 +207,7 @@ const OrderHistory = ({
           <aside className='user-profile__info order-history__sidebar'>
             <div className='order-history__profile'>
               <img
-                src={
-                  user?.profileImage
-                    ? `${process.env.NEXT_PUBLIC_BASE_URL}/${user.profileImage}`
-                    : "/assets/images/resources/avater.png"
-                }
+                src={profileImageUrl || "/assets/images/resources/avater.png"}
                 alt={user?.name || "User"}
               />
               <h1>{user?.name || "Customer"}</h1>

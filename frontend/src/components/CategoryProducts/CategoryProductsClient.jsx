@@ -72,9 +72,17 @@ const CategoryProductsClient = ({
   const [cursorStack, setCursorStack] = useState([1]); // stack of pages for Prev
   const [cursor, setCursor] = useState(1);
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(false);
 
   const pageSize = 24;
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    document.body.style.overflow = filterOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [filterOpen]);
 
   useEffect(() => {
     if (prevRouteKeyRef.current === routeKey) return;
@@ -323,11 +331,27 @@ const CategoryProductsClient = ({
             result={result}
             sortBy={sortBy}
             setSortBy={setSortBy}
+            onOpenFilter={() => setFilterOpen(true)}
           />
 
           <div className='product-area__inner'>
             {/* Sidebar */}
-            <aside className='sidebar__menu'>
+            <div
+              className={`sidebar__overlay ${filterOpen ? "is-open" : ""}`}
+              onClick={() => setFilterOpen(false)}
+            />
+            <aside className={`sidebar__menu ${filterOpen ? "is-open" : ""}`}>
+              <div className='sidebar__menu__head'>
+                <span>Filters</span>
+                <button
+                  type='button'
+                  className='sidebar__menu__close'
+                  aria-label='Close filters'
+                  onClick={() => setFilterOpen(false)}
+                >
+                  <i className='fas fa-times'></i>
+                </button>
+              </div>
               <ul className='sidebar__menu__area list-unstyled'>
                 {/* Gender */}
                 <li className='sidebar__menu__area__item'>
@@ -477,7 +501,7 @@ const CategoryProductsClient = ({
 
 
                       return (
-                        <Col xl={3} lg={4} md={6} key={item.id}>
+                        <Col xl={3} lg={4} md={6} xs={6} key={item.id}>
                           <div className='product__item'>
                             <div className='product__item__img'>
                               <Link

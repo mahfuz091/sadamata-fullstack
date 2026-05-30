@@ -129,10 +129,80 @@ const RelatedProducts = ({
     : fallbackProducts.map(normalizeProduct);
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [visibleCount, setVisibleCount] = useState(6);
   const { toggleFavorite, isFavorite } = useFavorites();
   const swiperRef = useRef(null);
 
   if (!list.length) return null;
+
+  const renderCard = (item) => (
+    <div className='product__item'>
+      <div className='product__item__img position-relative'>
+        <Link href={item.href} className='product__item__img__item'>
+          {item.image ? (
+            <Image
+              src={item.image}
+              alt={item.title}
+              width={600}
+              height={600}
+              style={{ width: "100%", height: "auto" }}
+              unoptimized={typeof item.image === "string"}
+            />
+          ) : (
+            <div style={{ aspectRatio: "1/1" }} />
+          )}
+        </Link>
+        <button
+          className='product__item__btn related-products__favorite position-absolute top-0 end-0 p-2'
+          type='button'
+          aria-label={isFavorite(item.id) ? "Remove from favorites" : "Add to favorites"}
+          onClick={() => toggleFavorite(item)}
+        >
+          <span className={`heart ${isFavorite(item.id) ? "active" : ""}`}>
+            <i className='far fa-heart'></i>
+          </span>
+        </button>
+      </div>
+      <div className='product__item__content'>
+        {item.brand && (
+          <p className='product__item__brand'>
+            Brand:{" "}
+            <span>
+              {item.brandId ? (
+                <Link href={`/brand/${item.brandId}`}>{item.brand}</Link>
+              ) : (
+                item.brand
+              )}
+            </span>
+          </p>
+        )}
+        <h4 className='product__item__title'>
+          <Link href={item.href}>{item.title}</Link>
+        </h4>
+        <div className='product__item__box'>
+          <div className='product__item__price'>{item.displayPrice}</div>
+          <div className='product__item__ratings'>
+            {[...Array(5)].map((_, i) => (
+              <i key={i} className='fas fa-star'></i>
+            ))}
+            <span>
+              {item.rating} ({item.reviews})
+            </span>
+          </div>
+        </div>
+        <button
+          className='commerce-btn product__item__link'
+          type='button'
+          onClick={() => {
+            setSelectedProduct({ ...item, price: item.price });
+            setShowModal(true);
+          }}
+        >
+          Add to Cart
+        </button>
+      </div>
+    </div>
+  );
 
   return (
     <div className='product-slider mt-5'>
@@ -252,6 +322,26 @@ const RelatedProducts = ({
             ))}
           </Swiper>
         </div>
+
+        <div className='product-slider__mobile'>
+          {list.slice(0, visibleCount).map((item) => (
+            <div key={`m-${item.id}`} className='item'>
+              {renderCard(item)}
+            </div>
+          ))}
+        </div>
+
+        {visibleCount < list.length && (
+          <div className='history-product__loadmore'>
+            <button
+              type='button'
+              className='commerce-btn'
+              onClick={() => setVisibleCount((c) => c + 6)}
+            >
+              Load More
+            </button>
+          </div>
+        )}
       </Container>
 
       {selectedProduct && (

@@ -78,6 +78,7 @@ export default function RecentlyViewedProducts({ title = "Inspired by Your Brows
   const [products, setProducts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [visibleCount, setVisibleCount] = useState(6);
   const sliderRef = useRef(null);
   const { toggleFavorite, isFavorite } = useFavorites();
 
@@ -129,6 +130,92 @@ export default function RecentlyViewedProducts({ title = "Inspired by Your Brows
       { breakpoint: 600, settings: { slidesToShow: 2 } },
       { breakpoint: 480, settings: { slidesToShow: 1 } },
     ],
+  };
+
+  const renderCard = (product) => {
+    const favoriteActive = isFavorite(product.id);
+    return (
+      <div className='product__item'>
+        <div className='product__item__img position-relative'>
+          <Link
+            href={`/products/${product.productId}`}
+            className='product__item__img__item'
+          >
+            {product.imageUrl ? (
+              <Image
+                src={product.imageUrl}
+                alt={product.title}
+                width={600}
+                height={600}
+                style={{ width: "100%", height: "auto" }}
+                unoptimized
+              />
+            ) : (
+              <div className='recently-viewed-products__placeholder' />
+            )}
+          </Link>
+
+          <button
+            className='product__item__btn recently-viewed-products__favorite position-absolute top-0 end-0 p-2'
+            type='button'
+            aria-label={favoriteActive ? "Remove from favorites" : "Add to favorites"}
+            onClick={() => toggleFavorite(product)}
+          >
+            <span className={`heart ${favoriteActive ? "active" : ""}`}>
+              <i className='far fa-heart'></i>
+            </span>
+          </button>
+        </div>
+
+        <div className='product__item__content'>
+          <p className='product__item__brand'>
+            Brand:{" "}
+            <span>
+              {product.brandId ? (
+                <Link
+                  href={`/brand/${product.brandId}`}
+                  className='recently-viewed-products__brand-link'
+                >
+                  {product.brand}
+                </Link>
+              ) : (
+                product.brand
+              )}
+            </span>
+          </p>
+
+          <h4 className='product__item__title'>
+            <Link href={`/products/${product.productId}`}>{product.title}</Link>
+          </h4>
+
+          <div className='product__item__box'>
+            <div className='product__item__price'>
+              ৳{Number(product.price ?? 0).toFixed(2)}
+            </div>
+
+            <div className='product__item__ratings'>
+              {[...Array(5)].map((_, i) => (
+                <i key={i} className='fas fa-star' />
+              ))}
+              <span>
+                {product.rating ?? 5} ({product.reviews ?? 0})
+              </span>
+            </div>
+          </div>
+
+          <button
+            className='commerce-btn product__item__link mt-auto'
+            type='button'
+            onClick={() => {
+              setSelectedProduct(product);
+              setShowModal(true);
+            }}
+          >
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -254,6 +341,26 @@ export default function RecentlyViewedProducts({ title = "Inspired by Your Brows
             );
           })}
         </Slider>
+
+        <div className='history-product__mobile'>
+          {products.slice(0, visibleCount).map((product) => (
+            <div key={`m-${product.id}`} className='item'>
+              {renderCard(product)}
+            </div>
+          ))}
+        </div>
+
+        {visibleCount < products.length && (
+          <div className='history-product__loadmore'>
+            <button
+              type='button'
+              className='commerce-btn'
+              onClick={() => setVisibleCount((c) => c + 6)}
+            >
+              Load More
+            </button>
+          </div>
+        )}
       </Container>
 
       {selectedProduct && (

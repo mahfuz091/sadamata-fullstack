@@ -222,7 +222,7 @@ import AddToCartModal from "../FeatureProduct/AddToCartModal";
                   const isFavorite = favorites.some((p) => p.id === product.id);
 
               return (
-                <Col key={product.id} xl={3} lg={4} md={6} sm={6}>
+                <Col key={product.id} xl={3} lg={4} md={6} sm={6} xs={6}>
                   <div className='product__item h-100 d-flex flex-column'>
                     <div className='product__item__img position-relative'>
                       <Link
@@ -295,7 +295,7 @@ import AddToCartModal from "../FeatureProduct/AddToCartModal";
                         setShowModal(true);
                       }}
                     >
-                      Add to Cart 
+                      Add to Cart
                     </button>
                     </div>
                   </div>

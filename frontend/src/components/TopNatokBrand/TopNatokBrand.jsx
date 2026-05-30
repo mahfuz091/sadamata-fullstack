@@ -119,6 +119,35 @@ const TopNatokBrand = ({ brands = [], title = "Drama Merchandise Shop" }) => {
             })}
           </Slider>
         </div>
+
+        <div className="top-brand__mobile">
+          {finalBrands.map((brand, idx) => {
+            const card = (
+              <div className="top-brand__item">
+                <div className="top-brand__item__image">
+                  <Image
+                    src={brand.image}
+                    alt={brand.name}
+                    width={76}
+                    height={76}
+                    className="object-cover"
+                  />
+                </div>
+                <h4 className="top-brand__item__title">{brand.name}</h4>
+              </div>
+            );
+
+            return (
+              <div key={`m-${brand.id}-${idx}`} className="item">
+                {brand.isDummy ? (
+                  <div>{card}</div>
+                ) : (
+                  <Link href={`/brand/${brand.id}`}>{card}</Link>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </Container>
     </section>
   );

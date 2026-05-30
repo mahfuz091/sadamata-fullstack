@@ -22,6 +22,7 @@ export default function TopMovieBrandTshirt({
 }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [visibleCount, setVisibleCount] = useState(6);
    const [favorites, setFavorites] = useState([]);
   const sliderRef = useRef(null);
 
@@ -103,6 +104,85 @@ console.log("products", products);
         window.dispatchEvent(new Event("favorite-updated"));
       });
     };
+
+  const renderCard = (prod) => {
+    const isFavorite = favorites.some((f) => f.id === prod.id);
+    return (
+      <div className='product__item'>
+        <div className='product__item__img position-relative'>
+          <Link
+            href={`/products/${prod.productId}`}
+            className='product__item__img__item'
+          >
+            {prod.imageUrl ? (
+              <Image
+                src={prod.imageUrl}
+                alt={prod.title}
+                width={600}
+                height={600}
+                style={{ width: "100%", height: "auto" }}
+                unoptimized
+              />
+            ) : (
+              <div style={{ aspectRatio: "1/1" }} />
+            )}
+          </Link>
+
+          <div
+            className='product__item__btn position-absolute top-0 end-0 p-2'
+            style={{ cursor: "pointer" }}
+            onClick={() => toggleFavorite(prod)}
+          >
+            <div className={`heart ${isFavorite ? "active" : ""}`}>
+              <i className='far fa-heart'></i>
+            </div>
+          </div>
+        </div>
+
+        <div className='product__item__content'>
+          <p className='product__item__brand'>
+            Brand:{" "}
+            <span>
+              {prod.brandId ? (
+                <Link href={`/brand/${prod.brandId}`}>{prod.brand}</Link>
+              ) : (
+                prod.brand
+              )}
+            </span>
+          </p>
+
+          <h4 className='product__item__title'>
+            <Link href={`/products/${prod.productId}`}>{prod.title}</Link>
+          </h4>
+
+          <div className='product__item__box'>
+            <div className='product__item__price'>
+              ৳{Number(prod.price ?? 0).toFixed(2)}
+            </div>
+
+            <div className='product__item__ratings'>
+              {[...Array(5)].map((_, i) => (
+                <i key={i} className='fas fa-star' />
+              ))}
+              <span>
+                {prod.rating} ({prod.reviews})
+              </span>
+            </div>
+          </div>
+
+          <button
+            className='commerce-btn product__item__link mt-auto'
+            onClick={() => {
+              setSelectedProduct(prod);
+              setShowModal(true);
+            }}
+          >
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <section className='history-product slider-wrapper py-5'>
@@ -221,6 +301,26 @@ return (
             </div>)}
           )}
         </Slider>
+
+        <div className='history-product__mobile'>
+          {normalized.slice(0, visibleCount).map((prod) => (
+            <div key={`m-${prod.id}`} className='item'>
+              {renderCard(prod)}
+            </div>
+          ))}
+        </div>
+
+        {visibleCount < normalized.length && (
+          <div className='history-product__loadmore'>
+            <button
+              type='button'
+              className='commerce-btn'
+              onClick={() => setVisibleCount((c) => c + 6)}
+            >
+              Load More
+            </button>
+          </div>
+        )}
       </Container>
       {selectedProduct && (
         <AddToCartModal

@@ -169,6 +169,8 @@ const OrdersPage = async () => {
     products.map((product) => [product.id, product.productId])
   );
 
+  const profileImageUrl = await resolveImageUrl(user?.profileImage);
+
   return (
     <Layout session={session}>
       <OrderHistory
@@ -176,6 +178,7 @@ const OrdersPage = async () => {
         user={user}
         productImages={productImages}
         productLinks={productLinks}
+        profileImageUrl={profileImageUrl}
       />
     </Layout>
   );

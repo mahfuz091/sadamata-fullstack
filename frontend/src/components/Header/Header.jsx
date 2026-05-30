@@ -276,6 +276,7 @@ const Header = ({ session, categories, profileImageUrl }) => {
                   <>
                     <Link href='/login' className='commerce-btn login'>
                       Sign In
+                      <i className='fas fa-user header-signin-icon'></i>
                     </Link>
                   </>
                 )}

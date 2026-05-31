@@ -421,6 +421,24 @@ ul.populer-feature__list.list-unstyled li i {
   font-size: 18px;
 }
 
+@media (max-width: 575px) {
+  .footer-cta__title {
+    font-size: 24px;
+  }
+
+  .footer-cta__content a.commerce-btn {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    padding: 14px 24px;
+    text-align: center;
+  }
+
+  .footer-cta__content p {
+    font-size: 16px;
+  }
+}
+
 .footer-cta__content p a {
   color: #4273f1;
   text-decoration: underline;

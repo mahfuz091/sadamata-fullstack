@@ -24,6 +24,8 @@ const customStyles = {
   indicatorSeparator: () => null,
   option: (base, state) => ({
     ...base,
+    fontSize: "12px",
+    padding: "6px 10px",
     backgroundColor:
       state.isFocused || state.isSelected ? "var(--commerce-base)" : "white",
     color: state.isFocused || state.isSelected ? "white" : "black",

@@ -289,13 +289,14 @@ import AddToCartModal from "../FeatureProduct/AddToCartModal";
                       </div>
 
                       <button
-                      className='commerce-btn product__item__link mt-auto'
+                      className='commerce-btn product__item__link mt-auto d-inline-flex align-items-center justify-content-center gap-2'
                       onClick={() => {
                         setSelectedProduct(product);
                         setShowModal(true);
                       }}
                     >
                       Add to Cart
+                      <i className='fas fa-arrow-right'></i>
                     </button>
                     </div>
                   </div>

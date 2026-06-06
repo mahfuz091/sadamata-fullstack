@@ -296,7 +296,6 @@ import AddToCartModal from "../FeatureProduct/AddToCartModal";
                       }}
                     >
                       Add to Cart
-                      <i className='fas fa-arrow-right'></i>
                     </button>
                     </div>
                   </div>

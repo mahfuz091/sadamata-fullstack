@@ -1,5 +1,6 @@
 import Image from "next/image";
 import React from "react";
+import Link from "next/link";
 import payment from "@/assets/images/shapes/payment.png";
 import logoFooter from "@/assets/images/logo-footer.png";
 
@@ -11,28 +12,38 @@ const Footer = () => {
         <div className='main-footer__middle section-space'>
           <div className='container'>
             <div className='row gutter-y-40'>
-              <div className='col-md-6 col-lg-4 col-xl-4'>
+                <div className='col-md-6 col-lg-4 col-xl-4'>
                 <div
                   className='footer-widget footer-widget--about wow fadeInUp'
                   data-wow-duration='1500ms'
                   data-wow-delay='700ms'
                 >
                   <div className='footer-widget__logo'>
-                    <a href='/' className='logo'>
+                    {/* <a href='#' className='logo'>
                       <Image
-                                       src='/logo-sadamata.svg'
-                                       alt='commerce HTML'
-                                       width={300}
-                                       height={50}
-                                     />
-                    </a>
+                        src='/logo-sadamata.svg'
+                        width={350}
+                        height={50}
+                        alt='logo'
+                      />
+                    </a> */}
+                    <h4 className='footer-widget__title'>
+                      Instant Live Support via Discord
+                    </h4>
                   </div>
                   <p className='footer-widget__text'>
-                    Join an elite group of traders with real-time insights,
-                    institutional-level strategies, and the power of a private
-                    trading network.
+                    Get instant help through our dedicated Discord community.
+                    Connect with our support team and fellow creators in real
+                    time for quick assistance, updates, and discussions.{" "}
+                    <Link
+                      href='https://discord.gg/wrurEjyc'
+                      target='_blank'
+                    >
+                      {" "}
+                      Join Discord Support{" "}
+                    </Link>
                   </p>
-                <div className='footer-widget__social '>
+                  <div className='footer-widget__social'>
                     <h4 className='footer-widget__social__title'>Follow Us</h4>
                     <div className='footer-widget__social__icon'>
                       <a

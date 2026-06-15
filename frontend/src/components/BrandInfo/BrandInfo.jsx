@@ -28,18 +28,23 @@ const brandData = [
   {
     title: "Music Merchandise",
     images: [group1_1, group1_2, group1_3, group1_4],
+    link:"categories/music"
   },
   {
     title: "Movie Merchandise",
     images: [group2_1, group2_2, group2_3, group2_4],
+    link:"categories/movies"
   },
   {
     title: "Drama Merchandise",
     images: [group3_1, group3_2, group3_3, group3_4],
+    link:"categories/drama"
+
   },
   {
-    title: "Event's Merchandise",
+    title: "Bangladesh Merchandise",
     images: [group4_1, group4_2, group4_3, group4_4],
+    link:"categories/bangladesh"
   },
 ];
 
@@ -64,7 +69,7 @@ const BrandInfo = () => {
                     </div>
                   ))}
                 </div>
-                <a href='/product' className='brand-info__item__btn'>
+                <a href={item.link} className='brand-info__item__btn'>
                   Shop Now
                 </a>
               </div>

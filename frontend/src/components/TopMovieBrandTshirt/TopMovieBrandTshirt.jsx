@@ -144,7 +144,7 @@ console.log("products", products);
             Brand:{" "}
             <span>
               {prod.brandId ? (
-                <Link href={`/brand/${prod.brandId}`}>{prod.brand}</Link>
+                <Link href={`/brand/${prod.Brand?.brandSlug || prod.brandId}`}>{prod.brand}</Link>
               ) : (
                 prod.brand
               )}
@@ -259,7 +259,7 @@ return (
                     Brand:{" "}
                     <span>
                       {prod.brandId ? (
-                        <Link href={`/brand/${prod.brandId}`}>{prod.brand}</Link>
+                        <Link href={`/brand/${prod.Brand?.brandSlug || prod.brandId}`}>{prod.brand}</Link>
                       ) : (
                         prod.brand
                       )}

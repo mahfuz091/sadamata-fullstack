@@ -588,7 +588,7 @@ const ProductArea = ({ result: initialResult, slug, q, brands, mockups, relatedP
                               <p className='product__item__brand'>
                                 Brand:{" "}
                                 {item?.brandId ? (
-                          <Link href={`/brand/${item.brandId}`}>
+                          <Link href={`/brand/${item.brandSlug || item.brandId}`}>
                             {item?.brandName ?? "—"}
                           </Link>
                         ) : (

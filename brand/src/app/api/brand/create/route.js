@@ -1,5 +1,6 @@
 import { getAuthToken, verifyAuthToken } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { generateBrandSlug } from "@/lib/brandSlug";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
@@ -35,9 +36,11 @@ export async function POST(request) {
     }
 
     // Step 5: Create the new brand
+    const brandSlug = await generateBrandSlug(prisma, name);
     const newBrand = await prisma.brand.create({
       data: {
         name,
+        brandSlug,
         isActive: false, // Default to false
         user: { connect: { id: userId } }, // Associate the brand with the userId
         brandCategory: {

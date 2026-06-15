@@ -45,6 +45,64 @@ export async function getBrandById(id) {
 }
 
 /**
+ * getBrandBySlug(slug)
+ * Fetches brand by brandSlug; falls back to id (keeps old /brand/<id> links working).
+ */
+export async function getBrandBySlug(slug) {
+  if (!slug) return null;
+
+  // Bangla/non-latin slugs arrive percent-encoded in the route param.
+  let decoded = slug;
+  try {
+    decoded = decodeURIComponent(slug);
+  } catch {
+    decoded = slug;
+  }
+
+  try {
+    const include = {
+      brandCategory: true,
+      user: { select: { id: true, name: true, profileImage: true } },
+    };
+
+    let brand = await prisma.brand.findUnique({
+      where: { brandSlug: decoded },
+      include,
+    });
+
+    // tolerate the encoded form being stored / passed verbatim
+    if (!brand && decoded !== slug) {
+      brand = await prisma.brand.findUnique({
+        where: { brandSlug: slug },
+        include,
+      });
+    }
+
+    // fallback: old links / records without a slug
+    if (!brand) {
+      brand = await prisma.brand.findUnique({
+        where: { id: slug },
+        include,
+      });
+    }
+
+    if (brand) {
+      if (brand.bannerImage && !brand.bannerImage.startsWith("http")) {
+        brand.bannerImage = await getPrivateUrl(brand.bannerImage);
+      }
+      if (brand.user?.profileImage && !brand.user.profileImage.startsWith("http")) {
+        brand.user.profileImage = await getPrivateUrl(brand.user.profileImage);
+      }
+    }
+
+    return brand;
+  } catch (error) {
+    console.error("Error fetching brand by slug:", error);
+    return null;
+  }
+}
+
+/**
  * getProductsByBrandId(brandId, options)
  * Fetches products associated with a specific brand.
  */

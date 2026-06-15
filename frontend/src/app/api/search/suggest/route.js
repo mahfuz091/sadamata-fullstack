@@ -132,7 +132,7 @@ export async function GET(req) {
     where: { isActive: true, name: { contains: q, mode: "insensitive" } },
     orderBy: { name: "asc" },
     take: TAKE_BRANDS,
-    select: { id: true, name: true },
+    select: { id: true, name: true, brandSlug: true },
   });
 
   const queries = [
@@ -153,7 +153,7 @@ export async function GET(req) {
         name: c.name,
         slug: c.name,
       })),
-      brands: brands.map((b) => ({ id: b.id, name: b.name, slug: b.name })),
+      brands: brands.map((b) => ({ id: b.id, name: b.name, slug: b.brandSlug ?? b.id })),
       products: productsWithUrls.map((p) => ({
         id: p.id,
         title: p.title,

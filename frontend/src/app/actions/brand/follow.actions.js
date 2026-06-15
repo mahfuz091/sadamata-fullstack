@@ -43,7 +43,7 @@ export async function toggleFollowBrand(brandId) {
       isFollowing = true;
     }
 
-    revalidatePath(`/brand/${brandId}`);
+    revalidatePath("/brand/[slug]", "page");
     return { success: true, isFollowing };
   } catch (error) {
     console.error("Error in toggleFollowBrand:", error);

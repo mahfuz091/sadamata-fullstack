@@ -234,7 +234,7 @@ const FeatureProduct = () => {
                       Brand:{" "}
                       <span>
                         {product?.Brand?.id ? (
-                          <Link href={`/brand/${product.Brand.id}`}>
+                          <Link href={`/brand/${product.Brand.brandSlug || product.Brand.id}`}>
                             {product?.Brand?.name ?? product?.brandName ?? "—"}
                           </Link>
                         ) : (

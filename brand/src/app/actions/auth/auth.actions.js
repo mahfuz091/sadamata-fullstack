@@ -1,6 +1,7 @@
 ﻿"use server";
 import { removeAuthCookie, setAuthCookie, signAuthToken } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { generateBrandSlug } from "@/lib/brandSlug";
 import { signIn, signOut, auth } from "@/auth";
 import bcrypt from "bcryptjs"; // for hashing passwords
 import { redirect } from "next/navigation";
@@ -350,10 +351,12 @@ export async function registerUser(formData) {
       if (role === "BRAND") {
         const defaultBrandPct = isExclusive ? 10 : 6;
   const defaultMerchantPct = 6;
+        const brandSlug = await generateBrandSlug(tx, name);
         brandProfile = await tx.brand.create({
           data: {
             user: { connect: { id: user.id } },
             name,
+            brandSlug,
             dateOfBirth,
             contactEmail,
             contactPhone,

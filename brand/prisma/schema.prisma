@@ -122,6 +122,7 @@ model MerchantProfile {
 model Brand {
   id                 String              @id @default(uuid())
   name               String
+  brandSlug          String?             @unique
   userId             String              @unique
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
@@ -194,6 +195,7 @@ model Product {
   frontDesign           String?
   productId             String              @unique
   status                ProductStat?        @default(UNDERREVIEW)
+  smpin                 String?             @unique @db.VarChar(10)
   CommissionSetting     CommissionSetting[]
   features              Feature[]
   Brand                 Brand?              @relation(fields: [brandId], references: [id])

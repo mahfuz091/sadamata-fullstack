@@ -84,7 +84,31 @@
       "Bash(sed -n '2480,2520p' src/assets/css/sadamata-custom.css)",
       "Bash(sed -n '2840,2870p' src/assets/css/sadamata-custom.css)",
       "Bash(awk 'NR>=2484 && NR<=2530' src/assets/css/sadamata-custom.css)",
-      "Bash(xargs grep -ln \"export.*ProductHeaderTop\\\\|ProductHeaderTop =\")"
+      "Bash(xargs grep -ln \"export.*ProductHeaderTop\\\\|ProductHeaderTop =\")",
+      "Bash(git mv *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000 --max-time 3)",
+      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless=new --disable-gpu --virtual-time-budget=6000 --window-size=1400,900 --screenshot=/tmp/hdr.png \"http://localhost:3000\")",
+      "Read(//tmp/**)",
+      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless=new --disable-gpu --virtual-time-budget=6000 --dump-dom \"http://localhost:3000\")",
+      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless=new --disable-gpu --virtual-time-budget=7000 --window-size=1400,900 --screenshot=/tmp/p.png \"http://localhost:3000/products\")",
+      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless=new --disable-gpu --virtual-time-budget=7000 --dump-dom \"http://localhost:3000/products\")",
+      "Bash(npm run *)",
+      "Bash(echo \"started pid $!\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3007 --max-time 3)",
+      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless=new --disable-gpu --virtual-time-budget=8000 --window-size=1400,900 --screenshot=/tmp/fe.png \"http://localhost:3001\")",
+      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless=new --disable-gpu --virtual-time-budget=8000 --dump-dom \"http://localhost:3001\")",
+      "Bash(grep -oE '<div class=\"main-header__search-box.*?search-suggest|<div class=\"main-header__search-box[^>]*>.{0,1500}' /tmp/fedom.html)",
+      "Bash(grep -oE 'input-box--text[^>]*>.{0,900}' /tmp/fedom.html)",
+      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless=new --disable-gpu --remote-debugging-port=9222 --window-size=1400,900 --user-data-dir=/tmp/cdpprofile about:blank)",
+      "Bash(echo \"pid $!\")",
+      "Bash(curl -s http://localhost:9222/json/version)",
+      "Bash(node cdp_probe.mjs)",
+      "Bash(taskkill //PID 2424 //F)",
+      "Bash(node /tmp/probe3.mjs)",
+      "Bash(rm -f /tmp/probe*.mjs cdp_probe.mjs)",
+      "Bash(curl -s \"http://localhost:9222/json/list\")",
+      "Bash(taskkill //IM chrome.exe //F //FI \"WINDOWTITLE eq *\")",
+      "Bash(pkill -f \"remote-debugging-port=9222\")"
     ]
   }
 }

@@ -290,6 +290,7 @@ export default function ProductDetails2({ product, user, reviewOrderItemId = "",
       price: product.price,
       brand: product.Brand?.name || product.brandName || "Brand",
       brandId: product.Brand?.id || null,
+      brandSlug: product.Brand?.brandSlug || null,
       imageKey:
         currentVariant?.frontImg ||
         currentVariant?.backImg ||
@@ -606,7 +607,7 @@ export default function ProductDetails2({ product, user, reviewOrderItemId = "",
               Brand:{" "}
               <span>
                 {product?.Brand?.id ? (
-                  <Link href={`/brand/${product.Brand.id}`}>
+                  <Link href={`/brand/${product.Brand.brandSlug || product.Brand.id}`}>
                     {product?.Brand?.name || product?.brandName || "—"}
                   </Link>
                 ) : (
@@ -753,7 +754,7 @@ export default function ProductDetails2({ product, user, reviewOrderItemId = "",
                   Brand:{" "}
                   <span>
                     {product?.Brand?.id ? (
-                      <Link href={`/brand/${product.Brand.id}`}>
+                      <Link href={`/brand/${product.Brand.brandSlug || product.Brand.id}`}>
                         {product?.Brand?.name || product?.brandName || "—"}
                       </Link>
                     ) : (

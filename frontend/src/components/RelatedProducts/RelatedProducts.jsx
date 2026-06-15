@@ -169,7 +169,7 @@ const RelatedProducts = ({
             Brand:{" "}
             <span>
               {item.brandId ? (
-                <Link href={`/brand/${item.brandId}`}>{item.brand}</Link>
+                <Link href={`/brand/${item.Brand?.brandSlug || item.brandId}`}>{item.brand}</Link>
               ) : (
                 item.brand
               )}
@@ -281,7 +281,7 @@ const RelatedProducts = ({
                           Brand:{" "}
                           <span>
                             {item.brandId ? (
-                              <Link href={`/brand/${item.brandId}`}>{item.brand}</Link>
+                              <Link href={`/brand/${item.Brand?.brandSlug || item.brandId}`}>{item.brand}</Link>
                             ) : (
                               item.brand
                             )}

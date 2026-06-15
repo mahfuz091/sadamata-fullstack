@@ -173,7 +173,7 @@ export default function RecentlyViewedProducts({ title = "Inspired by Your Brows
             <span>
               {product.brandId ? (
                 <Link
-                  href={`/brand/${product.brandId}`}
+                  href={`/brand/${product.brandSlug || product.brandId}`}
                   className='recently-viewed-products__brand-link'
                 >
                   {product.brand}
@@ -293,7 +293,7 @@ export default function RecentlyViewedProducts({ title = "Inspired by Your Brows
                       <span>
                         {product.brandId ? (
                           <Link
-                            href={`/brand/${product.brandId}`}
+                            href={`/brand/${product.brandSlug || product.brandId}`}
                             className='recently-viewed-products__brand-link'
                           >
                             {product.brand}

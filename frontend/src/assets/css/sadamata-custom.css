@@ -568,9 +568,20 @@ margin-top: 10px;
 /* Search bar — flex-grow to fill available space */
 .main-header__search-box {
   flex: 1;
-  max-width: none;
-  height: 36px;
-  margin: 0 80px;
+  max-width: 1200px;
+  min-height: 40px;
+  height: 40px;
+  margin: 0 auto;
+  border-radius: 8px;
+}
+
+.main-header .main-header__search__button {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 40px;
+  height: auto;
+  border-radius: 0 8px 8px 0;
 }
 
 @media (max-width: 1400px) {
@@ -757,12 +768,12 @@ margin-top: 10px;
 /* 7. Orange button — same as desktop */
 .mobile-search-overlay__card .main-header__search__button {
   position: absolute !important;
-  top: 5px !important;
-  right: 5px !important;
-  bottom: 5px !important;
-  width: 38px !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 40px !important;
   height: auto !important;
-  border-radius: 8px !important;
+  border-radius: 0 8px 8px 0 !important;
   background: var(--commerce-base) !important;
   color: #fff !important;
   font-size: 18px !important;
@@ -776,15 +787,28 @@ margin-top: 10px;
 }
 
 .main-header__search {
-  height: 36px;
+  height: 40px;
 }
 
 /* specificity (0,3,1) beats base rule (0,2,1) */
 .main-header .main-header__search__input-box input[type="text"] {
-  height: 36px;
-  padding-top: 0;
-  padding-bottom: 0;
-  font-size: 14px;
+  display: block;
+  width: 100%;
+  line-height: 15px;
+  padding: 7px 48px 10px 0;
+  margin: 0;
+  border: 0;
+  height: 40px;
+  font-family: inherit;
+  font-size: 15px;
+  background: 0 0;
+  color: #111;
+  outline: 0;
+  -webkit-appearance: none;
+  box-shadow: none;
+  text-indent: 8px;
+  position: relative;
+  z-index: 2;
 }
 
 /* Info block */
@@ -860,7 +884,7 @@ button.profileImageButton img {
 /* text input box grows to fill remaining space */
 .main-header__search__input-box--text {
   flex: 1;
-  max-width: 650px;
+  max-width: 100%;
   min-width: 0;
 }
 
@@ -885,10 +909,25 @@ button.profileImageButton img {
 }
 
 .main-header .main-header__search__input-box {
-  min-width: 150px;
-  height: 36px;
+  min-width: auto;
+  height: 40px;
   display: flex;
   align-items: center;
+}
+
+/* category select: Amazon-style, width fits selected option */
+.main-header .main-header__search__input-box:not(.main-header__search__input-box--text) {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 0;
+}
+
+/* text input box fills all remaining space */
+.main-header .main-header__search__input-box--text {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  position: relative;
 }
 
 .user-profile__info__menu__item a {
@@ -2101,7 +2140,7 @@ button.profileImageButton img {
   }
 
   .main-header__bottom {
-    display: none;
+    display: flex;
   }
 }
 
@@ -2382,7 +2421,7 @@ button.profileImageButton img {
     max-width: none;
     height: 40px;
     margin: 0;
-    border-radius: 6px;
+    border-radius: 8px;
   }
   .main-header__search {
     height: 40px;
@@ -2410,11 +2449,11 @@ button.profileImageButton img {
     font-size: 12px;
   }
   .main-header .main-header__search__button {
-    top: 4px;
-    right: 4px;
-    bottom: 4px;
-    width: 32px;
-    border-radius: 5px;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 40px;
+    border-radius: 0 8px 8px 0;
     font-size: 14px;
   }
 
@@ -3655,5 +3694,42 @@ button.profileImageButton img {
   .post-pagination .next {
     flex: 1 1 0;
     justify-content: center;
+  }
+}
+
+/* ===========================================================
+   Tablet 992–1199: show category nav (horizontal scroll bar).
+   Desktop menu is hidden below 1200, mobile scroll-nav only ran
+   below 991 — this fills the gap.
+   =========================================================== */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .main-header__bottom {
+    display: flex !important;
+    background: #232e3f;
+    padding: 8px 20px;
+    justify-content: flex-start;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .main-header__bottom::-webkit-scrollbar {
+    display: none;
+  }
+  .main-menu .main-menu__list {
+    display: flex !important;
+    flex-wrap: nowrap;
+    gap: 18px;
+    align-items: center;
+  }
+  .main-menu .main-menu__list > li {
+    padding: 0;
+    white-space: nowrap;
+  }
+  .main-menu .main-menu__list > li + li {
+    margin-left: 0;
+  }
+  .main-menu .main-menu__list > li > a {
+    font-size: 12px;
+    font-weight: 500;
   }
 }

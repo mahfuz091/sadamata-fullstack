@@ -37,7 +37,7 @@ export const PUBLIC_PRODUCT_WHERE = {
 };
 
 export const PUBLIC_PRODUCT_INCLUDE = {
-  Brand: { select: { id: true, name: true } },
+  Brand: { select: { id: true, name: true, brandSlug: true } },
   User: { select: { id: true, name: true } },
   Mockup: { select: { id: true, name: true } },
   features: { select: { id: true, content: true } },

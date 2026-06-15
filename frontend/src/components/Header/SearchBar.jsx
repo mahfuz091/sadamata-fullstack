@@ -5,21 +5,25 @@ import Select from "react-select";
 import { useRouter } from "next/navigation";
 
 const customStyles = {
-  container: (base) => ({ ...base, width: "100%", height: "100%" }),
+  // Amazon-style: width fits the selected option, grows/shrinks with it.
+  container: (base) => ({ ...base, width: "auto", height: "100%" }),
   control: (base) => ({
     ...base,
     border: "none",
     boxShadow: "none",
-    minHeight: "36px",
-    height: "36px",
+    minHeight: "40px",
+    height: "40px",
+    width: "auto",
+    backgroundColor: "#e6e6e6",
     "&:hover": { border: "none" },
   }),
-  valueContainer: (base) => ({ ...base, padding: "0 8px", height: "36px" }),
-  indicatorsContainer: (base) => ({ ...base, height: "36px" }),
+  valueContainer: (base) => ({ ...base, padding: "0 8px", height: "40px" }),
+  indicatorsContainer: (base) => ({ ...base, height: "40px" }),
   input: (base) => ({ ...base, height: "auto", margin: 0, padding: 0 }),
-  singleValue: (base) => ({ ...base, fontSize: "14px" }),
-  placeholder: (base) => ({ ...base, fontSize: "14px" }),
-  menu: (base) => ({ ...base, zIndex: 99999 }),
+  singleValue: (base) => ({ ...base, fontSize: "14px", whiteSpace: "nowrap" }),
+  placeholder: (base) => ({ ...base, fontSize: "14px", whiteSpace: "nowrap" }),
+  // menu sizes to its content (fit-content), not the tiny control width.
+  menu: (base) => ({ ...base, zIndex: 99999, width: "max-content", minWidth: "100%" }),
   menuPortal: (base) => ({ ...base, zIndex: 99999 }),
   indicatorSeparator: () => null,
   option: (base, state) => ({
@@ -212,7 +216,7 @@ export default function SearchBar({ options = [], onSearch }) {
             menuPortalTarget={typeof document !== "undefined" ? document.body : null}
             menuPosition="fixed"
             isClearable
-            isSearchable
+            isSearchable={false}
             placeholder={placeholder}
           />
         </div>

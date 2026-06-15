@@ -26,10 +26,10 @@ model User {
   Order             Order[]
   Payout            Payout[]            @relation("MerchantPayouts")
   products          Product[]
+  productReviews    ProductReview[]
   sales             Sale[]              @relation("MerchantSales")
   addresses         UserAddress[]
   userProfile       UserProfile?
-  productReviews    ProductReview[]
 }
 
 model UserProfile {
@@ -157,6 +157,7 @@ model Brand {
   productCategoryId  String?
   tiktokLink         String?             @db.VarChar(255)
   youtubeLink        String?             @db.VarChar(255)
+  brandSlug          String?             @unique
   brandCategory      BrandCategory?      @relation(fields: [brandCategoryId], references: [id])
   ProductCategory    ProductCategory?    @relation(fields: [productCategoryId], references: [id])
   user               User                @relation(fields: [userId], references: [id])
@@ -193,18 +194,18 @@ model Product {
   backDesign            String?
   frontDesign           String?
   productId             String              @unique
-  smpin                 String?             @unique
   status                ProductStat?        @default(UNDERREVIEW)
+  smpin                 String?             @unique @db.VarChar(10)
   CommissionSetting     CommissionSetting[]
   features              Feature[]
   Brand                 Brand?              @relation(fields: [brandId], references: [id])
   Mockup                Mockup?             @relation(fields: [mockupId], references: [id])
   User                  User                @relation(fields: [userId], references: [id])
+  reviews               ProductReview[]
   variants              ProductVariant[]
   sales                 Sale[]
   tags                  Tag[]
   categories            ProductCategory[]   @relation("ProductCategories")
-  reviews               ProductReview[]
 
   @@index([isActive, visibility, createdAt])
   @@index([isActive, visibility, price])
@@ -360,19 +361,19 @@ model GuestAddress {
 }
 
 model OrderItem {
-  id           String   @id @default(cuid())
-  orderId      String
-  productId    String?
-  productTitle String
-  unitPrice    Decimal  @db.Decimal(12, 2)
-  quantity     Int      @default(1)
-  color        String?
-  fitType      FitType?
-  size         String?
-  order        Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  Refund       Refund?
-  Sale         Sale?
+  id            String         @id @default(cuid())
+  orderId       String
+  productId     String?
+  productTitle  String
+  unitPrice     Decimal        @db.Decimal(12, 2)
+  quantity      Int            @default(1)
+  color         String?
+  fitType       FitType?
+  size          String?
+  order         Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
   ProductReview ProductReview?
+  Refund        Refund?
+  Sale          Sale?
 }
 
 model Payment {
@@ -425,24 +426,25 @@ model Refund {
 }
 
 model ProductReview {
-  id          String    @id @default(cuid())
+  id          String           @id @default(cuid())
   productId   String
   userId      String
-  orderItemId String    @unique
+  orderItemId String           @unique
   rating      Int
   comment     String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
   mediaKey    String?
   mediaType   ReviewMediaType?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  orderItem   OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  orderItem   OrderItem        @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  product     Product          @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([productId, userId, orderItemId])
   @@index([productId, createdAt])
   @@index([userId])
 }
+
 model Payout {
   id         String      @id @default(uuid())
   actor      PayoutActor
@@ -477,11 +479,11 @@ enum ProductStat {
   REJECT
 }
 
-
 enum ReviewMediaType {
   IMAGE
   VIDEO
 }
+
 enum PayoutActor {
   BRAND
   MERCHANT
@@ -517,9 +519,5 @@ enum OrderStatus {
   CANCELLED
   SHIPPED
   COMPLETED
+  RETURNED
 }
-
-
-
-
-

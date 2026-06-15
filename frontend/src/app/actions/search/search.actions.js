@@ -240,7 +240,7 @@ export async function searchProducts(input) {
   };
 
   const include = {
-    Brand: { select: { id: true, name: true } },
+    Brand: { select: { id: true, name: true, brandSlug: true } },
     Mockup: { select: { id: true, name: true } },
     variants: {
       where: activeVariantWhere,
@@ -344,6 +344,7 @@ export async function searchProducts(input) {
       description: p.description,
       price: p.price,
       brandId: p.brandId ?? null,
+      brandSlug: p.Brand?.brandSlug ?? null,
       brandName: p.Brand?.name ?? p.brandName ?? null,
       mockupName: p.Mockup?.name ?? null,
       visibility: p.visibility,
@@ -466,6 +467,7 @@ export async function searchProducts(input) {
     description: p.description,
     price: p.price,
     brandId: p.brandId ?? null,
+    brandSlug: p.Brand?.brandSlug ?? null,
     brandName: p.Brand?.name ?? p.brandName ?? null,
     mockupName: p.Mockup?.name ?? null,
     visibility: p.visibility,

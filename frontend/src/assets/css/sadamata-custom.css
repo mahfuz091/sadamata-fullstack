@@ -2604,8 +2604,9 @@ button.profileImageButton img {
     padding-right: 0 !important;
   }
 
-  /* product card ratings: shrink to fit 2-col cards (Figma 1:360) */
+  /* product card ratings: hide reviews on mobile (kept in DOM, just not shown) */
   .product__item__ratings {
+    display: none !important;
     gap: 2px;
   }
   .product__item__ratings i {

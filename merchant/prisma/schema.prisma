@@ -157,6 +157,7 @@ model Brand {
   productCategoryId  String?
   tiktokLink         String?             @db.VarChar(255)
   youtubeLink        String?             @db.VarChar(255)
+  brandSlug          String?             @unique
   brandCategory      BrandCategory?      @relation(fields: [brandCategoryId], references: [id])
   ProductCategory    ProductCategory?    @relation(fields: [productCategoryId], references: [id])
   user               User                @relation(fields: [userId], references: [id])
@@ -193,8 +194,8 @@ model Product {
   backDesign            String?
   frontDesign           String?
   productId             String              @unique
-  smpin                 String?             @unique
   status                ProductStat?        @default(UNDERREVIEW)
+  smpin                 String?             @unique @db.VarChar(10)
   CommissionSetting     CommissionSetting[]
   features              Feature[]
   Brand                 Brand?              @relation(fields: [brandId], references: [id])
@@ -478,6 +479,7 @@ enum OrderStatus {
   CANCELLED
   SHIPPED
   COMPLETED
+  RETURNED
 }
 
 enum ProductStat {

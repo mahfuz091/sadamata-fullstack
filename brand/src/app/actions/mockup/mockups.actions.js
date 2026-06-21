@@ -47,7 +47,6 @@ export async function getMockupsWithProducts(userId) {
           brandName: true,
           Brand: { select: { id: true, name: true } },
           variants: {
-            orderBy: { id: "asc" },
             select: {
               id: true,
               frontImg: true,

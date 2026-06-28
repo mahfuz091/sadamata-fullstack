@@ -108,7 +108,9 @@
       "Bash(rm -f /tmp/probe*.mjs cdp_probe.mjs)",
       "Bash(curl -s \"http://localhost:9222/json/list\")",
       "Bash(taskkill //IM chrome.exe //F //FI \"WINDOWTITLE eq *\")",
-      "Bash(pkill -f \"remote-debugging-port=9222\")"
+      "Bash(pkill -f \"remote-debugging-port=9222\")",
+      "PowerShell(Get-Process *)",
+      "PowerShell(Stop-Process *)"
     ]
   }
 }

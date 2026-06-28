@@ -3713,26 +3713,30 @@ button.profileImageButton img {
     display: flex !important;
     background: #232e3f;
     padding: 8px 16px;
-    overflow-x: hidden;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .main-header__bottom::-webkit-scrollbar {
+    display: none;
   }
   .main-menu .main-menu__list {
     display: flex !important;
     flex-wrap: nowrap;
     align-items: center;
-    justify-content: space-between;
-    gap: 6px;
-    width: 100%;
+    justify-content: flex-start;
+    gap: 16px;
   }
   .main-menu .main-menu__list > li {
     padding: 0;
-    flex: 0 1 max-content;
-    min-width: 0;
+    flex: 0 0 auto;
+    white-space: nowrap;
   }
   .main-menu .main-menu__list > li + li {
     margin-left: 0;
   }
   .main-menu .main-menu__list > li > a {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 500;
     white-space: nowrap;
   }

@@ -260,7 +260,7 @@ const VendorSignup = () => {
 
             <div className='user-login__form-input-box'>
               <button type='submit' className='commerce-btn'>
-                Create your account <i className='icon-right-arrow' />
+                Create your account
               </button>
               <p>
                 By continuing, you agree to amazon’s{" "}

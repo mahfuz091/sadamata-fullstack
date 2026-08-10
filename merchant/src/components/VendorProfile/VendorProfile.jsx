@@ -111,7 +111,7 @@ const VendorProfile = () => {
             <div className="col-12">
               <div className="brand-register__btn text-end">
                 <button type="submit" className="commerce-btn">
-                  Send Request <i className="icon-right-arrow"></i>
+                  Send Request
                 </button>
               </div>
             </div>

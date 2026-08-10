@@ -589,10 +589,10 @@ const ProductArea = ({ result: initialResult, slug, q, brands, mockups, relatedP
                                 Brand:{" "}
                                 {item?.brandId ? (
                           <Link href={`/brand/${item.brandSlug || item.brandId}`}>
-                            {item?.brandName ?? "—"}
+                            {item?.Brand?.name || item?.brandName || "Unknown"}
                           </Link>
                         ) : (
-                          item?.brandName ?? item?.brandName ?? "—"
+                          item?.Brand?.name || item?.brandName || "Unknown"
                         )}
                               </p>
 

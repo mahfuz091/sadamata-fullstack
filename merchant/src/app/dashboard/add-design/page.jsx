@@ -33,7 +33,10 @@ const page = async () => {
       name: true,
       merchantProfile: true,
       CommissionSetting: {
-        where: { isActive: true },
+        // merchant-scoped rule only, newest first — the preview reads [0]
+        where: { isActive: true, brandId: null, productId: null },
+        orderBy: { effectiveFrom: "desc" },
+        take: 1,
         select: {
           brandCommissionPct: true,
           merchantCommissionPct: true,

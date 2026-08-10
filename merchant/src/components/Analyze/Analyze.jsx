@@ -318,7 +318,7 @@ const Analyze = ({
                     </>
                   ) : (
                     <>
-                      Load More <i className='icon-right-arrow'></i>
+                      Load More
                     </>
                   )}
                 </button>

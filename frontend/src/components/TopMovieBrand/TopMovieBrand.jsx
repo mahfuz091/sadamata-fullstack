@@ -28,7 +28,7 @@ const normalizeBrand = (brand, index) => ({
   id: brand?.brandSlug || brand?.id || `brand-${index}`,
   name: brand?.name || brand?.user?.name || `Brand ${index + 1}`,
   image:
-    
+
   brand?.profileImageUrl ||
     brand?.bannerImageUrl ||
     brand?.previewUrl ||

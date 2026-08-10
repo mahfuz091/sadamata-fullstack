@@ -2290,18 +2290,20 @@ export default function AddDesignFitAdmin({
     if (!validateBeforePublish()) return;
     try {
       setIsPublishing(true);
-      // ✅ 3 sec পর redirect (validation pass হলে)
-      const t = setTimeout(() => {
-        router.push("/dashboard");
-      }, 3000);
+
       const formData = await prepareMockupFiles();
-      if (!formData) return;
+      if (!formData) {
+        setIsPublishing(false);
+        return;
+      }
 
       const product = await createProduct(formData);
 
       if (product.success) {
         toast.success("Product created!");
         setIsPublishing(false);
+        // ✅ redirect only after the server confirms creation
+        router.push("/dashboard");
       } else {
         console.error("Failed to create product:", product.message);
         toast.error(product.message || "Failed to create product.");
@@ -2386,7 +2388,7 @@ export default function AddDesignFitAdmin({
               <div className='dashboard-area__top'>
                 <h2 className='dashboard-area__title'>Create Products</h2>
                 <a href='#' className='commerce-btn'>
-                  Select Products <i className='icon-right-arrow' />
+                  Select Products
                 </a>
               </div>
 
@@ -2558,7 +2560,7 @@ export default function AddDesignFitAdmin({
                           className='commerce-btn product__item-two__link'
                           onClick={() => setActiveProductIndex(index)}
                         >
-                          Edit Details <i className='icon-right-arrow'></i>
+                          Edit Details
                         </button>
                       </div>
                     </div>
@@ -3155,7 +3157,7 @@ export default function AddDesignFitAdmin({
 
                 <div className='product-details__btn-group d-flex justify-content-end'>
                   {/* <button type='button' className='commerce-btn'>
-                    Save draft<i className='icon-right-arrow'></i>
+                    Save draft
                   </button> */}
                   <button
                     type='button'
@@ -3178,7 +3180,7 @@ export default function AddDesignFitAdmin({
                       </>
                     ) : (
                       <>
-                        Publish <i className='icon-right-arrow'></i>
+                        Publish
                       </>
                     )}
                   </button>

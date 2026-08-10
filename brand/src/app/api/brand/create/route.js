@@ -37,11 +37,19 @@ export async function POST(request) {
 
     // Step 5: Create the new brand
     const brandSlug = await generateBrandSlug(prisma, name);
+    const isExclusive =
+      String(formData.get("isExclusive") ?? "").toLowerCase() === "true";
+
     const newBrand = await prisma.brand.create({
       data: {
         name,
         brandSlug,
         isActive: false, // Default to false
+        // Commission defaults must follow exclusivity — the product-create
+        // resolver falls back to these when no CommissionSetting exists.
+        isExclusive,
+        defaultBrandPct: isExclusive ? 10 : 6,
+        defaultMerchantPct: 6,
         user: { connect: { id: userId } }, // Associate the brand with the userId
         brandCategory: {
           connect: { id: brandCategoryId }, // Connect to an existing BrandCategory

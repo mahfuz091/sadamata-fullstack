@@ -3,7 +3,11 @@
     "allow": [
       "PowerShell(Get-ChildItem \"E:\\\\sadamata-fullstack\\\\merchant\\\\src\" -Depth 3 | Where-Object { $_.PSIsContainer } | Select-Object FullName)",
       "PowerShell(Get-ChildItem \"E:\\\\sadamata-fullstack\\\\merchant\\\\src\" -Recurse -Directory | Select-Object -ExpandProperty FullName | ForEach-Object { $_.Replace\\(\"E:\\\\sadamata-fullstack\\\\merchant\\\\src\\\\\", \"\"\\) })",
-      "PowerShell(Get-ChildItem \"E:\\\\sadamata-fullstack\\\\merchant\\\\src\" -File -Recurse | ForEach-Object { $_.FullName.Replace\\(\"E:\\\\sadamata-fullstack\\\\merchant\\\\src\\\\\", \"src\\\\\"\\) } | Where-Object { $_ -notmatch \"assets|generated|vendors|node_modules\" } | Out-String)"
+      "PowerShell(Get-ChildItem \"E:\\\\sadamata-fullstack\\\\merchant\\\\src\" -File -Recurse | ForEach-Object { $_.FullName.Replace\\(\"E:\\\\sadamata-fullstack\\\\merchant\\\\src\\\\\", \"src\\\\\"\\) } | Where-Object { $_ -notmatch \"assets|generated|vendors|node_modules\" } | Out-String)",
+      "Bash(npx next *)",
+      "Bash(node --check src/app/actions/product/product.actions.js)",
+      "Bash(npx eslint *)",
+      "Bash(git checkout *)"
     ]
   }
 }

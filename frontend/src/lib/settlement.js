@@ -1,16 +1,31 @@
 // lib/settlement.js
 import prisma from "@/lib/prisma";
 
-function resolveRates(product, brand) {
-  const brandPct =
-    typeof product.brandCommissionPct === "number"
-      ? product.brandCommissionPct
-      : brand ? brand.defaultBrandPct : 0;
+const validPct = (v) =>
+  typeof v === "number" && Number.isFinite(v) && v >= 0 && v <= 100 ? v : null;
 
-  const merchantPct =
-    typeof product.merchantCommissionPct === "number"
-      ? product.merchantCommissionPct
-      : brand ? brand.defaultMerchantPct : 0;
+function resolveRates(product, brand) {
+  // A product with no brand can never pay a brand royalty — older products were
+  // frozen with a non-zero brandCommissionPct even when brandId was null, which
+  // deducted a brand share that nobody could ever be paid.
+  const hasBrand = Boolean(product.brandId && brand);
+
+  const brandPct = hasBrand
+    ? (validPct(product.brandCommissionPct) ??
+      validPct(brand.defaultBrandPct) ??
+      0)
+    : 0;
+
+  let merchantPct =
+    validPct(product.merchantCommissionPct) ??
+    (hasBrand ? (validPct(brand.defaultMerchantPct) ?? 0) : 0);
+
+  if (brandPct + merchantPct > 100) {
+    console.warn(
+      `[settlement] product ${product.id} rates exceed 100% (brand ${brandPct} + merchant ${merchantPct}); clamping merchant share`,
+    );
+    merchantPct = Math.max(0, 100 - brandPct);
+  }
 
   const platformPct = Math.max(0, 100 - (brandPct + merchantPct));
   return { brandPct, merchantPct, platformPct };

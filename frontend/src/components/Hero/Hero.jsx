@@ -8,11 +8,15 @@ import hero5 from "@/assets/images/resources/hero-2-2.jpg";
 import hero6 from "@/assets/images/resources/hero-2-3.jpg";
 import HeroMobileSlider from "./HeroMobileSlider";
 
-const Hero = () => {
+const Hero = ({ musicBrands = [], movieBrands = [], natokBrands = [] }) => {
   return (
     <section className='hero-area'>
       <div className='container'>
-        <HeroMobileSlider />
+        <HeroMobileSlider
+          musicBrands={musicBrands}
+          movieBrands={movieBrands}
+          natokBrands={natokBrands}
+        />
         <div className='row hero-area__desktop'>
           <div className='col-xl-3 col-lg-3 col-md-12'>
             <div className='hero-area__thumb'>

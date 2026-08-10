@@ -1167,7 +1167,7 @@ export default function EditProductDesign({
                           className='commerce-btn product__item-two__link'
                           onClick={() => setActiveProductIndex(index)}
                         >
-                          Edit Details <i className='icon-right-arrow'></i>
+                          Edit Details
                         </button>
                       </div>
                     </div>

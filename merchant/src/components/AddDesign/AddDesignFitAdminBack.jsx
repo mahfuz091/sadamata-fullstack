@@ -2100,7 +2100,7 @@ export default function AddDesignFitAdminBack({
               <div className='dashboard-area__top'>
                 <h2 className='dashboard-area__title'>Create Products</h2>
                 <a href='#' className='commerce-btn'>
-                  Select Products <i className='icon-right-arrow' />
+                  Select Products
                 </a>
               </div>
 
@@ -2272,7 +2272,7 @@ export default function AddDesignFitAdminBack({
                           className='commerce-btn product__item-two__link'
                           onClick={() => setActiveProductIndex(index)}
                         >
-                          Edit Details <i className='icon-right-arrow'></i>
+                          Edit Details
                         </button>
                       </div>
                     </div>
@@ -2855,7 +2855,7 @@ export default function AddDesignFitAdminBack({
 
                 <div className='product-details__btn-group'>
                   {/* <button type='button' className='commerce-btn'>
-                    Save draft<i className='icon-right-arrow'></i>
+                    Save draft
                   </button> */}
                   <button
                     type='button'
@@ -2878,7 +2878,7 @@ export default function AddDesignFitAdminBack({
                       </>
                     ) : (
                       <>
-                        Publish <i className='icon-right-arrow'></i>
+                        Publish
                       </>
                     )}
                   </button>

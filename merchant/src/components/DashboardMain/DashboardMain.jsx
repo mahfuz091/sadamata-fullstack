@@ -206,7 +206,7 @@ const DashboardMain = ({
                 </div>
                 <div className='dashboard__top__btn'>
                   <Link href='/dashboard/add-design' className='commerce-btn'>
-                    Create <i className='icon-right-arrow'></i>
+                    Create
                   </Link>
                 </div>
               </div>

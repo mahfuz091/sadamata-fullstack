@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import generateBlogId from "@/utils/generateTitle";
 import { saveDesignFileS3, saveProductFileS3 } from "@/lib/s3helper";
 import { generateUniqueSmpin } from "@/lib/smpin";
+import { resolveEffectiveCommissions } from "@/lib/commissionRates";
 import { revalidatePath } from "next/cache";
 
 const uploadDir = path.join(process.cwd(), "public", "uploads");
@@ -241,118 +242,11 @@ function getTodayRange() {
   return { start, end };
 }
 
-// async function resolveEffectiveCommissions({ merchantId, brandId }) {
-//   // 1️⃣ Merchant + Brand specific rule
-//   const pairRule = await prisma.commissionSetting.findFirst({
-//     where: { isActive: true, merchantId, brandId: brandId || undefined },
-//     orderBy: { effectiveFrom: "desc" },
-//   });
-//   console.log(merchantId, brandId, pairRule);
-
-//   if (pairRule) {
-//     return {
-//       brandPct: pairRule.brandCommissionPct,
-//       merchantPct: pairRule.brandSelectedMerchantPct,
-//       // merchantWithBrandPct: pairRule.brandSelectedMerchantPct,
-//       source: "merchant+brand rule",
-//     };
-//   }
-
-//   // 2️⃣ Merchant-only rule
-//   const merchantRule = await prisma.commissionSetting.findFirst({
-//     where: { isActive: true, merchantId, brandId: null },
-//     orderBy: { effectiveFrom: "desc" },
-//   });
-//   if (merchantRule) {
-//     return {
-//       brandPct: merchantRule.brandCommissionPct,
-//       merchantPct: merchantRule.merchantCommissionPct,
-//       source: "merchant-only rule",
-//     };
-//   }
-
-//   // 3️⃣ Brand-only rule
-//   if (brandId) {
-//     const brandRule = await prisma.commissionSetting.findFirst({
-//       where: { isActive: true, merchantId: null, brandId },
-//       orderBy: { effectiveFrom: "desc" },
-//     });
-//     if (brandRule) {
-//       return {
-//         brandPct: brandRule.brandCommissionPct,
-//         merchantPct: brandRule.merchantCommissionPct,
-//         source: "brand-only rule",
-//       };
-//     }
-//   }
-
-//   // 4️⃣ Brand default percentages
-//   if (brandId) {
-//     const brand = await prisma.brand.findUnique({
-//       where: { id: brandId },
-//       select: { defaultBrandPct: true, defaultMerchantPct: true },
-//     });
-//     if (brand) {
-//       return {
-//         brandPct: brand.defaultBrandPct || 6,
-//         merchantPct: brand.defaultMerchantPct || 11,
-//         source: "brand defaults",
-//       };
-//     }
-//   }
-
-//   // 5️⃣ Hard fallback
-//   return { brandPct: 6, merchantPct: 11, source: "hard fallback" };
-// }
-async function resolveEffectiveCommissions({ merchantId, brandId }) {
-  // 🔹 CASE 1: Brand provided -> Try merchant + brand pair rule
-  if (brandId) {
-    const pairRule = await prisma.commissionSetting.findFirst({
-      where: {
-        isActive: true,
-        merchantId,
-        brandId,
-      },
-      orderBy: { effectiveFrom: "desc" },
-    });
-
-    if (pairRule) {
-      return {
-        brandPct: pairRule.brandCommissionPct,
-        merchantPct: pairRule.brandSelectedMerchantPct,
-        source: "merchant+brand rule",
-      };
-    }
-  }
-
-  // 🔹 CASE 2: Fallback to Merchant's general rule (brandId is null)
-  const merchantRule = await prisma.commissionSetting.findFirst({
-    where: {
-      isActive: true,
-      merchantId,
-      brandId: null,
-    },
-    orderBy: { effectiveFrom: "desc" },
-  });
-
-  if (merchantRule) {
-    return {
-      brandPct: merchantRule.brandCommissionPct,
-      // ✅ If brand was selected but no pair rule, use brandSelectedMerchantPct from general rule
-      merchantPct: brandId
-        ? merchantRule.brandSelectedMerchantPct
-        : merchantRule.merchantCommissionPct,
-      source: brandId ? "merchant-only rule (with brand)" : "merchant-only rule",
-    };
-  }
-
-  // 🔻 Optional fallback (strongly recommended)
-  return {
-    brandPct: 6,
-    merchantPct: 11,
-    source: "hard fallback",
-  };
-}
+// Rate resolution lives in @/lib/commissionRates so the brand-side sources
+// (brand rule -> Brand.defaultBrandPct -> isExclusive) are honoured. The old
+// version read brandCommissionPct off the MERCHANT rule, which ignored the
+// brand entirely — every product froze the same brand pct regardless of the
+// brand's exclusivity or the admin's per-brand setting.
 
 
 async function saveFile(file, fieldName) {
@@ -871,10 +765,13 @@ export async function createProduct(formData) {
     if (price < 990) throw new Error("Minimum price is 990.");
 
     // ---- commissions (server truth) ----
-    const { brandPct, merchantPct } = await resolveEffectiveCommissions({
+    const { brandPct, merchantPct, source } = await resolveEffectiveCommissions({
       merchantId: userId,
       brandId,
     });
+    console.log(
+      `[commission] product create merchant=${userId} brand=${brandId ?? "none"} -> brand ${brandPct}% / merchant ${merchantPct}% (${source})`,
+    );
 
     // ---- read mockup, build final title + baseSlug ----
     const mockup = await prisma.mockup.findUnique({

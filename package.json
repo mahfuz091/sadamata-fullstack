@@ -1,0 +1,28 @@
+{
+  "name": "sadamata-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Root runner for the 4 Sadamata Next.js apps. Not a monorepo - each app keeps its own package.json and node_modules.",
+  "scripts": {
+    "dev": "concurrently -n frontend,merchant,brand,dashboard -c cyan,magenta,yellow,green \"npm run dev:frontend\" \"npm run dev:merchant\" \"npm run dev:brand\" \"npm run dev:dashboard\"",
+    "dev:frontend": "npm run dev --prefix frontend -- --port 3000",
+    "dev:merchant": "npm run dev --prefix merchant -- --port 3001",
+    "dev:brand": "npm run dev --prefix brand -- --port 3002",
+    "dev:dashboard": "npm run dev --prefix dashboard",
+
+    "build": "concurrently -n frontend,merchant,brand,dashboard -c cyan,magenta,yellow,green --kill-others-on-fail \"npm run build --prefix frontend\" \"npm run build --prefix merchant\" \"npm run build --prefix brand\" \"npm run build --prefix dashboard\"",
+    "build:seq": "npm run build --prefix frontend && npm run build --prefix merchant && npm run build --prefix brand && npm run build --prefix dashboard",
+
+    "start": "concurrently -n frontend,merchant,brand,dashboard -c cyan,magenta,yellow,green \"npm run start --prefix frontend -- --port 3000\" \"npm run start --prefix merchant -- --port 3001\" \"npm run start --prefix brand -- --port 3002\" \"npm run start --prefix dashboard -- --port 3003\"",
+
+    "install:all": "concurrently -n frontend,merchant,brand,dashboard -c cyan,magenta,yellow,green --kill-others-on-fail \"npm install --prefix frontend\" \"npm install --prefix merchant\" \"npm install --prefix brand\" \"npm install --prefix dashboard\"",
+    "generate": "concurrently -n frontend,merchant,brand,dashboard -c cyan,magenta,yellow,green \"npx prisma generate --schema frontend/prisma/schema.prisma\" \"npx prisma generate --schema merchant/prisma/schema.prisma\" \"npx prisma generate --schema brand/prisma/schema.prisma\" \"npx prisma generate --schema dashboard/prisma/schema.prisma\"",
+
+    "pm2:start": "pm2 start ecosystem.config.cjs",
+    "pm2:stop": "pm2 stop ecosystem.config.cjs",
+    "pm2:logs": "pm2 logs"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

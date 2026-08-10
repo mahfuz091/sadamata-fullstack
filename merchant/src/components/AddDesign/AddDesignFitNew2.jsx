@@ -981,7 +981,7 @@ export default function AddDesignFitNew2({
               <div className='dashboard-area__top'>
                 <h2 className='dashboard-area__title'>Create Products</h2>
                 <a href='#' className='commerce-btn'>
-                  Select Products <i className='icon-right-arrow' />
+                  Select Products
                 </a>
               </div>
 
@@ -1109,7 +1109,7 @@ export default function AddDesignFitNew2({
                           className='commerce-btn product__item-two__link'
                           onClick={() => setActiveProductIndex(index)}
                         >
-                          Edit Details <i className='icon-right-arrow'></i>
+                          Edit Details
                         </button>
                       </div>
                     </div>
@@ -1684,14 +1684,14 @@ export default function AddDesignFitNew2({
 
                 <div className='product-details__btn-group'>
                   <button type='button' className='commerce-btn'>
-                    Save draft<i className='icon-right-arrow'></i>
+                    Save draft
                   </button>
                   <button
                     type='button'
                     className='commerce-btn ms-3'
                     onClick={handleCreateProduct}
                   >
-                    Publish <i className='icon-right-arrow'></i>
+                    Publish
                   </button>
                   {/* Utilities (optional):
                   <button className="commerce-btn" onClick={saveImage}>Save Image</button>

@@ -31,7 +31,7 @@ export default function ContentCreator() {
                 </strong>
               </p>
               <Link href='/signup' className='commerce-btn'>
-                Register <i className='icon-right-arrow'></i>
+                Register
               </Link>
             </div>
           </div>

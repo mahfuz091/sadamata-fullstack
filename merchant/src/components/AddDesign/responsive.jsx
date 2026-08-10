@@ -108,7 +108,7 @@ function Responsive() {
                 </h4>
 
                 <a href='cart' className='commerce-btn product__item-two__link'>
-                  Edit Details <i className='icon-right-arrow'></i>
+                  Edit Details
                 </a>
               </div>
             </div>

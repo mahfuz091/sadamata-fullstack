@@ -35,7 +35,11 @@ export default async function Home() {
   // console.log(session, "session");
   return (
     <>
-      <Hero />
+      <Hero
+        musicBrands={musicBrands?.items}
+        movieBrands={movieBrands?.items}
+        natokBrands={natokBrands?.items}
+      />
       <BrandInfo />
       <PopularProduct />
       <FeatureProduct />

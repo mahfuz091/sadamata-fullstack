@@ -235,10 +235,10 @@ const FeatureProduct = () => {
                       <span>
                         {product?.Brand?.id ? (
                           <Link href={`/brand/${product.Brand.brandSlug || product.Brand.id}`}>
-                            {product?.Brand?.name ?? product?.brandName ?? "—"}
+                            {product?.Brand?.name || product?.brandName || "Unknown"}
                           </Link>
                         ) : (
-                          product?.Brand?.name ?? product?.brandName ?? "—"
+                          product?.Brand?.name || product?.brandName || "Unknown"
                         )}
                       </span>
                     </p>

@@ -380,7 +380,7 @@ console.log(res, "delete product res");
                     </>
                   ) : (
                     <>
-                      Load More <i className='icon-right-arrow'></i>
+                      Load More
                     </>
                   )}
                 </button>

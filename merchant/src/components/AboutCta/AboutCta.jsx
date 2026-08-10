@@ -12,7 +12,7 @@ export default function AboutCta() {
             Click on “Register” and provide the required information. We will verify your details and notify you via email within 9 days. You can also log in to your merch portal anytime to check your application status.
           </p>
           <Link href='/signup' className='commerce-btn'>
-            Register <i className='icon-right-arrow'></i>
+            Register
           </Link>
         </div>
       </div>

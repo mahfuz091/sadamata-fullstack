@@ -3,7 +3,9 @@ import "@fontsource/instrument-sans";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import "@/assets/vendors/fontawesome/css/all.min.css";
+// vendored copy is Font Awesome 5.15.1, which predates fa-threads (added in 6.4.2)
+// import "@/assets/vendors/fontawesome/css/all.min.css";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 import "react-country-state-city/dist/react-country-state-city.css";
 import "react-datepicker/dist/react-datepicker.css";
 import "@/assets/vendors/commerce-icons/style.css";

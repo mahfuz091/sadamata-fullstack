@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { settleOrderEarnings } from "@/lib/settlement";
+import { validateWithSslcz } from "@/lib/sslcz";
 
 async function parseIncoming(req) {
   const url = new URL(req.url);
@@ -45,7 +46,38 @@ async function handleSuccess(req) {
       orderId = found.id;
     }
 
-    // TODO: validate v.val_id with SSLCOMMERZ before marking PAID in production
+    // SECURITY: never trust this callback. It is a plain GET/POST the browser is
+    // redirected to, so anyone who knows (or guesses) a tran_id could hit it and
+    // mark an order PAID without paying. Confirm the transaction with the gateway
+    // first — same check /api/sslcz/success-bridge already performs.
+    const valId = String(v?.val_id || "");
+    const validation = await validateWithSslcz(valId);
+    const isValid =
+      validation?.status === "VALID" || validation?.status === "VALIDATED";
+
+    if (!isValid) {
+      console.warn(
+        `[sslcz/success] rejected tran ${tranId}: validator returned ${validation?.status ?? "no response"}`,
+      );
+      await prisma.order.update({
+        where: { id: orderId, tranId },
+        data: {
+          status: "FAILED",
+          payment: {
+            upsert: {
+              create: { valId: valId || null, rawPayload: p },
+              update: { valId: valId || null, rawPayload: p },
+            },
+          },
+        },
+      });
+
+      const base = process.env.APP_BASE_URL || req.nextUrl.origin;
+      return NextResponse.redirect(
+        `${base}/payment-failed?reason=validation_failed`,
+        { status: 303 },
+      );
+    }
 
     // Mark paid + store payment payload
     await prisma.order.update({

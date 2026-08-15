@@ -2633,6 +2633,57 @@ button.profileImageButton img {
   }
 }
 
+/* ===========================================================
+   Desktop hero — fluid sizing (992px and up)
+
+   The thumbnails are 190px source images with no max-width, so
+   each side column needed 190 + 16 + 190 = 396px of content box.
+   A .col-xl-3 only gives 338px at the widest container (1470px),
+   and less as the container steps down (1320 / 1140 / 960). The
+   images therefore overflowed their column at every width — the
+   spill only cleared the viewport above ~1558px, which is why
+   the break appeared "below 1600px".
+
+   Fix: let the thumbnails share the column width instead of
+   holding their intrinsic size, and scale type/padding with the
+   viewport. Capped at the 190px source width so nothing upscales.
+   =========================================================== */
+.hero-area {
+  padding-top: clamp(48px, 5.2vw, 100px);
+  padding-bottom: clamp(36px, 3.6vw, 70px);
+}
+
+.hero-area__thumb {
+  justify-content: center;
+  gap: clamp(10px, 1.1vw, 16px);
+}
+
+.hero-area__thumb__item {
+  flex: 1 1 0;
+  min-width: 0;          /* allow shrink below the image's intrinsic width */
+  max-width: 190px;      /* source is 190px wide — never upscale */
+}
+
+.hero-area__thumb img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.hero-area__thumb img + img {
+  margin-top: clamp(10px, 1.1vw, 16px);
+}
+
+.hero-area__title {
+  font-size: clamp(30px, 3.25vw, 48px);
+  margin-bottom: clamp(14px, 1.4vw, 20px);
+}
+
+.hero-area__text {
+  font-size: clamp(15px, 1.15vw, 18px);
+  margin-bottom: clamp(24px, 2.6vw, 40px);
+}
+
 @media (max-width: 991px) {
   .hero-area {
     padding-top: 24px;

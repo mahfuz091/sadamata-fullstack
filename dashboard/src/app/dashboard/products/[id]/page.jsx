@@ -5,6 +5,7 @@ import ProductStatusControl from "../_components/ProductStatusControl";
 import DownloadButton from "../_components/DownloadButton";
 import ProductVariantActiveToggle from "../_components/ProductVariantActiveToggle";
 import { getPrivateUrl } from "@/lib/s3";
+import { resolveCurrentCommission } from "@/lib/commission/currentRates";
 
 export const metadata = {
   title: "Product Details",
@@ -90,6 +91,22 @@ export default async function ProductDetailsPage({ params }) {
     orderBy: { name: "asc" },
   });
 
+  // what a sale of this product would pay if it settled right now
+  const current = await resolveCurrentCommission({
+    merchantId: product.userId,
+    brandId: product.brandId || null,
+  });
+
+  const samePct = (a, b) =>
+    a == null || Math.abs(Number(a) - Number(b)) < 0.001;
+
+  const drift = [
+    samePct(product.brandCommissionPct, current.brandPct) ? null : "brand",
+    samePct(product.merchantCommissionPct, current.merchantPct)
+      ? null
+      : "merchant",
+  ].filter(Boolean);
+
   if (!product) notFound();
 
   return (
@@ -130,14 +147,64 @@ export default async function ProductDetailsPage({ params }) {
 
       {/* Commission */}
       <Section title='Commission Settings'>
-        <Item
-          label='Brand Commission %'
-          value={product.brandCommissionPct ?? "Default"}
-        />
-        <Item
-          label='Merchant Commission %'
-          value={product.merchantCommissionPct ?? "Default"}
-        />
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+          <RateCard
+            title='Current active rates'
+            hint={
+              current.isExclusive
+                ? "Exclusive brand — the brand rule sets the brand share"
+                : "Live CommissionSetting cascade"
+            }
+            rows={[
+              {
+                label: "Brand",
+                pct: current.brandPct,
+                source: current.brandSource,
+              },
+              {
+                label: "Merchant",
+                pct: current.merchantPct,
+                source: current.merchantSource,
+              },
+              {
+                label: "Platform",
+                pct: current.platformPct,
+                source: "remainder",
+              },
+            ]}
+          />
+
+          <RateCard
+            title='Frozen on this product'
+            hint='Snapshot taken at product creation — what settlement pays today'
+            rows={[
+              {
+                label: "Brand",
+                pct: product.brandCommissionPct,
+                source: product.brandCommissionPct == null ? "not set" : null,
+              },
+              {
+                label: "Merchant",
+                pct: product.merchantCommissionPct,
+                source:
+                  product.merchantCommissionPct == null ? "not set" : null,
+              },
+            ]}
+          />
+        </div>
+
+        {current.clamped && (
+          <p className='text-sm text-amber-600'>
+            Brand + merchant exceed 100% — merchant share clamped.
+          </p>
+        )}
+
+        {drift.length > 0 && (
+          <p className='text-sm text-amber-600'>
+            Frozen snapshot differs from the current rates ({drift.join(", ")}).
+            Existing sales already settled keep their original amounts.
+          </p>
+        )}
       </Section>
 
       {/* Design Files */}
@@ -315,6 +382,33 @@ function Section({ title, children }) {
     <div className='border rounded-lg p-4'>
       <h2 className='text-lg font-medium mb-4'>{title}</h2>
       <div className='space-y-2'>{children}</div>
+    </div>
+  );
+}
+
+function RateCard({ title, hint, rows }) {
+  return (
+    <div className='border rounded-lg p-4'>
+      <p className='font-medium'>{title}</p>
+      <p className='text-xs text-muted-foreground mb-3'>{hint}</p>
+
+      <div className='space-y-2'>
+        {rows.map((r) => (
+          <div key={r.label} className='flex items-baseline justify-between'>
+            <span className='text-sm text-muted-foreground'>{r.label}</span>
+            <span className='text-right'>
+              <span className='font-semibold tabular-nums'>
+                {r.pct == null ? "—" : `${Number(r.pct)}%`}
+              </span>
+              {r.source && (
+                <span className='block text-xs text-muted-foreground'>
+                  {r.source}
+                </span>
+              )}
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

@@ -180,6 +180,23 @@ const firstBrand = await prisma.brand.findFirst({
 
   const pmap = new Map(products.map(p => [p.id, p]));
 
+  // Settlement resolves rates live at payment time, so the pct frozen on
+  // Product no longer matches what was actually paid. Read the recorded split
+  // off Sale and only fall back to the snapshot for lines that never settled.
+  const paidOrderItemIds = paidOrders.flatMap(o => o.items.map(i => i.id));
+  const sales = paidOrderItemIds.length
+    ? await prisma.sale.findMany({
+        where: { orderItemId: { in: paidOrderItemIds } },
+        select: {
+          orderItemId: true,
+          brandEarning: true,
+          merchantEarning: true,
+          platformEarning: true,
+        },
+      })
+    : [];
+  const saleByOrderItem = new Map(sales.map(s => [s.orderItemId, s]));
+
   // === SOLD aggregation ===
   let soldUnits = 0;
   let soldOrders = 0;
@@ -200,16 +217,29 @@ const firstBrand = await prisma.brand.findFirst({
       const price = new Prisma.Decimal(item.unitPrice ?? 0);
       const total = price.mul(qty);
 
-      const brandPct =
-        p.brandCommissionPct ??
-        (p.brandId ? p.Brand?.defaultBrandPct ?? 0 : 0);
-      const merchPct =
-        p.merchantCommissionPct ??
-        (p.brandId ? p.Brand?.defaultMerchantPct ?? 0 : 0);
+      const sale = saleByOrderItem.get(item.id);
 
-      const brandAmt = total.mul(brandPct).div(100);
-      const merchAmt = total.mul(merchPct).div(100);
-      const platformAmt = total.sub(brandAmt).sub(merchAmt);
+      let brandAmt;
+      let merchAmt;
+      let platformAmt;
+
+      if (sale) {
+        brandAmt = new Prisma.Decimal(sale.brandEarning ?? 0);
+        merchAmt = new Prisma.Decimal(sale.merchantEarning ?? 0);
+        platformAmt = new Prisma.Decimal(sale.platformEarning ?? 0);
+      } else {
+        // not settled yet — best-effort estimate from the frozen snapshot
+        const brandPct =
+          p.brandCommissionPct ??
+          (p.brandId ? p.Brand?.defaultBrandPct ?? 0 : 0);
+        const merchPct =
+          p.merchantCommissionPct ??
+          (p.brandId ? p.Brand?.defaultMerchantPct ?? 0 : 0);
+
+        brandAmt = total.mul(brandPct).div(100);
+        merchAmt = total.mul(merchPct).div(100);
+        platformAmt = total.sub(brandAmt).sub(merchAmt);
+      }
 
       soldUnits += qty;
       grossRevenue = grossRevenue.add(total);

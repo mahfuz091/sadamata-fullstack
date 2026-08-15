@@ -14,10 +14,12 @@ const { Option } = Select;
 
 function debounce(fn, delay = 400) {
   let t;
-  return (...args) => {
+  const wrapped = (...args) => {
     clearTimeout(t);
     t = setTimeout(() => fn(...args), delay);
   };
+  wrapped.cancel = () => clearTimeout(t);
+  return wrapped;
 }
 
 export default function ProductsTable({
@@ -44,6 +46,16 @@ export default function ProductsTable({
     setProducts(initial);
   }, [initial]);
 
+  // ✅ keep the inputs in sync with the URL (back/forward, Reset, external links)
+  useEffect(() => {
+    setQ(filters?.q || "");
+  }, [filters?.q]);
+
+  useEffect(() => {
+    setMerchantId(filters?.merchantId || null);
+    setBrandId(filters?.brandId || null);
+  }, [filters?.merchantId, filters?.brandId]);
+
   const setLoadingFor = (id, val) => {
     setLoadingIds((prev) =>
       val ? [...prev, id] : prev.filter((x) => x !== id)
@@ -63,17 +75,29 @@ export default function ProductsTable({
       params.set("page", "1");
     }
 
+    // router.push already refetches the server component for this route;
+    // the extra router.refresh() only doubled every request.
     router.push(`${pathname}?${params.toString()}`);
-    router.refresh();
   };
+
+  // setQueryParams closes over `sp`. Memoising the debounced callback with []
+  // froze the very first `sp`, so a search typed after changing the merchant /
+  // brand / page rebuilt the URL from the stale params and silently dropped
+  // whatever filter had been applied in between. Read it through a ref instead.
+  const setQueryParamsRef = React.useRef(setQueryParams);
+  useEffect(() => {
+    setQueryParamsRef.current = setQueryParams;
+  });
 
   const debouncedSearch = React.useMemo(
     () =>
       debounce((value) => {
-        setQueryParams({ q: value.trim() });
+        setQueryParamsRef.current({ q: value.trim() });
       }, 400),
     []
   );
+
+  useEffect(() => () => debouncedSearch.cancel(), [debouncedSearch]);
   const handleStatusChange = async (product, status) => {
     setLoadingFor(product.id, true);
 
@@ -243,23 +267,37 @@ export default function ProductsTable({
             const val = e.target.value;
             setQ(val);
 
-            if (!val) {
+            // blank (or whitespace-only) clears the filter immediately
+            if (!val.trim()) {
+              debouncedSearch.cancel();
               setQueryParams({ q: null });
               return;
             }
 
             debouncedSearch(val);
           }}
+          onPressEnter={() => {
+            debouncedSearch.cancel();
+            setQueryParams({ q: q.trim() || null });
+          }}
         />
-
-        <Button onClick={() => setQueryParams({ q: q.trim() })}>Search</Button>
 
         <Button
           onClick={() => {
+            debouncedSearch.cancel();
+            setQueryParams({ q: q.trim() || null });
+          }}
+        >
+          Search
+        </Button>
+
+        <Button
+          onClick={() => {
+            debouncedSearch.cancel();
             setMerchantId(null);
             setBrandId(null);
             setQ("");
-            setQueryParams({ merchantId: null, brandId: null, q: "" });
+            setQueryParams({ merchantId: null, brandId: null, q: null });
           }}
         >
           Reset
@@ -276,7 +314,10 @@ export default function ProductsTable({
           total: meta?.total || 0,
           showSizeChanger: true,
           onChange: (page, pageSize) => {
-            setQueryParams({ page, pageSize });
+            // changing page size re-slices the result set — the old page number
+            // can land past the last page, so go back to page 1
+            const sizeChanged = pageSize !== (meta?.pageSize || 10);
+            setQueryParams({ page: sizeChanged ? 1 : page, pageSize });
           },
         }}
       />

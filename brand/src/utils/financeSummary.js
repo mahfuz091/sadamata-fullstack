@@ -9,6 +9,28 @@ const paidSaleWhere = {
   },
 };
 
+/**
+ * UTC window covering the running month in Dhaka time (+06:00).
+ * Derived from `new Date()` on every call, so it rolls over on its own when the
+ * month changes — nothing to configure or select.
+ */
+export function getDhakaMonthWindowUTC(date = new Date()) {
+  const DHAKA_OFFSET_MS = 6 * 60 * 60 * 1000; // +06:00
+  const d = new Date(date.getTime() + DHAKA_OFFSET_MS);
+  const y = d.getUTCFullYear();
+  const m = d.getUTCMonth();
+
+  const startUtcMs = Date.UTC(y, m, 1) - DHAKA_OFFSET_MS;
+  const endUtcMs = Date.UTC(y, m + 1, 1) - DHAKA_OFFSET_MS; // exclusive
+
+  return {
+    startUTC: new Date(startUtcMs),
+    endUTC: new Date(endUtcMs),
+    monthStart: new Date(Date.UTC(y, m, 1)),
+    monthEnd: new Date(Date.UTC(y, m + 1, 0)),
+  };
+}
+
 // BRAND total income, withdrawals, and remaining balance
 export async function getBrandFinancialSummary(brandId) {
   if (!brandId) {
@@ -28,76 +50,77 @@ export async function getBrandFinancialSummary(brandId) {
     OrderStatus.COMPLETED,
   ];
 
-  const [orders, payoutsAgg] = await Promise.all([
-    prisma.order.findMany({
-      where: { status: { in: soldStatuses } },
-      select: {
-        items: {
-          select: {
-            productId: true,
-            unitPrice: true,
-            quantity: true,
-          },
-        },
+  // Read the recorded earnings off Sale instead of recomputing from
+  // Product.brandCommissionPct. Settlement resolves the rate live at payment
+  // time, so a rate change no longer matches the frozen product snapshot — and
+  // recomputing here would silently restate what old orders already paid out.
+  // ✅ running month window (Dhaka), recomputed on every request
+  const { startUTC, endUTC, monthStart, monthEnd } = getDhakaMonthWindowUTC();
+
+  const [salesAgg, payoutsAgg, monthAgg, monthRefundAgg] = await Promise.all([
+    prisma.sale.aggregate({
+      where: {
+        brandId,
+        orderItem: { order: { status: { in: soldStatuses } } },
       },
+      _sum: { total: true, brandEarning: true, quantity: true },
     }),
     prisma.payout.aggregate({
       where: { actor: PayoutActor.BRAND, brandId },
       _sum: { amount: true },
     }),
+    prisma.sale.aggregate({
+      where: {
+        brandId,
+        // CANCELLED / RETURNED / PENDING / FAILED orders are excluded here
+        orderItem: { order: { status: { in: soldStatuses } } },
+        createdAt: { gte: startUTC, lt: endUTC },
+      },
+      _sum: { total: true, brandEarning: true, quantity: true },
+    }),
+    // A returned item does NOT always flip the order status — refundOrderItem()
+    // writes a Refund row and leaves the order PAID. Those have to be netted out
+    // separately or the month total still counts money that went back.
+    prisma.refund.aggregate({
+      where: {
+        sale: {
+          brandId,
+          createdAt: { gte: startUTC, lt: endUTC },
+        },
+      },
+      _sum: { amount: true, brandEarning: true, quantity: true },
+    }),
   ]);
 
-  const productIds = Array.from(
-    new Set(
-      orders
-        .flatMap((order) => order.items.map((item) => item.productId))
-        .filter(Boolean)
-    )
-  );
-
-  const products = productIds.length
-    ? await prisma.product.findMany({
-        where: { id: { in: productIds }, brandId },
-        select: {
-          id: true,
-          brandCommissionPct: true,
-          Brand: { select: { defaultBrandPct: true } },
-        },
-      })
-    : [];
-
-  const productMap = new Map(products.map((product) => [product.id, product]));
-  let totalSell = new Prisma.Decimal(0);
-  let brandTotalIncome = new Prisma.Decimal(0);
-  let totalProductsSold = 0;
-
-  for (const order of orders) {
-    for (const item of order.items) {
-      const product = item.productId ? productMap.get(item.productId) : null;
-      if (!product) continue;
-
-      const quantity = item.quantity || 0;
-      const lineTotal = new Prisma.Decimal(item.unitPrice || 0).mul(quantity);
-      const brandPct =
-        product.brandCommissionPct ?? product.Brand?.defaultBrandPct ?? 0;
-
-      totalSell = totalSell.add(lineTotal);
-      brandTotalIncome = brandTotalIncome.add(lineTotal.mul(brandPct).div(100));
-      totalProductsSold += quantity;
-    }
-  }
-
+  const totalSell = Number(salesAgg._sum.total ?? 0);
+  const brandTotalIncome = Number(salesAgg._sum.brandEarning ?? 0);
+  const totalProductsSold = Number(salesAgg._sum.quantity ?? 0);
   const withdrawAmount = Number(payoutsAgg._sum.amount ?? 0);
-  const brandTotalIncomeNumber = Number(brandTotalIncome);
-  const totalAfterWithdraw = brandTotalIncomeNumber - withdrawAmount;
 
   return {
     brandId,
-    totalSell: Number(totalSell),
-    brandTotalIncome: brandTotalIncomeNumber,
+    totalSell,
+    brandTotalIncome,
     withdrawAmount,
-    totalAfterWithdraw,
+    totalAfterWithdraw: brandTotalIncome - withdrawAmount,
     totalProductsSold,
+
+    // ✅ running-month figures (auto-rolls to the next month, no selection)
+    //    net of cancelled/returned orders AND of refunds on still-PAID orders
+    currentMonthSales:
+      Number(monthAgg._sum.total ?? 0) - Number(monthRefundAgg._sum.amount ?? 0),
+    currentMonthEarning:
+      Number(monthAgg._sum.brandEarning ?? 0) -
+      Number(monthRefundAgg._sum.brandEarning ?? 0),
+    currentMonthUnits:
+      Number(monthAgg._sum.quantity ?? 0) -
+      Number(monthRefundAgg._sum.quantity ?? 0),
+
+    // kept separate so the UI can show the deduction if it ever needs to
+    currentMonthGrossSales: Number(monthAgg._sum.total ?? 0),
+    currentMonthRefunded: Number(monthRefundAgg._sum.amount ?? 0),
+    currentMonthStart: monthStart.toISOString(),
+    currentMonthEnd: monthEnd.toISOString(),
   };
 }
 // MERCHANT total income, withdrawals, and remaining balance

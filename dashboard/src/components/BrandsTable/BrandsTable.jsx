@@ -108,6 +108,22 @@ export default function BrandsTable({ initial = [] }) {
       render: (role) => <Tag>{role}</Tag>,
     },
     {
+      title: "Exclusivity",
+      key: "isExclusive",
+      filters: [
+        { text: "Exclusive", value: true },
+        { text: "Non-Exclusive", value: false },
+      ],
+      onFilter: (value, record) =>
+        Boolean(record.brand?.isExclusive) === value,
+      render: (_, record) =>
+        record.brand?.isExclusive ? (
+          <Tag color='gold'>Exclusive</Tag>
+        ) : (
+          <Tag>Non-Exclusive</Tag>
+        ),
+    },
+    {
       title: "Account Status",
       dataIndex: "isActive",
       key: "isActive",

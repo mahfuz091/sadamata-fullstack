@@ -49,17 +49,31 @@ export async function getProducts({
     const take = Math.min(Math.max(Number(pageSize) || 10, 1), 100); // 1..100
     const skip = (safePage - 1) * take;
 
-    const query = q?.trim();
+    const query = typeof q === "string" ? q.trim() : "";
+
+    // The brand dropdown used to be built from User rows, so older links carry a
+    // User.id while Product.brandId references Brand.id — nothing ever matched.
+    // Accept either id here so bookmarked URLs keep working.
+    let resolvedBrandId = brandId || null;
+    if (resolvedBrandId) {
+      const brand = await prisma.brand.findFirst({
+        where: { OR: [{ id: resolvedBrandId }, { userId: resolvedBrandId }] },
+        select: { id: true },
+      });
+      resolvedBrandId = brand?.id ?? resolvedBrandId;
+    }
 
     const where = {
       ...(merchantId ? { userId: merchantId } : {}),
-      ...(brandId ? { brandId } : {}),
+      ...(resolvedBrandId ? { brandId: resolvedBrandId } : {}),
       ...(query
         ? {
             OR: [
               { title: { contains: query, mode: "insensitive" } },
               { productId: { contains: query, mode: "insensitive" } }, // ✅ your unique productId
+              { smpin: { contains: query, mode: "insensitive" } },
               { User: { name: { contains: query, mode: "insensitive" } } },
+              { User: { email: { contains: query, mode: "insensitive" } } },
               { Brand: { name: { contains: query, mode: "insensitive" } } },
               { brandName: { contains: query, mode: "insensitive" } }, // ✅ fallback
             ],
@@ -87,9 +101,8 @@ export async function getProducts({
         orderBy: { name: "asc" },
       }),
 
-      // ✅ brands dropdown
-      prisma.user.findMany({
-        where: { role: "BRAND" },
+      // ✅ brands dropdown — Brand.id, because that is what Product.brandId holds
+      prisma.brand.findMany({
         select: { id: true, name: true },
         orderBy: { name: "asc" },
       }),

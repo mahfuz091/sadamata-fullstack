@@ -6,6 +6,20 @@ import CustomSelect from "../CustomSelect/CustomSelect";
 import { Spinner } from "react-bootstrap";
 import Link from "next/link";
 import { getPrivateUrl } from "@/lib/s3";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
+/** "01-08-2026 – 31-08-2026" — the running month the figure above covers */
+function formatMonthRange(startISO, endISO) {
+  if (!startISO || !endISO) return "This month";
+  const fmt = (iso) => {
+    const d = new Date(iso);
+    const dd = String(d.getUTCDate()).padStart(2, "0");
+    const mm = String(d.getUTCMonth() + 1).padStart(2, "0");
+    return `${dd}-${mm}-${d.getUTCFullYear()}`;
+  };
+  return `${fmt(startISO)} – ${fmt(endISO)}`;
+}
 const MAIN_URL = process.env.NEXT_PUBLIC_MAIN_URL;
 const options = [
   { value: "chocolate", label: "Marketplace: All" },
@@ -26,6 +40,11 @@ const Analyze = ({
   const [pageSize, setPageSize] = useState(15);
   const [isPending, startTransition] = useTransition();
   const [showSpinner, setShowSpinner] = useState(false);
+  // NOTE: these drive the picker display only — loadPageSales (the server
+  // action in app/dashboard/analyze/page.jsx) takes no date params, so the
+  // merchant date range has never filtered the table.
+  const [fromDate, setFromDate] = useState(null);
+  const [toDate, setToDate] = useState(null);
   // console.log(initialItems, "initialItems");
 
   const hasMore = page < totalPages;
@@ -103,12 +122,31 @@ const Analyze = ({
                   <label htmlFor='from'>From</label>
                   <div className='date-group'>
                     <i className='fas fa-calendar-alt icon'></i>
-                    <input type='date' id='from' placeholder='dd-mm-yyyy' />
+                    {/* native <input type="date"> ignores `placeholder` and
+                        renders the browser's own locale format, so it can never
+                        show DD-MM-YYYY — same DatePicker the brand app uses */}
+                    <DatePicker
+                      selected={fromDate}
+                      onChange={(d) => setFromDate(d)}
+                      dateFormat='dd-MM-yyyy'
+                      placeholderText='DD-MM-YYYY'
+                      maxDate={toDate || undefined}
+                      isClearable
+                      id='from'
+                    />
                   </div>
                   <label htmlFor='to'>To</label>
                   <div className='date-group'>
                     <i className='fas fa-calendar-alt icon'></i>
-                    <input type='date' id='to' placeholder='dd-mm-yyyy' />
+                    <DatePicker
+                      selected={toDate}
+                      onChange={(d) => setToDate(d)}
+                      dateFormat='dd-MM-yyyy'
+                      placeholderText='DD-MM-YYYY'
+                      minDate={fromDate || undefined}
+                      isClearable
+                      id='to'
+                    />
                   </div>
                 </div>
               </div>
@@ -164,10 +202,13 @@ const Analyze = ({
                       <div className='earnings-card__main'>
                         <div className='earnings-card__price'>
                           <h4 className='earnings-card__count'>
-                            ৳{summery?.withdrawAmount}{" "}
+                            ৳{Number(summery?.currentMonthEarning || 0).toFixed(2)}{" "}
                           </h4>
                           <p className='earnings-card__text'>
-                            Estimated Royalties
+                            {formatMonthRange(
+                              summery?.currentMonthStart,
+                              summery?.currentMonthEnd
+                            )}
                           </p>
                         </div>
                       </div>

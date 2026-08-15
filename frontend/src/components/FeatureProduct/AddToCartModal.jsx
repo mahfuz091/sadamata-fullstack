@@ -292,7 +292,7 @@ export default function AddToCartModal({ show, onHide, product }) {
             <div className='mb-2'>
               <strong>Size:</strong>
               <div className='d-flex gap-2 mt-1'>
-                {["S", "M", "L", "XL", "XXL"].map((s) => (
+                {["M", "L", "XL", "XXL"].map((s) => (
                   <button
                     key={s}
                     className={`btn btn-sm ms-1 ${

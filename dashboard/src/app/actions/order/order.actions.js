@@ -20,10 +20,31 @@ function serializeDate(value) {
   return value.toISOString();
 }
 
+function serializeSale(sale) {
+  if (!sale) return null;
+  return {
+    ...sale,
+    // Sale money columns are Float, but total is what the split was taken on
+    total: serializeDecimal(sale.total),
+    brandEarning: serializeDecimal(sale.brandEarning),
+    merchantEarning: serializeDecimal(sale.merchantEarning),
+    platformEarning: serializeDecimal(sale.platformEarning),
+    createdAt: serializeDate(sale.createdAt),
+    product: sale.product
+      ? {
+          ...sale.product,
+          createdAt: serializeDate(sale.product.createdAt),
+          updatedAt: serializeDate(sale.product.updatedAt),
+        }
+      : null,
+  };
+}
+
 function serializeOrderItem(item) {
   return {
     ...item,
     unitPrice: serializeDecimal(item.unitPrice),
+    Sale: serializeSale(item.Sale),
   };
 }
 
@@ -200,6 +221,8 @@ export async function getSingleOrder(_, { orderId }) {
                     variants: true,
                   },
                 },
+                merchant: { select: { id: true, name: true, email: true } },
+                brand: { select: { id: true, name: true, isExclusive: true } },
               },
             },
           },

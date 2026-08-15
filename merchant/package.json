@@ -10,7 +10,7 @@
     "lint": "next lint",
     "postinstall": "prisma generate"
   },
-   "overrides": {
+  "overrides": {
     "hono": "4.12.9",
     "@hono/node-server": "1.19.11",
     "effect": "3.20.0",
@@ -37,6 +37,7 @@
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.10",
     "react-country-state-city": "^1.1.12",
+    "react-datepicker": "^9.1.0",
     "react-dom": "^19.0.0",
     "react-modal": "^3.16.3",
     "react-player": "^3.4.0",

@@ -449,7 +449,7 @@ export default function ProductDetails2({ product, user, reviewOrderItemId = "",
   // console.log(fit, "fit");
 
   const sizeOptions = useMemo(
-    () => ["S", "M", "L", "XL", "XXL", "3XL"].map((s) => ({ value: s, label: s })),
+    () => ["M", "L", "XL", "XXL"].map((s) => ({ value: s, label: s })),
     []
   );
   const selectedSizeOption = sizeOptions.find((o) => o.value === size) ?? null;

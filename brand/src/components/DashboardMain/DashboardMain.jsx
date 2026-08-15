@@ -215,7 +215,9 @@ console.log(salesData, "salesDtata");
                                   {label === "Sold" && (todaySalesReport?.soldOrders || 0)}
                                   {label === "Cancelled" && (todaySalesReport?.canceledOrders || 0)}
                                   {label === "Returned" && (todaySalesReport?.returnedOrders || 0)}
-                                  {label === "Royalties" && `৳ ${(todaySalesReport?.merchantRoyalty || 0).toFixed(2)}`}
+                                  {/* brand dashboard shows the BRAND's cut —
+                                      merchantRoyalty here was the merchant's */}
+                                  {label === "Royalties" && `৳ ${(todaySalesReport?.netBrandRoyalty ?? todaySalesReport?.brandRoyalty ?? 0).toFixed(2)}`}
                                 </h3>
                                 <p className='count-box__text'>{label}</p>
                               </div>

@@ -20,6 +20,18 @@ function formatCurrencyAmount(value) {
   return Number(value || 0).toFixed(2);
 }
 
+/** "01-08-2026 – 31-08-2026" — the running month the figure above covers */
+function formatMonthRange(startISO, endISO) {
+  if (!startISO || !endISO) return "This month";
+  const fmt = (iso) => {
+    const d = new Date(iso);
+    const dd = String(d.getUTCDate()).padStart(2, "0");
+    const mm = String(d.getUTCMonth() + 1).padStart(2, "0");
+    return `${dd}-${mm}-${d.getUTCFullYear()}`;
+  };
+  return `${fmt(startISO)} – ${fmt(endISO)}`;
+}
+
 const options = [
   { value: "chocolate", label: "Marketplace: All" },
   { value: "strawberry", label: "Marketplace: All" },
@@ -127,7 +139,7 @@ const Analyze = ({
                       selected={fromDate}
                       onChange={(d) => setFromDate(d)}
                       dateFormat="dd-MM-yyyy"
-                      placeholderText="dd-mm-yyyy"
+                      placeholderText="DD-MM-YYYY"
                       maxDate={toDate || undefined}
                       isClearable
                       id="from"
@@ -141,7 +153,7 @@ const Analyze = ({
                       selected={toDate}
                       onChange={(d) => setToDate(d)}
                       dateFormat="dd-MM-yyyy"
-                      placeholderText="dd-mm-yyyy"
+                      placeholderText="DD-MM-YYYY"
                       minDate={fromDate || undefined}
                       isClearable
                       id="to"
@@ -204,10 +216,13 @@ const Analyze = ({
                       <div className="earnings-card__main">
                         <div className="earnings-card__price">
                           <h4 className="earnings-card__count">
-                            ৳{formatCurrencyAmount(summery?.withdrawAmount)}{" "}
+                            ৳{formatCurrencyAmount(summery?.currentMonthEarning)}{" "}
                           </h4>
                           <p className="earnings-card__text">
-                            Estimated Royalties
+                            {formatMonthRange(
+                              summery?.currentMonthStart,
+                              summery?.currentMonthEnd
+                            )}
                           </p>
                         </div>
                       </div>

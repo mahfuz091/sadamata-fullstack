@@ -190,11 +190,28 @@ const Footer = () => {
                             Email :{" "}
                           </span>
                           <a
-                            href='mailto:support@sadamata.com
-'
+                            href='mailto:support@sadamata.com'
                             className='footer-widget__contact__link'
                           >
                             support@sadamata.com
+                          </a>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div className='footer-widget__contact__item'>
+                        <div className='footer-widget__contact__icon'>
+                          <i className='icon-mail'></i>
+                        </div>
+                        <div className='footer-widget__contact__content'>
+                          <span className='footer-widget__contact__title'>
+                            Brand Support :{" "}
+                          </span>
+                          <a
+                            href='mailto:brand-support@sadamata.com'
+                            className='footer-widget__contact__link'
+                          >
+                            brand-support@sadamata.com
                           </a>
                         </div>
                       </div>

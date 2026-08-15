@@ -21,15 +21,15 @@ const Hero = ({ musicBrands = [], movieBrands = [], natokBrands = [] }) => {
           <div className='col-xl-3 col-lg-3 col-md-12'>
             <div className='hero-area__thumb'>
               <div className='hero-area__thumb__item'>
-                <Image src={hero1} alt='hero image' />
-                <Image src={hero2} alt='hero image' />
+                <Image src={hero1} alt='hero image' priority />
+                <Image src={hero2} alt='hero image' priority />
               </div>
               <div className='hero-area__thumb__item'>
-                <Image src={hero3} alt='hero image' />
+                <Image src={hero3} alt='hero image' priority />
               </div>
             </div>
           </div>
-          <div className='col-xl-6 col-lg-3 col-md-12'>
+          <div className='col-xl-6 col-lg-6 col-md-12'>
             <div className='hero-area__content'>
               <h2 className='hero-area__title'>
                 Buy the best stylish T-shirt of your choice.
@@ -48,11 +48,11 @@ const Hero = ({ musicBrands = [], movieBrands = [], natokBrands = [] }) => {
           <div className='col-xl-3 col-lg-3 col-md-12'>
             <div className='hero-area__thumb'>
               <div className='hero-area__thumb__item'>
-                <Image src={hero6} alt='hero image' />
+                <Image src={hero6} alt='hero image' priority />
               </div>
               <div className='hero-area__thumb__item'>
-                <Image src={hero4} alt='hero image' />
-                <Image src={hero5} alt='hero image' />
+                <Image src={hero4} alt='hero image' priority />
+                <Image src={hero5} alt='hero image' priority />
               </div>
             </div>
           </div>

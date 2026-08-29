@@ -104,7 +104,7 @@ const normalizeProduct = (product) => {
     ...product,
     id: product.id,
     productId,
-    brand: product.Brand?.name || product.brandName || product.brand || "",
+    brand: product.Brand?.name || product.brandName || product.brand || "Unknown",
     brandId: product.Brand?.id || product.brandId || null,
     title: product.title || "Untitled product",
     price: priceValue,

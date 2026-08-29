@@ -49,7 +49,7 @@ export default function TopMusicBrandTshirt({
       id: p.id,
       title: p.title,
       price: p.price,
-      brand: p.Brand?.name || p.brandName || "Brand",
+      brand: p.Brand?.name || p.brandName || "Unknown",
       brandId: p.Brand?.id || null,
       imageUrl: p.previewUrl || null,
       productId: p.productId, // slug-like

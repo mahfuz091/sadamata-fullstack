@@ -497,7 +497,7 @@ const CategoryProductsClient = ({
                         (p) => p.id === item.id
                       );
                       const brandId = item?.Brand?.brandSlug || item?.Brand?.id || item?.brandId || null;
-                      const brandName = item?.Brand?.name || item?.brandName || "";
+                      const brandName = item?.Brand?.name || item?.brandName || "Unknown";
 
 
                       return (

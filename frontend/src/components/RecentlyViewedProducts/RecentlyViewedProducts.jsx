@@ -14,6 +14,10 @@ export const RECENTLY_VIEWED_PRODUCTS_LIMIT = 15;
 
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 
+// stored entries may predate the "Unknown" fallback
+const displayBrand = (brand) =>
+  brand && brand !== "—" && brand !== "Brand" ? brand : "Unknown";
+
 const readRecentlyViewedProducts = () => {
   if (typeof window === "undefined") return [];
 
@@ -50,7 +54,7 @@ export const trackRecentlyViewedProduct = (product) => {
     productId: product.productId || product.id,
     title: product.title || "Untitled product",
     price: product.price ?? null,
-    brand: product.brand || "Brand",
+    brand: product.brand || "Unknown",
     brandId: product.brandId || null,
     imageKey: product.imageKey || null,
     imageUrl: product.imageUrl || null,
@@ -176,10 +180,10 @@ export default function RecentlyViewedProducts({ title = "Inspired by Your Brows
                   href={`/brand/${product.brandSlug || product.brandId}`}
                   className='recently-viewed-products__brand-link'
                 >
-                  {product.brand}
+                  {displayBrand(product.brand)}
                 </Link>
               ) : (
-                product.brand
+                displayBrand(product.brand)
               )}
             </span>
           </p>
@@ -296,10 +300,10 @@ export default function RecentlyViewedProducts({ title = "Inspired by Your Brows
                             href={`/brand/${product.brandSlug || product.brandId}`}
                             className='recently-viewed-products__brand-link'
                           >
-                            {product.brand}
+                            {displayBrand(product.brand)}
                           </Link>
                         ) : (
-                          product.brand
+                          displayBrand(product.brand)
                         )}
                       </span>
                     </p>

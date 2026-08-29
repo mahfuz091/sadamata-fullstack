@@ -213,7 +213,7 @@ import AddToCartModal from "../FeatureProduct/AddToCartModal";
                   ? `${ASSET_BASE}/${rel}`
                   : "/placeholder.png";
 
-              const brand = product?.Brand?.name ?? product?.brandName ?? "—";
+              const brand = product?.Brand?.name ?? product?.brandName ?? "Unknown";
               const price =
                 typeof product?.price === "number"
                   ? `৳${product.price.toFixed(2)}`

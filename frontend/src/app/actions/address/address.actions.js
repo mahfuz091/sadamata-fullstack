@@ -2,6 +2,7 @@
 "use server";
 
 import prisma from "@/lib/prisma"; // <-- default export from /src/lib/prisma
+import { normalizeBDPhone } from "@/utils/validation";
 
 // Fail fast if Prisma didn't initialize correctly
 if (!prisma || typeof prisma.$transaction !== "function") {
@@ -19,6 +20,17 @@ const req = (v, name) => {
   return typeof v === "string" ? v.trim() : v;
 };
 const trimOrNull = (v) => (v == null ? null : String(v).trim() || null);
+// Shipping phones are BD mobiles and are handed to the payment gateway, so they
+// are stored canonically as 01XXXXXXXXX.
+const reqBDPhone = (v) => {
+  const normalized = normalizeBDPhone(req(v, "phone"));
+  if (!normalized) {
+    throw new Error(
+      "Enter a valid Bangladeshi mobile number (e.g. 01712345678)"
+    );
+  }
+  return normalized;
+};
 
 /* ----------------------------------- LIST ----------------------------------- */
 export async function listUserAddresses({ userId }) {
@@ -53,14 +65,14 @@ export async function addUserAddress({
   req(userId, "userId");
   req(firstName, "firstName");
   req(lastName, "lastName");
-  req(phone, "phone");
+  const normalizedPhone = reqBDPhone(phone);
   req(address, "address");
 
   const data = {
     userId,
     firstName: firstName.trim(),
     lastName: lastName.trim(),
-    phone: phone.trim(),
+    phone: normalizedPhone,
     email: trimOrNull(email),
     address: address.trim(),
     isDefault: !!isDefault,
@@ -99,7 +111,7 @@ export async function updateUserAddress({
   const patch = {};
   if (firstName !== undefined) patch.firstName = req(firstName, "firstName");
   if (lastName !== undefined) patch.lastName = req(lastName, "lastName");
-  if (phone !== undefined) patch.phone = req(phone, "phone");
+  if (phone !== undefined) patch.phone = reqBDPhone(phone);
   if (email !== undefined) patch.email = trimOrNull(email);
   if (address !== undefined) patch.address = req(address, "address");
 

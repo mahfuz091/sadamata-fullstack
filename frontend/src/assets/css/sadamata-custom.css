@@ -3893,3 +3893,28 @@ button.profileImageButton img {
     white-space: nowrap;
   }
 }
+
+/* brand-info tiles now render real brand images (banners, avatars, static
+   fallbacks), so the thumb crops to a fixed ratio to keep the 2x2 grid even.
+   The sub-item is an <a> when the brand is linkable — reset link styling. */
+.brand-info__item__sub-item {
+  display: block;
+  text-decoration: none;
+}
+
+.brand-info__item__thumb {
+  aspect-ratio: 4 / 3;
+  background: #f2f3f5;
+}
+
+.brand-info__item__thumb img {
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.brand-info__item__sub-item__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

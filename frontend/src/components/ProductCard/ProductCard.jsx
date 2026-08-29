@@ -5,7 +5,7 @@ import Link from "next/link";
 import React from "react";
 
 const ProductCard = ({ product, onAddToCart, onToggleFavorite, isFavorite }) => {
-  const brandName = product?.Brand?.name || product?.brandName || "Brand";
+  const brandName = product?.Brand?.name || product?.brandName || "Unknown";
   const brandId = product?.Brand?.brandSlug || product?.Brand?.id || null;
   const price = typeof product?.price === "number" ? `৳${product.price.toFixed(2)}` : "৳—";
   const favoriteActive = isFavorite?.(product?.id) ?? false;

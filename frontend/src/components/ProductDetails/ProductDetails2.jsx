@@ -288,7 +288,7 @@ export default function ProductDetails2({ product, user, reviewOrderItemId = "",
       productId: product.productId,
       title: product.title,
       price: product.price,
-      brand: product.Brand?.name || product.brandName || "Brand",
+      brand: product.Brand?.name || product.brandName || "Unknown",
       brandId: product.Brand?.id || null,
       brandSlug: product.Brand?.brandSlug || null,
       imageKey:
@@ -412,7 +412,7 @@ export default function ProductDetails2({ product, user, reviewOrderItemId = "",
     const item = {
       id: product?.id,
       title: product?.title,
-      brand: product?.Brand?.name || product?.brandName || "—",
+      brand: product?.Brand?.name || product?.brandName || "Unknown",
       price: product?.price,
       quantity: options.quantity,
       color: options.color,
@@ -546,7 +546,7 @@ export default function ProductDetails2({ product, user, reviewOrderItemId = "",
     const item = {
       id: product.id,
       title: product.title,
-      brand: product?.Brand?.name || product?.brandName || "—",
+      brand: product?.Brand?.name || product?.brandName || "Unknown",
       price: product.price,
       quantity,
       fit,
@@ -608,10 +608,10 @@ export default function ProductDetails2({ product, user, reviewOrderItemId = "",
               <span>
                 {product?.Brand?.id ? (
                   <Link href={`/brand/${product.Brand.brandSlug || product.Brand.id}`}>
-                    {product?.Brand?.name || product?.brandName || "—"}
+                    {product?.Brand?.name || product?.brandName || "Unknown"}
                   </Link>
                 ) : (
-                  product?.Brand?.name || product?.brandName || "—"
+                  product?.Brand?.name || product?.brandName || "Unknown"
                 )}
               </span>
             </p>
@@ -755,10 +755,10 @@ export default function ProductDetails2({ product, user, reviewOrderItemId = "",
                   <span>
                     {product?.Brand?.id ? (
                       <Link href={`/brand/${product.Brand.brandSlug || product.Brand.id}`}>
-                        {product?.Brand?.name || product?.brandName || "—"}
+                        {product?.Brand?.name || product?.brandName || "Unknown"}
                       </Link>
                     ) : (
-                      product?.Brand?.name || product?.brandName || "—"
+                      product?.Brand?.name || product?.brandName || "Unknown"
                     )}
                   </span>
                 </p>

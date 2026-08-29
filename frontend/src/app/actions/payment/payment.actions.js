@@ -4,6 +4,7 @@
 import prisma from "@/lib/prisma";
 import { initSslczSession } from "@/lib/sslcz";
 import { joinUrl } from "@/lib/url";
+import { normalizeBDPhone } from "@/utils/validation";
 
 const DEFAULT_CITY = process.env.APP_DEFAULT_CITY || "Dhaka";
 const DEFAULT_POSTCODE = process.env.APP_DEFAULT_POSTCODE || "1000";
@@ -192,11 +193,20 @@ export async function createCheckoutSession(payload) {
       throw new Error("Guest address information incomplete");
     }
 
+    // The gateway rejects malformed cus_phone, so the number is validated and
+    // stored canonically (01XXXXXXXXX) rather than however it was typed.
+    const guestPhone = normalizeBDPhone(guest.phone);
+    if (!guestPhone) {
+      throw new Error(
+        "Enter a valid Bangladeshi mobile number (e.g. 01712345678)"
+      );
+    }
+
     const createdGuest = await prisma.guestAddress.create({
       data: {
         firstName: guest.firstName,
         lastName: guest.lastName || "",
-        phone: guest.phone,
+        phone: guestPhone,
         email: guest.email || null,
         address: guest.address,
         zipCode: guest.zipCode || null,

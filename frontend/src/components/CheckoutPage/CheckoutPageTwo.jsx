@@ -11,6 +11,7 @@ import {
 import Select from "react-select";
 import { customStyles } from "@/lib/reactSelect";
 import { getCartImageUrls } from "@/app/actions/cart/cart.actions";
+import { isValidBDPhone, normalizeBDPhone } from "@/utils/validation";
 const COUPONS = { SAVE10: 0.1, SAVE20: 0.2, WELCOME5: 0.05 };
 
 const toNum = (v) => {
@@ -51,6 +52,10 @@ const [guestZip, setGuestZip] = useState("");
 
 
   const [termsAccepted, setTermsAccepted] = useState(false);
+
+  // BD phone must be 01XXXXXXXXX (operator prefix 013-019); +880 / 880 forms accepted.
+  const guestPhoneValid = isValidBDPhone(guestPhone);
+  const phoneValid = isValidBDPhone(phone);
 
   // require login
   // useEffect(() => {
@@ -141,11 +146,17 @@ const [guestZip, setGuestZip] = useState("");
     e.preventDefault();
     if (!user?.id) return;
 
+    const normalizedPhone = normalizeBDPhone(phone);
+    if (!normalizedPhone) {
+      alert("Enter a valid Bangladeshi mobile number (e.g. 01712345678).");
+      return;
+    }
+
     const res = await addUserAddress({
       userId: user.id,
       firstName,
       lastName,
-      phone,
+      phone: normalizedPhone,
       email,
       address,
       isDefault: makeDefault,
@@ -447,11 +458,19 @@ const [guestZip, setGuestZip] = useState("");
           <div className='form-one__input-box'>
           <input
             type="tel"
+            inputMode="tel"
             value={guestPhone}
             onChange={(e) => setGuestPhone(e.target.value)}
             placeholder="01xxxxxxxxx"
+            aria-invalid={guestPhone && !guestPhoneValid ? "true" : undefined}
+            className={guestPhone && !guestPhoneValid ? "is-invalid" : undefined}
           />
         </div>
+        {guestPhone && !guestPhoneValid && (
+          <p className='form-one__error'>
+            Enter a valid Bangladeshi mobile number (e.g. 01712345678).
+          </p>
+        )}
         </div>
 
         <div className='form-one__control'>
@@ -531,11 +550,24 @@ const [guestZip, setGuestZip] = useState("");
                         <div className='form-one__input-box'>
                           <input
                             type='tel'
+                            inputMode='tel'
                             value={phone}
                             onChange={(e) => setPhone(e.target.value)}
                             placeholder='01xxxxxxxxx'
+                            aria-invalid={
+                              phone && !phoneValid ? "true" : undefined
+                            }
+                            className={
+                              phone && !phoneValid ? "is-invalid" : undefined
+                            }
                           />
                         </div>
+                        {phone && !phoneValid && (
+                          <p className='form-one__error'>
+                            Enter a valid Bangladeshi mobile number (e.g.
+                            01712345678).
+                          </p>
+                        )}
                       </div>
                       <div className='form-one__control'>
                         <label className='form-one__label'>Your Email</label>
@@ -675,7 +707,7 @@ const [guestZip, setGuestZip] = useState("");
     user
       ? !selectedId
       : !guestFirstName ||
-        !guestPhone ||
+        !guestPhoneValid ||
         !guestAddress
   )
 }
@@ -718,7 +750,7 @@ const [guestZip, setGuestZip] = useState("");
         guest: {
           firstName: guestFirstName,
           lastName: guestLastName,
-          phone: guestPhone,
+          phone: normalizeBDPhone(guestPhone),
           email: guestEmail,
           address: guestAddress,
           zipCode: guestZip,

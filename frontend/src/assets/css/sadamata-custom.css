@@ -3918,3 +3918,19 @@ button.profileImageButton img {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* form-one: inline field errors (checkout phone validation) */
+.form-one input.is-invalid,
+.form-one input[type="tel"].is-invalid,
+.form-one input[type="text"].is-invalid,
+.form-one input[type="email"].is-invalid {
+  border-color: #e04a4a;
+  background-image: none;
+}
+
+.form-one__error {
+  margin: 6px 0 0;
+  color: #e04a4a;
+  font-size: 13px;
+  line-height: 1.4;
+}

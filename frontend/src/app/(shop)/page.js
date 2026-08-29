@@ -23,11 +23,13 @@ export default async function Home() {
     getProductsByCategorySlug({ slug: "movies" }),
     getProductsByCategorySlug({ slug: "drama" }), // or "natok"
   ]);
-  const [musicBrands, movieBrands, natokBrands] = await Promise.all([
-    getBrandsByCategorySlug({ slug: "music" }),
-    getBrandsByCategorySlug({ slug: "movies" }),
-    getBrandsByCategorySlug({ slug: "drama" }), // or "natok"
-  ]);
+  const [musicBrands, movieBrands, natokBrands, bangladeshBrands] =
+    await Promise.all([
+      getBrandsByCategorySlug({ slug: "music" }),
+      getBrandsByCategorySlug({ slug: "movies" }),
+      getBrandsByCategorySlug({ slug: "drama" }), // or "natok"
+      getBrandsByCategorySlug({ slug: "bangladesh" }),
+    ]);
   // console.log(musicProducts, movieProducts, natokProducts, "music Products");
   console.log(musicBrands, movieBrands, natokBrands, "music Brands");
 
@@ -40,7 +42,12 @@ export default async function Home() {
         movieBrands={movieBrands?.items}
         natokBrands={natokBrands?.items}
       />
-      <BrandInfo />
+      <BrandInfo
+        musicBrands={musicBrands?.items}
+        movieBrands={movieBrands?.items}
+        natokBrands={natokBrands?.items}
+        bangladeshBrands={bangladeshBrands?.items}
+      />
       <PopularProduct />
       <FeatureProduct />
       <TopMusicBrand brands={musicBrands?.items} />

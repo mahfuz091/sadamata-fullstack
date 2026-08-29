@@ -1,6 +1,8 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
+import { useMemo } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 
 // Import all images statically
@@ -24,31 +26,64 @@ import group4_2 from "@/assets/images/resources/group-info-4-2.jpg";
 import group4_3 from "@/assets/images/resources/group-info-4-3.jpg";
 import group4_4 from "@/assets/images/resources/group-info-4-4.jpg";
 
-const brandData = [
-  {
-    title: "Music Merchandise",
-    images: [group1_1, group1_2, group1_3, group1_4],
-    link:"categories/music"
-  },
-  {
-    title: "Movie Merchandise",
-    images: [group2_1, group2_2, group2_3, group2_4],
-    link:"categories/movies"
-  },
-  {
-    title: "Drama Merchandise",
-    images: [group3_1, group3_2, group3_3, group3_4],
-    link:"categories/drama"
+// Each card shows a 2x2 grid, so it always needs exactly 4 tiles.
+const toTiles = (brands = [], fallbacks) =>
+  Array.from({ length: 4 }, (_, i) => {
+    const brand = brands[i];
+    const fallback = fallbacks[i % fallbacks.length];
 
-  },
-  {
-    title: "Bangladesh Merchandise",
-    images: [group4_1, group4_2, group4_3, group4_4],
-    link:"categories/bangladesh"
-  },
-];
+    if (!brand) {
+      return {
+        key: `placeholder-${i}`,
+        name: "Brand name",
+        img: fallback,
+        href: null,
+      };
+    }
 
-const BrandInfo = () => {
+    const slug = brand.brandSlug || brand.id;
+
+    return {
+      key: brand.id || `brand-${i}`,
+      name: brand.name || brand.user?.name || "Brand name",
+      // landscape first — the tile crops 4:3, banners survive that better than avatars
+      img: brand.bannerImageUrl || brand.previewUrl || brand.profileImageUrl || fallback,
+      href: slug ? `/brand/${slug}` : null,
+    };
+  });
+
+const BrandInfo = ({
+  musicBrands = [],
+  movieBrands = [],
+  natokBrands = [],
+  bangladeshBrands = [],
+}) => {
+  const brandData = useMemo(
+    () => [
+      {
+        title: "Music Merchandise",
+        link: "/categories/music",
+        tiles: toTiles(musicBrands, [group1_1, group1_2, group1_3, group1_4]),
+      },
+      {
+        title: "Movie Merchandise",
+        link: "/categories/movies",
+        tiles: toTiles(movieBrands, [group2_1, group2_2, group2_3, group2_4]),
+      },
+      {
+        title: "Drama Merchandise",
+        link: "/categories/drama",
+        tiles: toTiles(natokBrands, [group3_1, group3_2, group3_3, group3_4]),
+      },
+      {
+        title: "Bangladesh Merchandise",
+        link: "/categories/bangladesh",
+        tiles: toTiles(bangladeshBrands, [group4_1, group4_2, group4_3, group4_4]),
+      },
+    ],
+    [musicBrands, movieBrands, natokBrands, bangladeshBrands]
+  );
+
   return (
     <section className='brand-info py-5'>
       <Container>
@@ -58,20 +93,41 @@ const BrandInfo = () => {
               <div className='brand-info__item'>
                 <h3 className='brand-info__item__title'>{item.title}</h3>
                 <div className='brand-info__item__group'>
-                  {item.images.map((imgSrc, i) => (
-                    <div className='brand-info__item__sub-item' key={i}>
-                      <div className='brand-info__item__thumb'>
-                        <Image src={imgSrc} alt='brand image' />
+                  {item.tiles.map((tile) => {
+                    const inner = (
+                      <>
+                        <div className='brand-info__item__thumb'>
+                          <Image
+                            src={tile.img}
+                            alt={tile.name}
+                            width={300}
+                            height={225}
+                          />
+                        </div>
+                        <h4 className='brand-info__item__sub-item__title'>
+                          {tile.name}
+                        </h4>
+                      </>
+                    );
+
+                    return tile.href ? (
+                      <Link
+                        key={tile.key}
+                        href={tile.href}
+                        className='brand-info__item__sub-item'
+                      >
+                        {inner}
+                      </Link>
+                    ) : (
+                      <div key={tile.key} className='brand-info__item__sub-item'>
+                        {inner}
                       </div>
-                      <h4 className='brand-info__item__sub-item__title'>
-                        Brand name
-                      </h4>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
-                <a href={item.link} className='brand-info__item__btn'>
+                <Link href={item.link} className='brand-info__item__btn'>
                   Shop Now
-                </a>
+                </Link>
               </div>
             </Col>
           ))}

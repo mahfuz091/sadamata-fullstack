@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { settleOrderEarnings } from "@/lib/settlement";
 import { validateWithSslcz } from "@/lib/sslcz";
+import { sendOrderConfirmation } from "@/lib/orderMail";
 
 async function parseIncoming(req) {
   const url = new URL(req.url);
@@ -105,6 +106,10 @@ async function handleSuccess(req) {
 
     // 💰 Settle earnings (idempotent because Sale.orderItemId is unique)
     await settleOrderEarnings(String(orderId));
+
+    // Receipt to the buyer. Awaited so the mail is queued before the redirect,
+    // but it resolves to a result object instead of throwing on SMTP failure.
+    await sendOrderConfirmation(orderId);
 
     // Absolute redirect URL (fixes middleware error)
     const base = process.env.APP_BASE_URL || req.nextUrl.origin;

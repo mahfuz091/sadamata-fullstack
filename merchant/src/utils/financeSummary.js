@@ -122,7 +122,12 @@ export async function getMerchantFinancialSummary(merchantId) {
   const [salesAgg, payoutsAgg, monthAgg, monthRefundAgg] = await Promise.all([
     prisma.sale.aggregate({
       where: saleWhere,
-      _sum: { total: true, merchantEarning: true, quantity: true },
+      _sum: {
+        total: true,
+        merchantEarning: true,
+        merchantExcessEarning: true,
+        quantity: true,
+      },
     }),
     prisma.payout.aggregate({
       where: { actor: 'MERCHANT', merchantId },
@@ -135,7 +140,12 @@ export async function getMerchantFinancialSummary(merchantId) {
         ...paidSaleWhere,
         createdAt: { gte: startUTC, lt: endUTC },
       },
-      _sum: { total: true, merchantEarning: true, quantity: true },
+      _sum: {
+        total: true,
+        merchantEarning: true,
+        merchantExcessEarning: true,
+        quantity: true,
+      },
     }),
     // A returned item does NOT always flip the order status — refundOrderItem()
     // writes a Refund row and leaves the order PAID. Those have to be netted out
@@ -147,7 +157,12 @@ export async function getMerchantFinancialSummary(merchantId) {
           createdAt: { gte: startUTC, lt: endUTC },
         },
       },
-      _sum: { amount: true, merchantEarning: true, quantity: true },
+      _sum: {
+        amount: true,
+        merchantEarning: true,
+        merchantExcessReversed: true,
+        quantity: true,
+      },
     }),
   ]);
 
@@ -157,6 +172,8 @@ export async function getMerchantFinancialSummary(merchantId) {
   // 4️⃣ Compute final values
   const totalSell = Number(salesAgg._sum.total ?? 0);
   const merchantTotalIncome = Number(salesAgg._sum.merchantEarning ?? 0);
+  // The above-threshold slice of merchantTotalIncome, shown as its own line.
+  const merchantExcessIncome = Number(salesAgg._sum.merchantExcessEarning ?? 0);
   const totalProductsSold = Number(salesAgg._sum.quantity ?? 0);
   const withdrawAmount = Number(payoutsAgg._sum.amount ?? 0);
   const totalAfterWithdraw = merchantTotalIncome - withdrawAmount;
@@ -165,6 +182,7 @@ export async function getMerchantFinancialSummary(merchantId) {
     merchantId,
     totalSell,
     merchantTotalIncome,
+    merchantExcessIncome,
     withdrawAmount,
     totalAfterWithdraw,
     totalProductsSold,
@@ -176,6 +194,9 @@ export async function getMerchantFinancialSummary(merchantId) {
     currentMonthEarning:
       Number(monthAgg._sum.merchantEarning ?? 0) -
       Number(monthRefundAgg._sum.merchantEarning ?? 0),
+    currentMonthExcessEarning:
+      Number(monthAgg._sum.merchantExcessEarning ?? 0) -
+      Number(monthRefundAgg._sum.merchantExcessReversed ?? 0),
     currentMonthUnits:
       Number(monthAgg._sum.quantity ?? 0) -
       Number(monthRefundAgg._sum.quantity ?? 0),

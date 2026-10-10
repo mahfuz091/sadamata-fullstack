@@ -6,6 +6,7 @@ import { signIn, signOut, auth } from "@/auth";
 import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { sendSignupEmails } from "@/lib/signupMail";
 
 // helpers
 function pick(...vals) {
@@ -195,7 +196,14 @@ export async function registerUser(formData) {
     const password = pick(formData.get("password"));
     const confirmPassword = pick(formData.get("confirmPassword"));
     const roleRaw = pick(formData.get("role"));
-    const role = (roleRaw || "USER").toUpperCase();
+    const roleRequested = (roleRaw || "USER").toUpperCase();
+
+    // The role is submitted with the signup form, so it is filtered here:
+    // without this anyone could register themselves as ADMIN.
+    const SELF_SIGNUP_ROLES = ["USER", "BRAND", "MERCH"];
+    const role = SELF_SIGNUP_ROLES.includes(roleRequested)
+      ? roleRequested
+      : "USER";
 
     if (!password || !confirmPassword || !role) {
       return {
@@ -395,6 +403,12 @@ export async function registerUser(formData) {
           };
         });
 
+        sendSignupEmails({
+          email: result.user?.email || email,
+          name: result.user?.name || name,
+          portal: "merchant",
+        });
+
         return {
           success: true,
           message:
@@ -475,6 +489,13 @@ export async function registerUser(formData) {
       }
 
       return { user, merchantProfile, merchantCommissionPctNew };
+    });
+
+    sendSignupEmails({
+      email: result.user?.email || email,
+      name: result.user?.name || name,
+      portal: role === "MERCH" || role === "BRAND" ? "merchant" : "shop",
+      loginPath: "/signin",
     });
 
     return {

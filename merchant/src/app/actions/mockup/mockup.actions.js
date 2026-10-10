@@ -3,6 +3,7 @@
 import path from "path";
 import fs from "fs/promises";
 import { prisma } from "@/lib/prisma";
+import { requireSessionUser } from "@/lib/session";
 
 const uploadDir = path.join(process.cwd(), "public", "uploads");
 
@@ -24,6 +25,7 @@ async function saveFile(file, fieldName) {
 
 // Create new Mockup with Variants
 export async function createMockup(formData) {
+  await requireSessionUser();
   const name = formData.get("name");
 
   const variants = [];
@@ -65,6 +67,7 @@ export async function createMockup(formData) {
 
 // Update Mockup Variant
 export async function updateVariant(formData) {
+  await requireSessionUser();
   const id = formData.get("id");
   const color = formData.get("color");
   const fitType = formData.get("fitType");
@@ -88,12 +91,14 @@ export async function updateVariant(formData) {
 
 // Delete Mockup Variant
 export async function deleteVariant(id) {
+  await requireSessionUser();
   await prisma.mockupVariant.delete({ where: { id } });
   return { success: true };
 }
 
 // Get All Mockups (with Variants)
 export async function getAllMockups() {
+  await requireSessionUser();
   return await prisma.mockup.findMany({ include: { variants: true } });
 }
 

@@ -37,9 +37,10 @@ export default async function OrderDetailsPage({ params }) {
       total: acc.total + Number(s.total || 0),
       brand: acc.brand + Number(s.brandEarning || 0),
       merchant: acc.merchant + Number(s.merchantEarning || 0),
+      excess: acc.excess + Number(s.merchantExcessEarning || 0),
       platform: acc.platform + Number(s.platformEarning || 0),
     }),
-    { total: 0, brand: 0, merchant: 0, platform: 0 },
+    { total: 0, brand: 0, merchant: 0, excess: 0, platform: 0 },
   );
 
   // Pre-sign URLs for all items
@@ -121,6 +122,9 @@ export default async function OrderDetailsPage({ params }) {
                 <p className='text-lg font-semibold'>{bdt(totals.merchant)}</p>
                 <p className='text-xs text-gray-500'>
                   {pctOf(totals.merchant, totals.total)}
+                </p>
+                <p className='text-xs text-gray-500'>
+                  of which above-threshold: {bdt(totals.excess)}
                 </p>
               </div>
               <div>
@@ -226,6 +230,11 @@ export default async function OrderDetailsPage({ params }) {
                     <p className='text-xs text-gray-500'>
                       {item.sale.merchant?.name || "—"}
                     </p>
+                    {Number(item.sale.merchantExcessEarning || 0) > 0 && (
+                      <p className='text-xs text-gray-500'>
+                        above-threshold {bdt(item.sale.merchantExcessEarning)}
+                      </p>
+                    )}
                   </div>
 
                   <div>

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { requireOwnedBrandId } from "@/lib/session";
 
 export async function POST(request) {
   try {
@@ -16,9 +17,12 @@ export async function POST(request) {
       );
     }
 
-    // Step 3: Check if the brandId exists
+    // Step 3: Check the brand exists AND belongs to the caller — brandId
+    // comes from the request body, so it is not proof of anything on its own.
+    await requireOwnedBrandId(brandId);
+
     const brand = await prisma.brand.findUnique({
-      where: { id: brandId }, // Check if the brand exists
+      where: { id: brandId },
     });
 
     if (!brand) {

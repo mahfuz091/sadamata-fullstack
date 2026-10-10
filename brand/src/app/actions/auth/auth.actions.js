@@ -5,6 +5,7 @@ import { generateBrandSlug } from "@/lib/brandSlug";
 import { signIn, signOut, auth } from "@/auth";
 import bcrypt from "bcryptjs"; // for hashing passwords
 import { redirect } from "next/navigation";
+import { sendSignupEmails } from "@/lib/signupMail";
 // helpers
 function pick(...vals) {
   for (const v of vals)
@@ -259,7 +260,14 @@ export async function registerUser(formData) {
     const password = pick(formData.get("password"));
     const confirmPassword = pick(formData.get("confirmPassword"));
     const roleRaw = pick(formData.get("role"));
-    const role = (roleRaw || "USER").toUpperCase();
+    const roleRequested = (roleRaw || "USER").toUpperCase();
+
+    // The role is submitted with the signup form, so it is filtered here:
+    // without this anyone could register themselves as ADMIN.
+    const SELF_SIGNUP_ROLES = ["USER", "BRAND", "MERCH"];
+    const role = SELF_SIGNUP_ROLES.includes(roleRequested)
+      ? roleRequested
+      : "USER";
 
     // âœ… optional category
     const brandCategoryId = opt(pick(formData.get("brandCategoryId")));
@@ -400,6 +408,13 @@ export async function registerUser(formData) {
       }
 
       return { user, brandProfile };
+    });
+
+    sendSignupEmails({
+      email: result.user?.email || email,
+      name: result.user?.name || name,
+      portal: role === "BRAND" ? "brand" : "shop",
+      loginPath: "/signin",
     });
 
     return {

@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/generated/prisma";
 import { OrderStatus } from "@/generated/prisma";
+import { requireSessionUserId } from "@/lib/session";
 
 /** আজকের Dhaka টাইম অনুযায়ী UTC উইন্ডো বের করে */
 function getDhakaDayWindowUTC(date = new Date()) {
@@ -24,6 +25,7 @@ function getDhakaDayWindowUTC(date = new Date()) {
  *   grossRevenue, brandRoyalty, merchantRoyalty, platformEarning
  */
 export async function getTodayMerchantSalesReportFromOrders(merchantId) {
+  await requireSessionUserId(merchantId);
   if (!merchantId) throw new Error("merchantId required");
 
   const { startUTC, endUTC } = getDhakaDayWindowUTC();
@@ -66,6 +68,7 @@ export async function getTodayMerchantSalesReportFromOrders(merchantId) {
       quantity: true,
       brandEarning: true,
       merchantEarning: true,
+      merchantExcessReversed: true,
       platformEarning: true,
       orderItem: { select: { productId: true } },
     },
@@ -109,6 +112,7 @@ export async function getTodayMerchantSalesReportFromOrders(merchantId) {
           orderItemId: true,
           brandEarning: true,
           merchantEarning: true,
+          merchantExcessEarning: true,
           platformEarning: true,
         },
       })
@@ -121,6 +125,7 @@ export async function getTodayMerchantSalesReportFromOrders(merchantId) {
   let grossRevenue = new Prisma.Decimal(0);
   let brandRoyalty = new Prisma.Decimal(0);
   let merchantRoyalty = new Prisma.Decimal(0);
+  let merchantExcessRoyalty = new Prisma.Decimal(0);
   let platformEarning = new Prisma.Decimal(0);
 
   for (const order of paidOrders) {
@@ -138,11 +143,13 @@ export async function getTodayMerchantSalesReportFromOrders(merchantId) {
 
       let brandAmt;
       let merchAmt;
+      let excessAmt;
       let platformAmt;
 
       if (sale) {
         brandAmt = new Prisma.Decimal(sale.brandEarning ?? 0);
         merchAmt = new Prisma.Decimal(sale.merchantEarning ?? 0);
+        excessAmt = new Prisma.Decimal(sale.merchantExcessEarning ?? 0);
         platformAmt = new Prisma.Decimal(sale.platformEarning ?? 0);
       } else {
         // not settled yet — best-effort estimate from the frozen snapshot
@@ -155,6 +162,7 @@ export async function getTodayMerchantSalesReportFromOrders(merchantId) {
 
         brandAmt = total.mul(brandPct).div(100);
         merchAmt = total.mul(merchPct).div(100);
+        excessAmt = new Prisma.Decimal(0); // no rule available for an unsettled line
         platformAmt = total.sub(brandAmt).sub(merchAmt);
       }
 
@@ -162,6 +170,7 @@ export async function getTodayMerchantSalesReportFromOrders(merchantId) {
       grossRevenue = grossRevenue.add(total);
       brandRoyalty = brandRoyalty.add(brandAmt);
       merchantRoyalty = merchantRoyalty.add(merchAmt);
+      merchantExcessRoyalty = merchantExcessRoyalty.add(excessAmt);
       platformEarning = platformEarning.add(platformAmt);
     }
     if (hasThisMerchantItem) soldOrders++;
@@ -182,6 +191,7 @@ export async function getTodayMerchantSalesReportFromOrders(merchantId) {
   let refundTotal = new Prisma.Decimal(0);
   let refundBrandCut = new Prisma.Decimal(0);
   let refundMerchantCut = new Prisma.Decimal(0);
+  let refundExcessCut = new Prisma.Decimal(0);
   let refundPlatformCut = new Prisma.Decimal(0);
 
   for (const r of refunds) {
@@ -193,6 +203,7 @@ export async function getTodayMerchantSalesReportFromOrders(merchantId) {
     refundTotal = refundTotal.add(r.amount);
     refundBrandCut = refundBrandCut.add(r.brandEarning);
     refundMerchantCut = refundMerchantCut.add(r.merchantEarning);
+    refundExcessCut = refundExcessCut.add(r.merchantExcessReversed ?? 0);
     refundPlatformCut = refundPlatformCut.add(r.platformEarning);
   }
 
@@ -201,6 +212,7 @@ export async function getTodayMerchantSalesReportFromOrders(merchantId) {
   const netRevenue = grossRevenue.sub(refundTotal);
   const netBrandRoyalty = brandRoyalty.sub(refundBrandCut);
   const netMerchantRoyalty = merchantRoyalty.sub(refundMerchantCut);
+  const netMerchantExcessRoyalty = merchantExcessRoyalty.sub(refundExcessCut);
   const netPlatformEarning = platformEarning.sub(refundPlatformCut);
 
   return {
@@ -213,16 +225,19 @@ export async function getTodayMerchantSalesReportFromOrders(merchantId) {
     grossRevenue: Number(grossRevenue),
     brandRoyalty: Number(brandRoyalty),
     merchantRoyalty: Number(merchantRoyalty),
+    merchantExcessRoyalty: Number(merchantExcessRoyalty),
     platformEarning: Number(platformEarning),
     refundTotal: Number(refundTotal),
     refundBrandCut: Number(refundBrandCut),
     refundMerchantCut: Number(refundMerchantCut),
+    refundExcessCut: Number(refundExcessCut),
     refundPlatformCut: Number(refundPlatformCut),
     // নেট ভ্যালু
     netUnits: Number(netUnits),
     netRevenue: Number(netRevenue),
     netBrandRoyalty: Number(netBrandRoyalty),
     netMerchantRoyalty: Number(netMerchantRoyalty),
+    netMerchantExcessRoyalty: Number(netMerchantExcessRoyalty),
     netPlatformEarning: Number(netPlatformEarning),
   };
 }

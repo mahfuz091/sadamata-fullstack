@@ -33,7 +33,17 @@ const nextConfig = {
   },
   experimental: {
     serverActions: {
-      allowedOrigins: ["*"], // or narrow to your domains
+      // "*" turned off Next's Server Action origin check, which is what stops
+      // another site from invoking an action with a visitor's session cookie.
+      // Listed hosts only; APP_BASE_URL covers non-standard deployments.
+      allowedOrigins: [
+        "sadamata.com",
+        "www.sadamata.com",
+        "localhost:3000",
+        ...(process.env.APP_BASE_URL
+          ? [process.env.APP_BASE_URL.replace(/^https?:\/\//, "").replace(/\/$/, "")]
+          : []),
+      ],
       bodySizeLimit: "10mb",
     },
   },

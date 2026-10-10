@@ -3,11 +3,13 @@
 import { prisma } from "@/lib/prisma";
 import { toSlug } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
+import { requireRole } from "@/lib/requireRole";
 
 /* ----------------------------------------
    CREATE CATEGORY
 ---------------------------------------- */
 export async function createProductCategory(name) {
+  await requireRole(["ADMIN"]);
   if (!name || !name.trim()) {
     return { success: false, message: "Category name is required" };
   }
@@ -46,6 +48,7 @@ export async function createProductCategory(name) {
    GET ALL CATEGORIES
 ---------------------------------------- */
 export async function getAllProductCategories() {
+  await requireRole(["ADMIN"]);
   try {
     const categories = await prisma.productCategory.findMany({
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
@@ -61,6 +64,7 @@ export async function getAllProductCategories() {
    GET CATEGORY BY ID
 ---------------------------------------- */
 export async function getProductCategoryById(id) {
+  await requireRole(["ADMIN"]);
   try {
     const category = await prisma.productCategory.findUnique({
       where: { id },
@@ -89,6 +93,7 @@ export async function getProductCategoryById(id) {
    UPDATE CATEGORY
 ---------------------------------------- */
 export async function updateProductCategory(id, name) {
+  await requireRole(["ADMIN"]);
   if (!name || !name.trim()) {
     return { success: false, message: "Category name is required" };
   }
@@ -112,6 +117,7 @@ export async function updateProductCategory(id, name) {
    DELETE CATEGORY
 ---------------------------------------- */
 export async function deleteProductCategory(id) {
+  await requireRole(["ADMIN"]);
   try {
     await prisma.productCategory.delete({
       where: { id },
@@ -132,6 +138,7 @@ export async function deleteProductCategory(id) {
    ATTACH CATEGORY TO PRODUCT
 ---------------------------------------- */
 export async function attachCategoryToProduct(productId, categoryId) {
+  await requireRole(["ADMIN"]);
   try {
     await prisma.product.update({
       where: { id: productId },
@@ -153,6 +160,7 @@ export async function attachCategoryToProduct(productId, categoryId) {
    REMOVE CATEGORY FROM PRODUCT
 ---------------------------------------- */
 export async function removeCategoryFromProduct(productId, categoryId) {
+  await requireRole(["ADMIN"]);
   try {
     await prisma.product.update({
       where: { id: productId },
@@ -173,6 +181,7 @@ export async function removeCategoryFromProduct(productId, categoryId) {
 // ProductCategory.actions.js
 
 export async function reorderProductCategories(orderedIds = []) {
+  await requireRole(["ADMIN"]);
   try {
     if (!Array.isArray(orderedIds) || orderedIds.length === 0) {
       return { success: false, message: "No categories provided" };
@@ -197,6 +206,7 @@ export async function reorderProductCategories(orderedIds = []) {
 }
 
 export async function updateProductCategoryActive(id, isActive) {
+  await requireRole(["ADMIN"]);
   try {
     const updated = await prisma.productCategory.update({
       where: { id },

@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { requireRole } from "@/lib/requireRole";
 
 /* -----------------------------
    Helpers (serialization safe)
@@ -44,6 +45,7 @@ export async function getProducts({
   brandId = null, // maps to Product.brandId
   q = "",
 } = {}) {
+  await requireRole(["ADMIN"]);
   try {
     const safePage = Math.max(Number(page) || 1, 1);
     const take = Math.min(Math.max(Number(pageSize) || 10, 1), 100); // 1..100
@@ -133,6 +135,7 @@ export async function getProducts({
 --------------------------------*/
 
 export async function updateProductActive(_, { productId, isActive }) {
+  await requireRole(["ADMIN"]);
   try {
     if (!productId || typeof isActive !== "boolean") {
       return {
@@ -166,6 +169,7 @@ export async function updateProductActive(_, { productId, isActive }) {
   }
 }
 export async function updateProductStatus(_, { productId, status }) {
+  await requireRole(["ADMIN"]);
   try {
     if (!productId || !status) {
       return { success: false, msg: "productId and status are required" };
@@ -203,6 +207,7 @@ export async function updateProductStatus(_, { productId, status }) {
 --------------------------------*/
 
 export async function deleteProduct(_, { productId }) {
+  await requireRole(["ADMIN"]);
   try {
     await prisma.product.delete({
       where: { id: productId },
@@ -223,6 +228,7 @@ export async function deleteProduct(_, { productId }) {
 --------------------------------*/
 
 export async function updateProductVariantActive(_, { variantId, isActive }) {
+  await requireRole(["ADMIN"]);
   try {
     if (!variantId || typeof isActive !== "boolean") {
       return {

@@ -3,6 +3,7 @@
 import { prisma } from '@/lib/prisma';
 import { Prisma } from '@/generated/prisma';
 import { OrderStatus } from '@/generated/prisma';
+import { requireSessionUserId } from "@/lib/session";
 
 /** ---------- Time helpers (Asia/Dhaka) ---------- */
 const DHAKA_OFFSET_MS = 6 * 60 * 60 * 1000;
@@ -119,6 +120,7 @@ async function calcMerchantTotalsForRange(merchantId, startUTC, endUTC) {
       amount: true,
       brandEarning: true,
       merchantEarning: true,
+      merchantExcessReversed: true,
       platformEarning: true,
       orderItem: { select: { productId: true } },
     },
@@ -160,6 +162,7 @@ async function calcMerchantTotalsForRange(merchantId, startUTC, endUTC) {
           orderItemId: true,
           brandEarning: true,
           merchantEarning: true,
+          merchantExcessEarning: true,
           platformEarning: true,
         },
       })
@@ -172,6 +175,7 @@ async function calcMerchantTotalsForRange(merchantId, startUTC, endUTC) {
   let grossRevenue = new Prisma.Decimal(0);
   let brandRoyalty = new Prisma.Decimal(0);
   let merchantRoyalty = new Prisma.Decimal(0);
+  let merchantExcessRoyalty = new Prisma.Decimal(0);
   let platformEarning = new Prisma.Decimal(0);
 
   for (const order of paidOrders) {
@@ -190,11 +194,13 @@ async function calcMerchantTotalsForRange(merchantId, startUTC, endUTC) {
 
       let brandAmt;
       let merchAmt;
+      let excessAmt;
       let platformAmt;
 
       if (sale) {
         brandAmt = new Prisma.Decimal(sale.brandEarning ?? 0);
         merchAmt = new Prisma.Decimal(sale.merchantEarning ?? 0);
+        excessAmt = new Prisma.Decimal(sale.merchantExcessEarning ?? 0);
         platformAmt = new Prisma.Decimal(sale.platformEarning ?? 0);
       } else {
         // not settled yet — best-effort estimate from the frozen snapshot
@@ -207,6 +213,7 @@ async function calcMerchantTotalsForRange(merchantId, startUTC, endUTC) {
 
         brandAmt = total.mul(brandPct).div(100);
         merchAmt = total.mul(merchPct).div(100);
+        excessAmt = new Prisma.Decimal(0); // no rule available for an unsettled line
         platformAmt = total.sub(brandAmt).sub(merchAmt);
       }
 
@@ -214,6 +221,7 @@ async function calcMerchantTotalsForRange(merchantId, startUTC, endUTC) {
       grossRevenue = grossRevenue.add(total);
       brandRoyalty = brandRoyalty.add(brandAmt);
       merchantRoyalty = merchantRoyalty.add(merchAmt);
+      merchantExcessRoyalty = merchantExcessRoyalty.add(excessAmt);
       platformEarning = platformEarning.add(platformAmt);
     }
     if (hasThisMerchantItem) soldOrders++;
@@ -234,6 +242,7 @@ async function calcMerchantTotalsForRange(merchantId, startUTC, endUTC) {
   let refundTotal = new Prisma.Decimal(0);
   let refundBrandCut = new Prisma.Decimal(0);
   let refundMerchantCut = new Prisma.Decimal(0);
+  let refundExcessCut = new Prisma.Decimal(0);
   let refundPlatformCut = new Prisma.Decimal(0);
 
   for (const r of refunds) {
@@ -244,6 +253,7 @@ async function calcMerchantTotalsForRange(merchantId, startUTC, endUTC) {
     refundTotal = refundTotal.add(r.amount ?? 0);
     refundBrandCut = refundBrandCut.add(r.brandEarning ?? 0);
     refundMerchantCut = refundMerchantCut.add(r.merchantEarning ?? 0);
+    refundExcessCut = refundExcessCut.add(r.merchantExcessReversed ?? 0);
     refundPlatformCut = refundPlatformCut.add(r.platformEarning ?? 0);
   }
 
@@ -252,6 +262,7 @@ async function calcMerchantTotalsForRange(merchantId, startUTC, endUTC) {
   const netRevenue = grossRevenue.sub(refundTotal);
   const netBrandRoyalty = brandRoyalty.sub(refundBrandCut);
   const netMerchantRoyalty = merchantRoyalty.sub(refundMerchantCut);
+  const netMerchantExcessRoyalty = merchantExcessRoyalty.sub(refundExcessCut);
   const netPlatformEarning = platformEarning.sub(refundPlatformCut);
 
   return {
@@ -262,23 +273,27 @@ async function calcMerchantTotalsForRange(merchantId, startUTC, endUTC) {
     grossRevenue: Number(grossRevenue),
     brandRoyalty: Number(brandRoyalty),
     merchantRoyalty: Number(merchantRoyalty),
+    merchantExcessRoyalty: Number(merchantExcessRoyalty),
     platformEarning: Number(platformEarning),
 
     refundTotal: Number(refundTotal),
     refundBrandCut: Number(refundBrandCut),
     refundMerchantCut: Number(refundMerchantCut),
+    refundExcessCut: Number(refundExcessCut),
     refundPlatformCut: Number(refundPlatformCut),
 
     netUnits,
     netRevenue: Number(netRevenue),
     netBrandRoyalty: Number(netBrandRoyalty),
     netMerchantRoyalty: Number(netMerchantRoyalty),
+    netMerchantExcessRoyalty: Number(netMerchantExcessRoyalty),
     netPlatformEarning: Number(netPlatformEarning),
   };
 }
 
 /** ---------- Public action: all sections together ---------- */
 export async function getMerchantSalesSummary(merchantId) {
+  await requireSessionUserId(merchantId);
   if (!merchantId) throw new Error('merchantId required');
 
   const periods = [

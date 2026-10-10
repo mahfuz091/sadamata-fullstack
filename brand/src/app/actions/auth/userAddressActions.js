@@ -5,9 +5,11 @@ import path from "path";
 import bcrypt from "bcryptjs";
 import { saveProfileImageS3 } from "@/lib/s3helper";
 import { deleteFromS3, getPrivateUrl } from "@/lib/s3";
+import { requireSessionUserId } from "@/lib/session";
 
 
 export async function updateUserProfileImageS3(userId, file) {
+  await requireSessionUserId(userId);
   if (!userId) throw new Error("userId is required");
   if (!file) throw new Error("No file provided");
 
@@ -41,6 +43,7 @@ export async function updateUserProfileImageS3(userId, file) {
 }
 
 export async function updateUserAddressProfileImageFile(id, file) {
+  await requireSessionUserId(id);
   if (!file) throw new Error("No file provided");
   console.log(id, "updateuseraddressid");
 
@@ -50,8 +53,12 @@ export async function updateUserAddressProfileImageFile(id, file) {
     fs.mkdirSync(uploadDir, { recursive: true });
   }
 
-  // Generate unique file name
-  const fileExt = path.extname(file.name); // e.g., ".png"
+  // Generate unique file name. The extension comes from the uploaded file
+  // name, so it is restricted to image types — anything else would be written
+  // into public/ and served back from this origin.
+  const rawExt = path.extname(file.name || "").toLowerCase();
+  const ALLOWED_EXT = [".png", ".jpg", ".jpeg", ".webp", ".gif", ".avif"];
+  const fileExt = ALLOWED_EXT.includes(rawExt) ? rawExt : ".png";
   const fileName = `${Date.now()}-${Math.random()
     .toString(36)
     .substr(2, 6)}${fileExt}`;
@@ -104,6 +111,7 @@ export async function updateUserAddressProfileImageFile(id, file) {
 // }
 
 export async function updateUserInfo(userId, data) {
+  await requireSessionUserId(userId);
   console.log(userId, data, "updateuseraddressid");
 
   try {
@@ -146,6 +154,7 @@ export async function updateUserInfo(userId, data) {
  * data: { bankName, bankBranch, accountName, accountNumber, routingNumber, country, zipCode }
  */
 export async function updateMerchantBankInfo(userId, data) {
+  await requireSessionUserId(userId);
   if (!userId) throw new Error("UserId is required");
 
   try {
@@ -173,6 +182,7 @@ export async function updateMerchantBankInfo(userId, data) {
  * @param {object} payload - { currentPassword, newPassword }
  */
 export async function updateUserPassword(userId, payload) {
+  await requireSessionUserId(userId);
   const { currentPassword, newPassword } = payload || {};
 
   if (!userId) throw new Error("Missing user id");

@@ -1,6 +1,8 @@
 // lib/settlement.js
 import prisma from "@/lib/prisma";
 import { resolveCommissionAt } from "@/lib/commissionResolver";
+import { calcMerchantEarning } from "@/lib/merchantTier";
+import { getActiveBonusRule } from "@/lib/merchantTierRule";
 
 /**
  * Writes the brand / merchant / platform split for a paid order.
@@ -47,9 +49,13 @@ export async function settleOrderEarnings(orderId) {
       brandId: true,
       brandCommissionPct: true, // fallback only
       merchantCommissionPct: true, // fallback only
+      User: { select: { role: true } }, // owner role — tier only applies to MERCH
     },
   });
   const productMap = new Map(products.map((p) => [p.id, p]));
+
+  // Tiered merchant commission: one rule snapshot for the whole order.
+  const bonusRule = await getActiveBonusRule();
 
   // One resolve per (merchant, brand) pair rather than per line.
   const rateCache = new Map();
@@ -84,10 +90,31 @@ export async function settleOrderEarnings(orderId) {
     const qty = item.quantity;
     const total = unit * qty;
 
+    // Brand earning is unchanged: full line total at the brand pct.
     const brandEarning = +(total * (rates.brandPct / 100)).toFixed(2);
-    const merchantEarning = +(total * (rates.merchantPct / 100)).toFixed(2);
-    // remainder, not total * platformPct — keeps the three buckets summing to total
-    const platformEarning = +(total - brandEarning - merchantEarning).toFixed(2);
+
+    // Tiered merchant earning — only for products owned by a MERCH user.
+    const isMerchOwned = product.User?.role === "MERCH";
+    const tier = isMerchOwned
+      ? calcMerchantEarning(item.unitPrice, qty, rates.merchantPct, bonusRule)
+      : null;
+
+    const merchantEarning = tier
+      ? Number(tier.total)
+      : +(total * (rates.merchantPct / 100)).toFixed(2);
+    const merchantExcessEarning = tier ? tier.excessEarning : 0;
+
+    // Platform absorbs the difference the tier creates; never go negative.
+    let platformEarning = +(total - brandEarning - merchantEarning).toFixed(2);
+    if (platformEarning < 0) {
+      console.warn(
+        `[settlement] platform earning negative on order ${order.id} item ${item.id} ` +
+          `(total ${total}, brand ${brandEarning}, merchant ${merchantEarning}); clamped to 0`,
+      );
+      platformEarning = 0;
+    }
+
+    const ruleApplied = isMerchOwned && !!bonusRule;
 
     if (rates.clamped) {
       console.warn(
@@ -97,7 +124,8 @@ export async function settleOrderEarnings(orderId) {
 
     console.log(
       `[settlement] order ${order.id} item ${item.id}: brand ${rates.brandPct}% (${rates.brandSource}) ` +
-        `merchant ${rates.merchantPct}% (${rates.merchantSource}) on ${total}`,
+        `merchant ${rates.merchantPct}% (${rates.merchantSource}) on ${total}` +
+        (ruleApplied ? ` + tier excess ${merchantExcessEarning}` : ""),
     );
 
     lines.push({
@@ -108,7 +136,11 @@ export async function settleOrderEarnings(orderId) {
       total,
       brandEarning,
       merchantEarning,
+      merchantExcessEarning,
       platformEarning,
+      bonusRuleId: ruleApplied ? bonusRule.id : null,
+      excessPctApplied: ruleApplied ? bonusRule.excessPct : null,
+      thresholdApplied: ruleApplied ? bonusRule.priceThreshold : null,
     });
   }
 
@@ -128,7 +160,11 @@ export async function settleOrderEarnings(orderId) {
           total: l.total,
           brandEarning: l.brandEarning,
           merchantEarning: l.merchantEarning,
+          merchantExcessEarning: l.merchantExcessEarning,
           platformEarning: l.platformEarning,
+          bonusRuleId: l.bonusRuleId,
+          excessPctApplied: l.excessPctApplied,
+          thresholdApplied: l.thresholdApplied,
         },
         // GUARD 2 — the row already exists, so these earnings are history.
         // Never overwrite them.

@@ -3,6 +3,7 @@
 import { prisma } from '@/lib/prisma'
 import { getPrivateUrl } from "@/lib/s3";
 import { OrderStatus } from '@/generated/prisma'
+import { requireSessionUserId } from "@/lib/session";
 
 // ======== Time helpers (Dhaka-aligned, UTC+6) ========
 const DHAKA_OFFSET_MS = 6 * 60 * 60 * 1000
@@ -293,6 +294,7 @@ async function fetchLast7DaysSalesChart({ userId, startUTC, endUTC }) {
 // ======== Public Server Action ========
 
 export async function getBrandSalesKpis(brandId) {
+  await requireSessionUserId(brandId);
   if (!brandId) throw new Error('brandId is required')
 
   const ranges = buildDhakaRanges()

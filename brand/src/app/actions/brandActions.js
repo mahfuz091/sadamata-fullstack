@@ -2,12 +2,16 @@
 import { prisma } from "@/lib/prisma"; // Assuming you are using Prisma ORM
 import { saveBrandBannerFileS3 } from "@/lib/s3helper";
 import { revalidatePath } from "next/cache";
+import { requireOwnedBrandId } from "@/lib/session";
 // Import the function for saving the banner image
 
 // Function to update the brand banner and social media links
 export async function updateBrand(formData) {
   try {
     const brandId = formData.get("brandId");
+    // brandId arrives in the form body: without this any brand could edit
+    // another brand's banner and links.
+    await requireOwnedBrandId(brandId);
     const bannerFile = formData.get("bannerFile");
     const youtubeLink = formData.get("youtubeLink");
     const facebookLink = formData.get("facebookLink");

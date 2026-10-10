@@ -3,6 +3,7 @@
 
 import prisma from "@/lib/prisma"; // <-- default export from /src/lib/prisma
 import { normalizeBDPhone } from "@/utils/validation";
+import { requireSessionUserId } from "@/lib/session";
 
 // Fail fast if Prisma didn't initialize correctly
 if (!prisma || typeof prisma.$transaction !== "function") {
@@ -34,6 +35,7 @@ const reqBDPhone = (v) => {
 
 /* ----------------------------------- LIST ----------------------------------- */
 export async function listUserAddresses({ userId }) {
+  await requireSessionUserId(userId);
   req(userId, "userId");
   const addresses = await prisma.userAddress.findMany({
     where: { userId },
@@ -44,6 +46,7 @@ export async function listUserAddresses({ userId }) {
 
 /* ------------------------------------ GET ----------------------------------- */
 export async function getUserAddress({ userId, addressId }) {
+  await requireSessionUserId(userId);
   req(userId, "userId");
   req(addressId, "addressId");
 
@@ -62,6 +65,7 @@ export async function addUserAddress({
   address,
   isDefault = true,
 }) {
+  await requireSessionUserId(userId);
   req(userId, "userId");
   req(firstName, "firstName");
   req(lastName, "lastName");
@@ -102,6 +106,7 @@ export async function updateUserAddress({
   address,
   isDefault, // optional; true -> make default
 }) {
+  await requireSessionUserId(userId);
   req(userId, "userId");
   req(addressId, "addressId");
 
@@ -138,6 +143,7 @@ export async function updateUserAddress({
 
 /* ------------------------------- SET DEFAULT -------------------------------- */
 export async function setDefaultUserAddress({ userId, addressId }) {
+  await requireSessionUserId(userId);
   req(userId, "userId");
   req(addressId, "addressId");
 
@@ -154,6 +160,7 @@ export async function setDefaultUserAddress({ userId, addressId }) {
 
 /* ---------------------------------- DELETE ---------------------------------- */
 export async function deleteUserAddress({ userId, addressId }) {
+  await requireSessionUserId(userId);
   req(userId, "userId");
   req(addressId, "addressId");
 

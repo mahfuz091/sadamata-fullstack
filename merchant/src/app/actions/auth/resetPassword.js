@@ -1,49 +1,92 @@
 "use server";
 
+import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { sendEmailAsync } from "@/lib/email";
+import { passwordChangedEmail } from "@/lib/emailTemplates";
+import { PORTAL } from "@/lib/siteUrl";
 
-export async function resetPassword(formData) {
-  const token = formData.get("token");
-  const email = (formData.get("email") || "").toLowerCase().trim();
-  const newPassword = formData.get("password");
+const MIN_PASSWORD_LENGTH = 8;
 
-  if (!token || !email || !newPassword) {
+function hashToken(token) {
+  return crypto.createHash("sha256").update(token).digest("hex");
+}
+
+export async function resetPassword(_prevState, formData) {
+  const token = String(formData?.get?.("token") || "").trim();
+  const email = String(formData?.get?.("email") || "")
+    .toLowerCase()
+    .trim();
+  const password = String(formData?.get?.("password") || "");
+  const confirmPassword = String(formData?.get?.("confirmPassword") || password);
+
+  if (!token || !email || !password) {
     return { success: false, message: "Invalid request" };
   }
 
-  // find records for this email and not used
-  const records = await prisma.passwordResetToken.findMany({
-    where: { email, used: false, expires: { gt: new Date() } },
-    orderBy: { createdAt: "desc" }
-  });
-
-  if (!records || records.length === 0) {
-    return { success: false, message: "Invalid or expired token" };
+  if (password.length < MIN_PASSWORD_LENGTH) {
+    return {
+      success: false,
+      message: `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
+    };
   }
 
-  // verify token by comparing hash
-  const bcrypt = (await import("bcryptjs")).default;
-  let matched = null;
-  for (const r of records) {
-    const ok = await bcrypt.compare(token, r.tokenHash);
-    if (ok) { matched = r; break; }
+  if (password !== confirmPassword) {
+    return { success: false, message: "Passwords do not match" };
   }
 
-  if (!matched) return { success: false, message: "Invalid or expired token" };
+  try {
+    const record = await prisma.passwordResetToken.findUnique({
+      where: { tokenHash: hashToken(token) },
+    });
 
-  // update user password
-  const hashed = await bcrypt.hash(newPassword, 10);
-  await prisma.user.update({
-    where: { email },
-    data: { password: hashed },
-  });
+    if (
+      !record ||
+      record.used ||
+      record.email !== email ||
+      record.expires < new Date()
+    ) {
+      return { success: false, message: "This reset link is invalid or expired" };
+    }
 
-  // mark token used (single-use)
-  await prisma.passwordResetToken.update({
-    where: { id: matched.id },
-    data: { used: true },
-  });
+    const user = await prisma.user.findUnique({
+      where: { email },
+      select: { id: true, name: true },
+    });
 
-  return { success: true, message: "Password has been reset — you can now login." };
+    if (!user) {
+      return { success: false, message: "This reset link is invalid or expired" };
+    }
+
+    const hashed = await bcrypt.hash(password, 10);
+
+    // Burn the token in the same transaction that changes the password, so a
+    // replayed link can never set a second password.
+    await prisma.$transaction([
+      prisma.user.update({
+        where: { id: user.id },
+        data: { password: hashed },
+      }),
+      prisma.passwordResetToken.update({
+        where: { id: record.id },
+        data: { used: true },
+      }),
+      prisma.passwordResetToken.updateMany({
+        where: { email, used: false },
+        data: { used: true },
+      }),
+    ]);
+
+    const { subject, html } = passwordChangedEmail({
+      name: user.name,
+      portal: PORTAL,
+    });
+    sendEmailAsync({ to: email, subject, html });
+
+    return { success: true, message: "Password updated. You can sign in now." };
+  } catch (err) {
+    console.error("resetPassword error:", err);
+    return { success: false, message: "Something went wrong" };
+  }
 }

@@ -1,6 +1,8 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { requireRole } from "@/lib/requireRole";
+import { notifyOrderStatus } from "@/lib/orderMail";
 
 /**
  * Get orders with optional date filters
@@ -75,6 +77,7 @@ function serializeOrder(order) {
   };
 }
 export async function getOrders(arg1 = null, arg2 = {}) {
+  await requireRole(["ADMIN"]);
   try {
     // ✅ support both call styles
     const filters =
@@ -158,6 +161,7 @@ export async function getOrders(arg1 = null, arg2 = {}) {
 }
 
 export async function updateOrderStatus(_, { orderId, status }) {
+  await requireRole(["ADMIN"]);
   try {
     if (!orderId || !status) {
       return {
@@ -175,6 +179,8 @@ export async function updateOrderStatus(_, { orderId, status }) {
       },
     });
 
+    await notifyOrderStatus(orderId, status);
+
     return {
       success: true,
       data: serializeOrder(order),
@@ -188,6 +194,7 @@ export async function updateOrderStatus(_, { orderId, status }) {
   }
 }
 export async function deleteOrder(_, { orderId }) {
+  await requireRole(["ADMIN"]);
   try {
     await prisma.order.delete({
       where: { id: orderId },
@@ -205,6 +212,7 @@ export async function deleteOrder(_, { orderId }) {
   }
 }
 export async function getSingleOrder(_, { orderId }) {
+  await requireRole(["ADMIN"]);
   try {
     const order = await prisma.order.findUnique({
       where: { id: orderId },

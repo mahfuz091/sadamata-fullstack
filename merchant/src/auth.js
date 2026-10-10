@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { prisma } from "./lib/prisma";
+import bcrypt from "bcryptjs";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   trustHost: true,
@@ -13,20 +14,26 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: {},
       },
       authorize: async (credentials) => {
+        // The password is verified here and nowhere else: the credentials
+        // endpoint is reachable directly, so a check in the login action alone
+        // is not a check at all.
+        const identifier = String(credentials?.identifier || "").trim();
+        const password = String(credentials?.password || "");
+        if (!identifier || !password) return null;
+
         const user = await prisma.user.findFirst({
           where: {
-            OR: [
-              { email: credentials.identifier.toLowerCase() },
-              { phone: credentials.identifier },
-            ],
+            OR: [{ email: identifier.toLowerCase() }, { phone: identifier }],
           },
           include: {
             addresses: true,
           },
         });
 
-        if (!user) return null;
-        console.log(user, "user authjs");
+        if (!user?.password) return null;
+
+        const isValid = await bcrypt.compare(password, user.password);
+        if (!isValid) return null;
 
         const defaultAddress = user.addresses[0];
 

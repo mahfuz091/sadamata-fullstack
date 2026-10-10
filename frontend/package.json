@@ -13,7 +13,13 @@
     "hono": "latest",
     "fast-xml-parser": "^5.3.8",
     "postcss": "^8.5.10",
-    "@hono/node-server": "^1.19.13"
+    "@hono/node-server": "^1.19.13",
+    "sslcommerz-lts": {
+      "form-data": "^2.5.6"
+    },
+    "@prisma/config": {
+      "deepmerge-ts": "^8.0.2"
+    }
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.965.0",
@@ -25,9 +31,11 @@
     "@prisma/client": "^7.4.2",
     "bcryptjs": "^3.0.2",
     "bootstrap": "^5.3.5",
+    "dotenv": "^17.4.2",
     "jose": "^6.0.11",
     "next": "^16.1.6",
     "next-auth": "^5.0.0-beta.29",
+    "nodemailer": "^8.0.11",
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.9",
     "react-country-state-city": "^1.1.12",

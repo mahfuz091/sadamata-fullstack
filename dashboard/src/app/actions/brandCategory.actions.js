@@ -2,12 +2,14 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { requireRole } from "@/lib/requireRole";
 
 /**
  * Assign a ProductCategory to a Brand.
  * brandId here is the Brand.id (not User.id).
  */
 export async function assignProductCategoryToBrand(brandId, categoryId) {
+  await requireRole(["ADMIN"]);
   if (!brandId || !categoryId) {
     return { success: false, message: "Brand ID and Category ID are required" };
   }
@@ -32,6 +34,7 @@ export async function assignProductCategoryToBrand(brandId, categoryId) {
  * Remove the ProductCategory from a Brand (set to null).
  */
 export async function removeProductCategoryFromBrand(brandId) {
+  await requireRole(["ADMIN"]);
   if (!brandId) {
     return { success: false, message: "Brand ID is required" };
   }

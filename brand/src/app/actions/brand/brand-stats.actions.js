@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { OrderStatus, Prisma } from "@/generated/prisma";
+import { requireSessionUserId } from "@/lib/session";
 
 /**
  * ইউজারের ১ম ব্র্যান্ডের স্ট্যাটস (createdAt ASC অনুযায়ী প্রথম Brand)
@@ -22,6 +23,7 @@ function getDhakaDayWindowUTC(date = new Date()) {
   return { startUTC: new Date(startUtcMs), endUTC: new Date(endUtcMs) };
 }
 export async function getUserFirstBrandStats(userId, opts = {}) {
+  await requireSessionUserId(userId);
   if (!userId) throw new Error("userId required");
 
   const { useVisibility = false, timeFrom, timeTo } = opts;
@@ -118,6 +120,7 @@ export async function getUserFirstBrandStats(userId, opts = {}) {
 }
 
 export async function getTodayUploadedProductsForFirstBrand(userId) {
+  await requireSessionUserId(userId);
   if (!userId) throw new Error("userId is required");
 
   const firstBrand = await prisma.brand.findFirst({
@@ -186,6 +189,7 @@ export async function getTodayUploadedProductsForFirstBrand(userId) {
 }
 
 export async function getTodayBrandSalesReportFromOrders(userId) {
+  await requireSessionUserId(userId);
   if (!userId) throw new Error("userId required");
   const firstBrand = await prisma.brand.findFirst({
     where: { userId },
@@ -454,6 +458,7 @@ export async function getTodayBrandSalesReportFromOrders(userId) {
 }
 
 export async function getUserProductStats(userId, opts = {}) {
+  await requireSessionUserId(userId);
   if (!userId) throw new Error("userId required");
   const firstBrand = await prisma.brand.findFirst({
     where: { userId },
@@ -514,6 +519,7 @@ export async function getUserProductStats(userId, opts = {}) {
 }
 
 export async function getTodayUploadedProducts(userId) {
+  await requireSessionUserId(userId);
   if (!userId) throw new Error("userId required");
   const firstBrand = await prisma.brand.findFirst({
     where: { userId },

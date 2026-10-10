@@ -190,6 +190,19 @@ const Analyze = ({
                           <p className='earnings-card__text'>
                             Estimated Royalties
                           </p>
+                          <p className='earnings-card__text'>
+                            Base ৳
+                            {Number(
+                              (summery?.merchantTotalIncome || 0) -
+                                (summery?.merchantExcessIncome || 0)
+                            ).toFixed(2)}
+                          </p>
+                          <p className='earnings-card__text'>
+                            Above-threshold ৳
+                            {Number(summery?.merchantExcessIncome || 0).toFixed(
+                              2
+                            )}
+                          </p>
                         </div>
                       </div>
                     </div>

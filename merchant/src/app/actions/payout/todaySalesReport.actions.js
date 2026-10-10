@@ -1,6 +1,7 @@
 'use server';
 
 import { prisma } from '@/lib/prisma';
+import { requireSessionUser } from "@/lib/session";
 
 // Asia/Dhaka (+06:00) দিনের উইন্ডোকে UTC-তে কনভার্ট করে আনা
 function getDhakaDayWindowUTC(date = new Date()) {
@@ -19,6 +20,7 @@ function getDhakaDayWindowUTC(date = new Date()) {
 }
 
 export async function getTodaySalesReport() {
+  await requireSessionUser();
   const { startUTC, endUTC, y, m, day } = getDhakaDayWindowUTC();
 
   const sales = await prisma.sale.findMany({
@@ -28,6 +30,7 @@ export async function getTodaySalesReport() {
       total: true,
       brandEarning: true,
       merchantEarning: true,
+      merchantExcessEarning: true,
       platformEarning: true,
     },
   });
@@ -40,12 +43,14 @@ export async function getTodaySalesReport() {
   let grossRevenue = 0;
   let royaltyTotal = 0;
   let platformEarning = 0;
+  let merchantExcessEarning = 0;
 
   for (const s of sales) {
     soldUnits += s.quantity || 0;
     grossRevenue += Number(s.total || 0);
     royaltyTotal += Number((s.brandEarning || 0) + (s.merchantEarning || 0));
     platformEarning += Number(s.platformEarning || 0);
+    merchantExcessEarning += Number(s.merchantExcessEarning || 0);
   }
 
   const returnedCount = 0; // আপনার স্কিমায় রিটার্ন টেবিল নেই—প্রয়োজনে ভবিষ্যতে যুক্ত করুন
@@ -55,6 +60,7 @@ export async function getTodaySalesReport() {
     totals: {
       grossRevenue,
       royalties: royaltyTotal,
+      merchantExcessEarning,
       platformEarning,
     },
     counts: {

@@ -5,6 +5,7 @@ import fs from "fs";
 import { revalidatePath } from "next/cache";
 import path from "path";
 import { uploadToS3, getPrivateUrl } from "@/lib/s3";
+import { requireSessionUserId } from "@/lib/session";
 
 // export async function updateUserProfileImageFile(id, file) {
 //   if (!file) throw new Error("No file provided");
@@ -40,9 +41,12 @@ import { uploadToS3, getPrivateUrl } from "@/lib/s3";
 // }
 
 export async function updateUserProfileImageFile(id, file) {
+  await requireSessionUserId(id);
   if (!file) throw new Error("No file provided");
 
-  const fileExt = path.extname(file.name);
+  const rawExt = path.extname(file.name || "").toLowerCase();
+  const ALLOWED_EXT = [".png", ".jpg", ".jpeg", ".webp", ".gif", ".avif"];
+  const fileExt = ALLOWED_EXT.includes(rawExt) ? rawExt : ".png";
   const key = `profile-images/${id}/${Date.now()}${fileExt}`;
   const buffer = Buffer.from(await file.arrayBuffer());
 
@@ -58,6 +62,7 @@ export async function updateUserProfileImageFile(id, file) {
   return { signedUrl };
 }
 export async function updateUserInfo(userId, data) {
+  await requireSessionUserId(userId);
   try {
     const updatedUser = await prisma.user.update({
       where: { id: userId },
@@ -106,6 +111,7 @@ export async function updateUserInfo(userId, data) {
 
 // UPDATE USER + USERPROFILE
 export async function updateUserProfile(userId, data) {
+  await requireSessionUserId(userId);
   console.log(data, "data");
 
   try {

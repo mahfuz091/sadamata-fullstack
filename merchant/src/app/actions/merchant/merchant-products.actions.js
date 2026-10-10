@@ -7,8 +7,10 @@ import { Role } from "@/generated/prisma";
 import { prisma } from "@/lib/prisma";
 import { pickPreviewImg } from "@/utils/color";
 import { unstable_noStore as noStore, revalidatePath } from "next/cache";
+import { requireSessionUserId } from "@/lib/session";
 
 export async function assertIsMerchant(userId) {
+  await requireSessionUserId(userId);
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: { id: true, role: true, isActive: true },
@@ -38,6 +40,7 @@ export async function getMerchantProducts({
   visibility,
   sort = "createdAt_desc",
 } = {}) {
+  await requireSessionUserId(merchantId);
   noStore();
   if (!merchantId) throw new Error("merchantId is required");
 
@@ -125,6 +128,8 @@ export async function getMerchantProducts({
 export async function deleteMerchantProduct(_prev, formData) {
   const merchantId = formData.get("merchantId");
   const productId = formData.get("productId");
+
+  await requireSessionUserId(merchantId);
 
   if (!merchantId || !productId) {
     throw new Error("merchantId and productId are required");

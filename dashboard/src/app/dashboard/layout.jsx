@@ -14,7 +14,7 @@ export const metadata = {
 };
 export default async function Page({ children }) {
   const session = await auth();
-  if (!session) {
+  if (!session || session.user?.role !== "ADMIN") {
     redirect("/");
   }
   const user = await prisma.user.findUnique({

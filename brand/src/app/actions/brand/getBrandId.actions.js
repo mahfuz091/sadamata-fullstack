@@ -1,6 +1,7 @@
 'use server'
 
 import { prisma } from "@/lib/prisma"
+import { requireSessionUserId } from "@/lib/session";
 
 
 
@@ -8,6 +9,7 @@ import { prisma } from "@/lib/prisma"
 
 
 export const getBrandId = async (userId) => {
+  await requireSessionUserId(userId);
 
     const brand = await prisma.brand.findFirst({
         where: {

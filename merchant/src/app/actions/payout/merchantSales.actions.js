@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { getPrivateUrl } from "@/lib/s3";
+import { requireSessionUserId } from "@/lib/session";
 
 // ======== Time helpers (Dhaka-aligned, UTC+6) ========
 const DHAKA_OFFSET_MS = 6 * 60 * 60 * 1000;
@@ -200,6 +201,7 @@ async function fetchSalesByRange({ merchantId, startUTC, endUTC }) {
 }
 
 export async function getMerchantSalesKpis(merchantId) {
+  await requireSessionUserId(merchantId);
   if (!merchantId) throw new Error("merchantId is required");
 
   const ranges = buildDhakaRanges();

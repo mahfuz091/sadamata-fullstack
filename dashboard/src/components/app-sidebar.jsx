@@ -131,6 +131,11 @@ const data = {
       url: "/dashboard/product-categories",
       icon: IconInnerShadowTop,
     },
+    {
+      title: "Tier Commission",
+      url: "/dashboard/merchant-tier-commission",
+      icon: IconSettings,
+    },
   ],
   navClouds: [
     {

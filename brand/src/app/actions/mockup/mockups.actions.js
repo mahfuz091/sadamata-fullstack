@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { requireSessionUserId } from "@/lib/session";
 
 
 
@@ -10,6 +11,7 @@ import { prisma } from "@/lib/prisma";
  * - প্রতিটি প্রোডাক্টের প্রথম variant ইমেজও আনা হয়
  */
 export async function getMockupsWithProducts(userId) {
+  await requireSessionUserId(userId);
     if (!userId) throw new Error('userId required')
 
  

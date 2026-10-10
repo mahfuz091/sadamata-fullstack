@@ -36,6 +36,7 @@ export default async function MerchantStatsPage({ params }) {
     select: {
       total: true,
       merchantEarning: true,
+      merchantExcessEarning: true,
       productId: true,
       createdAt: true,
     },
@@ -47,6 +48,11 @@ export default async function MerchantStatsPage({ params }) {
 
   const totalMerchantEarning = sales.reduce(
     (sum, s) => sum + Number(s.merchantEarning),
+    0
+  );
+
+  const totalMerchantExcess = sales.reduce(
+    (sum, s) => sum + Number(s.merchantExcessEarning || 0),
     0
   );
 
@@ -82,6 +88,22 @@ export default async function MerchantStatsPage({ params }) {
         <Mini label='Total Sales' value={totalSales} />
         <Mini label='Total Revenue' value={totalRevenue} />
         <Mini label='Products with Sales' value={productsWithSales} />
+      </Section>
+
+      {/* Tiered earning breakdown */}
+      <Section title='Tiered Earning'>
+        <Mini
+          label='Base earning'
+          value={(totalMerchantEarning - totalMerchantExcess).toFixed(2)}
+        />
+        <Mini
+          label='Above-threshold earning'
+          value={totalMerchantExcess.toFixed(2)}
+        />
+        <Mini
+          label='Total merchant earning'
+          value={totalMerchantEarning.toFixed(2)}
+        />
       </Section>
 
       {/* Product Tier */}

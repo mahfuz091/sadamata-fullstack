@@ -7,6 +7,9 @@ import { signIn, signOut, auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { Role } from "@/generated/prisma";
 import { revalidatePath } from "next/cache";
+import { requireRole } from "@/lib/requireRole";
+import { notifyAccountStatus } from "@/lib/accountStatusMail";
+import { sendSignupEmails } from "@/lib/signupMail";
 
 /** ---------- Register ---------- */
 export const registerUser = async (_prevState, formData) => {
@@ -35,6 +38,12 @@ export const registerUser = async (_prevState, formData) => {
         password: hashedPass,
       },
       select: { id: true, name: true },
+    });
+
+    sendSignupEmails({
+      email,
+      name: created.name,
+      portal: "admin",
     });
 
     return {
@@ -140,6 +149,7 @@ export const logOut = async () => {
 /** ---------- List Users ---------- */
 /** ---------- List Users (safe) ---------- */
 export const userList = async () => {
+  await requireRole(["ADMIN"]);
   try {
     // try the expected shape with createdAt
     try {
@@ -187,6 +197,7 @@ export const userList = async () => {
 };
 
 export const brandList = async () => {
+  await requireRole(["ADMIN"]);
   try {
     // try the expected shape with createdAt
     try {
@@ -231,6 +242,7 @@ export const brandList = async () => {
   }
 };
 export const merchList = async () => {
+  await requireRole(["ADMIN"]);
   try {
     // try the expected shape with createdAt
     try {
@@ -303,6 +315,7 @@ export const updateUserProfileImage = async (
   _prevState,
   { userId, imageUrl },
 ) => {
+  await requireRole(["ADMIN"]);
   if (!userId || !imageUrl) {
     throw new Error("User ID and image URL are required");
   }
@@ -317,6 +330,7 @@ export const updateUserProfileImage = async (
 
 /** ---------- Update User Name ---------- */
 export const updateUserName = async (_prevState, { userId, name }) => {
+  await requireRole(["ADMIN"]);
   try {
     if (!userId || !name) {
       return { success: false, msg: "User ID and name are required" };
@@ -348,6 +362,7 @@ export const updateUserName = async (_prevState, { userId, name }) => {
 };
 /** ---------- Update Single User Role ---------- */
 export const updateUserRole = async (_prevState, { userId, role }) => {
+  await requireRole(["ADMIN"]);
   try {
     // basic validation
     if (!userId || !role || typeof role !== "string") {
@@ -402,6 +417,7 @@ export const updateUserRole = async (_prevState, { userId, role }) => {
  * Example call: await updateUsersRoles(null, { updates: [{ userId: 'abc', role: 'admin' }] })
  */
 export const updateUsersRoles = async (_prevState, { updates }) => {
+  await requireRole(["ADMIN"]);
   try {
     if (!Array.isArray(updates) || updates.length === 0) {
       return { success: false, msg: "Updates array required" };
@@ -515,6 +531,7 @@ export const adminLogin = async (_prevState, formData) => {
 
 /** ---------- Delete User ---------- */
 export const deleteUser = async (_prevState, { userId }) => {
+  await requireRole(["ADMIN"]);
   try {
     if (!userId) return { success: false, msg: "User ID required" };
 
@@ -559,6 +576,7 @@ export const deleteUser = async (_prevState, { userId }) => {
 
 /** ---------- Update User isActive ---------- */
 export const updateUserIsActive = async (_prevState, { userId, isActive }) => {
+  await requireRole(["ADMIN"]);
   try {
     if (!userId || typeof isActive !== "boolean") {
       return {
@@ -581,7 +599,7 @@ export const updateUserIsActive = async (_prevState, { userId, isActive }) => {
     // ensure target user exists
     const existing = await prisma.user.findUnique({
       where: { id: userId },
-      select: { id: true, isActive: true },
+      select: { id: true, isActive: true, role: true },
     });
 
     if (!existing) {
@@ -600,6 +618,16 @@ export const updateUserIsActive = async (_prevState, { userId, isActive }) => {
       },
     });
 
+    // Only mail when the flag actually flipped, so re-saving does not re-notify.
+    if (existing.isActive !== isActive) {
+      notifyAccountStatus({
+        email: updatedUser.email,
+        name: updatedUser.name,
+        role: existing.role,
+        isActive,
+      });
+    }
+
     return {
       success: true,
       msg: `User ${isActive ? "activated" : "deactivated"} successfully`,
@@ -613,6 +641,7 @@ export const updateUserIsActive = async (_prevState, { userId, isActive }) => {
 
 
 export const updateUserIsActiveAlsoBrand = async (_prevState, { userId, isActive }) => {
+  await requireRole(["ADMIN"]);
   try {
     if (!userId || typeof isActive !== "boolean") {
       return { success: false, msg: "User ID and isActive(boolean) are required" };
@@ -654,11 +683,23 @@ export const updateUserIsActiveAlsoBrand = async (_prevState, { userId, isActive
       return {
         ok: true,
         updatedUser,
+        previousIsActive: existingUser.isActive,
+        role: existingUser.role,
         brandUpdatedCount: brandUpdate.count, // 0 মানে brand নেই, 1 মানে আপডেট হয়েছে
       };
     });
 
     if (!result.ok) return { success: false, msg: result.msg };
+
+    // Brand accounts sign in to the brand portal, so notify with that wording.
+    if (result.previousIsActive !== isActive) {
+      notifyAccountStatus({
+        email: result.updatedUser.email,
+        name: result.updatedUser.name,
+        role: result.role,
+        isActive,
+      });
+    }
 
     return {
       success: true,
@@ -678,6 +719,7 @@ export const updateMerchantAdminSettings = async (
   _prevState,
   { userId, tiar, brandOption },
 ) => {
+  await requireRole(["ADMIN"]);
   try {
     if (!userId) {
       return { success: false, msg: "User ID required" };
@@ -738,6 +780,7 @@ export async function updateMerchantDailyLimitPctAction(
   _prevState,
   { merchantId, dailyLimitPct },
 ) {
+  await requireRole(["ADMIN"]);
   try {
     // 1) auth
 

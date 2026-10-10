@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 // import { generateBlogId } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { requireRole } from "@/lib/requireRole";
 
 /** ---------- Helpers ---------- */
 function getString(v) {
@@ -96,6 +97,7 @@ function parseContent(formData) {
 // };
 
 export const pressList = async () => {
+  await requireRole(["ADMIN"]);
   try {
     // Get logged-in user session
     const session = await auth();
@@ -133,6 +135,7 @@ export const pressList = async () => {
 };
 /** ---------- Create Post ---------- */
 export const pressCreate = async (_prevState, formData) => {
+  await requireRole(["ADMIN"]);
   try {
     const title = getString(formData.get("title"));
     const postSlug = getString(formData.get("postSlug"));
@@ -215,6 +218,7 @@ export const pressCreate = async (_prevState, formData) => {
 
 /** ---------- Update Post ---------- */
 export const pressUpdate = async (_prevState, formData) => {
+  await requireRole(["ADMIN"]);
   try {
     const id = getString(formData.get("id"));
     if (!id) return { success: false, msg: "Post id is required" };
@@ -266,6 +270,7 @@ export const pressUpdate = async (_prevState, formData) => {
 
 /** ---------- Delete Post ---------- */
 export const deletePress = async (id) => {
+  await requireRole(["ADMIN"]);
   try {
     const deleted = await prisma.pressPost.delete({
       where: { id },
@@ -313,6 +318,7 @@ export const deletePress = async (id) => {
 // };
 
 export const getPressById = async (id) => {
+  await requireRole(["ADMIN"]);
   try {
     const post = await prisma.pressPost.findUnique({
       where: { id },

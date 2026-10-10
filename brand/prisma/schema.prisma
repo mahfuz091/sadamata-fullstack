@@ -239,6 +239,10 @@ model Sale {
   brandEarning    Float      @default(0)
   merchantEarning Float      @default(0)
   platformEarning Float      @default(0)
+  merchantExcessEarning Decimal @default(0) @db.Decimal(12, 2)
+  bonusRuleId           String?
+  excessPctApplied      Decimal? @db.Decimal(5, 2)
+  thresholdApplied      Decimal? @db.Decimal(12, 2)
   createdAt       DateTime   @default(now())
   orderItemId     String     @unique
   Refund          Refund[]
@@ -376,6 +380,21 @@ model Payment {
   order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 
+model MerchantBonusRule {
+  id             String    @id @default(uuid())
+  priceThreshold Decimal   @default(1000) @db.Decimal(12, 2)
+  excessPct      Decimal   @default(40) @db.Decimal(5, 2)
+  isActive       Boolean   @default(true)
+  effectiveFrom  DateTime  @default(now())
+  effectiveTo    DateTime?
+  createdById    String?
+  note           String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([isActive, effectiveFrom])
+}
+
 model CommissionSetting {
   id                       String    @id @default(uuid())
   brandId                  String?
@@ -405,6 +424,7 @@ model Refund {
   brandEarning    Decimal   @db.Decimal(12, 2)
   merchantEarning Decimal   @db.Decimal(12, 2)
   platformEarning Decimal   @db.Decimal(12, 2)
+  merchantExcessReversed Decimal @default(0) @db.Decimal(12, 2)
   reason          String?
   createdAt       DateTime  @default(now())
   orderItem       OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)

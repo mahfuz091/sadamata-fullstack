@@ -5,6 +5,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { unstable_noStore as noStore } from "next/cache";
+import { requireSessionUserId } from "@/lib/session";
 
 /** ---- Utils: common orderBy builder ---- */
 function buildOrderBy(sort = "createdAt_desc") {
@@ -31,6 +32,7 @@ function buildOrderBy(sort = "createdAt_desc") {
 
 /** ---- 0) ইউজার এক্সিস্ট + একটিভ কিনা চেক ---- */
 export async function assertUserActive(userId) {
+  await requireSessionUserId(userId);
   const u = await prisma.user.findUnique({
     where: { id: userId },
     select: { id: true, isActive: true },
@@ -44,6 +46,7 @@ export async function assertUserActive(userId) {
  * returns: { brands: [{id, name, isActive, brandCategoryId}], count }
  */
 export async function getUserBrands(userId, { onlyActive = false } = {}) {
+  await requireSessionUserId(userId);
   noStore();
   await assertUserActive(userId);
 
@@ -70,6 +73,7 @@ export async function getUserBrands(userId, { onlyActive = false } = {}) {
  * notFound হলে error, notOwned হলে error (সিকিউরিটি)
  */
 export async function assertBrandOwnedByUser(userId, brandId) {
+  await requireSessionUserId(userId);
   const brand = await prisma.brand.findUnique({
     where: { id: brandId },
     select: { id: true, userId: true, isActive: true, name: true },
@@ -102,6 +106,7 @@ export async function getBrandProductsByUser({
   search,
   sort = "createdAt_desc",
 } = {}) {
+  await requireSessionUserId(userId);
   noStore();
   if (!userId) throw new Error("userId is required");
   if (!brandId) throw new Error("brandId is required");
@@ -219,6 +224,7 @@ export async function getAllBrandProductsOfUser({
   search,
   sort = "createdAt_desc",
 } = {}) {
+  await requireSessionUserId(userId);
   noStore();
   if (!userId) throw new Error("userId is required");
   await assertUserActive(userId);

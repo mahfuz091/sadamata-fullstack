@@ -3,6 +3,7 @@
 import path from "path";
 import fs from "fs/promises";
 import { prisma } from "@/lib/prisma";
+import { requireRole } from "@/lib/requireRole";
 
 const uploadDir = path.join(process.cwd(), "uploads", "mockups");
 
@@ -22,6 +23,7 @@ async function saveFile(file, fieldName) {
 
 // Create new Mockup with Variants
 export async function createMockup(formData) {
+  await requireRole(["ADMIN"]);
   const name = formData.get("name");
 
   const variants = [];
@@ -168,6 +170,7 @@ export async function createMockup(formData) {
 //   }
 // }
 export async function updateMockup(formData) {
+  await requireRole(["ADMIN"]);
   const id = formData.get("id");
   const name = formData.get("name");
 
@@ -236,6 +239,7 @@ export async function updateMockup(formData) {
 }
 
 export async function updateVariant(formData) {
+  await requireRole(["ADMIN"]);
   try {
     const id = formData.get("id");
 
@@ -286,23 +290,27 @@ export async function updateVariant(formData) {
 
 // Delete Mockup Variant
 export async function deleteVariant(id) {
+  await requireRole(["ADMIN"]);
   await prisma.mockupVariant.delete({ where: { id } });
   return { success: true };
 }
 
 // Delete whole Mockup
 export async function deleteMockup(id) {
+  await requireRole(["ADMIN"]);
   await prisma.mockup.delete({ where: { id } });
   return { success: true };
 }
 
 // Get All Mockups (with Variants)
 export async function getAllMockups() {
+  await requireRole(["ADMIN"]);
   return await prisma.mockup.findMany({ include: { variants: true } });
 }
 
 // ✅ Create new Mockup Variant (for Edit page "Add Variant")
 export async function createVariant(formData) {
+  await requireRole(["ADMIN"]);
   try {
     const mockupId = formData.get("mockupId");
     const color = formData.get("color");

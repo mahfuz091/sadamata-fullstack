@@ -1,8 +1,10 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { requireRole } from "@/lib/requireRole";
 
 export const blogCategoryList = async (_prevState, formData) => {
+  await requireRole(["ADMIN"]);
   try {
     const blogCategory = await prisma.blogCategory.findMany();
     return {
@@ -17,6 +19,7 @@ export const blogCategoryList = async (_prevState, formData) => {
 };
 
 export const blogCategoryCreate = async (_prevState, formData) => {
+  await requireRole(["ADMIN"]);
   try {
     const name = formData.get("name");
 
@@ -44,6 +47,7 @@ export const blogCategoryCreate = async (_prevState, formData) => {
 };
 
 export const deleteBlogCategory = async (id) => {
+  await requireRole(["ADMIN"]);
   try {
     const deleted = await prisma.blogCategory.delete({
       where: { id },
@@ -63,6 +67,7 @@ export const deleteBlogCategory = async (id) => {
 // blogCategory.js (server actions)
 
 export const blogCategoryUpdate = async (id, name) => {
+  await requireRole(["ADMIN"]);
   try {
     const existing = await prisma.blogCategory.findFirst({
       where: { name, NOT: { id } },

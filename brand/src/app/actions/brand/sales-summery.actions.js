@@ -3,6 +3,7 @@
 import { unstable_noStore as noStore } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { OrderStatus } from "@/generated/prisma";
+import { requireSessionUserId } from "@/lib/session";
 
 /** --------- helpers --------- */
 function buildDateRange(from, to) {
@@ -56,6 +57,7 @@ export async function getBrandProductSalesSummaryByUser({
   merchantId,       // optional owner filter: Product.userId
   searchTerm, 
 } = {}) {
+  await requireSessionUserId(userId);
   noStore();
   if (!userId) throw new Error("userId is required");
   await assertUserActive(userId);

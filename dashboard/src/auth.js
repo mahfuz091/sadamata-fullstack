@@ -27,6 +27,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         );
         if (!isValid) return null;
 
+        // This is the admin app: the credentials endpoint is reachable
+        // directly, so the role check in the adminLogin action is not enough
+        // to keep a shopper account out of the dashboard.
+        if (user.role !== "ADMIN") return null;
+
         return {
           id: user.id,
           email: user.email,

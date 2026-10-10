@@ -1,4 +1,5 @@
 import { v2 as cloudinary } from "cloudinary";
+import { auth } from "@/auth";
 import { NextResponse } from "next/server";
 
 cloudinary.config({
@@ -9,6 +10,13 @@ cloudinary.config({
 
 export async function POST(req) {
   try {
+  // Admin-only: these endpoints expose customer PII, order documents and the
+  // private design assets behind them.
+  const session = await auth();
+  if (session?.user?.role !== "ADMIN") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
     const formData = await req.formData();
     const file = formData.get("image");
 

@@ -1,8 +1,10 @@
 "use server";
 import "server-only";
+import { requireRole } from "@/lib/requireRole";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL; // Example: https://example.com
 export async function getAllRooms(revalidateSeconds) {
+  await requireRole(["ADMIN"]);
   if (!BASE_URL) {
     throw new Error("Missing API_BASE_URL environment variable");
   }

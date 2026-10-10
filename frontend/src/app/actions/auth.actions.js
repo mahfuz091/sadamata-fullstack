@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs"; // for hashing passwords
 import { signIn, signOut, auth } from "@/auth";
 
 import { revalidatePath } from "next/cache";
+import { sendSignupEmails } from "@/lib/signupMail";
 const toLower = (v) => (v ? v.toLowerCase() : null);
 export async function registerUser(prevState, formData) {
   try {
@@ -17,6 +18,11 @@ export async function registerUser(prevState, formData) {
     let role = (
       (formData.get("role") || "USER").toString() || "USER"
     ).toUpperCase();
+
+    // The role is submitted with the signup form, so it is filtered here:
+    // without this anyone could register themselves as ADMIN.
+    const SELF_SIGNUP_ROLES = ["USER", "BRAND", "MERCH"];
+    if (!SELF_SIGNUP_ROLES.includes(role)) role = "USER";
 
     if (!name || !password || !confirmPassword || (!email && !phone)) {
       return { success: false, message: "All fields are required" };
@@ -55,6 +61,13 @@ export async function registerUser(prevState, formData) {
         role,
         isActive,
       },
+    });
+
+    sendSignupEmails({
+      email: user.email,
+      name: user.name,
+      portal: "shop",
+      loginPath: "/login",
     });
 
     return { success: true, user, message: "Registration successful" };

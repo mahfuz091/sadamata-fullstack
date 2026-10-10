@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import { initSslczSession } from "@/lib/sslcz";
 import { joinUrl } from "@/lib/url";
 import { normalizeBDPhone } from "@/utils/validation";
+import { requireSessionUserId } from "@/lib/session";
 
 const DEFAULT_CITY = process.env.APP_DEFAULT_CITY || "Dhaka";
 const DEFAULT_POSTCODE = process.env.APP_DEFAULT_POSTCODE || "1000";
@@ -187,6 +188,9 @@ export async function createCheckoutSession(payload) {
   let guestAddressId = null;
 
   if (userId) {
+    // userId comes from the client: an order may only be placed on the
+    // signed-in account. Guest checkout (no userId) is unaffected.
+    await requireSessionUserId(userId);
     addr = await loadAddressForUser(userId, addressId);
   } else if (guest) {
     if (!guest.firstName || !guest.phone || !guest.address) {

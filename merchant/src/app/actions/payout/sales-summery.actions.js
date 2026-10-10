@@ -8,6 +8,7 @@ import { unstable_noStore as noStore } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { pickPreviewImg } from "@/utils/color";
 import { OrderStatus } from "@/generated/prisma";
+import { requireSessionUserId } from "@/lib/session";
 
 function buildDateRange(from, to) {
   const range = {};
@@ -24,6 +25,7 @@ export async function getMerchantProductSalesSummary({
   dateFrom,
   dateTo,
 } = {}) {
+  await requireSessionUserId(merchantId);
   noStore();
   if (!merchantId) throw new Error("merchantId is required");
 
@@ -92,6 +94,7 @@ export async function getMerchantProductSalesSummary({
       quantity: true,
       total: true,
       merchantEarning: true,
+      merchantExcessEarning: true,
     },
   });
 
@@ -101,10 +104,12 @@ export async function getMerchantProductSalesSummary({
       purchasedQty: 0,
       revenue: 0,
       royalties: 0,
+      excessRoyalties: 0,
     };
     cur.purchasedQty += r.quantity || 0;
     cur.revenue += Number(r.total || 0);
     cur.royalties += Number(r.merchantEarning || 0);
+    cur.excessRoyalties += Number(r.merchantExcessEarning || 0);
     paidMap.set(r.productId, cur);
   }
 
@@ -131,6 +136,7 @@ export async function getMerchantProductSalesSummary({
       purchasedQty: 0,
       revenue: 0,
       royalties: 0,
+      excessRoyalties: 0,
     };
     const cancelledQty = cancelMap.get(p.id) || 0;
     return {
@@ -143,6 +149,7 @@ export async function getMerchantProductSalesSummary({
       returnedQty: 0, // add logic if a Return model exists
       revenue: Number(paid.revenue.toFixed(2)),
       royalties: Number(paid.royalties.toFixed(2)),
+      excessRoyalties: Number((paid.excessRoyalties || 0).toFixed(2)),
       updatedAt: p.updatedAt,
      previewImg: pickPreviewImg(p.variants),
       isActive: p.isActive,

@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { requireSessionUserId } from "@/lib/session";
 
 /**
  * মার্চেন্ট প্রোডাক্ট স্ট্যাটস
@@ -10,6 +11,7 @@ import { prisma } from "@/lib/prisma";
  *   - timeFrom/timeTo দিলে "products that have sales" রেঞ্জ-ভিত্তিক গণনা হবে (Sale.createdAt)
  */
 export async function getMerchantProductStats(merchantId, opts = {}) {
+  await requireSessionUserId(merchantId);
   if (!merchantId) throw new Error("merchantId required");
 
   const { useVisibility = false, timeFrom, timeTo } = opts;
@@ -79,6 +81,7 @@ export async function getMerchantProductStats(merchantId, opts = {}) {
 }
 
 export async function getTodayUploadedProducts(merchantId) {
+  await requireSessionUserId(merchantId);
   if (!merchantId) throw new Error("merchantId is required");
 
   // Dhaka timezone = UTC +6

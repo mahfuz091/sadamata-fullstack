@@ -3,11 +3,13 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
+import { requireRole } from "@/lib/requireRole";
 
 export async function setMerchantCommission(
   _,
   { merchantId, merchantCommissionPct },
 ) {
+  await requireRole(["ADMIN"]);
   try {
     if (!merchantId || typeof merchantCommissionPct !== "number") {
       return { success: false, msg: "Invalid input" };
@@ -67,6 +69,7 @@ export async function updateCommissionWithBrandPctAction(
   _,
   { merchantId, brandSelectedMerchantPct },
 ) {
+  await requireRole(["ADMIN"]);
   try {
     if (!merchantId || typeof brandSelectedMerchantPct !== "number") {
       return { success: false, msg: "Invalid input" };

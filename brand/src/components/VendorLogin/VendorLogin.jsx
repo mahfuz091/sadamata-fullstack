@@ -144,7 +144,7 @@ const VendorLogin = () => {
 
           <div className='user-login__bottom'>
             <div className='user-login__bottom__top'>
-              <Link href='#'>Forgot your password?</Link>
+              <Link href='/forgot-password'>Forgot your password?</Link>
               <Link href='#'>Other issues with Sign-In</Link>
             </div>
             <Link href='/signup'>

@@ -2,6 +2,7 @@
 
 import { prisma } from '@/lib/prisma';
 import { OrderStatus, Prisma } from '@/generated/prisma';
+import { requireSessionUserId } from "@/lib/session";
 
 /** ---------- Time helpers (Asia/Dhaka) ---------- */
 const DHAKA_OFFSET_MS = 6 * 60 * 60 * 1000;
@@ -321,6 +322,7 @@ const firstBrand = await prisma.brand.findFirst({
 
 /** ---------- Public action: all sections together ---------- */
 export async function getBrandSalesSummary(merchantId) {
+  await requireSessionUserId(merchantId);
   if (!merchantId) throw new Error('merchantId required');
 
   const periods = [

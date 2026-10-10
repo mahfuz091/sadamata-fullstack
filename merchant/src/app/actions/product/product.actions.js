@@ -8,7 +8,10 @@ import generateBlogId from "@/utils/generateTitle";
 import { saveDesignFileS3, saveProductFileS3 } from "@/lib/s3helper";
 import { generateUniqueSmpin } from "@/lib/smpin";
 import { resolveEffectiveCommissions } from "@/lib/commissionRates";
+import { buildMerchantPreview } from "@/lib/merchantTier";
+import { getActiveBonusRule } from "@/lib/merchantTierRule";
 import { revalidatePath } from "next/cache";
+import { requireSessionUser, requireSessionUserId } from "@/lib/session";
 
 const uploadDir = path.join(process.cwd(), "public", "uploads");
 const uploadProductDir = path.join(process.cwd(), "uploads", "products");
@@ -737,6 +740,25 @@ const colorRank = (color) => {
   return idx === -1 ? 999 : idx;
 };
 
+
+/**
+ * Products are addressed by id in form bodies, so ownership is checked against
+ * the session before any read-back or write.
+ */
+async function requireOwnedProduct(productId) {
+  const user = await requireSessionUser();
+  if (!productId) throw new Error("Product ID missing");
+
+  const product = await prisma.product.findUnique({
+    where: { id: String(productId) },
+    select: { id: true, userId: true },
+  });
+
+  if (!product || product.userId !== user.id) throw new Error("Forbidden");
+
+  return product;
+}
+
 export async function createProduct(formData) {
   try {
     const title = (formData.get("title") || "").toString().trim();
@@ -747,6 +769,9 @@ export async function createProduct(formData) {
 
     const mockupId = formData.get("mockupId") || null;
     const userId = formData.get("userId") || null;
+    // userId is submitted by the client — a product may only be created for
+    // the signed-in merchant.
+    await requireSessionUserId(userId);
 
     const visibility =
       (formData.get("visibility") ?? "true").toString() === "true";
@@ -772,6 +797,9 @@ export async function createProduct(formData) {
     console.log(
       `[commission] product create merchant=${userId} brand=${brandId ?? "none"} -> brand ${brandPct}% / merchant ${merchantPct}% (${source})`,
     );
+
+    const bonusRule = await getActiveBonusRule();
+    const preview = buildMerchantPreview(price, merchantPct, bonusRule);
 
     // ---- read mockup, build final title + baseSlug ----
     const mockup = await prisma.mockup.findUnique({
@@ -966,7 +994,7 @@ export async function createProduct(formData) {
 
     revalidatePath("/dashboard/*");
 
-    return { success: true, message: "Product created successfully" };
+    return { success: true, message: "Product created successfully", preview };
   } catch (error) {
     console.error("Error in product creation:", error);
     return {
@@ -976,10 +1004,38 @@ export async function createProduct(formData) {
   }
 }
 
+/**
+ * Live per-unit earning preview for the add/edit product UI. Mirrors exactly
+ * what createProduct resolves and stores: effective commission rates (brand
+ * rules included) plus the active tiered bonus rule. Returns null for prices
+ * under the 990 BDT floor or on any failure so the UI can fall back.
+ */
+export async function getMerchantEarningPreview({ price, brandId = null } = {}) {
+  try {
+    const user = await requireSessionUser();
+
+    const unitPrice = Number(price);
+    if (!Number.isFinite(unitPrice) || unitPrice < 990) return null;
+
+    const { brandPct, merchantPct, source } = await resolveEffectiveCommissions({
+      merchantId: user.id,
+      brandId: brandId || null,
+    });
+    const bonusRule = await getActiveBonusRule();
+    const preview = buildMerchantPreview(unitPrice, merchantPct, bonusRule);
+
+    return { ...preview, brandPct, merchantPct, source };
+  } catch (error) {
+    console.warn("[commission] earning preview failed:", error?.message);
+    return null;
+  }
+}
+
 // UPDATE PRODUCT
 export async function updateProduct(formData) {
   const id = formData.get("id");
   if (!id) throw new Error("Product ID missing");
+  await requireOwnedProduct(id);
 
   const updateData = {};
 
@@ -1011,10 +1067,24 @@ export async function updateProduct(formData) {
   }
 
   // -------- UPDATE PRODUCT ONLY ONCE --------
-  await prisma.product.update({
+  const updated = await prisma.product.update({
     where: { id },
     data: updateData,
+    select: { userId: true, brandId: true, price: true },
   });
+
+  // Per-unit earning preview (server truth — current rules, not a frozen snapshot).
+  let preview = null;
+  try {
+    const { merchantPct } = await resolveEffectiveCommissions({
+      merchantId: updated.userId,
+      brandId: updated.brandId,
+    });
+    const bonusRule = await getActiveBonusRule();
+    preview = buildMerchantPreview(updated.price, merchantPct, bonusRule);
+  } catch (error) {
+    console.warn("[commission] preview failed for product", id, error?.message);
+  }
 
   // -------- VARIANTS (POSITION / COLOR / FIT CHANGE) --------
   // Strategy: replace variants (simple & correct)
@@ -1039,17 +1109,19 @@ export async function updateProduct(formData) {
     await prisma.productVariant.createMany({ data: variants });
   }
 
-  return { success: true };
+  return { success: true, preview };
 }
 
 // DELETE PRODUCT
 export async function deleteProduct(id) {
+  await requireOwnedProduct(id);
   await prisma.product.delete({ where: { id } });
   return { success: true };
 }
 
 // GET ALL PRODUCTS
 export async function getAllProducts() {
+  await requireSessionUser();
   return await prisma.product.findMany({
     include: {
       variants: {
@@ -1067,7 +1139,7 @@ export async function getAllProducts() {
 
 // GET PRODUCT BY ID
 export async function getProductById(id) {
-  return await prisma.product.findUnique({
+  const product = await prisma.product.findUnique({
     where: { id },
     include: {
       variants: true,
@@ -1083,10 +1155,28 @@ export async function getProductById(id) {
       },
     },
   });
+
+  if (!product) return product;
+
+  try {
+    const { merchantPct } = await resolveEffectiveCommissions({
+      merchantId: product.userId,
+      brandId: product.brandId,
+    });
+    const bonusRule = await getActiveBonusRule();
+    return {
+      ...product,
+      preview: buildMerchantPreview(product.price, merchantPct, bonusRule),
+    };
+  } catch (error) {
+    console.warn("[commission] preview failed for product", id, error?.message);
+    return product;
+  }
 }
 
 // GET PRODUCTS BY USER ID
 export async function getProductsByUserId(userId) {
+  await requireSessionUserId(userId);
   return await prisma.product.findMany({
     where: { userId },
     include: {

@@ -5,7 +5,10 @@ import { Canvas, FabricImage } from "fabric"; // Fabric.js v6
 import DashSidebar from "../DashSidebar/DashSidebar";
 import Tag from "./Tag";
 import { toast } from "sonner";
-import { createProduct } from "@/app/actions/product/product.actions";
+import {
+  createProduct,
+  getMerchantEarningPreview,
+} from "@/app/actions/product/product.actions";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import BrandDropdown from "./BrandDropDown";
@@ -2344,34 +2347,36 @@ export default function AddDesignFitAdmin({
   // price as a safe number
   const priceNum = Number(features.price) || 0;
 
-  // Your schema may be user.commissionSetting (object) or user.commissionSetting[0] (array).
-  // Normalize it.
-  const commissionSetting = useMemo(() => {
-    const cs = user?.CommissionSetting;
-    if (Array.isArray(cs)) return cs[0] ?? null;
-    return cs ?? null;
-  }, [user]);
+  // Live earning preview. Effective commission rates (brand rules included)
+  // and the tiered bonus rule both live on the server, so we ask it for the
+  // exact figure the product will be created with instead of guessing here.
+  const [earningPreview, setEarningPreview] = useState(null);
 
-  // Determine which pct to apply
-  const commissionPct = useMemo(() => {
-    const brandPct = Number(commissionSetting?.brandSelectedMerchantPct);
-    const nonBrandPct = Number(commissionSetting?.merchantCommissionPct);
+  useEffect(() => {
+    if (priceNum < 990) {
+      setEarningPreview(null);
+      return;
+    }
 
-    // if user chose "select-brand" and actually selected a brandId, use brandSelectedMerchantPct
-    const useBrandPct = brandOption === "select-brand" && !!brandId;
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      try {
+        const preview = await getMerchantEarningPreview({
+          price: priceNum,
+          brandId: brandOption === "select-brand" ? brandId : null,
+        });
+        if (!cancelled) setEarningPreview(preview);
+      } catch (error) {
+        console.warn("Failed to load earning preview:", error?.message);
+        if (!cancelled) setEarningPreview(null);
+      }
+    }, 350);
 
-    const pct = useBrandPct ? brandPct : nonBrandPct;
-
-    // fallback to 0 if invalid
-    return Number.isFinite(pct) ? pct : 0;
-  }, [commissionSetting, brandOption, brandId]);
-
-  // Royalty (commission amount). If you meant "merchant earnings after commission", see note below.
-  const royalty = useMemo(() => {
-    if (priceNum < 990) return 0; // <---- key line
-    // if pct is "7" meaning 7%, use /100
-    return Math.round((priceNum * commissionPct) / 100);
-  }, [priceNum, commissionPct]);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [priceNum, brandOption, brandId]);
 
   // ------------------ JSX ------------------
 
@@ -2779,7 +2784,9 @@ export default function AddDesignFitAdmin({
                               style={{ maxWidth: "200px" }}
                             />
                             <p>
-                              BDT {royalty} Estimated royalty
+                              {earningPreview
+                                ? earningPreview.text
+                                : "Enter a price of at least BDT 990"}
                             </p>
                           </div>
                         </div>

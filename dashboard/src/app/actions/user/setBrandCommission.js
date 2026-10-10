@@ -3,8 +3,10 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
+import { requireRole } from "@/lib/requireRole";
 
 export async function setBrandCommission(_, { brandId, brandCommissionPct }) {
+  await requireRole(["ADMIN"]);
   try {
     const session = await auth();
     if (!session?.user || session.user.role !== "ADMIN") {

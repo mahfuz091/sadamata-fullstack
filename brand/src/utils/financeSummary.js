@@ -180,7 +180,7 @@ export async function getMerchantFinancialSummary(merchantId) {
   const [salesAgg, payoutsAgg] = await Promise.all([
     prisma.sale.aggregate({
       where: saleWhere,
-      _sum: { total: true, merchantEarning: true, quantity: true },
+      _sum: { total: true, merchantEarning: true, merchantExcessEarning: true, quantity: true },
     }),
     prisma.payout.aggregate({
       where: { actor: 'MERCHANT', merchantId },
@@ -194,6 +194,7 @@ export async function getMerchantFinancialSummary(merchantId) {
   // 4️⃣ Compute final values
   const totalSell = Number(salesAgg._sum.total ?? 0);
   const merchantTotalIncome = Number(salesAgg._sum.merchantEarning ?? 0);
+  const merchantExcessIncome = Number(salesAgg._sum.merchantExcessEarning ?? 0);
   const totalProductsSold = Number(salesAgg._sum.quantity ?? 0);
   const withdrawAmount = Number(payoutsAgg._sum.amount ?? 0);
   const totalAfterWithdraw = merchantTotalIncome - withdrawAmount;
@@ -202,6 +203,7 @@ export async function getMerchantFinancialSummary(merchantId) {
     merchantId,
     totalSell,
     merchantTotalIncome,
+    merchantExcessIncome,
     withdrawAmount,
     totalAfterWithdraw,
     totalProductsSold,
@@ -222,6 +224,7 @@ export async function getPlatformTotals() {
       total: true,
       brandEarning: true,
       merchantEarning: true,
+      merchantExcessEarning: true,
       platformEarning: true,
     },
   });
@@ -230,6 +233,7 @@ export async function getPlatformTotals() {
     totalSell: sales._sum.total || 0,
     brandTotal: sales._sum.brandEarning || 0,
     merchantTotal: sales._sum.merchantEarning || 0,
+    merchantExcessTotal: sales._sum.merchantExcessEarning || 0,
     platformTotal: sales._sum.platformEarning || 0,
   };
 }

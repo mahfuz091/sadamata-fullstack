@@ -1,3 +1,4 @@
+import { auth } from "@/auth";
 import { NextResponse } from "next/server";
 import { getPrivateUrl } from "@/lib/s3";
 
@@ -15,6 +16,13 @@ function isAllowedKey(key) {
 }
 
 export async function GET(req) {
+  // Admin-only: these endpoints expose customer PII, order documents and the
+  // private design assets behind them.
+  const session = await auth();
+  if (session?.user?.role !== "ADMIN") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { searchParams } = new URL(req.url);
   const key = searchParams.get("key");
   const filenameOverride = searchParams.get("filename") || "";

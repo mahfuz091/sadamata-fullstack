@@ -1,6 +1,7 @@
 // app/api/sslcz/ipn/route.js
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { validateWithSslcz } from "@/lib/sslcz";
 
 export async function POST(req) {
   try {
@@ -17,12 +18,26 @@ export async function POST(req) {
       return NextResponse.json({ ok: false, error: "Missing tran_id or value_a" }, { status: 400 });
     }
 
-    // Example status mapping; prefer using validation API for final status
+    // The posted status is attacker-controllable — this endpoint is public and
+    // takes the order id straight from the body — so PAID is only ever set
+    // from SSLCommerz's own validation of val_id, the way the return/ipn
+    // handler does it.
+    const valId = String(v?.val_id || "");
+    const validation = valId ? await validateWithSslcz(valId) : null;
+    const validated =
+      validation?.status === "VALID" || validation?.status === "VALIDATED";
+
     const status =
-      v.status === "VALID" ? "PAID" :
+      validated ? "PAID" :
       v.status === "FAILED" ? "FAILED" :
       v.status === "CANCELLED" ? "CANCELLED" :
       "PENDING";
+
+    if (!validated && v.status === "VALID") {
+      console.warn(
+        `[sslcz/ipn] rejected tran ${tranId}: validator returned ${validation?.status ?? "no response"}`
+      );
+    }
 
     await prisma.order.update({
       where: { id: orderId, tranId },

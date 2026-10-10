@@ -1,8 +1,18 @@
+import { auth } from "@/auth";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma"; // adjust path if different
 
 export async function POST(req) {
   try {
+    // Unauthenticated callers could rename any account by id.
+    const session = await auth();
+    if (session?.user?.role !== "ADMIN") {
+      return NextResponse.json(
+        { success: false, msg: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
     const body = await req.json();
     const { userId, name } = body || {};
 

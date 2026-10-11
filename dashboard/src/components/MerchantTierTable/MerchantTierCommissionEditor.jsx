@@ -19,7 +19,7 @@ export default function MerchantTierCommissionEditor({ initialRule, initialHisto
   const [priceThreshold, setPriceThreshold] = useState(
     initialRule?.priceThreshold ?? 1000,
   );
-  const [excessPct, setExcessPct] = useState(initialRule?.excessPct ?? 40);
+  const [excessPct, setExcessPct] = useState(initialRule?.excessPct ?? 60);
   const [isActive, setIsActive] = useState(initialRule?.isActive ?? true);
   const [note, setNote] = useState(initialRule?.note ?? "");
   const [loading, setLoading] = useState(false);
@@ -29,7 +29,7 @@ export default function MerchantTierCommissionEditor({ initialRule, initialHisto
   useEffect(() => {
     if (!initialRule) return;
     setPriceThreshold(initialRule.priceThreshold ?? 1000);
-    setExcessPct(initialRule.excessPct ?? 40);
+    setExcessPct(initialRule.excessPct ?? 60);
     setIsActive(initialRule.isActive ?? true);
     setNote(initialRule.note ?? "");
   }, [initialRule]);

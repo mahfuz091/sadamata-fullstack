@@ -382,7 +382,7 @@ model Payment {
 model MerchantBonusRule {
   id             String    @id @default(uuid())
   priceThreshold Decimal   @default(1000) @db.Decimal(12, 2)
-  excessPct      Decimal   @default(40) @db.Decimal(5, 2)
+  excessPct      Decimal   @default(60) @db.Decimal(5, 2)
   isActive       Boolean   @default(true)
   effectiveFrom  DateTime  @default(now())
   effectiveTo    DateTime?

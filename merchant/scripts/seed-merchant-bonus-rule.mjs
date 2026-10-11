@@ -6,7 +6,7 @@
  *   node scripts/seed-merchant-bonus-rule.mjs            # apply
  *   node scripts/seed-merchant-bonus-rule.mjs --dry-run  # print only, write nothing
  *
- * - creates one active MerchantBonusRule (1000 / 40) if none exists
+ * - creates one active MerchantBonusRule (1000 / 60) if none exists
  * - creates the partial unique index that enforces a single active rule
  * - never touches Sale / Refund / Payout rows
  */
@@ -21,7 +21,7 @@ const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
 const DEFAULT_THRESHOLD = 1000;
-const DEFAULT_EXCESS_PCT = 40;
+const DEFAULT_EXCESS_PCT = 60;
 
 async function main() {
   const existing = await prisma.merchantBonusRule.findFirst({
@@ -45,7 +45,7 @@ async function main() {
         note: "seed default",
       },
     });
-    console.log(`[seed] created MerchantBonusRule ${created.id} (1000 / 40).`);
+    console.log(`[seed] created MerchantBonusRule ${created.id} (1000 / 60).`);
   }
 
   if (DRY) {

@@ -19,6 +19,11 @@ export default async function Page() {
         Merchants earn the regular percentage on the first slice of each unit price and the
         excess rate on the rest. Changes apply to new orders only.
       </p>
+      <p className='text-sm text-muted-foreground mb-4'>
+        The <strong>Excess %</strong> below applies only to products with <strong>no brand</strong>.
+        Brand products use a fixed split on the excess: exclusive brands 60% brand / 20% merchant /
+        20% platform, non-exclusive brands 40% / 30% / 30%.
+      </p>
       <MerchantTierCommissionEditor
         initialRule={rule}
         initialHistory={history.items}

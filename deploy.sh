@@ -85,7 +85,7 @@ for app in $APPS; do
 done
 
 # Only after every build succeeded: reload the PM2 apps, then restart all.
-pm2 reload ecosystem.config.cjs --update-env || pm2 start ecosystem.config.cjs
+# pm2 reload ecosystem.config.cjs --update-env || pm2 start ecosystem.config.cjs
 pm2 save
 pm2 restart all
 

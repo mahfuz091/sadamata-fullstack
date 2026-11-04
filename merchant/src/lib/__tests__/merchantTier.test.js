@@ -138,22 +138,22 @@ describe("calcMerchantEarning", () => {
 });
 
 describe("buildMerchantPreview", () => {
-  it("describes the tier breakdown", () => {
+  it("shows only the total earning, without the tier breakdown", () => {
     const p = buildMerchantPreview(1100, 11, RULE);
     expect(p.total).toBe("150.00");
     expect(p.baseEarning).toBe("110.00");
     expect(p.excessEarning).toBe("40.00");
-    expect(p.text).toContain("150.00");
-    expect(p.text).toContain("1000.00");
+    expect(p.text).toBe("At this price you earn 150.00 BDT per sale");
   });
 
   it("omits the tier wording when no rule is active", () => {
     const p = buildMerchantPreview(1100, 11, null);
     expect(p.total).toBe("121.00");
     expect(p.excessEarning).toBe("0.00");
+    expect(p.text).toBe("At this price you earn 121.00 BDT per sale");
   });
 
-  it("names the brand excess split for brand products", () => {
+  it("shows only the total for brand products", () => {
     const p = buildMerchantPreview(1500, 20, RULE, {
       hasBrand: true,
       isExclusive: true,
@@ -162,6 +162,6 @@ describe("buildMerchantPreview", () => {
     expect(p.baseEarning).toBe("200.00");
     expect(p.excessEarning).toBe("100.00");
     expect(p.excessPct).toBe("20.00");
-    expect(p.text).toContain("20.00% of the excess");
+    expect(p.text).toBe("At this price you earn 300.00 BDT per sale");
   });
 });

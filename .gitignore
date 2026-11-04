@@ -17,6 +17,7 @@ node_modules
 # next.js
 /.next/
 /out/
+.next/
 
 # production
 /build
@@ -24,6 +25,7 @@ node_modules
 # misc
 .DS_Store
 *.pem
+FETCH_HEAD
 
 # debug
 npm-debug.log*
@@ -47,3 +49,6 @@ next-env.d.ts
 .vercel
 SADAMATA_DEV_Rezoyen_accessKeys.csv
 SADAMATA_DEV_Rezoyen_accessKeys.csv
+
+# user uploads - kept on disk, never committed
+dashboard/uploads/

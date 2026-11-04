@@ -1,0 +1,41 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          command_timeout: 30m
+          script: |
+            set -e
+            cd /mnt/mydrive/sadamata-fullstack
+
+            # Back up uploads first: resetting to the new commit deletes the
+            # files that used to be tracked, so we re-copy them afterwards.
+            TS=$(date +%Y%m%d-%H%M%S)
+            mkdir -p "$HOME/uploads-backup-$TS"
+            cp -a dashboard/uploads/. "$HOME/uploads-backup-$TS/" 2>/dev/null || true
+            ls -1dt "$HOME"/uploads-backup-* 2>/dev/null | tail -n +6 | xargs -r rm -rf
+
+            git fetch origin main
+            git reset --hard origin/main
+
+            # Restore without overwriting anything already on disk.
+            mkdir -p dashboard/uploads
+            cp -an "$HOME/uploads-backup-$TS/." dashboard/uploads/ 2>/dev/null || true
+
+            bash deploy.sh

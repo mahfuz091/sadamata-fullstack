@@ -70,6 +70,7 @@ export async function resolveEffectiveCommissions({
       merchantPct:
         firstPct(merchantRule?.merchantCommissionPct) ?? FALLBACK_MERCHANT_PCT,
       source: merchantRule ? "merchant-only rule" : "hard fallback",
+      isExclusive: false,
     });
   }
 
@@ -114,16 +115,17 @@ export async function resolveEffectiveCommissions({
           ? "merchant rule"
           : "hard fallback"
     } (merchant)`,
+    isExclusive: Boolean(brand?.isExclusive),
   });
 }
 
 /** brandPct + merchantPct must leave a non-negative platform remainder. */
-function clampBuckets({ brandPct, merchantPct, source }) {
+function clampBuckets({ brandPct, merchantPct, source, isExclusive = false }) {
   if (brandPct + merchantPct > 100) {
     console.warn(
       `[commission] rates exceed 100% (brand ${brandPct} + merchant ${merchantPct}) via ${source}; clamping merchant share`,
     );
     merchantPct = Math.max(0, 100 - brandPct);
   }
-  return { brandPct, merchantPct, source };
+  return { brandPct, merchantPct, source, isExclusive };
 }

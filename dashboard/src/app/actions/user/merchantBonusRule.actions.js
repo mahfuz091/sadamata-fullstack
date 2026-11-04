@@ -107,29 +107,9 @@ export async function updateMerchantBonusRule(
       return { success: false, msg: "Excess % must be between 0 and 100" };
     }
 
-    // Safety guard: brand commission on the excess portion must not push the
-    // platform share negative.
-    const [brandMax, settingMax] = await Promise.all([
-      prisma.brand.aggregate({ _max: { defaultBrandPct: true } }),
-      prisma.commissionSetting.aggregate({
-        where: { isActive: true, brandId: { not: null } },
-        _max: { brandCommissionPct: true },
-      }),
-    ]);
-    const maxBrandPct = new Prisma.Decimal(
-      String(
-        Math.max(
-          Number(brandMax._max.defaultBrandPct ?? 0),
-          Number(settingMax._max.brandCommissionPct ?? 0),
-        ),
-      ),
-    );
-    if (excess.add(maxBrandPct).gt(100)) {
-      return {
-        success: false,
-        msg: `Excess ${excess}% + highest brand commission ${maxBrandPct}% would exceed 100%. Lower the excess rate.`,
-      };
-    }
+    // excessPct now applies ONLY to brand-less products. Brand products use a
+    // fixed excess split (brand 60/20/20 exclusive, 40/30/30 otherwise), so the
+    // old "excess + highest brand commission" guard no longer applies.
 
     const now = new Date();
     await prisma.$transaction(async (tx) => {

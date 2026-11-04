@@ -134,7 +134,9 @@ export default function MerchantTierCommissionEditor({ initialRule, initialHisto
           </div>
 
           <div>
-            <p className='text-sm text-muted-foreground mb-1'>Excess % (above threshold)</p>
+            <p className='text-sm text-muted-foreground mb-1'>
+              Excess % (no-brand products, above threshold)
+            </p>
             <InputNumber
               min={0}
               max={100}
@@ -142,6 +144,10 @@ export default function MerchantTierCommissionEditor({ initialRule, initialHisto
               onChange={setExcessPct}
               style={{ width: 180 }}
             />
+            <p className='text-xs text-muted-foreground mt-1 max-w-[220px]'>
+              Brand products ignore this rate — the excess is split 60/20/20 (exclusive) or
+              40/30/30 (non-exclusive).
+            </p>
           </div>
 
           <div>
@@ -169,7 +175,7 @@ export default function MerchantTierCommissionEditor({ initialRule, initialHisto
         </div>
 
         <div className='rounded bg-muted/40 border p-3 text-sm'>
-          Example (merchant at {SAMPLE_MERCHANT_PCT}%): Price {SAMPLE_PRICE} →{" "}
+          Example (no-brand product, merchant at {SAMPLE_MERCHANT_PCT}%): Price {SAMPLE_PRICE} →{" "}
           {fmt(firstSlice)} × {SAMPLE_MERCHANT_PCT}% + ({SAMPLE_PRICE} − {fmt(firstSlice)}) ×{" "}
           {fmt(excess)}% = {fmt(base)} + {fmt(excessEarning)} = <strong>{fmt(total)} BDT</strong>{" "}
           per unit

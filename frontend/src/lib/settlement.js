@@ -1,7 +1,7 @@
 // lib/settlement.js
 import prisma from "@/lib/prisma";
 import { resolveCommissionAt } from "@/lib/commissionResolver";
-import { calcMerchantEarning } from "@/lib/merchantTier";
+import { resolveExcessSplit } from "@/lib/excessSplit";
 import { getActiveBonusRule } from "@/lib/merchantTierRule";
 
 /**
@@ -90,22 +90,62 @@ export async function settleOrderEarnings(orderId) {
     const qty = item.quantity;
     const total = unit * qty;
 
-    // Brand earning is unchanged: full line total at the brand pct.
-    const brandEarning = +(total * (rates.brandPct / 100)).toFixed(2);
-
-    // Tiered merchant earning — only for products owned by a MERCH user.
+    // Split the line into the base slice (up to the bonus-rule threshold) and
+    // the above-threshold excess. The base keeps its existing resolution; the
+    // excess gets its own split — FIXED (brand 60/40) for brand products, the
+    // legacy excessPct for brand-less ones.
+    //
+    // Brand.isExclusive is read live at settlement time (resolveCommissionAt
+    // returns it). Sale rows are written once and never repriced, so changing a
+    // brand's exclusivity later cannot alter already-settled sales.
+    const hasBrand = !!product.brandId;
+    const isExclusive = !!rates.isExclusive;
     const isMerchOwned = product.User?.role === "MERCH";
-    const tier = isMerchOwned
-      ? calcMerchantEarning(item.unitPrice, qty, rates.merchantPct, bonusRule)
-      : null;
+    const rule =
+      isMerchOwned &&
+      bonusRule &&
+      bonusRule.isActive !== false &&
+      bonusRule.priceThreshold != null &&
+      bonusRule.excessPct != null
+        ? bonusRule
+        : null;
 
-    const merchantEarning = tier
-      ? Number(tier.total)
-      : +(total * (rates.merchantPct / 100)).toFixed(2);
-    const merchantExcessEarning = tier ? tier.excessEarning : 0;
+    let brandEarning;
+    let merchantEarning;
+    let merchantExcessEarning;
+    let platformEarning;
+    let excessPctApplied = null;
 
-    // Platform absorbs the difference the tier creates; never go negative.
-    let platformEarning = +(total - brandEarning - merchantEarning).toFixed(2);
+    if (rule) {
+      const threshold = Number(rule.priceThreshold);
+      const baseLine = Math.min(unit, threshold) * qty;
+      const excessLine = Math.max(unit - threshold, 0) * qty;
+      const split = resolveExcessSplit({
+        hasBrand,
+        isExclusive,
+        excessPctRule: Number(rule.excessPct),
+      });
+
+      const brandBase = +(baseLine * (rates.brandPct / 100)).toFixed(2);
+      const brandExcess = +(excessLine * (split.brand / 100)).toFixed(2);
+      const merchantBase = +(baseLine * (rates.merchantPct / 100)).toFixed(2);
+      const merchantExcess = +(excessLine * (split.merchant / 100)).toFixed(2);
+
+      brandEarning = +(brandBase + brandExcess).toFixed(2);
+      // merchantEarning stays inclusive of the excess so reports that derive
+      // base as (merchantEarning - merchantExcessEarning) keep working.
+      merchantEarning = +(merchantBase + merchantExcess).toFixed(2);
+      merchantExcessEarning = merchantExcess;
+      platformEarning = +(total - brandEarning - merchantEarning).toFixed(2);
+      excessPctApplied = split.merchant;
+    } else {
+      brandEarning = +(total * (rates.brandPct / 100)).toFixed(2);
+      merchantEarning = +(total * (rates.merchantPct / 100)).toFixed(2);
+      merchantExcessEarning = 0;
+      platformEarning = +(total - brandEarning - merchantEarning).toFixed(2);
+    }
+
+    // Platform takes the rounding remainder; never go negative.
     if (platformEarning < 0) {
       console.warn(
         `[settlement] platform earning negative on order ${order.id} item ${item.id} ` +
@@ -113,8 +153,6 @@ export async function settleOrderEarnings(orderId) {
       );
       platformEarning = 0;
     }
-
-    const ruleApplied = isMerchOwned && !!bonusRule;
 
     if (rates.clamped) {
       console.warn(
@@ -125,7 +163,12 @@ export async function settleOrderEarnings(orderId) {
     console.log(
       `[settlement] order ${order.id} item ${item.id}: brand ${rates.brandPct}% (${rates.brandSource}) ` +
         `merchant ${rates.merchantPct}% (${rates.merchantSource}) on ${total}` +
-        (ruleApplied ? ` + tier excess ${merchantExcessEarning}` : ""),
+        (rule
+          ? ` + excess ${excessPctApplied}% = ${merchantExcessEarning}` +
+            (hasBrand
+              ? ` (brand excess ${isExclusive ? "exclusive" : "non-exclusive"})`
+              : "")
+          : ""),
     );
 
     lines.push({
@@ -138,9 +181,9 @@ export async function settleOrderEarnings(orderId) {
       merchantEarning,
       merchantExcessEarning,
       platformEarning,
-      bonusRuleId: ruleApplied ? bonusRule.id : null,
-      excessPctApplied: ruleApplied ? bonusRule.excessPct : null,
-      thresholdApplied: ruleApplied ? bonusRule.priceThreshold : null,
+      bonusRuleId: rule ? rule.id : null,
+      excessPctApplied,
+      thresholdApplied: rule ? rule.priceThreshold : null,
     });
   }
 

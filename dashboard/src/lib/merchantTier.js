@@ -1,4 +1,5 @@
 import { Prisma } from "@/generated/prisma";
+import { resolveExcessSplit } from "./excessSplit";
 
 const D = Prisma.Decimal;
 const ZERO = new D(0);
@@ -13,13 +14,16 @@ const isActiveRule = (rule) =>
  * Merchant earning under the tiered rule.
  *
  *   base   = min(unitPrice, threshold) * merchantPct/100
- *   excess = max(unitPrice - threshold, 0) * excessPct/100
+ *   excess = max(unitPrice - threshold, 0) * effectiveExcessPct/100
  *
  * Both multiplied by `quantity` and rounded to 2 decimals. When the rule is
  * missing or inactive this is exactly the legacy `unitPrice * merchantPct * qty`.
+ *
+ * `opts.hasBrand` / `opts.isExclusive` select the brand excess split (20/30)
+ * instead of the raw `rule.excessPct`; brand-less products keep the legacy rate.
  * Never throws. `rule` = { priceThreshold, excessPct, isActive } | null.
  */
-export function calcMerchantEarning(unitPrice, quantity, merchantPct, rule = null) {
+export function calcMerchantEarning(unitPrice, quantity, merchantPct, rule = null, opts = {}) {
   const unit = new D(String(unitPrice ?? 0));
   const qty = new D(String(quantity ?? 0));
   const pct = new D(String(merchantPct ?? 0));
@@ -30,7 +34,12 @@ export function calcMerchantEarning(unitPrice, quantity, merchantPct, rule = nul
   }
 
   const threshold = new D(String(rule.priceThreshold));
-  const excessPct = new D(String(rule.excessPct));
+  const effectiveExcessPct = resolveExcessSplit({
+    hasBrand: !!opts.hasBrand,
+    isExclusive: !!opts.isExclusive,
+    excessPctRule: rule.excessPct,
+  }).merchant;
+  const excessPct = new D(String(effectiveExcessPct));
 
   const base = D.min(unit, threshold).mul(pct).div(100).mul(qty).toDecimalPlaces(2);
   const excess = D.max(unit.sub(threshold), ZERO)
@@ -46,13 +55,30 @@ export function calcMerchantEarning(unitPrice, quantity, merchantPct, rule = nul
  * Per-unit preview for the admin UI. Returns 2-decimal strings plus a
  * ready-to-render sentence.
  */
-export function buildMerchantPreview(unitPrice, merchantPct, rule = null) {
+export function buildMerchantPreview(unitPrice, merchantPct, rule = null, opts = {}) {
   const unit = new D(String(unitPrice ?? 0));
-  const { baseEarning, excessEarning, total } = calcMerchantEarning(unit, 1, merchantPct, rule);
+  const { baseEarning, excessEarning, total } = calcMerchantEarning(
+    unit,
+    1,
+    merchantPct,
+    rule,
+    opts,
+  );
   const active = isActiveRule(rule);
+  const hasBrand = !!opts.hasBrand;
 
   const threshold = active ? new D(String(rule.priceThreshold)) : ZERO;
-  const excessPct = active ? new D(String(rule.excessPct)) : ZERO;
+  const excessPct = active
+    ? new D(
+        String(
+          resolveExcessSplit({
+            hasBrand,
+            isExclusive: !!opts.isExclusive,
+            excessPctRule: rule.excessPct,
+          }).merchant,
+        ),
+      )
+    : ZERO;
 
   let text;
   if (!active) {
@@ -60,7 +86,9 @@ export function buildMerchantPreview(unitPrice, merchantPct, rule = null) {
   } else if (excessEarning.gt(0)) {
     text =
       `At this price you earn ${total.toFixed(2)} BDT per sale ` +
-      `(${baseEarning.toFixed(2)} base + ${excessEarning.toFixed(2)} from the part above ${threshold.toFixed(2)} BDT)`;
+      `(${baseEarning.toFixed(2)} base + ${excessEarning.toFixed(2)} from the part above ${threshold.toFixed(2)} BDT` +
+      (hasBrand ? `, ${excessPct.toFixed(2)}% of the excess` : "") +
+      `)`;
   } else {
     text = `At this price you earn ${total.toFixed(2)} BDT per sale (all of it within the ${threshold.toFixed(2)} BDT base)`;
   }

@@ -80,18 +80,7 @@ export function buildMerchantPreview(unitPrice, merchantPct, rule = null, opts =
       )
     : ZERO;
 
-  let text;
-  if (!active) {
-    text = `At this price you earn ${total.toFixed(2)} BDT per sale`;
-  } else if (excessEarning.gt(0)) {
-    text =
-      `At this price you earn ${total.toFixed(2)} BDT per sale ` +
-      `(${baseEarning.toFixed(2)} base + ${excessEarning.toFixed(2)} from the part above ${threshold.toFixed(2)} BDT` +
-      (hasBrand ? `, ${excessPct.toFixed(2)}% of the excess` : "") +
-      `)`;
-  } else {
-    text = `At this price you earn ${total.toFixed(2)} BDT per sale (all of it within the ${threshold.toFixed(2)} BDT base)`;
-  }
+  const text = `At this price you earn ${total.toFixed(2)} BDT per sale`;
 
   return {
     baseEarning: baseEarning.toFixed(2),

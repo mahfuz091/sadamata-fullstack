@@ -790,16 +790,20 @@ export async function createProduct(formData) {
     if (price < 990) throw new Error("Minimum price is 990.");
 
     // ---- commissions (server truth) ----
-    const { brandPct, merchantPct, source } = await resolveEffectiveCommissions({
-      merchantId: userId,
-      brandId,
-    });
+    const { brandPct, merchantPct, source, isExclusive } =
+      await resolveEffectiveCommissions({
+        merchantId: userId,
+        brandId,
+      });
     console.log(
       `[commission] product create merchant=${userId} brand=${brandId ?? "none"} -> brand ${brandPct}% / merchant ${merchantPct}% (${source})`,
     );
 
     const bonusRule = await getActiveBonusRule();
-    const preview = buildMerchantPreview(price, merchantPct, bonusRule);
+    const preview = buildMerchantPreview(price, merchantPct, bonusRule, {
+      hasBrand: !!brandId,
+      isExclusive,
+    });
 
     // ---- read mockup, build final title + baseSlug ----
     const mockup = await prisma.mockup.findUnique({
@@ -1017,12 +1021,16 @@ export async function getMerchantEarningPreview({ price, brandId = null } = {}) 
     const unitPrice = Number(price);
     if (!Number.isFinite(unitPrice) || unitPrice < 990) return null;
 
-    const { brandPct, merchantPct, source } = await resolveEffectiveCommissions({
-      merchantId: user.id,
-      brandId: brandId || null,
-    });
+    const { brandPct, merchantPct, source, isExclusive } =
+      await resolveEffectiveCommissions({
+        merchantId: user.id,
+        brandId: brandId || null,
+      });
     const bonusRule = await getActiveBonusRule();
-    const preview = buildMerchantPreview(unitPrice, merchantPct, bonusRule);
+    const preview = buildMerchantPreview(unitPrice, merchantPct, bonusRule, {
+      hasBrand: !!brandId,
+      isExclusive,
+    });
 
     return { ...preview, brandPct, merchantPct, source };
   } catch (error) {
@@ -1076,12 +1084,15 @@ export async function updateProduct(formData) {
   // Per-unit earning preview (server truth — current rules, not a frozen snapshot).
   let preview = null;
   try {
-    const { merchantPct } = await resolveEffectiveCommissions({
+    const { merchantPct, isExclusive } = await resolveEffectiveCommissions({
       merchantId: updated.userId,
       brandId: updated.brandId,
     });
     const bonusRule = await getActiveBonusRule();
-    preview = buildMerchantPreview(updated.price, merchantPct, bonusRule);
+    preview = buildMerchantPreview(updated.price, merchantPct, bonusRule, {
+      hasBrand: !!updated.brandId,
+      isExclusive,
+    });
   } catch (error) {
     console.warn("[commission] preview failed for product", id, error?.message);
   }
@@ -1159,14 +1170,17 @@ export async function getProductById(id) {
   if (!product) return product;
 
   try {
-    const { merchantPct } = await resolveEffectiveCommissions({
+    const { merchantPct, isExclusive } = await resolveEffectiveCommissions({
       merchantId: product.userId,
       brandId: product.brandId,
     });
     const bonusRule = await getActiveBonusRule();
     return {
       ...product,
-      preview: buildMerchantPreview(product.price, merchantPct, bonusRule),
+      preview: buildMerchantPreview(product.price, merchantPct, bonusRule, {
+        hasBrand: !!product.brandId,
+        isExclusive,
+      }),
     };
   } catch (error) {
     console.warn("[commission] preview failed for product", id, error?.message);

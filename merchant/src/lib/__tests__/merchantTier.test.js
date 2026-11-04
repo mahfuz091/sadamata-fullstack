@@ -85,6 +85,45 @@ describe("calcMerchantEarning", () => {
     });
   });
 
+  describe("brand products use the fixed excess split", () => {
+    it("exclusive brand — merchant gets 20% of the excess", () => {
+      const r = calcMerchantEarning(1500, 1, 20, RULE, {
+        hasBrand: true,
+        isExclusive: true,
+      });
+      expect(n(r.baseEarning)).toBe(200); // 1000 × 20%
+      expect(n(r.excessEarning)).toBe(100); // 500 × 20%
+      expect(n(r.total)).toBe(300);
+    });
+
+    it("non-exclusive brand — merchant gets 30% of the excess", () => {
+      const r = calcMerchantEarning(1500, 1, 30, RULE, {
+        hasBrand: true,
+        isExclusive: false,
+      });
+      expect(n(r.baseEarning)).toBe(300); // 1000 × 30%
+      expect(n(r.excessEarning)).toBe(150); // 500 × 30%
+      expect(n(r.total)).toBe(450);
+    });
+
+    it("quantity scales both slices", () => {
+      const r = calcMerchantEarning(1500, 2, 20, RULE, {
+        hasBrand: true,
+        isExclusive: true,
+      });
+      expect(n(r.baseEarning)).toBe(400);
+      expect(n(r.excessEarning)).toBe(200);
+      expect(n(r.total)).toBe(600);
+    });
+
+    it("brand-less products still use the rule's excessPct", () => {
+      const r = calcMerchantEarning(1500, 1, 11, RULE, { hasBrand: false });
+      expect(n(r.baseEarning)).toBe(110);
+      expect(n(r.excessEarning)).toBe(200); // 500 × 40%
+      expect(n(r.total)).toBe(310);
+    });
+  });
+
   it("keeps 2-decimal precision on fractional inputs", () => {
     const r = calcMerchantEarning(1234.56, 1, 7.5, RULE);
     expect(n(r.baseEarning)).toBe(75);
@@ -112,5 +151,17 @@ describe("buildMerchantPreview", () => {
     const p = buildMerchantPreview(1100, 11, null);
     expect(p.total).toBe("121.00");
     expect(p.excessEarning).toBe("0.00");
+  });
+
+  it("names the brand excess split for brand products", () => {
+    const p = buildMerchantPreview(1500, 20, RULE, {
+      hasBrand: true,
+      isExclusive: true,
+    });
+    expect(p.total).toBe("300.00");
+    expect(p.baseEarning).toBe("200.00");
+    expect(p.excessEarning).toBe("100.00");
+    expect(p.excessPct).toBe("20.00");
+    expect(p.text).toContain("20.00% of the excess");
   });
 });

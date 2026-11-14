@@ -61,6 +61,11 @@ function serializeOrder(order) {
     shippingFee: serializeDecimal(order.shippingFee),
     grandTotal: serializeDecimal(order.grandTotal),
     couponRate: order.couponRate ? serializeDecimal(order.couponRate) : null,
+    paidAmount: serializeDecimal(order.paidAmount),
+    dueAmount: serializeDecimal(order.dueAmount),
+    paymentPercent: order.paymentPercent
+      ? serializeDecimal(order.paymentPercent)
+      : null,
 
     // ⏱ dates
     createdAt: serializeDate(order.createdAt),

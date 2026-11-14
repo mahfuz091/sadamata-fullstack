@@ -19,7 +19,7 @@ const toNum = (v) => {
   return Number.isFinite(n) ? n : 0;
 };
 
-const CheckoutPageTwo = ({ user }) => {
+const CheckoutPageTwo = ({ user, partialPaymentPercent = null }) => {
   const router = useRouter();
   const [pending, start] = useTransition();
 
@@ -52,6 +52,7 @@ const [guestZip, setGuestZip] = useState("");
 
 
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [payOption, setPayOption] = useState("FULL");
 
   // BD phone must be 01XXXXXXXXX (operator prefix 013-019); +880 / 880 forms accepted.
   const guestPhoneValid = isValidBDPhone(guestPhone);
@@ -112,6 +113,21 @@ const [guestZip, setGuestZip] = useState("");
     const grandTotal = total - discount + tax;
     return { total, discount, tax, grandTotal };
   }, [sanitizedCart, appliedCoupon]);
+
+  const partialPercent = Number(partialPaymentPercent) || 0;
+  const partialAvailable = partialPercent > 0 && partialPercent < 100;
+
+  const chargeNow = useMemo(() => {
+    if (payOption === "PARTIAL" && partialPercent > 0) {
+      return Math.round(summary.grandTotal * partialPercent) / 100;
+    }
+    return summary.grandTotal;
+  }, [payOption, partialPercent, summary.grandTotal]);
+
+  const dueNow = useMemo(
+    () => Math.max(summary.grandTotal - chargeNow, 0),
+    [summary.grandTotal, chargeNow]
+  );
 
   const applyCoupon = () => {
     const code = couponInput.trim().toUpperCase();
@@ -680,6 +696,63 @@ const [guestZip, setGuestZip] = useState("");
                   ৳{summary.grandTotal.toFixed(2)}
                 </h3>
               </div>
+
+              {partialAvailable && (
+                <div className='order-summary__pay-option' style={{ marginTop: 16 }}>
+                  <p
+                    className='order-summary__text'
+                    style={{ fontWeight: 600, marginBottom: 8 }}
+                  >
+                    Payment option
+                  </p>
+                  <label
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      cursor: "pointer",
+                      marginBottom: 6,
+                    }}
+                  >
+                    <input
+                      type='radio'
+                      name='payOption'
+                      checked={payOption === "FULL"}
+                      onChange={() => setPayOption("FULL")}
+                    />
+                    <span>Pay full — ৳{summary.grandTotal.toFixed(2)}</span>
+                  </label>
+                  <label
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      cursor: "pointer",
+                    }}
+                  >
+                    <input
+                      type='radio'
+                      name='payOption'
+                      checked={payOption === "PARTIAL"}
+                      onChange={() => setPayOption("PARTIAL")}
+                    />
+                    <span>
+                      Pay {partialPercent}% now — ৳
+                      {(Math.round(summary.grandTotal * partialPercent) / 100).toFixed(
+                        2
+                      )}
+                    </span>
+                  </label>
+                  {payOption === "PARTIAL" && (
+                    <p
+                      className='order-summary__text'
+                      style={{ marginTop: 8, opacity: 0.8 }}
+                    >
+                      Remaining ৳{dueNow.toFixed(2)} will be due later.
+                    </p>
+                  )}
+                </div>
+              )}
                 {/* Terms & Conditions checkbox */}
               <div className="terms-checkbox d-flex align-items-start gap-3 mb-3 mt-3">
                 <input
@@ -740,6 +813,7 @@ const [guestZip, setGuestZip] = useState("");
     size: i.size,
   })),
   couponCode: (appliedCoupon || "").toUpperCase(),
+  paymentOption: payOption,
 
   ...(user
     ? {
@@ -773,7 +847,7 @@ const [guestZip, setGuestZip] = useState("");
               >
                 {pending
                   ? "Redirecting…"
-                  : `Pay ৳${summary.grandTotal.toFixed(2)}`}
+                  : `Pay ৳${chargeNow.toFixed(2)}`}
               </button>
             </div>
           </div>

@@ -4,23 +4,19 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Input, InputNumber, Modal, Switch, Table, Tag, message } from "antd";
 import {
-  getMerchantBonusRuleHistory,
-  updateMerchantBonusRule,
-} from "@/app/actions/user/merchantBonusRule.actions";
+  getPartialPaymentRuleHistory,
+  updatePartialPaymentRule,
+} from "@/app/actions/settings/partialPayment.actions";
 
-const SAMPLE_PRICE = 1100;
-const SAMPLE_MERCHANT_PCT = 11; // illustrative, matches a standalone merchant
+const SAMPLE_TOTAL = 1000;
 
 const fmt = (n) => Number(n || 0).toFixed(2);
 
-export default function MerchantTierCommissionEditor({ initialRule, initialHistory }) {
+export default function PartialPaymentEditor({ initialRule, initialHistory }) {
   const router = useRouter();
 
-  const [priceThreshold, setPriceThreshold] = useState(
-    initialRule?.priceThreshold ?? 1000,
-  );
-  const [excessPct, setExcessPct] = useState(initialRule?.excessPct ?? 60);
-  const [isActive, setIsActive] = useState(initialRule?.isActive ?? true);
+  const [percent, setPercent] = useState(initialRule?.percent ?? 10);
+  const [isEnabled, setIsEnabled] = useState(initialRule?.isEnabled ?? true);
   const [note, setNote] = useState(initialRule?.note ?? "");
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState(initialHistory ?? []);
@@ -28,9 +24,8 @@ export default function MerchantTierCommissionEditor({ initialRule, initialHisto
 
   useEffect(() => {
     if (!initialRule) return;
-    setPriceThreshold(initialRule.priceThreshold ?? 1000);
-    setExcessPct(initialRule.excessPct ?? 60);
-    setIsActive(initialRule.isActive ?? true);
+    setPercent(initialRule.percent ?? 10);
+    setIsEnabled(initialRule.isEnabled ?? true);
     setNote(initialRule.note ?? "");
   }, [initialRule]);
 
@@ -38,18 +33,14 @@ export default function MerchantTierCommissionEditor({ initialRule, initialHisto
     setHistory(initialHistory ?? []);
   }, [initialHistory]);
 
-  const threshold = Number(priceThreshold) || 0;
-  const excess = Number(excessPct) || 0;
-  const firstSlice = Math.min(SAMPLE_PRICE, threshold);
-  const base = (firstSlice * SAMPLE_MERCHANT_PCT) / 100;
-  const aboveThreshold = Math.max(SAMPLE_PRICE - firstSlice, 0);
-  const excessEarning = (aboveThreshold * excess) / 100;
-  const total = base + excessEarning;
+  const pct = Number(percent) || 0;
+  const payableNow = fmt((SAMPLE_TOTAL * pct) / 100);
+  const due = fmt(SAMPLE_TOTAL - (SAMPLE_TOTAL * pct) / 100);
 
   const reloadHistory = async () => {
     setHistoryLoading(true);
     try {
-      const res = await getMerchantBonusRuleHistory({ page: 1, pageSize: 20 });
+      const res = await getPartialPaymentRuleHistory({ page: 1, pageSize: 20 });
       setHistory(res?.items ?? []);
     } catch (err) {
       console.error(err);
@@ -61,16 +52,15 @@ export default function MerchantTierCommissionEditor({ initialRule, initialHisto
   const save = async () => {
     setLoading(true);
     try {
-      const res = await updateMerchantBonusRule(null, {
-        priceThreshold: Number(priceThreshold),
-        excessPct: Number(excessPct),
-        isActive,
+      const res = await updatePartialPaymentRule(null, {
+        percent: Number(percent),
+        isEnabled,
         note,
       });
       if (!res?.success) {
-        message.error(res?.msg || "Failed to update the tier commission");
+        message.error(res?.msg || "Failed to update partial payment settings");
       } else {
-        message.success(res?.msg || "Merchant tier commission updated");
+        message.success(res?.msg || "Partial payment settings updated");
         await reloadHistory();
         router.refresh();
       }
@@ -84,8 +74,8 @@ export default function MerchantTierCommissionEditor({ initialRule, initialHisto
 
   const confirmSave = () => {
     Modal.confirm({
-      title: "Apply this tier commission?",
-      content: "This applies to new orders only. Existing sales are never recalculated.",
+      title: "Apply these partial payment settings?",
+      content: "This applies to new orders only. Existing orders are never recalculated.",
       okText: "Save",
       cancelText: "Cancel",
       onOk: save,
@@ -100,19 +90,14 @@ export default function MerchantTierCommissionEditor({ initialRule, initialHisto
     },
     { title: "Changed by", dataIndex: "createdByName" },
     {
-      title: "Threshold (BDT)",
-      dataIndex: "priceThreshold",
-      render: (v) => fmt(v),
+      title: "Percentage",
+      dataIndex: "percent",
+      render: (v) => `${fmt(v)}%`,
     },
     {
-      title: "Excess %",
-      dataIndex: "excessPct",
-      render: (v) => fmt(v),
-    },
-    {
-      title: "Status",
-      dataIndex: "isActive",
-      render: (v) => (v ? <Tag color='green'>Active</Tag> : <Tag>Superseded</Tag>),
+      title: "Enabled",
+      dataIndex: "isEnabled",
+      render: (v) => (v ? <Tag color='green'>Enabled</Tag> : <Tag>Disabled</Tag>),
     },
     { title: "Note", dataIndex: "note", render: (v) => v || "—" },
   ];
@@ -124,35 +109,22 @@ export default function MerchantTierCommissionEditor({ initialRule, initialHisto
 
         <div className='flex flex-wrap items-end gap-6'>
           <div>
-            <p className='text-sm text-muted-foreground mb-1'>Price threshold (BDT)</p>
+            <p className='text-sm text-muted-foreground mb-1'>Pay now (%)</p>
             <InputNumber
               min={1}
-              value={priceThreshold}
-              onChange={setPriceThreshold}
-              style={{ width: 180 }}
-            />
-          </div>
-
-          <div>
-            <p className='text-sm text-muted-foreground mb-1'>
-              Excess % (no-brand products, above threshold)
-            </p>
-            <InputNumber
-              min={0}
-              max={100}
-              value={excessPct}
-              onChange={setExcessPct}
+              max={99}
+              value={percent}
+              onChange={setPercent}
               style={{ width: 180 }}
             />
             <p className='text-xs text-muted-foreground mt-1 max-w-[220px]'>
-              Brand products ignore this rate — the excess is split 60/20/20 (exclusive) or
-              40/30/30 (non-exclusive).
+              Between 1% and 99%. 100% would just be the full payment, so it is not allowed.
             </p>
           </div>
 
           <div>
-            <p className='text-sm text-muted-foreground mb-1'>Active</p>
-            <Switch checked={isActive} onChange={setIsActive} />
+            <p className='text-sm text-muted-foreground mb-1'>Enabled</p>
+            <Switch checked={isEnabled} onChange={setIsEnabled} />
           </div>
 
           <div className='grow min-w-[240px]'>
@@ -175,10 +147,8 @@ export default function MerchantTierCommissionEditor({ initialRule, initialHisto
         </div>
 
         <div className='rounded bg-muted/40 border p-3 text-sm'>
-          Example (no-brand product, merchant at {SAMPLE_MERCHANT_PCT}%): Price {SAMPLE_PRICE} →{" "}
-          {fmt(firstSlice)} × {SAMPLE_MERCHANT_PCT}% + ({SAMPLE_PRICE} − {fmt(firstSlice)}) ×{" "}
-          {fmt(excess)}% = {fmt(base)} + {fmt(excessEarning)} = <strong>{fmt(total)} BDT</strong>{" "}
-          per unit
+          Example: an order of {SAMPLE_TOTAL} → customer pays{" "}
+          <strong>৳{payableNow}</strong> now ({fmt(pct)}%), <strong>৳{due}</strong> left as due.
         </div>
       </div>
 

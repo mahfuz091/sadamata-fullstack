@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { validateWithSslcz } from "@/lib/sslcz";
+import { paidFromOrder } from "@/lib/partialPayment";
 
 export async function POST(req) {
   try {
@@ -39,10 +40,20 @@ export async function POST(req) {
       );
     }
 
+    let paidAmount = null;
+    if (validated) {
+      const orderAmount = await prisma.order.findUnique({
+        where: { id: orderId },
+        select: { grandTotal: true, dueAmount: true },
+      });
+      paidAmount = paidFromOrder(orderAmount);
+    }
+
     await prisma.order.update({
       where: { id: orderId, tranId },
       data: {
         status,
+        ...(paidAmount !== null ? { paidAmount: paidAmount.toFixed(2) } : {}),
         payment: {
           upsert: {
             create: {

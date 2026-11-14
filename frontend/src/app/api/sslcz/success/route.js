@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import { settleOrderEarnings } from "@/lib/settlement";
 import { validateWithSslcz } from "@/lib/sslcz";
 import { sendOrderConfirmation } from "@/lib/orderMail";
+import { paidFromOrder } from "@/lib/partialPayment";
 
 async function parseIncoming(req) {
   const url = new URL(req.url);
@@ -80,11 +81,19 @@ async function handleSuccess(req) {
       );
     }
 
+    // Record what was actually collected (total minus whatever is still due).
+    const orderAmount = await prisma.order.findUnique({
+      where: { id: orderId },
+      select: { grandTotal: true, dueAmount: true },
+    });
+    const paidAmount = paidFromOrder(orderAmount);
+
     // Mark paid + store payment payload
     await prisma.order.update({
       where: { id: orderId, tranId },
       data: {
         status: "PAID",
+        paidAmount: paidAmount.toFixed(2),
         payment: {
           upsert: {
             create: {

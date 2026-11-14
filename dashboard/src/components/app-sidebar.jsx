@@ -32,6 +32,7 @@ import {
   User2Icon,
   BaggageClaim,
   Shirt,
+  Wallet,
 } from "lucide-react";
 import { NavDocuments } from "@/components/nav-documents";
 import { NavMain } from "@/components/nav-main";
@@ -132,9 +133,14 @@ const data = {
       icon: IconInnerShadowTop,
     },
     {
-      title: "Tier Commission",
-      url: "/dashboard/merchant-tier-commission",
+      title: "Bonus Rules",
+      url: "/dashboard/bonus-rules",
       icon: IconSettings,
+    },
+    {
+      title: "Partial Payment",
+      url: "/dashboard/partial-payment",
+      icon: Wallet,
     },
   ],
   navClouds: [

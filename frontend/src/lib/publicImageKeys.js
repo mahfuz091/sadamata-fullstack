@@ -11,7 +11,13 @@ export async function filterPublicImageKeys(keys = []) {
   const wanted = [...new Set((keys || []).filter(Boolean).map(String))];
   if (wanted.length === 0) return new Set();
 
-  const [variants, products] = await Promise.all([
+  const [productVariants, mockupVariants, products] = await Promise.all([
+    prisma.productVariant.findMany({
+      where: {
+        OR: [{ frontImg: { in: wanted } }, { backImg: { in: wanted } }],
+      },
+      select: { frontImg: true, backImg: true },
+    }),
     prisma.mockupVariant.findMany({
       where: {
         OR: [{ frontImg: { in: wanted } }, { backImg: { in: wanted } }],
@@ -27,7 +33,11 @@ export async function filterPublicImageKeys(keys = []) {
   ]);
 
   const allowed = new Set();
-  for (const v of variants) {
+  for (const v of productVariants) {
+    if (v.frontImg) allowed.add(v.frontImg);
+    if (v.backImg) allowed.add(v.backImg);
+  }
+  for (const v of mockupVariants) {
     if (v.frontImg) allowed.add(v.frontImg);
     if (v.backImg) allowed.add(v.backImg);
   }

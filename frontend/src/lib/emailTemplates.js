@@ -242,6 +242,7 @@ export function orderConfirmationEmail({
   subtotal,
   shipping,
   total,
+  due,
   shippingAddress,
   orderUrl,
 }) {
@@ -261,6 +262,7 @@ export function orderConfirmationEmail({
             <td style="padding:10px 0 0;border-top:1px solid ${BORDER};font-weight:bold;">Total paid</td>
             <td align="right" style="padding:10px 0 0;border-top:1px solid ${BORDER};font-weight:bold;">${money(total)}</td>
           </tr>
+          ${due > 0 ? `<tr><td style="padding:4px 0;color:${MUTED};">Due later</td><td align="right" style="padding:4px 0;color:${ACCENT};font-weight:bold;">${money(due)}</td></tr>` : ""}
         </table>
         ${
           shippingAddress

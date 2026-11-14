@@ -55,6 +55,9 @@ export async function sendOrderConfirmation(orderId) {
       return { success: false, error: "No recipient email" };
     }
 
+    const paid = num(order.paidAmount);
+    const due = num(order.dueAmount);
+
     const { subject, html } = orderConfirmationEmail({
       name,
       orderNumber: order.tranId || order.id,
@@ -68,7 +71,8 @@ export async function sendOrderConfirmation(orderId) {
       })),
       subtotal: num(order.subtotal),
       shipping: num(order.shippingFee),
-      total: num(order.grandTotal),
+      total: paid > 0 ? paid : num(order.grandTotal),
+      due,
       shippingAddress,
       orderUrl: absoluteUrl("orders"),
     });

@@ -239,9 +239,16 @@ model Sale {
   merchantEarning Float      @default(0)
   platformEarning Float      @default(0)
   merchantExcessEarning Decimal @default(0) @db.Decimal(12, 2)
+  brandExcessEarning    Decimal @default(0) @db.Decimal(12, 2)
+  platformExcessEarning Decimal @default(0) @db.Decimal(12, 2)
   bonusRuleId           String?
+  bonusScenario         BonusScenario?
+  // @deprecated — kept for historical rows; new sales use merchantPctApplied.
   excessPctApplied      Decimal? @db.Decimal(5, 2)
   thresholdApplied      Decimal? @db.Decimal(12, 2)
+  brandPctApplied       Decimal? @db.Decimal(5, 2)
+  merchantPctApplied    Decimal? @db.Decimal(5, 2)
+  platformPctApplied    Decimal? @db.Decimal(5, 2)
   createdAt       DateTime   @default(now())
   orderItemId     String     @unique
   Refund          Refund[]
@@ -341,6 +348,10 @@ model Order {
   cancelledAt    DateTime?
   guestAddressId String?
   status         OrderStatus   @default(PENDING)
+  paymentOption  PaymentOption @default(FULL)
+  paymentPercent Decimal?      @db.Decimal(5, 2)
+  paidAmount     Decimal       @default(0) @db.Decimal(12, 2)
+  dueAmount      Decimal       @default(0) @db.Decimal(12, 2)
   address        UserAddress?  @relation(fields: [addressId], references: [id])
   GuestAddress   GuestAddress? @relation(fields: [guestAddressId], references: [id])
   user           User?         @relation(fields: [userId], references: [id])
@@ -379,17 +390,35 @@ model Payment {
   order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 
-model MerchantBonusRule {
-  id             String    @id @default(uuid())
-  priceThreshold Decimal   @default(1000) @db.Decimal(12, 2)
-  excessPct      Decimal   @default(60) @db.Decimal(5, 2)
-  isActive       Boolean   @default(true)
-  effectiveFrom  DateTime  @default(now())
+model BonusRule {
+  id             String        @id @default(uuid())
+  scenario       BonusScenario
+  priceThreshold Decimal       @default(1000) @db.Decimal(12, 2)
+  brandPct       Decimal       @db.Decimal(5, 2)
+  merchantPct    Decimal       @db.Decimal(5, 2)
+  platformPct    Decimal       @db.Decimal(5, 2)
+  isActive       Boolean       @default(true)
+  effectiveFrom  DateTime      @default(now())
   effectiveTo    DateTime?
   createdById    String?
   note           String?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([scenario, isActive, effectiveFrom])
+}
+
+model PartialPaymentRule {
+  id            String    @id @default(uuid())
+  percent       Decimal   @default(10) @db.Decimal(5, 2)
+  isEnabled     Boolean   @default(true)
+  isActive      Boolean   @default(true)
+  effectiveFrom DateTime  @default(now())
+  effectiveTo   DateTime?
+  createdById   String?
+  note          String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
   @@index([isActive, effectiveFrom])
 }
@@ -424,6 +453,8 @@ model Refund {
   merchantEarning Decimal   @db.Decimal(12, 2)
   platformEarning Decimal   @db.Decimal(12, 2)
   merchantExcessReversed Decimal @default(0) @db.Decimal(12, 2)
+  brandExcessReversed    Decimal @default(0) @db.Decimal(12, 2)
+  platformExcessReversed Decimal @default(0) @db.Decimal(12, 2)
   reason          String?
   createdAt       DateTime  @default(now())
   orderItem       OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
@@ -534,6 +565,17 @@ enum OrderStatus {
   SHIPPED
   COMPLETED
   RETURNED
+}
+
+enum PaymentOption {
+  FULL
+  PARTIAL
+}
+
+enum BonusScenario {
+  NO_BRAND
+  NON_EXCLUSIVE_BRAND
+  EXCLUSIVE_BRAND
 }
 
 enum ReviewMediaType {

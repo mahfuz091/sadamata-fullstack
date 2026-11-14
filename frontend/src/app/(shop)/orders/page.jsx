@@ -16,6 +16,9 @@ function serializeOrder(order) {
     tax: Number(order.tax),
     shippingFee: Number(order.shippingFee),
     grandTotal: Number(order.grandTotal),
+    paidAmount: Number(order.paidAmount ?? 0),
+    dueAmount: Number(order.dueAmount ?? 0),
+    paymentOption: order.paymentOption ?? "FULL",
     createdAt: order.createdAt.toISOString(),
     updatedAt: order.updatedAt.toISOString(),
     items: order.items.map((item) => ({

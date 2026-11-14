@@ -10,7 +10,7 @@
     "lint": "next lint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "seed:bonus-rule": "node scripts/seed-merchant-bonus-rule.mjs",
+    "migrate:bonus-rule": "node scripts/migrate-merchant-bonus-rule.mjs",
     "postinstall": "prisma generate"
   },
   "overrides": {

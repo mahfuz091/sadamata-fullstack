@@ -7,7 +7,7 @@ const Layout = ({ children, session, profileImageUrl  }) => {
     <>
       <HeaderTwo  session={session} profileImageUrl={profileImageUrl}/>
       {children}
-      <Footer />
+      <Footer session={session} />
     </>
   );
 };

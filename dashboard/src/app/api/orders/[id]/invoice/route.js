@@ -53,6 +53,13 @@ export async function GET(req, { params }) {
     font,
   });
 
+  if (Number(order.dueAmount) > 0) {
+    y -= 18;
+    page.drawText(`Paid: ৳${Number(order.paidAmount)}`, { x: 40, y, size: 11, font });
+    y -= 18;
+    page.drawText(`Due: ৳${Number(order.dueAmount)}`, { x: 40, y, size: 11, font });
+  }
+
   const pdfBytes = await pdf.save();
 
   return new NextResponse(pdfBytes, {

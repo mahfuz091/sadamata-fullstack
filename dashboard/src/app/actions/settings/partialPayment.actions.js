@@ -4,9 +4,9 @@ import { Prisma } from "@/generated/prisma";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { requireRole } from "@/lib/requireRole";
-import { invalidateBonusRuleCache } from "@/lib/merchantTierRule";
+import { invalidatePartialPaymentRuleCache } from "@/lib/partialPaymentRule";
 
-const PAGE_PATH = "/dashboard/merchant-tier-commission";
+const PAGE_PATH = "/dashboard/partial-payment";
 
 const toDec = (v) => new Prisma.Decimal(String(v).trim());
 
@@ -19,8 +19,8 @@ function serialize(rule) {
   if (!rule) return null;
   return {
     id: rule.id,
-    priceThreshold: Number(rule.priceThreshold),
-    excessPct: Number(rule.excessPct),
+    percent: Number(rule.percent),
+    isEnabled: rule.isEnabled,
     isActive: rule.isActive,
     effectiveFrom: rule.effectiveFrom,
     effectiveTo: rule.effectiveTo,
@@ -30,10 +30,10 @@ function serialize(rule) {
   };
 }
 
-/** Current active rule (null when disabled). */
-export async function getMerchantBonusRule() {
+/** Current active rule (null when none configured yet). */
+export async function getPartialPaymentRule() {
   await requireRole(["ADMIN"]);
-  const rule = await prisma.merchantBonusRule.findFirst({
+  const rule = await prisma.partialPaymentRule.findFirst({
     where: { isActive: true },
     orderBy: [{ effectiveFrom: "desc" }, { createdAt: "desc" }],
   });
@@ -41,7 +41,7 @@ export async function getMerchantBonusRule() {
 }
 
 /** All rules, newest first, paginated. */
-export async function getMerchantBonusRuleHistory({ page = 1, pageSize = 10 } = {}) {
+export async function getPartialPaymentRuleHistory({ page = 1, pageSize = 10 } = {}) {
   await requireRole(["ADMIN"]);
 
   const take = Math.min(Math.max(Number(pageSize) || 10, 1), 100);
@@ -49,12 +49,12 @@ export async function getMerchantBonusRuleHistory({ page = 1, pageSize = 10 } = 
   const skip = (currentPage - 1) * take;
 
   const [rows, count] = await Promise.all([
-    prisma.merchantBonusRule.findMany({
+    prisma.partialPaymentRule.findMany({
       orderBy: [{ effectiveFrom: "desc" }, { createdAt: "desc" }],
       skip,
       take,
     }),
-    prisma.merchantBonusRule.count(),
+    prisma.partialPaymentRule.count(),
   ]);
 
   const ids = [...new Set(rows.map((r) => r.createdById).filter(Boolean))];
@@ -81,47 +81,36 @@ export async function getMerchantBonusRuleHistory({ page = 1, pageSize = 10 } = 
 /**
  * Replace the active rule: closes the current row (kept for history) and
  * inserts a new one inside a single transaction. Never overwrites. Applies to
- * future sales only.
+ * future orders only.
  */
-export async function updateMerchantBonusRule(
+export async function updatePartialPaymentRule(
   _,
-  { priceThreshold, excessPct, isActive = true, note } = {},
+  { percent, isEnabled = true, note } = {},
 ) {
   const admin = await requireRole(["ADMIN"]);
 
   try {
-    if (!isNumeric(priceThreshold)) {
-      return { success: false, msg: "Price threshold must be a number" };
-    }
-    if (!isNumeric(excessPct)) {
-      return { success: false, msg: "Excess % must be a number" };
+    if (!isNumeric(percent)) {
+      return { success: false, msg: "Percentage must be a number" };
     }
 
-    const threshold = toDec(priceThreshold);
-    const excess = toDec(excessPct);
+    const pct = toDec(percent);
 
-    if (threshold.lte(0)) {
-      return { success: false, msg: "Price threshold must be greater than 0" };
+    if (pct.lte(0) || pct.gte(100)) {
+      return { success: false, msg: "Percentage must be between 0 and 100 (exclusive)" };
     }
-    if (excess.lt(0) || excess.gt(100)) {
-      return { success: false, msg: "Excess % must be between 0 and 100" };
-    }
-
-    // excessPct now applies ONLY to brand-less products. Brand products use a
-    // fixed excess split (brand 60/20/20 exclusive, 40/30/30 otherwise), so the
-    // old "excess + highest brand commission" guard no longer applies.
 
     const now = new Date();
     await prisma.$transaction(async (tx) => {
-      await tx.merchantBonusRule.updateMany({
+      await tx.partialPaymentRule.updateMany({
         where: { isActive: true },
         data: { isActive: false, effectiveTo: now },
       });
-      await tx.merchantBonusRule.create({
+      await tx.partialPaymentRule.create({
         data: {
-          priceThreshold: threshold,
-          excessPct: excess,
-          isActive: Boolean(isActive),
+          percent: pct,
+          isEnabled: Boolean(isEnabled),
+          isActive: true,
           effectiveFrom: now,
           createdById: admin.id,
           note: note ? String(note) : null,
@@ -130,15 +119,15 @@ export async function updateMerchantBonusRule(
     });
 
     console.log(
-      `[bonus-rule] admin ${admin.id} set threshold=${threshold} excess=${excess}% active=${Boolean(isActive)}`,
+      `[partial-payment] admin ${admin.id} set percent=${pct} enabled=${Boolean(isEnabled)}`,
     );
 
-    invalidateBonusRuleCache();
+    invalidatePartialPaymentRuleCache();
     revalidatePath(PAGE_PATH);
 
-    return { success: true, msg: "Merchant tier commission updated" };
+    return { success: true, msg: "Partial payment settings updated" };
   } catch (err) {
-    console.error("updateMerchantBonusRule error:", err);
+    console.error("updatePartialPaymentRule error:", err);
     return { success: false, msg: "Something went wrong" };
   }
 }

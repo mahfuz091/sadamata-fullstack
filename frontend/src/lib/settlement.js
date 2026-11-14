@@ -1,8 +1,8 @@
 // lib/settlement.js
 import prisma from "@/lib/prisma";
 import { resolveCommissionAt } from "@/lib/commissionResolver";
-import { resolveExcessSplit } from "@/lib/excessSplit";
-import { getActiveBonusRule } from "@/lib/merchantTierRule";
+import { calculateBonusSplit, resolveBonusScenario } from "@/lib/bonusSplit";
+import { getActiveBonusRules } from "@/lib/bonusRule";
 
 /**
  * Writes the brand / merchant / platform split for a paid order.
@@ -54,8 +54,8 @@ export async function settleOrderEarnings(orderId) {
   });
   const productMap = new Map(products.map((p) => [p.id, p]));
 
-  // Tiered merchant commission: one rule snapshot for the whole order.
-  const bonusRule = await getActiveBonusRule();
+  // Scenario-based bonus rules (one active rule per scenario) for the order.
+  const bonusRules = await getActiveBonusRules();
 
   // One resolve per (merchant, brand) pair rather than per line.
   const rateCache = new Map();
@@ -90,58 +90,69 @@ export async function settleOrderEarnings(orderId) {
     const qty = item.quantity;
     const total = unit * qty;
 
-    // Split the line into the base slice (up to the bonus-rule threshold) and
-    // the above-threshold excess. The base keeps its existing resolution; the
-    // excess gets its own split — FIXED (brand 60/40) for brand products, the
-    // legacy excessPct for brand-less ones.
+    // Split the line into the base slice (up to the rule's price threshold) and
+    // the above-threshold excess. The base keeps its CommissionSetting
+    // resolution; the excess is split by scenario (NO_BRAND / exclusive brand /
+    // non-exclusive brand) using the active BonusRule for that scenario.
     //
     // Brand.isExclusive is read live at settlement time (resolveCommissionAt
     // returns it). Sale rows are written once and never repriced, so changing a
     // brand's exclusivity later cannot alter already-settled sales.
-    const hasBrand = !!product.brandId;
     const isExclusive = !!rates.isExclusive;
     const isMerchOwned = product.User?.role === "MERCH";
-    const rule =
-      isMerchOwned &&
-      bonusRule &&
-      bonusRule.isActive !== false &&
-      bonusRule.priceThreshold != null &&
-      bonusRule.excessPct != null
-        ? bonusRule
-        : null;
+
+    // The scenario bonus still only applies to MERCH-owned products.
+    const scenario = resolveBonusScenario({
+      brandId: product.brandId,
+      brandIsExclusive: isExclusive,
+    });
+    const rule = isMerchOwned ? (bonusRules?.get(scenario) ?? null) : null;
+
+    if (isMerchOwned && !rule) {
+      console.warn(
+        `[settlement] no active ${scenario} bonus rule; no excess bonus on order ${order.id} item ${item.id}`,
+      );
+    }
 
     let brandEarning;
     let merchantEarning;
+    let brandExcessEarning;
     let merchantExcessEarning;
+    let platformExcessEarning;
     let platformEarning;
-    let excessPctApplied = null;
+    let split = null;
 
     if (rule) {
       const threshold = Number(rule.priceThreshold);
       const baseLine = Math.min(unit, threshold) * qty;
-      const excessLine = Math.max(unit - threshold, 0) * qty;
-      const split = resolveExcessSplit({
-        hasBrand,
-        isExclusive,
-        excessPctRule: Number(rule.excessPct),
+
+      split = calculateBonusSplit({
+        unitPrice: unit,
+        quantity: qty,
+        brandId: product.brandId,
+        brandIsExclusive: isExclusive,
+        rule,
       });
 
-      const brandBase = +(baseLine * (rates.brandPct / 100)).toFixed(2);
-      const brandExcess = +(excessLine * (split.brand / 100)).toFixed(2);
-      const merchantBase = +(baseLine * (rates.merchantPct / 100)).toFixed(2);
-      const merchantExcess = +(excessLine * (split.merchant / 100)).toFixed(2);
+      const brandExcess = Number(split.brandExcess);
+      const merchantExcess = Number(split.merchantExcess);
 
-      brandEarning = +(brandBase + brandExcess).toFixed(2);
-      // merchantEarning stays inclusive of the excess so reports that derive
-      // base as (merchantEarning - merchantExcessEarning) keep working.
-      merchantEarning = +(merchantBase + merchantExcess).toFixed(2);
+      // brandEarning / merchantEarning stay INCLUSIVE of the excess (unchanged
+      // behaviour) so every finance-summary and payout query that reads them is
+      // unaffected; the *ExcessEarning columns are carve-out snapshots.
+      brandEarning = +(baseLine * (rates.brandPct / 100) + brandExcess).toFixed(2);
+      merchantEarning = +(baseLine * (rates.merchantPct / 100) + merchantExcess).toFixed(2);
+      brandExcessEarning = brandExcess;
       merchantExcessEarning = merchantExcess;
+      platformExcessEarning = Number(split.platformExcess);
+      // Platform keeps its excess share plus the rounding remainder.
       platformEarning = +(total - brandEarning - merchantEarning).toFixed(2);
-      excessPctApplied = split.merchant;
     } else {
       brandEarning = +(total * (rates.brandPct / 100)).toFixed(2);
       merchantEarning = +(total * (rates.merchantPct / 100)).toFixed(2);
+      brandExcessEarning = 0;
       merchantExcessEarning = 0;
+      platformExcessEarning = 0;
       platformEarning = +(total - brandEarning - merchantEarning).toFixed(2);
     }
 
@@ -164,10 +175,9 @@ export async function settleOrderEarnings(orderId) {
       `[settlement] order ${order.id} item ${item.id}: brand ${rates.brandPct}% (${rates.brandSource}) ` +
         `merchant ${rates.merchantPct}% (${rates.merchantSource}) on ${total}` +
         (rule
-          ? ` + excess ${excessPctApplied}% = ${merchantExcessEarning}` +
-            (hasBrand
-              ? ` (brand excess ${isExclusive ? "exclusive" : "non-exclusive"})`
-              : "")
+          ? ` + ${scenario} excess split ` +
+            `${split.pctApplied.brand}/${split.pctApplied.merchant}/${split.pctApplied.platform}` +
+            ` = ${brandExcessEarning}/${merchantExcessEarning}/${platformExcessEarning}`
           : ""),
     );
 
@@ -180,9 +190,16 @@ export async function settleOrderEarnings(orderId) {
       brandEarning,
       merchantEarning,
       merchantExcessEarning,
+      brandExcessEarning,
+      platformExcessEarning,
       platformEarning,
+      bonusScenario: rule ? scenario : null,
+      brandPctApplied: rule ? split.pctApplied.brand : null,
+      merchantPctApplied: rule ? split.pctApplied.merchant : null,
+      platformPctApplied: rule ? split.pctApplied.platform : null,
       bonusRuleId: rule ? rule.id : null,
-      excessPctApplied,
+      // @deprecated column, kept equal to merchantPctApplied for continuity.
+      excessPctApplied: rule ? split.pctApplied.merchant : null,
       thresholdApplied: rule ? rule.priceThreshold : null,
     });
   }
@@ -204,7 +221,13 @@ export async function settleOrderEarnings(orderId) {
           brandEarning: l.brandEarning,
           merchantEarning: l.merchantEarning,
           merchantExcessEarning: l.merchantExcessEarning,
+          brandExcessEarning: l.brandExcessEarning,
+          platformExcessEarning: l.platformExcessEarning,
           platformEarning: l.platformEarning,
+          bonusScenario: l.bonusScenario,
+          brandPctApplied: l.brandPctApplied,
+          merchantPctApplied: l.merchantPctApplied,
+          platformPctApplied: l.platformPctApplied,
           bonusRuleId: l.bonusRuleId,
           excessPctApplied: l.excessPctApplied,
           thresholdApplied: l.thresholdApplied,

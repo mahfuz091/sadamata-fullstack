@@ -24,6 +24,15 @@ const options2 = [
   // { label: 'Last 90 days', value: 'last90d' },
 ];
 
+// 1000 -> "1K", 1500 -> "1.5K", 1000000 -> "1M"
+const formatCompact = (n) => {
+  const num = Number(n) || 0;
+  return new Intl.NumberFormat("en-US", {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(num);
+};
+
 const DashboardMain = ({
   report,
   session,
@@ -120,11 +129,13 @@ const DashboardMain = ({
         label: "Live Designs",
         value: stats.totalProducts || 0,
         total: stats?.merchantProfile?.tiar || 0,
+        totalCompact: true,
       },
       {
         label: "Live Products",
         value: stats.totalProducts || 0,
         total: stats?.merchantProfile?.tiar || 0,
+        totalCompact: true,
       },
       {
         label: "Products with Sales",
@@ -155,34 +166,32 @@ const DashboardMain = ({
           <div className='col-lg-9'>
             <div className='dashboard-area__content'>
               <div className='dashboard__top'>
-                <div className='currency dashboard__top__item'>
-                  <div className='currency__item'>
-                    <h3 className='currency__number'>
-                      {stats?.merchantProfile?.tiar}
-                    </h3>
-                    <p className='currency__title'>TIER</p>
-                  </div>
-                  <div className='currency__item'>
-                    <h3 className='currency__number'>
-                      {" "}
-                      {stats?.totalUnderReviewProducts}
-                    </h3>
-                    <p className='currency__title'>UR</p>
-                  </div>
-                  <div className='currency__item'>
-                    <h3 className='currency__number'>
-                      {" "}
-                      {stats?.totalProcessingProducts}
-                    </h3>
-                    <p className='currency__title'>PS</p>
-                  </div>
-                  <div className='currency__item'>
-                    <h3 className='currency__number'>
-                      {" "}
-                      {stats?.totalRejectedProducts}
-                    </h3>
-                    <p className='currency__title'>REJ</p>
-                  </div>
+                <div className='currency__item'>
+                  <h3 className='currency__number'>
+                    {formatCompact(stats?.merchantProfile?.tiar)}
+                  </h3>
+                  <p className='currency__title'>TIER</p>
+                </div>
+                <div className='currency__item'>
+                  <h3 className='currency__number'>
+                    {" "}
+                    {stats?.totalUnderReviewProducts}
+                  </h3>
+                  <p className='currency__title'>UR</p>
+                </div>
+                <div className='currency__item'>
+                  <h3 className='currency__number'>
+                    {" "}
+                    {stats?.totalProcessingProducts}
+                  </h3>
+                  <p className='currency__title'>PS</p>
+                </div>
+                <div className='currency__item'>
+                  <h3 className='currency__number'>
+                    {" "}
+                    {stats?.totalRejectedProducts}
+                  </h3>
+                  <p className='currency__title'>REJ</p>
                 </div>
                 <div className='flag dashboard__top__item'>
                   {[flag1, flag2, flag3, flag4, flag5, flag6].map(
@@ -203,11 +212,6 @@ const DashboardMain = ({
                       </div>
                     ),
                   )}
-                </div>
-                <div className='dashboard__top__btn'>
-                  <Link href='/dashboard/add-design' className='commerce-btn'>
-                    Create
-                  </Link>
                 </div>
               </div>
               {/* <div className="dashboard__metrics">
@@ -255,7 +259,8 @@ const DashboardMain = ({
                     <div className='dashboard__metrics__progess-box'>
                       <div className='dashboard__metrics__progess__inner'>
                         <div className='progess__left'>
-                          {item.value} <span>of</span> {item.total}
+                          {item.value} <span>of</span>{" "}
+                          {item.totalCompact ? formatCompact(item.total) : item.total}
                         </div>
                         <div className='progess__persent'>{item.percent}%</div>
                       </div>
@@ -281,6 +286,7 @@ const DashboardMain = ({
                   </p>
                 </div>
               </div>
+
               <div className='dashboard-dverview'>
                 <div className='row gutter-x-10 gutter-y-20'>
                   <div className='col-xl-6 col-lg-12 col-md-6 col-sm-12'>

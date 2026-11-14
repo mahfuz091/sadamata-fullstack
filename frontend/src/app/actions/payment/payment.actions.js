@@ -6,6 +6,8 @@ import { initSslczSession } from "@/lib/sslcz";
 import { joinUrl } from "@/lib/url";
 import { normalizeBDPhone } from "@/utils/validation";
 import { requireSessionUserId } from "@/lib/session";
+import { getPartialPaymentRule } from "@/lib/partialPaymentRule";
+import { resolvePartialPercent, splitAmount } from "@/lib/partialPayment";
 
 const DEFAULT_CITY = process.env.APP_DEFAULT_CITY || "Dhaka";
 const DEFAULT_POSTCODE = process.env.APP_DEFAULT_POSTCODE || "1000";
@@ -183,6 +185,15 @@ export async function createCheckoutSession(payload) {
     throw new Error("Grand total must be greater than zero");
   }
 
+  // 2️⃣b Partial payment. The customer may choose to pay only the configured
+  // percentage now; the percentage always comes from the admin setting, never
+  // from the client.
+  const partialRule = await getPartialPaymentRule();
+  const partialPercent = resolvePartialPercent(partialRule);
+  const option =
+    payload?.paymentOption === "PARTIAL" && partialPercent ? "PARTIAL" : "FULL";
+  const { payableNow, dueNow } = splitAmount(grand, option, partialPercent);
+
   // 3️⃣ Resolve Address (User or Guest)
   let addr = null;
   let guestAddressId = null;
@@ -254,6 +265,9 @@ export async function createCheckoutSession(payload) {
 
       status: "PENDING",
       tranId,
+      paymentOption: option,
+      paymentPercent: option === "PARTIAL" ? partialPercent.toFixed(2) : null,
+      dueAmount: dueNow.toFixed(2),
 
       items: {
         create: sanitized.map((it) => ({
@@ -282,7 +296,7 @@ export async function createCheckoutSession(payload) {
     store_id: process.env.SSLCZ_STORE_ID,
     store_passwd: process.env.SSLCZ_STORE_PASSWORD,
 
-    total_amount: Number(order.grandTotal).toFixed(2),
+    total_amount: payableNow.toFixed(2),
     currency: "BDT",
     tran_id: order.tranId,
 

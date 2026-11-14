@@ -9,7 +9,7 @@ import { saveDesignFileS3, saveProductFileS3 } from "@/lib/s3helper";
 import { generateUniqueSmpin } from "@/lib/smpin";
 import { resolveEffectiveCommissions } from "@/lib/commissionRates";
 import { buildMerchantPreview } from "@/lib/merchantTier";
-import { getActiveBonusRule } from "@/lib/merchantTierRule";
+import { getScenarioBonusRule } from "@/lib/bonusRule";
 import { revalidatePath } from "next/cache";
 import { requireSessionUser, requireSessionUserId } from "@/lib/session";
 
@@ -799,11 +799,11 @@ export async function createProduct(formData) {
       `[commission] product create merchant=${userId} brand=${brandId ?? "none"} -> brand ${brandPct}% / merchant ${merchantPct}% (${source})`,
     );
 
-    const bonusRule = await getActiveBonusRule();
-    const preview = buildMerchantPreview(price, merchantPct, bonusRule, {
-      hasBrand: !!brandId,
-      isExclusive,
+    const bonusRule = await getScenarioBonusRule({
+      brandId: brandId || null,
+      brandIsExclusive: isExclusive,
     });
+    const preview = buildMerchantPreview(price, merchantPct, bonusRule);
 
     // ---- read mockup, build final title + baseSlug ----
     const mockup = await prisma.mockup.findUnique({
@@ -1026,11 +1026,11 @@ export async function getMerchantEarningPreview({ price, brandId = null } = {}) 
         merchantId: user.id,
         brandId: brandId || null,
       });
-    const bonusRule = await getActiveBonusRule();
-    const preview = buildMerchantPreview(unitPrice, merchantPct, bonusRule, {
-      hasBrand: !!brandId,
-      isExclusive,
+    const bonusRule = await getScenarioBonusRule({
+      brandId: brandId || null,
+      brandIsExclusive: isExclusive,
     });
+    const preview = buildMerchantPreview(unitPrice, merchantPct, bonusRule);
 
     return { ...preview, brandPct, merchantPct, source };
   } catch (error) {
@@ -1088,11 +1088,11 @@ export async function updateProduct(formData) {
       merchantId: updated.userId,
       brandId: updated.brandId,
     });
-    const bonusRule = await getActiveBonusRule();
-    preview = buildMerchantPreview(updated.price, merchantPct, bonusRule, {
-      hasBrand: !!updated.brandId,
-      isExclusive,
+    const bonusRule = await getScenarioBonusRule({
+      brandId: updated.brandId || null,
+      brandIsExclusive: isExclusive,
     });
+    preview = buildMerchantPreview(updated.price, merchantPct, bonusRule);
   } catch (error) {
     console.warn("[commission] preview failed for product", id, error?.message);
   }
@@ -1174,13 +1174,13 @@ export async function getProductById(id) {
       merchantId: product.userId,
       brandId: product.brandId,
     });
-    const bonusRule = await getActiveBonusRule();
+    const bonusRule = await getScenarioBonusRule({
+      brandId: product.brandId || null,
+      brandIsExclusive: isExclusive,
+    });
     return {
       ...product,
-      preview: buildMerchantPreview(product.price, merchantPct, bonusRule, {
-        hasBrand: !!product.brandId,
-        isExclusive,
-      }),
+      preview: buildMerchantPreview(product.price, merchantPct, bonusRule),
     };
   } catch (error) {
     console.warn("[commission] preview failed for product", id, error?.message);

@@ -5,10 +5,11 @@ import payment from "@/assets/images/shapes/payment.png";
 import logoFooter from "@/assets/images/logo-footer.png";
 
 
-const Footer = () => {
+const Footer = ({ session }) => {
   return (
     <>
       <footer className='main-footer'>
+        {!session?.user && (
         <div className='main-footer__middle section-space'>
           <div className='container'>
             <div className='row gutter-y-40'>
@@ -244,6 +245,7 @@ const Footer = () => {
             </div>
           </div>
         </div>
+        )}
         <div className='main-footer__bottom'>
           <div className='container'>
             <div

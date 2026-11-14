@@ -83,6 +83,20 @@ export default async function OrderDetailsPage({ params }) {
         <p>
           <b>Total:</b> ৳{order.grandTotal}
         </p>
+        {Number(order.dueAmount) > 0 && (
+          <>
+            <p>
+              <b>Paid:</b> ৳{order.paidAmount}
+            </p>
+            <p>
+              <b>Due:</b> <span className='text-amber-600'>৳{order.dueAmount}</span>
+            </p>
+            <p>
+              <b>Payment option:</b> {order.paymentOption}
+              {order.paymentPercent ? ` (${order.paymentPercent}%)` : ""}
+            </p>
+          </>
+        )}
         <p>
           <b>Customer:</b> {order.user? order.user?.name:order.GuestAddress?.firstName + " " + order.GuestAddress?.lastName}
         </p>

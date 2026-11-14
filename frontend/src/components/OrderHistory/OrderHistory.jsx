@@ -142,6 +142,12 @@ function OrderCard({ order, productImages, productLinks }) {
             <span>Discount -{formatMoney(order.discount, order.currency)}</span>
           )}
           <strong>{formatMoney(order.grandTotal, order.currency)}</strong>
+          {Number(order.dueAmount) > 0 && (
+            <span className='order-history__due'>
+              Paid {formatMoney(order.paidAmount, order.currency)} · Due{" "}
+              {formatMoney(order.dueAmount, order.currency)}
+            </span>
+          )}
         </div>
       </div>
     </article>

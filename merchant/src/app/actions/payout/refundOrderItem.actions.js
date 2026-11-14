@@ -4,6 +4,7 @@
 import { Prisma } from '@/generated/prisma'
 import { prisma } from '@/lib/prisma'
 import { requireSessionUser } from '@/lib/session'
+import { prorateExcessRefund } from '@/lib/bonusSplit'
 
 // Reverse a sale, fully or proportionally. Pass `refundedQty` for a partial
 // refund; omit it for a full one. One refund row per order item
@@ -39,6 +40,8 @@ export async function refundOrderItem(
           brandEarning: 0,
           merchantEarning: 0,
           merchantExcessReversed: 0,
+          brandExcessReversed: 0,
+          platformExcessReversed: 0,
           platformEarning: 0,
           reason,
         },
@@ -67,8 +70,16 @@ export async function refundOrderItem(
         amount: scale(sale.total),
         brandEarning: scale(sale.brandEarning),
         merchantEarning: scale(sale.merchantEarning),
-        merchantExcessReversed: scale(sale.merchantExcessEarning),
         platformEarning: scale(sale.platformEarning),
+        // Reverse each party's excess share from the SALE snapshot (never the
+        // live rule), prorated by the refunded quantity.
+        ...prorateExcessRefund({
+          soldQty,
+          refundQty: qty,
+          brandExcess: sale.brandExcessEarning,
+          merchantExcess: sale.merchantExcessEarning,
+          platformExcess: sale.platformExcessEarning,
+        }),
         reason,
       },
     })

@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 
 const TTL_MS = 45_000;
 
@@ -7,27 +7,27 @@ const TTL_MS = 45_000;
 // dashboard invalidates its own copy immediately after an admin update.
 let cache = { at: 0, rule: undefined };
 
-export async function getActiveBonusRule({ force = false } = {}) {
+export async function getPartialPaymentRule({ force = false } = {}) {
   const now = Date.now();
   if (!force && cache.rule !== undefined && now - cache.at < TTL_MS) {
     return cache.rule;
   }
 
   // Guard against a not-yet-generated client during rollout.
-  if (!prisma.merchantBonusRule) {
+  if (!prisma.partialPaymentRule) {
     cache = { at: now, rule: null };
     return null;
   }
 
   let rule = null;
   try {
-    rule = await prisma.merchantBonusRule.findFirst({
+    rule = await prisma.partialPaymentRule.findFirst({
       where: { isActive: true },
       orderBy: [{ effectiveFrom: "desc" }, { createdAt: "desc" }],
     });
   } catch (err) {
     console.warn(
-      "[commission] active bonus rule lookup failed; treating as none:",
+      "[partial-payment] active rule lookup failed; treating as none:",
       err?.message,
     );
     cache = { at: now, rule: null };
@@ -38,6 +38,6 @@ export async function getActiveBonusRule({ force = false } = {}) {
   return rule;
 }
 
-export function invalidateBonusRuleCache() {
+export function invalidatePartialPaymentRuleCache() {
   cache = { at: 0, rule: undefined };
 }

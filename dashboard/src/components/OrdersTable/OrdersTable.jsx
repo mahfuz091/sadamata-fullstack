@@ -139,7 +139,14 @@ export default function OrdersTable({ initial = [], meta, filters = {} }) {
     {
       title: "Amount",
       dataIndex: "grandTotal",
-      render: (v) => `৳${v}`,
+      render: (v, r) => (
+        <div className='flex flex-col'>
+          <span>৳{v}</span>
+          {Number(r.dueAmount) > 0 && (
+            <small className='text-amber-600'>Due ৳{r.dueAmount}</small>
+          )}
+        </div>
+      ),
     },
     {
       title: "Status",

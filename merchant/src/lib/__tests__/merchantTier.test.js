@@ -1,8 +1,11 @@
 import { describe, it, expect } from "vitest";
 import { calcMerchantEarning, buildMerchantPreview } from "@/lib/merchantTier";
 
-const RULE = { priceThreshold: 1000, excessPct: 40, isActive: true };
-const INACTIVE = { priceThreshold: 1000, excessPct: 40, isActive: false };
+// BonusRule rows resolved for a scenario — merchantPct is the excess share.
+const RULE40 = { priceThreshold: 1000, merchantPct: 40, isActive: true }; // NO_BRAND
+const RULE30 = { priceThreshold: 1000, merchantPct: 30, isActive: true }; // NON_EXCLUSIVE_BRAND
+const RULE20 = { priceThreshold: 1000, merchantPct: 20, isActive: true }; // EXCLUSIVE_BRAND
+const INACTIVE = { priceThreshold: 1000, merchantPct: 40, isActive: false };
 
 // Decimal -> plain 2dp number
 const n = (d) => Number(d.toFixed(2));
@@ -21,8 +24,8 @@ describe("calcMerchantEarning", () => {
     expect(n(r.excessEarning)).toBe(0);
   });
 
-  describe("merchant 11%", () => {
-    const at = (price, qty = 1) => calcMerchantEarning(price, qty, 11, RULE);
+  describe("merchant 11% under the NO_BRAND rule (40% excess)", () => {
+    const at = (price, qty = 1) => calcMerchantEarning(price, qty, 11, RULE40);
 
     it("price 999 — all inside the base slice", () => {
       const r = at(999);
@@ -67,7 +70,7 @@ describe("calcMerchantEarning", () => {
   });
 
   describe("merchant 6% (brand-published)", () => {
-    const at = (price, qty = 1) => calcMerchantEarning(price, qty, 6, RULE);
+    const at = (price, qty = 1) => calcMerchantEarning(price, qty, 6, RULE40);
 
     it("price 1100 — 60 + 40 = 100", () => {
       const r = at(1100);
@@ -85,47 +88,31 @@ describe("calcMerchantEarning", () => {
     });
   });
 
-  describe("brand products use the fixed excess split", () => {
+  describe("the scenario rule drives the merchant's excess share", () => {
     it("exclusive brand — merchant gets 20% of the excess", () => {
-      const r = calcMerchantEarning(1500, 1, 20, RULE, {
-        hasBrand: true,
-        isExclusive: true,
-      });
+      const r = calcMerchantEarning(1500, 1, 20, RULE20);
       expect(n(r.baseEarning)).toBe(200); // 1000 × 20%
       expect(n(r.excessEarning)).toBe(100); // 500 × 20%
       expect(n(r.total)).toBe(300);
     });
 
     it("non-exclusive brand — merchant gets 30% of the excess", () => {
-      const r = calcMerchantEarning(1500, 1, 30, RULE, {
-        hasBrand: true,
-        isExclusive: false,
-      });
+      const r = calcMerchantEarning(1500, 1, 30, RULE30);
       expect(n(r.baseEarning)).toBe(300); // 1000 × 30%
       expect(n(r.excessEarning)).toBe(150); // 500 × 30%
       expect(n(r.total)).toBe(450);
     });
 
     it("quantity scales both slices", () => {
-      const r = calcMerchantEarning(1500, 2, 20, RULE, {
-        hasBrand: true,
-        isExclusive: true,
-      });
+      const r = calcMerchantEarning(1500, 2, 20, RULE20);
       expect(n(r.baseEarning)).toBe(400);
       expect(n(r.excessEarning)).toBe(200);
       expect(n(r.total)).toBe(600);
     });
-
-    it("brand-less products still use the rule's excessPct", () => {
-      const r = calcMerchantEarning(1500, 1, 11, RULE, { hasBrand: false });
-      expect(n(r.baseEarning)).toBe(110);
-      expect(n(r.excessEarning)).toBe(200); // 500 × 40%
-      expect(n(r.total)).toBe(310);
-    });
   });
 
   it("keeps 2-decimal precision on fractional inputs", () => {
-    const r = calcMerchantEarning(1234.56, 1, 7.5, RULE);
+    const r = calcMerchantEarning(1234.56, 1, 7.5, RULE40);
     expect(n(r.baseEarning)).toBe(75);
     expect(n(r.excessEarning)).toBe(93.82); // 234.56 * 0.40 = 93.824
     expect(n(r.total)).toBe(168.82);
@@ -133,13 +120,13 @@ describe("calcMerchantEarning", () => {
 
   it("never throws on garbage input", () => {
     expect(() => calcMerchantEarning(null, null, null, null)).not.toThrow();
-    expect(n(calcMerchantEarning(undefined, 0, undefined, RULE).total)).toBe(0);
+    expect(n(calcMerchantEarning(undefined, 0, undefined, RULE40).total)).toBe(0);
   });
 });
 
 describe("buildMerchantPreview", () => {
   it("shows only the total earning, without the tier breakdown", () => {
-    const p = buildMerchantPreview(1100, 11, RULE);
+    const p = buildMerchantPreview(1100, 11, RULE40);
     expect(p.total).toBe("150.00");
     expect(p.baseEarning).toBe("110.00");
     expect(p.excessEarning).toBe("40.00");
@@ -153,11 +140,8 @@ describe("buildMerchantPreview", () => {
     expect(p.text).toBe("At this price you earn 121.00 BDT per sale");
   });
 
-  it("shows only the total for brand products", () => {
-    const p = buildMerchantPreview(1500, 20, RULE, {
-      hasBrand: true,
-      isExclusive: true,
-    });
+  it("shows only the total for an exclusive-brand rule", () => {
+    const p = buildMerchantPreview(1500, 20, RULE20);
     expect(p.total).toBe("300.00");
     expect(p.baseEarning).toBe("200.00");
     expect(p.excessEarning).toBe("100.00");

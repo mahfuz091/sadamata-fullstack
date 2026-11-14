@@ -8058,10 +8058,16 @@ body.megamenu-popup-active .mobile-nav__content {
 --------------------------------------------------------------*/
 .dashboard-area .dashboard__top {
   display: flex;
-  align-items: center;
-  height: 100%;
-  gap: 28px;
+  align-items: stretch;
+  gap: 10px;
   margin-bottom: 20px;
+}
+.dashboard-area .dashboard__top .currency__item {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.dashboard-area .dashboard__top .flag.dashboard__top__item {
+  flex: 0 0 auto;
 }
 .dashboard-area .dashboard__top__item {
   border-radius: 10px;
@@ -8180,16 +8186,16 @@ body.megamenu-popup-active .mobile-nav__content {
   height: 100%;
 }
 .currency__item {
-  border-radius: 8px;
+  border-radius: 10px;
   border: 1px solid #E8EFFC;
-  background: #F7F8FA;
+  background: #FFFFFF;
   display: flex;
-  padding: 10px 21px;
+  padding: 16px 20px;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 10px;
-  max-width: 80px;
-  height: 109px;
+  min-height: 124px;
   width: 100%;
 }
 .currency__number {
@@ -8267,9 +8273,9 @@ body.megamenu-popup-active .mobile-nav__content {
 }
 
 .dashboard__metrics {
-  display: flex;
-  align-items: center;
-  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-items: stretch;
   width: 100%;
   gap: 10px;
   margin-bottom: 20px;
